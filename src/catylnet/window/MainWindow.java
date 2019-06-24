@@ -21,7 +21,7 @@ package catylnet.window;
 
 import catylnet.io.CRSFileFilter;
 import catylnet.io.FileOpener;
-import catylnet.model.Document;
+import catylnet.model.Model;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -45,6 +45,7 @@ public class MainWindow implements IMainWindow {
     private final UndoManager undoManager = new UndoManager();
 
     private final Document document = new Document();
+    private final Model model = new Model();
 
     public MainWindow() {
         Platform.setImplicitExit(false);
@@ -117,5 +118,9 @@ public class MainWindow implements IMainWindow {
 
     public Document getDocument() {
         return document;
+    }
+
+    public Model getModel() {
+        return model;
     }
 }

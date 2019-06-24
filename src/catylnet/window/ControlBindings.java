@@ -19,7 +19,11 @@
 
 package catylnet.window;
 
+import catylnet.io.Save;
+import catylnet.io.SaveChangesDialog;
+import jloda.fx.util.RecentFilesManager;
 import jloda.fx.window.MainWindowManager;
+import jloda.fx.window.WindowGeometry;
 import jloda.util.FileOpenManager;
 import jloda.util.ProgramProperties;
 
@@ -28,6 +32,9 @@ public class ControlBindings {
 
     public static void setup(MainWindow window) {
         final MainWindowController controller = window.getController();
+
+        RecentFilesManager.getInstance().setFileOpener(FileOpenManager.getFileOpener());
+        RecentFilesManager.getInstance().setupMenu(controller.getRecentFilesMenu());
 
         window.getStage().setOnCloseRequest((e) -> {
             controller.getCloseMenuItem().getOnAction().handle(null);
@@ -42,11 +49,13 @@ public class ControlBindings {
 
         controller.getOpenMenuItem().setOnAction(FileOpenManager.createOpenFileEventHandler(window.getStage()));
 
+        controller.getSaveMenItem().setOnAction(e -> Save.showSaveDialog(window));
+
         controller.getCloseMenuItem().setOnAction(e -> {
-            if (window.getDocument().isDirty()) {
-                // ask to save
+            if (SaveChangesDialog.apply(window)) {
+                ProgramProperties.put("WindowGeometry", (new WindowGeometry(window.getStage())).toString());
+                MainWindowManager.getInstance().closeMainWindow(window);
             }
-            MainWindowManager.getInstance().closeMainWindow(window);
         });
     }
 }

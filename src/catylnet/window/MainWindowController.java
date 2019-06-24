@@ -50,6 +50,9 @@ public class MainWindowController {
     private MenuItem openMenuItem;
 
     @FXML
+    private Menu recentFilesMenu;
+
+    @FXML
     private MenuItem saveMenItem;
 
     @FXML
@@ -127,6 +130,7 @@ public class MainWindowController {
         assert fileMenu != null : "fx:id=\"fileMenu\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert newMenuItem != null : "fx:id=\"newMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert openMenuItem != null : "fx:id=\"openMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert recentFilesMenu != null : "fx:id=\"recentFilesMenu\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert saveMenItem != null : "fx:id=\"saveMenItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert pageSetupMenuItem != null : "fx:id=\"pageSetupMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert printMenuItem != null : "fx:id=\"printMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
@@ -180,6 +184,10 @@ public class MainWindowController {
 
     public MenuItem getOpenMenuItem() {
         return openMenuItem;
+    }
+
+    public Menu getRecentFilesMenu() {
+        return recentFilesMenu;
     }
 
     public MenuItem getSaveMenItem() {
@@ -274,7 +282,7 @@ public class MainWindowController {
         return propertiesTextArea;
     }
 
-    public ComboBox<?> getFoodSourcesComboBox() {
-        return foodSourcesComboBox;
+    public ComboBox<String> getFoodSourcesComboBox() {
+        return (ComboBox<String>) foodSourcesComboBox;
     }
 }

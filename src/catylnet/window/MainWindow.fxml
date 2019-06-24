@@ -50,6 +50,7 @@
                                                             shortcut="UP"/>
                                     </accelerator>
                                 </MenuItem>
+                                <Menu fx:id="recentFilesMenu" mnemonicParsing="false" text="Recent"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="pageSetupMenuItem" mnemonicParsing="false" text="Page Setup..."/>
                                 <MenuItem fx:id="printMenuItem" mnemonicParsing="false" text="Print...">

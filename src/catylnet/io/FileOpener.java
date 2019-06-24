@@ -23,6 +23,8 @@ import catylnet.window.MainWindow;
 import jloda.fx.util.NotificationManager;
 import jloda.util.Basic;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.function.Consumer;
 
@@ -38,12 +40,20 @@ public class FileOpener implements Consumer<String> {
     }
 
     @Override
-    public void accept(String s) {
-        try {
-            mainWindow.getController().getCrsTextArea().setText(Basic.toString(Basic.getLinesFromFile(s), "\n"));
+    public void accept(String fileName) {
+        try (BufferedReader r = new BufferedReader(new FileReader(fileName))) {
+            mainWindow.getModel().clear();
+            mainWindow.getModel().read(r);
+            mainWindow.getController().getCrsTextArea().setText(Basic.toString(mainWindow.getModel().getReactions(), "\n"));
+            final String food = Basic.toString(mainWindow.getModel().getFoods(), " ");
+            if (mainWindow.getController().getFoodSourcesComboBox().getItems().contains(food))
+                mainWindow.getController().getFoodSourcesComboBox().getItems().add(0, food);
+            mainWindow.getController().getFoodSourcesComboBox().getSelectionModel().select(food);
+
+            NotificationManager.showInformation("Read " + mainWindow.getModel().getReactions().size() + " reactions and " +
+                    mainWindow.getModel().getFoods().size() + " foods from file: " + fileName);
         } catch (IOException e) {
             NotificationManager.showError("Open file failed: " + e.getMessage());
         }
-
     }
 }

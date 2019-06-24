@@ -17,12 +17,15 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package catylnet.model;
+package catylnet.window;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 public class Document {
+    private final StringProperty fileName = new SimpleStringProperty("Untitled");
     private final BooleanProperty dirty = new SimpleBooleanProperty(false);
 
     public boolean isDirty() {
@@ -35,5 +38,17 @@ public class Document {
 
     public void setDirty(boolean dirty) {
         this.dirty.set(dirty);
+    }
+
+    public String getFileName() {
+        return fileName.get();
+    }
+
+    public StringProperty fileNameProperty() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName.set(fileName);
     }
 }
