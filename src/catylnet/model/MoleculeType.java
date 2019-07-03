@@ -60,4 +60,14 @@ public class MoleculeType implements Comparable<MoleculeType> {
         }
         return list;
     }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+        return that instanceof MoleculeType && name.equals(((MoleculeType) that).name);
+    }
 }

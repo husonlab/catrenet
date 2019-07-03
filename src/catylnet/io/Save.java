@@ -22,6 +22,7 @@ package catylnet.io;
 import catylnet.window.MainWindow;
 import javafx.stage.FileChooser;
 import jloda.fx.util.NotificationManager;
+import jloda.fx.util.RecentFilesManager;
 import jloda.fx.util.TextFileFilter;
 import jloda.util.ProgramProperties;
 
@@ -80,6 +81,7 @@ public class Save {
                 mainWindow.getDocument().setFileName(selectedFile.getPath());
                 ProgramProperties.put("SaveFileDir", selectedFile.getParent());
                 NotificationManager.showInformation("Saved to file: " + selectedFile);
+                RecentFilesManager.getInstance().insertRecentFile(selectedFile.getPath());
                 return true;
             } catch (IOException ex) {
                 NotificationManager.showError("Save failed: " + ex);

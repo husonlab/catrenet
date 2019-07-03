@@ -8,6 +8,7 @@ module catanets {
     exports catylnet.window;
 
     opens catylnet.window;
+    opens catylnet.resources.images;
 
 
 }

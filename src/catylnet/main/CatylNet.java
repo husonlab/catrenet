@@ -61,7 +61,7 @@ public class CatylNet extends Application {
      * @param args
      */
     public static void main(String[] args) throws CanceledException, UsageException {
-        ResourceManagerFX.addResourceRoot(CatylNet.class, "tegula.resources");
+        ResourceManagerFX.addResourceRoot(CatylNet.class, "catylnet.resources");
         ProgramProperties.setProgramName(Version.NAME);
         ProgramProperties.setProgramVersion(Version.SHORT_DESCRIPTION);
         ProgramProperties.setProgramLicence("This is an early (ALPHA) version of CatylNet, made available for testing purposes. Source code will be released on publication.");
@@ -76,7 +76,7 @@ public class CatylNet extends Application {
         Basic.startCollectionStdErr();
 
         final ArgsOptions options = new ArgsOptions(args, CatylNet.class, Version.NAME + " - Auto catalytic networks");
-        options.setAuthors("Daniel H. Huson, with Mike A. Steel and others");
+        options.setAuthors("Daniel H. Huson, with Mike A. Steel");
         options.setLicense(ProgramProperties.getProgramLicence());
         options.setVersion(ProgramProperties.getProgramVersion());
 
@@ -111,19 +111,17 @@ public class CatylNet extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        // setup and show splash screen:
+        SplashScreen.setVersionString(ProgramProperties.getProgramVersion());
+        SplashScreen.setImageResourceName("splash.png");
+        SplashScreen.getInstance().showSplash(Duration.ofSeconds(5));
         try {
             primaryStage.setTitle(ProgramProperties.getProgramName());
             NotificationManager.setShowNotifications(true);
 
-
             final MainWindow mainWindow = new MainWindow();
-            MainWindowManager.getInstance().addMainWindow(mainWindow);
-
-            // todo: setup file opener
-            //RecentFilesManager.getInstance().setFileOpener(FileOpenManager.fileOpener());
 
             final WindowGeometry windowGeometry = new WindowGeometry(ProgramProperties.get("WindowGeometry", "50 50 800 800"));
-
 
             mainWindow.show(primaryStage, windowGeometry.getX(), windowGeometry.getY(), windowGeometry.getWidth(), windowGeometry.getHeight());
             for (String fileName : inputFilesAtStartup) {
@@ -142,6 +140,8 @@ public class CatylNet extends Application {
                     }
                 });
             }
+            MainWindowManager.getInstance().addMainWindow(mainWindow);
+
 
         } catch (Exception ex) {
             Basic.caught(ex);
@@ -155,5 +155,4 @@ public class CatylNet extends Application {
         System.exit(0);
 
     }
-
 }

@@ -23,6 +23,7 @@ import catylnet.io.CRSFileFilter;
 import catylnet.io.FileOpener;
 import catylnet.model.Model;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.FlowPane;
@@ -32,7 +33,10 @@ import jloda.fx.util.ExtendedFXMLLoader;
 import jloda.fx.util.MemoryUsage;
 import jloda.fx.util.TextFileFilter;
 import jloda.fx.window.IMainWindow;
+import jloda.fx.window.MainWindowManager;
+import jloda.util.Basic;
 import jloda.util.FileOpenManager;
+import jloda.util.ProgramProperties;
 
 import java.util.Arrays;
 
@@ -85,18 +89,33 @@ public class MainWindow implements IMainWindow {
         stage.setX(screenX);
         stage.setY(screenY);
 
+        document.dirtyProperty().bind(controller.getCrsTextArea().undoableProperty());
+
+        final InvalidationListener listener = ((e) -> {
+            if (document.getFileName() == null)
+                getStage().setTitle("Untitled - " + ProgramProperties.getProgramName());
+            else
+                getStage().setTitle(Basic.getFileNameWithoutPath(document.getFileName()) + (document.isDirty() ? "*" : "") + " - " + ProgramProperties.getProgramName());
+        });
+        document.fileNameProperty().addListener(listener);
+
+        document.dirtyProperty().addListener(listener);
+
+        getStage().titleProperty().addListener((e) -> MainWindowManager.getInstance().fireChanged());
+
         ControlBindings.setup(this);
 
         final MemoryUsage memoryUsage = MemoryUsage.getInstance();
         controller.getMemoryUsageLabel().textProperty().bind(memoryUsage.memoryUsageStringProperty());
 
         stage.show();
-
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return (getController().getFoodSetComboBox().getSelectionModel().getSelectedItem() == null
+                || getController().getFoodSetComboBox().getSelectionModel().getSelectedItem().toString().trim().length() == 0)
+                && getController().getCrsTextArea().getText().trim().length() == 0;
     }
 
     @Override

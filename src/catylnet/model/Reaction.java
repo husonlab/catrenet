@@ -29,7 +29,7 @@ import java.util.TreeSet;
  * a reaction
  * Daniel Huson, 6.2019
  */
-public class Reaction {
+public class Reaction implements Comparable<Reaction> {
     private final String name;
 
     private final Set<MoleculeType> reactants = new TreeSet<>();
@@ -67,13 +67,13 @@ public class Reaction {
     }
 
     public String toString() {
-        return String.format("%s\t%s -> %s\t%s",
-                name, Basic.toString(reactants, " "), Basic.toString(products, " "), Basic.toString(catalysts, " "));
+        return String.format("%s : %s -> %s ; %s",
+                name, Basic.toString(reactants, " + "), Basic.toString(products, " + "), Basic.toString(catalysts, " "));
     }
 
     public String toStringBothWays() {
-        return String.format("%s\t%s <-> %s\t%s",
-                name, Basic.toString(reactants, " "), Basic.toString(products, " "), Basic.toString(catalysts, " "));
+        return String.format("%s : %s <-> %s ; %s",
+                (name.endsWith("+") ? name.substring(0, name.length() - 1) : name), Basic.toString(reactants, " + "), Basic.toString(products, " + "), Basic.toString(catalysts, " "));
     }
 
     /**
@@ -87,8 +87,22 @@ public class Reaction {
      * @throws IOException
      */
     public static Reaction[] parse(String line) throws IOException {
-        final String[] tokens = line.split("\t");
-        if (tokens.length != 3)
+        if (line.contains("[")) {
+            int a = line.indexOf("[");
+            int b = line.indexOf("]");
+            if (a >= 0 && b > a) {
+                line = line.substring(0, a) + line.substring(b + 1) + " ; " + line.substring(a + 1, b);
+            }
+            line = line.replaceAll("\\+", " ").replaceAll(",", " ");
+        }
+
+        line = line.replaceAll(" \\+ ", " ");
+        final String[] tokens;
+        if (Basic.countOccurrences(line, "\t") == 2)
+            tokens = Basic.trimAll(line.split("\t"));
+        else if (Basic.countOccurrences(line, ":") == 1 && Basic.countOccurrences(line, ";") == 1 && line.indexOf(":") < line.indexOf(";"))
+            tokens = Basic.trimAll(line.split("[:;]"));
+        else
             throw new IOException("Can't parse reaction: " + line);
         final String reactionName = tokens[0];
 
@@ -151,5 +165,10 @@ public class Reaction {
             return new Reaction[]{reaction1};
         } else
             return new Reaction[0];
+    }
+
+    @Override
+    public int compareTo(Reaction that) {
+        return this.getName().compareTo(that.getName());
     }
 }

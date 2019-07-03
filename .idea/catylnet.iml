@@ -31,5 +31,19 @@
         <jarDirectory url="file://$MODULE_DIR$/jars" recursive="false" />
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../jloda/jars/batik-all-1.11.jar!/" />
+          <root url="jar://$MODULE_DIR$/../jloda/jars/controlsfx-11.0.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../jloda/jars/xml-apis-ext-1.3.04.jar!/" />
+          <root url="jar://$MODULE_DIR$/../jloda/jars/VectorGraphics2D-0.11.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/../external/vectorgraphics2d-master/src/main/java" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>

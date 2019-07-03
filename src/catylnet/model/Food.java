@@ -35,8 +35,13 @@ public class Food extends MoleculeType {
      * @return food
      */
     public static Food[] parse(String aLine) {
-        if (aLine.startsWith("Food:"))
-            aLine = aLine.substring("Food:".length() + 1).trim();
+        aLine = aLine.replaceAll(",", " ").replaceAll("\\s+", " ");
+        if (aLine.startsWith("Food:")) {
+            if (aLine.length() > "Food:".length())
+                aLine = aLine.substring("Food:".length() + 1).trim();
+            else
+                aLine = "";
+        }
 
         final String[] names = aLine.split("\\s+");
         final Food[] array = new Food[names.length];

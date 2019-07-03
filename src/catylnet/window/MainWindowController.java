@@ -1,32 +1,22 @@
-/*
- * MainWindowController.java Copyright (C) 2019. Daniel H. Huson
- *
- *  (Some files contain contributions from other authors, who are then mentioned separately.)
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package catylnet.window;
 
+import javafx.beans.InvalidationListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCharacterCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.FlowPane;
-import jloda.fx.window.SplashScreen;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import jloda.fx.control.SplittableTabPane;
+import jloda.fx.window.IMainWindow;
+import jloda.fx.window.MainWindowManager;
 import jloda.util.ProgramProperties;
 
 import java.net.URL;
-import java.time.Duration;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class MainWindowController {
@@ -50,10 +40,10 @@ public class MainWindowController {
     private MenuItem openMenuItem;
 
     @FXML
-    private Menu recentFilesMenu;
+    private MenuItem saveMenItem;
 
     @FXML
-    private MenuItem saveMenItem;
+    private Menu recentFilesMenu;
 
     @FXML
     private MenuItem pageSetupMenuItem;
@@ -95,19 +85,38 @@ public class MainWindowController {
     private MenuItem selectNoneMenuItem;
 
     @FXML
+    private MenuItem findMenuItem;
+
+    @FXML
+    private MenuItem findAgainMenuItem;
+
+
+    @FXML
     private Menu algorithmMenu;
 
     @FXML
-    private MenuItem analyzeMenuItem;
+    private MenuItem verifyInputMenuItem;
 
     @FXML
-    private Menu helpMenu;
+    private MenuItem runRAFMenuItem;
+
+    @FXML
+    private MenuItem runCAFMenuItem;
+
+    @FXML
+    private MenuItem runPseudoRAFMenuItem;
+
+    @FXML
+    private MenuItem runMenuItem;
+
+    @FXML
+    private Menu windowMenu;
 
     @FXML
     private MenuItem aboutMenuItem;
 
     @FXML
-    private Button analyzeButton;
+    private Button runButton;
 
     @FXML
     private FlowPane statusFlowPane;
@@ -116,13 +125,48 @@ public class MainWindowController {
     private Label memoryUsageLabel;
 
     @FXML
+    private StackPane outputPane;
+
+    @FXML
+    private ComboBox<?> foodSetComboBox;
+
+    @FXML
     private TextArea crsTextArea;
 
     @FXML
-    private ComboBox<?> foodSourcesComboBox;
+    private TabPane outputTabPane;
+
+    private SplittableTabPane outputSplittableTabPane;
+
+    @FXML
+    private SplitPane mainSplitPane;
 
     @FXML
     private TextArea propertiesTextArea;
+
+    @FXML
+    private Tab rafTab;
+
+    @FXML
+    private TextArea rafTextArea;
+
+    @FXML
+    private Tab cafTab;
+
+    @FXML
+    private TextArea cafTextArea;
+
+    @FXML
+    private Tab pseudoRafTab;
+
+    @FXML
+    private TextArea pseudoRAFTextArea;
+
+    @FXML
+    private ToggleButton findInInputButton;
+
+    @FXML
+    private VBox reactionsInputVBox;
 
     @FXML
     void initialize() {
@@ -130,8 +174,8 @@ public class MainWindowController {
         assert fileMenu != null : "fx:id=\"fileMenu\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert newMenuItem != null : "fx:id=\"newMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert openMenuItem != null : "fx:id=\"openMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert recentFilesMenu != null : "fx:id=\"recentFilesMenu\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert saveMenItem != null : "fx:id=\"saveMenItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert recentFilesMenu != null : "fx:id=\"recentFilesMenu\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert pageSetupMenuItem != null : "fx:id=\"pageSetupMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert printMenuItem != null : "fx:id=\"printMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert closeMenuItem != null : "fx:id=\"closeMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
@@ -142,32 +186,83 @@ public class MainWindowController {
         assert cutMenuItem != null : "fx:id=\"cutMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert copyMenuItem != null : "fx:id=\"copyMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert pasteMenuItem != null : "fx:id=\"pasteMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert clearMenuItem != null : "fx:id=\"deleteMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert clearMenuItem != null : "fx:id=\"clearMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert selectAllMenuItem != null : "fx:id=\"selectAllMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert selectNoneMenuItem != null : "fx:id=\"selectNoneMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert algorithmMenu != null : "fx:id=\"algorithmMenu\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert analyzeMenuItem != null : "fx:id=\"analyzeMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert helpMenu != null : "fx:id=\"helpMenu\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert runMenuItem != null : "fx:id=\"analyzeMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert windowMenu != null : "fx:id=\"helpMenu\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert aboutMenuItem != null : "fx:id=\"aboutMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert analyzeButton != null : "fx:id=\"analyzeButton\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert runButton != null : "fx:id=\"analyzeButton\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert statusFlowPane != null : "fx:id=\"statusFlowPane\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert memoryUsageLabel != null : "fx:id=\"memoryUsageLabel\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert outputPane != null : "fx:id=\"outputBorderPane\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert foodSetComboBox != null : "fx:id=\"foodSourcesComboBox\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert crsTextArea != null : "fx:id=\"crsTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert foodSourcesComboBox != null : "fx:id=\"foodSourcesComboBox\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert outputTabPane != null : "fx:id=\"outputTabPane\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert propertiesTextArea != null : "fx:id=\"propertiesTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert rafTextArea != null : "fx:id=\"rafTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert cafTextArea != null : "fx:id=\"cafTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert pseudoRAFTextArea != null : "fx:id=\"pseudoRAFTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
 
 
         // if we are running on MacOS, put the specific menu items in the right places
         if (ProgramProperties.isMacOS()) {
             getMenuBar().setUseSystemMenuBar(true);
             fileMenu.getItems().remove(getQuitMenuItem());
-            helpMenu.getItems().remove(getAboutMenuItem());
+            windowMenu.getItems().remove(getAboutMenuItem());
             //editMenu.getItems().remove(getPreferencesMenuItem());
-        } else {
-            getAboutMenuItem().setOnAction((e) -> SplashScreen.getInstance().showSplash(Duration.ofMinutes(1)));
         }
 
+        // replace tabbed pane by splittable one
 
+        final ArrayList<Tab> tabs = new ArrayList<>(outputTabPane.getTabs());
+        outputTabPane.getTabs().clear();
+        outputSplittableTabPane = new SplittableTabPane();
+        outputSplittableTabPane.getTabs().addAll(tabs);
+        outputPane.getChildren().setAll(outputSplittableTabPane);
+        if (outputSplittableTabPane.getTabs().size() > 0)
+            outputSplittableTabPane.getSelectionModel().select(0);
+
+        final InvalidationListener invalidationListener = observable -> {
+            windowMenu.getItems().clear();
+            if (true || !ProgramProperties.isMacOS()) {
+                windowMenu.getItems().add(getAboutMenuItem());
+                windowMenu.getItems().add(new SeparatorMenuItem());
+            }
+            int count = 0;
+            for (IMainWindow mainWindow : MainWindowManager.getInstance().getMainWindows()) {
+                if (mainWindow.getStage() != null) {
+                    final String title = mainWindow.getStage().getTitle();
+                    if (title != null) {
+                        final MenuItem menuItem = new MenuItem(title.replaceAll("- " + ProgramProperties.getProgramName(), ""));
+                        menuItem.setOnAction((e) -> mainWindow.getStage().toFront());
+                        menuItem.setAccelerator(new KeyCharacterCombination("" + (++count), KeyCombination.SHORTCUT_DOWN));
+                        windowMenu.getItems().add(menuItem);
+                    }
+                }
+                if (MainWindowManager.getInstance().getAuxiliaryWindows(mainWindow) != null) {
+                    for (Stage auxStage : MainWindowManager.getInstance().getAuxiliaryWindows(mainWindow)) {
+                        final String title = auxStage.getTitle();
+                        if (title != null) {
+                            final MenuItem menuItem = new MenuItem(title.replaceAll("- " + ProgramProperties.getProgramName(), ""));
+                            menuItem.setOnAction((e) -> auxStage.toFront());
+                            windowMenu.getItems().add(menuItem);
+                        }
+                    }
+                }
+            }
+        };
+        MainWindowManager.getInstance().changedProperty().addListener(invalidationListener);
+        invalidationListener.invalidated(null);
+    }
+
+    public ResourceBundle getResources() {
+        return resources;
+    }
+
+    public URL getLocation() {
+        return location;
     }
 
     public MenuBar getMenuBar() {
@@ -186,12 +281,12 @@ public class MainWindowController {
         return openMenuItem;
     }
 
-    public Menu getRecentFilesMenu() {
-        return recentFilesMenu;
-    }
-
     public MenuItem getSaveMenItem() {
         return saveMenItem;
+    }
+
+    public Menu getRecentFilesMenu() {
+        return recentFilesMenu;
     }
 
     public MenuItem getPageSetupMenuItem() {
@@ -234,7 +329,7 @@ public class MainWindowController {
         return pasteMenuItem;
     }
 
-    public MenuItem getDeleteMenuItem() {
+    public MenuItem getClearMenuItem() {
         return clearMenuItem;
     }
 
@@ -246,24 +341,48 @@ public class MainWindowController {
         return selectNoneMenuItem;
     }
 
+    public MenuItem getFindMenuItem() {
+        return findMenuItem;
+    }
+
+    public MenuItem getFindAgainMenuItem() {
+        return findAgainMenuItem;
+    }
+
     public Menu getAlgorithmMenu() {
         return algorithmMenu;
     }
 
-    public MenuItem getAnalyzeMenuItem() {
-        return analyzeMenuItem;
+    public MenuItem getVerifyInputMenuItem() {
+        return verifyInputMenuItem;
     }
 
-    public Menu getHelpMenu() {
-        return helpMenu;
+    public MenuItem getRunMenuItem() {
+        return runMenuItem;
+    }
+
+    public MenuItem getRunRAFMenuItem() {
+        return runRAFMenuItem;
+    }
+
+    public MenuItem getRunCAFMenuItem() {
+        return runCAFMenuItem;
+    }
+
+    public MenuItem getRunPseudoRAFMenuItem() {
+        return runPseudoRAFMenuItem;
+    }
+
+    public Menu getWindowMenu() {
+        return windowMenu;
     }
 
     public MenuItem getAboutMenuItem() {
         return aboutMenuItem;
     }
 
-    public Button getAnalyzeButton() {
-        return analyzeButton;
+    public Button getRunButton() {
+        return runButton;
     }
 
     public FlowPane getStatusFlowPane() {
@@ -274,15 +393,59 @@ public class MainWindowController {
         return memoryUsageLabel;
     }
 
+    public Pane getOutputPane() {
+        return outputPane;
+    }
+
     public TextArea getCrsTextArea() {
         return crsTextArea;
+    }
+
+    public SplittableTabPane getOutputSplittableTabPane() {
+        return outputSplittableTabPane;
     }
 
     public TextArea getPropertiesTextArea() {
         return propertiesTextArea;
     }
 
-    public ComboBox<String> getFoodSourcesComboBox() {
-        return (ComboBox<String>) foodSourcesComboBox;
+    public TextArea getRafTextArea() {
+        return rafTextArea;
+    }
+
+    public TextArea getCafTextArea() {
+        return cafTextArea;
+    }
+
+    public TextArea getPseudoRAFTextArea() {
+        return pseudoRAFTextArea;
+    }
+
+    public Tab getRafTab() {
+        return rafTab;
+    }
+
+    public Tab getCafTab() {
+        return cafTab;
+    }
+
+    public Tab getPseudoRafTab() {
+        return pseudoRafTab;
+    }
+
+    public ComboBox<String> getFoodSetComboBox() {
+        return (ComboBox<String>) foodSetComboBox;
+    }
+
+    public ToggleButton getFindInInputButton() {
+        return findInInputButton;
+    }
+
+    public VBox getReactionsInputVBox() {
+        return reactionsInputVBox;
+    }
+
+    public SplitPane getMainSplitPane() {
+        return mainSplitPane;
     }
 }

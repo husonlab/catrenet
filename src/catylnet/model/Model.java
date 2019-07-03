@@ -22,26 +22,25 @@ package catylnet.model;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jloda.util.Basic;
+import jloda.util.IOExceptionWithLineNumber;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * the main model
+ * the main  model
  * Daniel Huson, 6.2019
  */
 public class Model {
     private final ObservableList<Reaction> reactions = FXCollections.observableArrayList();
-    private final ObservableList<Food> foods = FXCollections.observableArrayList();
+    private final ObservableList<MoleculeType> foods = FXCollections.observableArrayList();
 
     public ObservableList<Reaction> getReactions() {
         return reactions;
     }
 
-    public ObservableList<Food> getFoods() {
+    public ObservableList<MoleculeType> getFoods() {
         return foods;
     }
 
@@ -56,21 +55,37 @@ public class Model {
      * @param r
      * @throws IOException
      */
-    public void read(BufferedReader r) throws IOException {
+    public void read(Reader r) throws IOException {
         final Set<String> reactionNames = new HashSet<>();
 
+        int lineNumber = 0;
         String line;
-        while ((line = r.readLine()) != null)
-            if (line.startsWith("Food:")) {
-                foods.setAll(Food.parse(line));
-            } else {
-                for (Reaction reaction : Reaction.parse(line)) {
-                    if (reactionNames.contains(reaction.getName()))
-                        throw new IOException("Multiple reactions have the same name: " + reaction.getName());
-                    reactions.add(reaction);
-                    reactionNames.add(reaction.getName());
-                }
+        final BufferedReader br;
+        if (r instanceof BufferedReader)
+            br = (BufferedReader) r;
+        else
+            br = new BufferedReader(r);
+        while ((line = br.readLine()) != null) {
+            lineNumber++;
+            if (!line.startsWith("#")) {
+                line = line.trim();
+                if (line.length() > 0)
+                    try {
+                        if (line.startsWith("Food:")) {
+                            foods.setAll(Food.parse(line));
+                        } else {
+                            for (Reaction reaction : Reaction.parse(line)) {
+                                if (reactionNames.contains(reaction.getName()))
+                                    throw new IOException("Multiple reactions have the same name: " + reaction.getName());
+                                reactions.add(reaction);
+                                reactionNames.add(reaction.getName());
+                            }
+                        }
+                    } catch (IOException ex) {
+                        throw new IOExceptionWithLineNumber(ex.getMessage(), lineNumber);
+                    }
             }
+        }
     }
 
     /**
@@ -87,5 +102,15 @@ public class Model {
                 w.write(reaction.toString() + "\n");
         }
         w.write("Food: " + Basic.toString(foods, " ") + "\n");
+    }
+
+    public String getReactionsAsString() {
+        try (StringWriter w = new StringWriter()) {
+            write(w);
+            return w.toString();
+        } catch (IOException ex) {
+            Basic.caught(ex); // can't happen
+            return "";
+        }
     }
 }

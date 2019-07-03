@@ -19,6 +19,7 @@
 
 package catylnet.io;
 
+import catylnet.action.NewWindow;
 import catylnet.window.MainWindow;
 import jloda.fx.util.NotificationManager;
 import jloda.util.Basic;
@@ -33,27 +34,32 @@ import java.util.function.Consumer;
  * Daniel Huson, 6.2019
  */
 public class FileOpener implements Consumer<String> {
-    private final MainWindow mainWindow;
+    private final MainWindow window;
 
-    public FileOpener(MainWindow mainWindow) {
-        this.mainWindow = mainWindow;
+    public FileOpener(MainWindow window) {
+        this.window = window;
     }
 
     @Override
     public void accept(String fileName) {
-        try (BufferedReader r = new BufferedReader(new FileReader(fileName))) {
-            mainWindow.getModel().clear();
-            mainWindow.getModel().read(r);
-            mainWindow.getController().getCrsTextArea().setText(Basic.toString(mainWindow.getModel().getReactions(), "\n"));
-            final String food = Basic.toString(mainWindow.getModel().getFoods(), " ");
-            if (mainWindow.getController().getFoodSourcesComboBox().getItems().contains(food))
-                mainWindow.getController().getFoodSourcesComboBox().getItems().add(0, food);
-            mainWindow.getController().getFoodSourcesComboBox().getSelectionModel().select(food);
+        if (window.isEmpty()) {
+            try (BufferedReader r = new BufferedReader(new FileReader(fileName))) {
+                window.getDocument().setFileName(fileName);
+                window.getModel().clear();
+                window.getModel().read(r);
+                window.getController().getCrsTextArea().setText(window.getModel().getReactionsAsString());
+                final String food = Basic.toString(window.getModel().getFoods(), " ");
+                if (window.getController().getFoodSetComboBox().getItems().contains(food))
+                    window.getController().getFoodSetComboBox().getItems().add(0, food);
+                window.getController().getFoodSetComboBox().getSelectionModel().select(food);
 
-            NotificationManager.showInformation("Read " + mainWindow.getModel().getReactions().size() + " reactions and " +
-                    mainWindow.getModel().getFoods().size() + " foods from file: " + fileName);
-        } catch (IOException e) {
-            NotificationManager.showError("Open file failed: " + e.getMessage());
+                NotificationManager.showInformation("Read " + window.getModel().getReactions().size() + " reactions and " +
+                        window.getModel().getFoods().size() + " foods from file: " + fileName);
+            } catch (IOException e) {
+                NotificationManager.showError("Open file failed: " + e.getMessage());
+            }
+        } else {
+            new FileOpener(NewWindow.apply()).accept(fileName);
         }
     }
 }
