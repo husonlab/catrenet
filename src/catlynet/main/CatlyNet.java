@@ -61,6 +61,9 @@ public class CatlyNet extends Application {
      * @param args
      */
     public static void main(String[] args) throws CanceledException, UsageException {
+        Basic.restoreSystemOut(System.err); // send system out to system err
+        Basic.startCollectionStdErr();
+
         ResourceManagerFX.addResourceRoot(CatlyNet.class, "catlynet.resources");
         ProgramProperties.setProgramName(Version.NAME);
         ProgramProperties.setProgramVersion(Version.SHORT_DESCRIPTION);
@@ -74,9 +77,6 @@ public class CatlyNet extends Application {
     }
 
     protected static void parseArguments(String[] args) throws CanceledException, UsageException {
-        Basic.restoreSystemOut(System.err); // send system out to system err
-        Basic.startCollectionStdErr();
-
         final ArgsOptions options = new ArgsOptions(args, CatlyNet.class, Version.NAME + " - Auto catalytic networks");
         options.setAuthors("Daniel H. Huson, with Mike A. Steel");
         options.setLicense(ProgramProperties.getProgramLicence());

@@ -58,7 +58,7 @@ public class ComputeRAF {
             int i = 0;
 
             do {
-                System.err.println("i=" + i + ":" + Basic.toString(reactions.get(i), ", ") + " Food: " + Basic.toString(foods.get(i), " "));
+                // System.err.println("i=" + i + ":" + Basic.toString(reactions.get(i), ", ") + " Food: " + Basic.toString(foods.get(i), " "));
 
                 final Set<MoleculeType> extendedFood = extendFood(foods.get(i), reactions.get(i), true, false);
                 final Set<Reaction> filteredReactions = filterReactions(extendedFood, reactions.get(i));
@@ -71,7 +71,7 @@ public class ComputeRAF {
             }
             while (reactions.get(i).size() < reactions.get(i - 1).size());
 
-            System.err.println("Final:" + Basic.toString(reactions.get(i - 1), ", ") + " Food: " + Basic.toString(foods.get(i - 1), " "));
+            //  System.err.println("Final:" + Basic.toString(reactions.get(i - 1), ", ") + " Food: " + Basic.toString(foods.get(i - 1), " "));
 
             if (reactions.get(i).size() > 0) {
                 result.getReactions().setAll(reactions.get(i));

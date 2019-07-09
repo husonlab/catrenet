@@ -22,14 +22,17 @@ package catlynet.window;
 import catlynet.action.*;
 import catlynet.io.Save;
 import catlynet.io.SaveChangesDialog;
+import javafx.application.Platform;
 import jloda.fx.find.FindToolBar;
 import jloda.fx.find.TextAreaSearcher;
 import jloda.fx.util.NotificationManager;
 import jloda.fx.util.Print;
+import jloda.fx.util.PrintStreamToTextArea;
 import jloda.fx.util.RecentFilesManager;
 import jloda.fx.window.MainWindowManager;
 import jloda.fx.window.SplashScreen;
 import jloda.fx.window.WindowGeometry;
+import jloda.util.Basic;
 import jloda.util.FileOpenManager;
 import jloda.util.ProgramProperties;
 
@@ -173,6 +176,10 @@ public class ControlBindings {
             controller.getMainSplitPane().setDividerPosition(0, 200.0 / window.getStage().getWidth());
 
         setupFind(window, controller);
+
+        controller.getLogTextArea().appendText(Basic.stopCollectingStdErr());
+        System.setOut(new PrintStreamToTextArea(controller.getLogTextArea()));
+        System.setErr(new PrintStreamToTextArea(controller.getLogTextArea()));
     }
 
     private static void setupFind(MainWindow window, MainWindowController controller) {
@@ -219,6 +226,8 @@ public class ControlBindings {
             else if (controller.getPseudoRafTab().isSelected() || controller.getPseudoRAFTextArea().isFocused())
                 pseudoRafFindToolBar.findAgain();
         });
+
+        Platform.runLater(() -> controller.getLogTab().getTabPane().getSelectionModel().select(controller.getLogTab()));
     }
 
 }

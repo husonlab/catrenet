@@ -22,7 +22,6 @@ package catlynet.algorithm;
 import catlynet.model.Model;
 import catlynet.model.MoleculeType;
 import catlynet.model.Reaction;
-import jloda.util.Basic;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -61,7 +60,7 @@ public class ComputeCAF {
             int i = 0;
 
             do {
-                System.err.println("i=" + i + ": " + Basic.toString(reactions.get(i), ", ") + " Food: " + Basic.toString(foods.get(i), " "));
+                // System.err.println("i=" + i + ": " + Basic.toString(reactions.get(i), ", ") + " Food: " + Basic.toString(foods.get(i), " "));
 
                 final Set<MoleculeType> extendedFood = extendFood(foods.get(i), reactions.get(i), false, false);
                 final Set<Reaction> nextReactions = filterReactions(extendedFood, inputReactions);
@@ -74,8 +73,7 @@ public class ComputeCAF {
             }
             while (reactions.get(i).size() > reactions.get(i - 1).size());
 
-            System.err.println("End: " + Basic.toString(reactions.get(i - 1), ", ") + " Food: " + Basic.toString(foods.get(i - 1), " "));
-
+            // System.err.println("End: " + Basic.toString(reactions.get(i - 1), ", ") + " Food: " + Basic.toString(foods.get(i - 1), " "));
 
             if (reactions.get(i).size() > 0) {
                 result.getReactions().addAll(reactions.get(i));
