@@ -61,7 +61,7 @@ public class CatlyNet extends Application {
      * @param args
      */
     public static void main(String[] args) throws CanceledException, UsageException {
-        ResourceManagerFX.addResourceRoot(CatlyNet.class, "catylnet.resources");
+        ResourceManagerFX.addResourceRoot(CatlyNet.class, "catlynet.resources");
         ProgramProperties.setProgramName(Version.NAME);
         ProgramProperties.setProgramVersion(Version.SHORT_DESCRIPTION);
         ProgramProperties.setProgramLicence("This is an early (ALPHA) version of CatlyNet, made available for testing purposes. Source code will be released on publication.");

@@ -67,104 +67,93 @@ public class Reaction implements Comparable<Reaction> {
     }
 
     public String toString() {
-        return String.format("%s : %s -> %s ; %s",
-                name, Basic.toString(reactants, " + "), Basic.toString(products, " + "), Basic.toString(catalysts, " "));
+        return String.format("%s : %s [%s] -> %s",
+                name, Basic.toString(reactants, " + "), Basic.toString(catalysts, " "), Basic.toString(products, " + "));
     }
 
     public String toStringBothWays() {
-        return String.format("%s : %s <-> %s ; %s",
-                (name.endsWith("+") ? name.substring(0, name.length() - 1) : name), Basic.toString(reactants, " + "), Basic.toString(products, " + "), Basic.toString(catalysts, " "));
+        return String.format("%s : %s [%s] <-> %s",
+                (name.endsWith("+") ? name.substring(0, name.length() - 1) : name), Basic.toString(reactants, " + "), Basic.toString(catalysts, " "), Basic.toString(products, " + "));
     }
 
     /**
      * parses a reaction
      * Format:
-     * name tab reactant ... => product ... tab catalyst ...
-     * name tab reactant ... <=> product ... tab catalyst ...
+     * name tab: reactant ... [ catalyst ...] -> product ...
+     * or
+     * name tab: reactant ... [ catalyst ...] <- product ...
+     * or
+     * name tab: reactant ... [ catalyst ...] <-> product ...
      *
+     * Reactants can be separated by white space or +
+     * Products can be separated by white space or +
+     * Catalysts can be separated by white space or , (for or), or all can be separated by & (for and)
      * @param line
      * @return one or two reactions
      * @throws IOException
      */
     public static Reaction[] parse(String line) throws IOException {
-        if (line.contains("[")) {
-            int a = line.indexOf("[");
-            int b = line.indexOf("]");
-            if (a >= 0 && b > a) {
-                line = line.substring(0, a) + line.substring(b + 1) + " ; " + line.substring(a + 1, b);
-            }
-            line = line.replaceAll("\\+", " ").replaceAll(",", " ");
+        final int colonPos = line.indexOf(':');
+        final int openSquare = line.indexOf('[');
+        final int closeSquare = line.indexOf(']');
+
+        final int endArrow;
+        boolean forward;
+        boolean reverse;
+        {
+            if (line.indexOf("<->") > 0) {
+                forward = true;
+                reverse = true;
+                endArrow = line.indexOf("<->") + 3;
+            } else if (line.indexOf("->") > 0) {
+                forward = true;
+                reverse = false;
+                endArrow = line.indexOf("->") + 2;
+            } else if (line.indexOf("<-") > 0) {
+                forward = false;
+                reverse = true;
+                endArrow = line.indexOf("<-") + 2;
+            } else
+                throw new IOException("Can't parse reaction: " + line);
         }
 
-        line = line.replaceAll(" \\+ ", " ");
-        final String[] tokens;
-        if (Basic.countOccurrences(line, "\t") == 2)
-            tokens = Basic.trimAll(line.split("\t"));
-        else if (Basic.countOccurrences(line, ":") == 1 && Basic.countOccurrences(line, ";") == 1 && line.indexOf(":") < line.indexOf(";"))
-            tokens = Basic.trimAll(line.split("[:;]"));
-        else
-            throw new IOException("Can't parse reaction: " + line);
-        final String reactionName = tokens[0];
-
-        int forwardPos = tokens[1].indexOf('>');
-        int separatorPos = tokens[1].indexOf('-');
-        if (separatorPos == -1)
-            separatorPos = tokens[1].indexOf('=');
-        int backwardPos = tokens[1].indexOf('<');
-
-        int left = tokens[1].length();
-        int right = 0;
-
-        if (forwardPos != -1) {
-            left = Math.min(left, forwardPos);
-            right = Math.max(right, forwardPos);
-        }
-        if (separatorPos != -1) {
-            left = Math.min(left, separatorPos);
-            right = Math.max(right, separatorPos);
-        }
-        if (backwardPos != -1) {
-            left = Math.min(left, backwardPos);
-            right = Math.max(right, backwardPos);
-        }
-
-        if (right - left != 1 && right - left != 2)
+        if (!(colonPos > 0 && openSquare > colonPos && closeSquare > openSquare))
             throw new IOException("Can't parse reaction: " + line);
 
-        final String[] a = tokens[1].substring(0, left).trim().split(" ");
+        final String reactionName = line.substring(0, colonPos).trim();
 
-        final String[] b = tokens[1].substring(right + 1).trim().split(" ");
+        final String[] reactants = Basic.trimAll(line.substring(colonPos + 1, openSquare).trim().split("[+\\s]+"));
 
-        final String[] c = tokens[2].split("\\s+");
+        final String[] catalysts = Basic.trimAll(line.substring(openSquare + 1, closeSquare).trim().split("[,\\s]+"));
 
-        if (forwardPos >= 0 && backwardPos >= 0) {
+        final String[] products = Basic.trimAll(line.substring(endArrow + 1).trim().split("[+\\s]+"));
+
+        if (forward && reverse) {
             final Reaction reaction1 = new Reaction(reactionName + "+");
-            reaction1.getReactants().addAll(MoleculeType.valueOf(a));
-            reaction1.getProducts().addAll(MoleculeType.valueOf(b));
-            reaction1.getCatalysts().addAll(MoleculeType.valueOf(c));
+            reaction1.getReactants().addAll(MoleculeType.valueOf(reactants));
+            reaction1.getProducts().addAll(MoleculeType.valueOf(products));
+            reaction1.getCatalysts().addAll(MoleculeType.valueOf(catalysts));
 
             final Reaction reaction2 = new Reaction(reactionName + "-");
-            reaction2.getReactants().addAll(MoleculeType.valueOf(b));
-            reaction2.getProducts().addAll(MoleculeType.valueOf(a));
-            reaction2.getCatalysts().addAll(MoleculeType.valueOf(c));
+            reaction2.getReactants().addAll(MoleculeType.valueOf(products)); // switch roles
+            reaction2.getProducts().addAll(MoleculeType.valueOf(reactants));
+            reaction2.getCatalysts().addAll(MoleculeType.valueOf(catalysts));
 
             return new Reaction[]{reaction1, reaction2};
-        } else if (forwardPos >= 0) {
+        } else if (forward) {
             final Reaction reaction1 = new Reaction(reactionName);
-            reaction1.getReactants().addAll(MoleculeType.valueOf(a));
-            reaction1.getProducts().addAll(MoleculeType.valueOf(b));
-            reaction1.getCatalysts().addAll(MoleculeType.valueOf(c));
+            reaction1.getReactants().addAll(MoleculeType.valueOf(reactants));
+            reaction1.getProducts().addAll(MoleculeType.valueOf(products));
+            reaction1.getCatalysts().addAll(MoleculeType.valueOf(catalysts));
             return new Reaction[]{reaction1};
-
-
-        } else if (backwardPos >= 0) {
+        } else // reverse
+        {
             final Reaction reaction1 = new Reaction(reactionName);
-            reaction1.getReactants().addAll(MoleculeType.valueOf(b));
-            reaction1.getProducts().addAll(MoleculeType.valueOf(a));
-            reaction1.getCatalysts().addAll(MoleculeType.valueOf(c));
+            reaction1.getReactants().addAll(MoleculeType.valueOf(products)); // switch roles
+            reaction1.getProducts().addAll(MoleculeType.valueOf(reactants));
+            reaction1.getCatalysts().addAll(MoleculeType.valueOf(catalysts));
             return new Reaction[]{reaction1};
-        } else
-            return new Reaction[0];
+        }
     }
 
     @Override

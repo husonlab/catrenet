@@ -1,0 +1,8 @@
+# Default example on http://www.math.canterbury.ac.nz/bio/RAF/
+r1: a+b [e,f] -> d
+r2: b+c [f] -> e
+r3: e+c [d] -> b+f
+r4: c+h [g] -> g
+r5: i [h] -> h
+r6: h [d] -> i
+Food: a,b,c

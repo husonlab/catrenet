@@ -1,0 +1,21 @@
+# Example 8 on http://www.math.canterbury.ac.nz/bio/RAF/
+
+r1: baa+a [aa,aabaabbb] <-> baaa
+r2: aaba+ab [baaa] <-> aabaab
+r3: aa+ba [a] <-> aaba
+r4: aa+aabaa [aaba] <-> aaaabaa
+r5: aaba+a [baa] <-> aabaa
+r6: baa+bab [aabaa,ba] <-> baabab
+r7: ba+a [baab] <-> baa
+r8: baa+bb [b] <-> baabb
+r9: baabb+bab [abb] <-> baabbbab
+r10: bab+b [baabbbab] <-> babb
+r11: ba+b [bb] <-> bab
+r12: b+a [ab] <-> ba
+r13: a+b [a] <-> ab
+r14: a+bb [b,ab] <-> abb
+r15: ba+ab [abb] <-> baab
+r16: ab+ab [aabaabbb] <-> abab
+r17: aabaab+bb [baab] <-> aabaabbb
+
+Food: a b aa bb
