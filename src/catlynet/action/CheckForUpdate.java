@@ -62,17 +62,14 @@ public class CheckForUpdate {
 
         Platform.runLater(() -> {
             ApplicationLauncher.launchApplicationInProcess("1691242391", null, new ApplicationLauncher.Callback() {
-                        public void exited(int exitValue) {
-                            //TODO add your code here (not invoked on event dispatch thread)
-                        }
+                public void exited(int exitValue) {
+                    //TODO add your code here (not invoked on event dispatch thread)
+                }
 
-                        public void prepareShutdown() {
-                            //TODO add your code here (not invoked on event dispatch thread)
-                        }
-                    }, ApplicationLauncher.WindowMode.FRAME, null
-            );
-
-
+                public void prepareShutdown() {
+                    ProgramProperties.store();
+                }
+            }, ApplicationLauncher.WindowMode.FRAME, null);
         });
     }
 }
