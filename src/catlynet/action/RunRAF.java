@@ -41,9 +41,11 @@ public class RunRAF {
             ComputeRAF.apply(window.getModel(), result);
             return result;
         }, controller.getStatusFlowPane());
+
         service.setOnSucceeded((c) -> {
             final Model result = service.getValue();
             NotificationManager.showInformation("RAF has " + result.getReactions().size() + " elements");
+            window.getLogStream().println("CAF has " + result.getReactions().size() + " elements");
             if (result.getReactions().size() > 0)
                 controller.getRafTextArea().setText("Food: " + Basic.toString(result.getFoods(), " ") + "\n\n" + ModelIO.getReactionsAsString(result));
             else

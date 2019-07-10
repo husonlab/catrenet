@@ -20,6 +20,7 @@
 package catlynet.window;
 
 import catlynet.action.*;
+import catlynet.io.ModelIO;
 import catlynet.io.Save;
 import catlynet.io.SaveChangesDialog;
 import javafx.application.Platform;
@@ -27,7 +28,6 @@ import jloda.fx.find.FindToolBar;
 import jloda.fx.find.TextAreaSearcher;
 import jloda.fx.util.NotificationManager;
 import jloda.fx.util.Print;
-import jloda.fx.util.PrintStreamToTextArea;
 import jloda.fx.util.RecentFilesManager;
 import jloda.fx.window.MainWindowManager;
 import jloda.fx.window.SplashScreen;
@@ -36,9 +36,12 @@ import jloda.util.Basic;
 import jloda.util.FileOpenManager;
 import jloda.util.ProgramProperties;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.time.Duration;
 
 public class ControlBindings {
+
     public static void setup(MainWindow window) {
         final MainWindowController controller = window.getController();
 
@@ -122,9 +125,20 @@ public class ControlBindings {
         controller.getSelectNoneMenuItem().disableProperty().bind(controller.getInputTextArea().textProperty().isEmpty());
 
         controller.getVerifyInputMenuItem().setOnAction((e) -> {
-            if (ParseInput.apply(window))
-                NotificationManager.showInformation(String.format("Input is valid. Found %,d reactions and %,d food items", window.getModel().getReactions().size(), window.getModel().getFoods().size()));
+            if (ParseInput.apply(window)) {
+                controller.getReactionsTab().getTabPane().getSelectionModel().select(controller.getReactionsTab());
+                try (StringWriter w = new StringWriter()) {
+                    ModelIO.write(window.getModel(), w, false, false);
+                    controller.getReactionsTextArea().setText(w.toString());
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                final String message = String.format("Input is valid. Found %,d reactions and %,d food items", window.getModel().getReactions().size(), window.getModel().getFoods().size());
+                NotificationManager.showInformation(message);
+                window.getLogStream().println(message);
+            }
         });
+
         controller.getRunRAFMenuItem().setOnAction((e) -> {
             if (ParseInput.apply(window)) {
                 controller.getRafTab().getTabPane().getSelectionModel().select(controller.getRafTab());
@@ -150,7 +164,16 @@ public class ControlBindings {
         controller.getRunPseudoRAFMenuItem().disableProperty().bind(controller.getInputTextArea().textProperty().isEmpty());
 
         controller.getRunMenuItem().setOnAction((e) -> {
+            controller.getLogTab().getTabPane().getSelectionModel().select(controller.getLogTab());
+            window.getLogStream().println("Run:");
+
             if (ParseInput.apply(window)) {
+                try (StringWriter w = new StringWriter()) {
+                    ModelIO.write(window.getModel(), w, false, false);
+                    controller.getReactionsTextArea().setText(w.toString());
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
                 RunCAF.apply(window);
                 RunRAF.apply(window);
                 RunPseudoRAF.apply(window);
@@ -161,6 +184,7 @@ public class ControlBindings {
         controller.getRunButton().setOnAction(controller.getRunMenuItem().getOnAction());
         controller.getRunButton().disableProperty().bind(controller.getInputTextArea().textProperty().isEmpty());
 
+        controller.getReactionsTab().disableProperty().bind(controller.getReactionsTextArea().textProperty().isEmpty());
         controller.getRafTab().disableProperty().bind(controller.getRafTextArea().textProperty().isEmpty());
         controller.getCafTab().disableProperty().bind(controller.getCafTextArea().textProperty().isEmpty());
         controller.getPseudoRafTab().disableProperty().bind(controller.getPseudoRAFTextArea().textProperty().isEmpty());
@@ -178,8 +202,6 @@ public class ControlBindings {
         setupFind(window, controller);
 
         controller.getLogTextArea().appendText(Basic.stopCollectingStdErr());
-        System.setOut(new PrintStreamToTextArea(controller.getLogTextArea()));
-        System.setErr(new PrintStreamToTextArea(controller.getLogTextArea()));
     }
 
     private static void setupFind(MainWindow window, MainWindowController controller) {

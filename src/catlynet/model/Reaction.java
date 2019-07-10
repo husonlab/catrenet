@@ -22,6 +22,7 @@ package catlynet.model;
 import jloda.util.Basic;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -35,6 +36,8 @@ public class Reaction implements Comparable<Reaction> {
     private final Set<MoleculeType> reactants = new TreeSet<>();
     private final Set<MoleculeType> products = new TreeSet<>();
     private final Set<MoleculeType> catalysts = new TreeSet<>();
+
+    private boolean catalystsAnd = false;
 
     /**
      * constructor
@@ -66,14 +69,22 @@ public class Reaction implements Comparable<Reaction> {
         return catalysts;
     }
 
+    public boolean isCatalystsAnd() {
+        return catalystsAnd;
+    }
+
+    public void setCatalystsAnd(boolean catalystsAnd) {
+        this.catalystsAnd = catalystsAnd;
+    }
+
     public String toString() {
         return String.format("%s : %s [%s] -> %s",
-                name, Basic.toString(reactants, " + "), Basic.toString(catalysts, " "), Basic.toString(products, " + "));
+                name, Basic.toString(reactants, " + "), Basic.toString(catalysts, catalystsAnd ? " & " : " "), Basic.toString(products, " + "));
     }
 
     public String toStringBothWays() {
         return String.format("%s : %s [%s] <-> %s",
-                (name.endsWith("+") ? name.substring(0, name.length() - 1) : name), Basic.toString(reactants, " + "), Basic.toString(catalysts, " "), Basic.toString(products, " + "));
+                (name.endsWith("+") ? name.substring(0, name.length() - 1) : name), Basic.toString(reactants, " + "), Basic.toString(catalysts, catalystsAnd ? " & " : " "), Basic.toString(products, " + "));
     }
 
     /**
@@ -87,12 +98,12 @@ public class Reaction implements Comparable<Reaction> {
      *
      * Reactants can be separated by white space or +
      * Products can be separated by white space or +
-     * Catalysts can be separated by white space or , (for or), or all can be separated by & (for and)
+     * Catalysts can be separated by white space or , (for or), or all can be separated by & (for 'and')
      * @param line
      * @return one or two reactions
      * @throws IOException
      */
-    public static Reaction[] parse(String line) throws IOException {
+    public static Reaction[] parse(String line, final Set<Reaction> auxReactions) throws IOException {
         final int colonPos = line.indexOf(':');
         final int openSquare = line.indexOf('[');
         final int closeSquare = line.indexOf(']');
@@ -124,36 +135,78 @@ public class Reaction implements Comparable<Reaction> {
 
         final String[] reactants = Basic.trimAll(line.substring(colonPos + 1, openSquare).trim().split("[+\\s]+"));
 
-        final String[] catalysts = Basic.trimAll(line.substring(openSquare + 1, closeSquare).trim().split("[,\\s]+"));
+        final boolean catalystsAnd;
+        final String[] catalysts;
+        final String catalystsString = line.substring(openSquare + 1, closeSquare).trim();
+        if (catalystsString.contains("&")) {
+            catalysts = Basic.trimAll(line.substring(openSquare + 1, closeSquare).trim().split("[\\s]*&[\\s]*"));
+            for (String catalyst : catalysts) {
+                if (catalyst.replaceAll("\\s+", " ").contains(" ")) {
+                    throw new IOException("Catalyst contains both 'or' and 'and', not implemented: " + line);
+                }
+            }
+            catalystsAnd = true;
+        } else {
+            catalysts = Basic.trimAll(line.substring(openSquare + 1, closeSquare).trim().split("[,\\s]+"));
+            catalystsAnd = false;
+        }
 
         final String[] products = Basic.trimAll(line.substring(endArrow + 1).trim().split("[+\\s]+"));
+
+        final ArrayList<Reaction> result = new ArrayList<>();
 
         if (forward && reverse) {
             final Reaction reaction1 = new Reaction(reactionName + "+");
             reaction1.getReactants().addAll(MoleculeType.valueOf(reactants));
             reaction1.getProducts().addAll(MoleculeType.valueOf(products));
             reaction1.getCatalysts().addAll(MoleculeType.valueOf(catalysts));
+            reaction1.setCatalystsAnd(catalystsAnd);
+            result.add(reaction1);
 
             final Reaction reaction2 = new Reaction(reactionName + "-");
             reaction2.getReactants().addAll(MoleculeType.valueOf(products)); // switch roles
             reaction2.getProducts().addAll(MoleculeType.valueOf(reactants));
             reaction2.getCatalysts().addAll(MoleculeType.valueOf(catalysts));
-
-            return new Reaction[]{reaction1, reaction2};
+            reaction2.setCatalystsAnd(catalystsAnd);
+            result.add(reaction2);
         } else if (forward) {
             final Reaction reaction1 = new Reaction(reactionName);
             reaction1.getReactants().addAll(MoleculeType.valueOf(reactants));
             reaction1.getProducts().addAll(MoleculeType.valueOf(products));
             reaction1.getCatalysts().addAll(MoleculeType.valueOf(catalysts));
-            return new Reaction[]{reaction1};
+            reaction1.setCatalystsAnd(catalystsAnd);
+            result.add(reaction1);
         } else // reverse
         {
             final Reaction reaction1 = new Reaction(reactionName);
             reaction1.getReactants().addAll(MoleculeType.valueOf(products)); // switch roles
             reaction1.getProducts().addAll(MoleculeType.valueOf(reactants));
             reaction1.getCatalysts().addAll(MoleculeType.valueOf(catalysts));
-            return new Reaction[]{reaction1};
+            reaction1.setCatalystsAnd(catalystsAnd);
+            result.add(reaction1);
+
         }
+
+        if (catalystsAnd) {
+            final Reaction auxReaction = new Reaction(reactionName + "/");
+            auxReaction.getReactants().addAll(MoleculeType.valueOf(catalysts));
+            boolean found = false;
+            for (Reaction other : auxReactions) {
+                if (other.getReactants().equals(auxReaction.getReactants())) {
+                    found = true;
+                    break;
+                }
+
+            }
+            if (!found) {
+                final String auxMolecule = "/" + (auxReactions.size() + 1);
+                auxReaction.getProducts().add(MoleculeType.valueOf(auxMolecule));
+                auxReaction.getCatalysts().add(MoleculeType.valueOf(auxMolecule));
+                auxReactions.add(auxReaction);
+                result.add(auxReaction);
+            }
+        }
+        return result.toArray(new Reaction[0]);
     }
 
     @Override

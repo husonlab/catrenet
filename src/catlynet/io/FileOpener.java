@@ -22,6 +22,7 @@ package catlynet.io;
 import catlynet.action.NewWindow;
 import catlynet.window.MainWindow;
 import jloda.fx.util.NotificationManager;
+import jloda.fx.window.MainWindowManager;
 import jloda.util.Basic;
 
 import java.io.BufferedReader;
@@ -34,32 +35,30 @@ import java.util.function.Consumer;
  * Daniel Huson, 6.2019
  */
 public class FileOpener implements Consumer<String> {
-    private final MainWindow window;
-
-    public FileOpener(MainWindow window) {
-        this.window = window;
-    }
 
     @Override
     public void accept(String fileName) {
-        if (window.isEmpty()) {
-            try (BufferedReader r = new BufferedReader(new FileReader(fileName))) {
-                window.getDocument().setFileName(fileName);
-                window.getModel().clear();
-                ModelIO.read(window.getModel(), r);
-                window.getController().getInputTextArea().setText(ModelIO.getReactionsAsString(window.getModel()));
-                final String food = Basic.toString(window.getModel().getFoods(), " ");
-                if (window.getController().getFoodSetComboBox().getItems().contains(food))
-                    window.getController().getFoodSetComboBox().getItems().add(0, food);
-                window.getController().getFoodSetComboBox().getSelectionModel().select(food);
+        MainWindow window = (MainWindow) MainWindowManager.getInstance().getLastFocusedMainWindow();
+        if (window == null || !window.isEmpty())
+            window = NewWindow.apply();
 
-                NotificationManager.showInformation("Read " + window.getModel().getReactions().size() + " reactions and " +
-                        window.getModel().getFoods().size() + " foods from file: " + fileName);
-            } catch (IOException e) {
-                NotificationManager.showError("Open file failed: " + e.getMessage());
-            }
-        } else {
-            new FileOpener(NewWindow.apply()).accept(fileName);
+        try (BufferedReader r = new BufferedReader(new FileReader(fileName))) {
+            window.getDocument().setFileName(fileName);
+            window.getModel().clear();
+            ModelIO.read(window.getModel(), r);
+            window.getController().getInputTextArea().setText(ModelIO.getReactionsAsString(window.getModel()));
+            final String food = Basic.toString(window.getModel().getFoods(), " ");
+            if (window.getController().getFoodSetComboBox().getItems().contains(food))
+                window.getController().getFoodSetComboBox().getItems().add(0, food);
+            window.getController().getFoodSetComboBox().getSelectionModel().select(food);
+
+            NotificationManager.showInformation("Read " + window.getModel().getReactions().size() + " reactions and " +
+                    window.getModel().getFoods().size() + " foods from file: " + fileName);
+
+            window.getLogStream().println("Read " + window.getModel().getReactions().size() + " reactions and " +
+                    window.getModel().getFoods().size() + " foods from file: " + fileName);
+        } catch (IOException e) {
+            NotificationManager.showError("Open file failed: " + e.getMessage());
         }
     }
 }

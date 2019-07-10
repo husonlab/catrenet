@@ -40,6 +40,7 @@ public class ModelIO {
      */
     public static void read(Model model, Reader r) throws IOException {
         final Set<String> reactionNames = new HashSet<>();
+        final Set<Reaction> auxReactions = new HashSet<>();
 
         int lineNumber = 0;
         String line;
@@ -57,7 +58,7 @@ public class ModelIO {
                         if (line.startsWith("Food:")) {
                             model.getFoods().addAll(parseFood(line));
                         } else {
-                            for (Reaction reaction : Reaction.parse(line)) {
+                            for (Reaction reaction : Reaction.parse(line, auxReactions)) {
                                 if (reactionNames.contains(reaction.getName()))
                                     throw new IOException("Multiple reactions have the same name: " + reaction.getName());
                                 model.getReactions().add(reaction);
@@ -94,22 +95,27 @@ public class ModelIO {
 
     }
 
-    public static void write(Model model, Writer w, boolean includeFood) throws IOException {
+    public static void write(Model model, Writer w, boolean includeFood, boolean simplify) throws IOException {
         if (includeFood)
             w.write("Food: " + Basic.toString(model.getFoods(), " ") + "\n");
 
         for (Reaction reaction : model.getReactions()) {
-            if (reaction.getName().endsWith("+"))
-                w.write(reaction.toStringBothWays() + "\n");
-            else if (!reaction.getName().endsWith("-"))
+            if (!simplify)
                 w.write(reaction.toString() + "\n");
+            else {
+                if (!reaction.getName().endsWith("/")) {
+                    if (reaction.getName().endsWith("+"))
+                        w.write(reaction.toStringBothWays() + "\n");
+                    else if (!reaction.getName().endsWith("-"))
+                        w.write(reaction.toString() + "\n");
+                }
+            }
         }
     }
 
-
     public static String getReactionsAsString(Model model) {
         try (StringWriter w = new StringWriter()) {
-            write(model, w, false);
+            write(model, w, false, true);
             return w.toString();
         } catch (IOException ex) {
             Basic.caught(ex); // can't happen

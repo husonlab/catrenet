@@ -171,6 +171,16 @@ public class MainWindowController {
     private VBox logVBox;
 
     @FXML
+    private Tab reactionsTab;
+
+    @FXML
+    private TextArea reactionsTextArea;
+
+    @FXML
+    private VBox reactionsVBox;
+
+
+    @FXML
     private VBox cafVBox;
 
     @FXML
@@ -474,5 +484,17 @@ public class MainWindowController {
 
     public Tab getLogTab() {
         return logTab;
+    }
+
+    public Tab getReactionsTab() {
+        return reactionsTab;
+    }
+
+    public TextArea getReactionsTextArea() {
+        return reactionsTextArea;
+    }
+
+    public VBox getReactionsVBox() {
+        return reactionsVBox;
     }
 }

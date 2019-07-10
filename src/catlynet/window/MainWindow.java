@@ -31,6 +31,7 @@ import javafx.stage.Stage;
 import jloda.fx.undo.UndoManager;
 import jloda.fx.util.ExtendedFXMLLoader;
 import jloda.fx.util.MemoryUsage;
+import jloda.fx.util.PrintStreamToTextArea;
 import jloda.fx.util.TextFileFilter;
 import jloda.fx.window.IMainWindow;
 import jloda.fx.window.MainWindowManager;
@@ -38,6 +39,7 @@ import jloda.util.Basic;
 import jloda.util.FileOpenManager;
 import jloda.util.ProgramProperties;
 
+import java.io.PrintStream;
 import java.util.Arrays;
 
 public class MainWindow implements IMainWindow {
@@ -45,6 +47,8 @@ public class MainWindow implements IMainWindow {
     private final MainWindowController controller;
     private final Parent root;
     private final FlowPane statusPane;
+
+    private final PrintStream logStream;
 
     private final UndoManager undoManager = new UndoManager();
 
@@ -59,11 +63,13 @@ public class MainWindow implements IMainWindow {
             root = extendedFXMLLoader.getRoot();
             controller = extendedFXMLLoader.getController();
 
+            logStream = new PrintStreamToTextArea(controller.getLogTextArea());
+
             statusPane = controller.getStatusFlowPane();
         }
 
         FileOpenManager.setExtensions(Arrays.asList(CRSFileFilter.getInstance(), TextFileFilter.getInstance()));
-        FileOpenManager.setFileOpener(new FileOpener(this));
+        FileOpenManager.setFileOpener(new FileOpener());
     }
 
     @Override
@@ -115,7 +121,7 @@ public class MainWindow implements IMainWindow {
     @Override
     public boolean isEmpty() {
         return (getController().getFoodSetComboBox().getSelectionModel().getSelectedItem() == null
-                || getController().getFoodSetComboBox().getSelectionModel().getSelectedItem().toString().trim().length() == 0)
+                || getController().getFoodSetComboBox().getSelectionModel().getSelectedItem().trim().length() == 0)
                 && getController().getInputTextArea().getText().trim().length() == 0;
     }
 
@@ -142,5 +148,9 @@ public class MainWindow implements IMainWindow {
 
     public Model getModel() {
         return model;
+    }
+
+    public PrintStream getLogStream() {
+        return logStream;
     }
 }

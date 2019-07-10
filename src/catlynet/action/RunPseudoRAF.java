@@ -40,9 +40,11 @@ public class RunPseudoRAF {
             ComputePseudoRAF.apply(window.getModel(), result);
             return result;
         }, controller.getStatusFlowPane());
+
         service.setOnSucceeded((c) -> {
             final Model result = service.getValue();
             NotificationManager.showInformation("Pseudo-RAF has " + result.getReactions().size() + " elements");
+            window.getLogStream().println("Pseudo RAF has " + result.getReactions().size() + " elements");
             if (result.getReactions().size() > 0)
                 controller.getPseudoRAFTextArea().setText("Food: " + Basic.toString(result.getFoods(), " ") + "\n\n" + ModelIO.getReactionsAsString(result));
             else
