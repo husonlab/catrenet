@@ -24,6 +24,9 @@ import catlynet.io.FileOpener;
 import catlynet.model.Model;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableBooleanValue;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.FlowPane;
@@ -54,6 +57,10 @@ public class MainWindow implements IMainWindow {
 
     private final Document document = new Document();
     private final Model model = new Model();
+
+    private final BooleanProperty hasFoodInput = new SimpleBooleanProperty(false);
+    private BooleanProperty hasReactionsInput = new SimpleBooleanProperty(false);
+    private final BooleanProperty empty = new SimpleBooleanProperty();
 
     public MainWindow() {
         Platform.setImplicitExit(false);
@@ -116,13 +123,21 @@ public class MainWindow implements IMainWindow {
         controller.getMemoryUsageLabel().textProperty().bind(memoryUsage.memoryUsageStringProperty());
 
         stage.show();
+
+
+        controller.getFoodSetComboBox().getSelectionModel().selectedItemProperty().addListener((c, o, n) -> {
+            hasFoodInput.set(n != null && n.length() > 0);
+        });
+
+        controller.getInputTextArea().textProperty().length().addListener((c, o, n) -> {
+            hasReactionsInput.set(n.intValue() > 0);
+        });
+        empty.bind(hasFoodInput.not().or(hasReactionsInput.not()));
     }
 
     @Override
     public boolean isEmpty() {
-        return (getController().getFoodSetComboBox().getSelectionModel().getSelectedItem() == null
-                || getController().getFoodSetComboBox().getSelectionModel().getSelectedItem().trim().length() == 0)
-                && getController().getInputTextArea().getText().trim().length() == 0;
+        return empty.get();
     }
 
     @Override
@@ -152,5 +167,9 @@ public class MainWindow implements IMainWindow {
 
     public PrintStream getLogStream() {
         return logStream;
+    }
+
+    public ObservableBooleanValue emptyProperty() {
+        return null;
     }
 }

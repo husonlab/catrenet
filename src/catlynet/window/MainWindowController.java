@@ -115,6 +115,11 @@ public class MainWindowController {
     @FXML
     private MenuItem aboutMenuItem;
 
+
+    @FXML
+    private MenuItem checkForUpdatesMenuItem;
+
+
     @FXML
     private Button runButton;
 
@@ -214,6 +219,7 @@ public class MainWindowController {
         assert runMenuItem != null : "fx:id=\"analyzeMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert windowMenu != null : "fx:id=\"helpMenu\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert aboutMenuItem != null : "fx:id=\"aboutMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert checkForUpdatesMenuItem != null : "fx:id=\"checkForUpdatesMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert runButton != null : "fx:id=\"analyzeButton\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert statusFlowPane != null : "fx:id=\"statusFlowPane\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert memoryUsageLabel != null : "fx:id=\"memoryUsageLabel\" was not injected: check your FXML file 'MainWindow.fxml'.";
@@ -249,6 +255,8 @@ public class MainWindowController {
             windowMenu.getItems().clear();
             if (true || !ProgramProperties.isMacOS()) {
                 windowMenu.getItems().add(getAboutMenuItem());
+                windowMenu.getItems().add(new SeparatorMenuItem());
+                windowMenu.getItems().add(getCheckForUpdatesMenuItem());
                 windowMenu.getItems().add(new SeparatorMenuItem());
             }
             int count = 0;
@@ -400,6 +408,10 @@ public class MainWindowController {
 
     public MenuItem getAboutMenuItem() {
         return aboutMenuItem;
+    }
+
+    public MenuItem getCheckForUpdatesMenuItem() {
+        return checkForUpdatesMenuItem;
     }
 
     public Button getRunButton() {

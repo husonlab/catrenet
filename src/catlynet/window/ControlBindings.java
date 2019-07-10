@@ -191,6 +191,12 @@ public class ControlBindings {
 
         controller.getAboutMenuItem().setOnAction((e) -> SplashScreen.getInstance().showSplash(Duration.ofMinutes(2)));
 
+        controller.getCheckForUpdatesMenuItem().setOnAction((e) -> CheckForUpdate.apply());
+        MainWindowManager.getInstance().changedProperty().addListener((c, o, n) -> {
+            controller.getCheckForUpdatesMenuItem().disableProperty().set(MainWindowManager.getInstance().size() > 1
+                    || (MainWindowManager.getInstance().size() == 1 && !MainWindowManager.getInstance().getMainWindow(0).isEmpty()));
+        });
+
 
         window.getStage().widthProperty().addListener((c, o, n) -> {
             if (!Double.isNaN(o.doubleValue()) && n.doubleValue() > 0)

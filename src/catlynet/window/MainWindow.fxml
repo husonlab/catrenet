@@ -177,7 +177,15 @@
                         </Menu>
                         <Menu fx:id="windowMenu" mnemonicParsing="false" text="Window">
                             <items>
-                                <MenuItem fx:id="aboutMenuItem" mnemonicParsing="false" text="About">
+                                <MenuItem fx:id="aboutMenuItem" mnemonicParsing="false" text="About...">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="H" control="UP" meta="DOWN" shift="UP"
+                                                            shortcut="UP"/>
+                                    </accelerator>
+                                </MenuItem>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem fx:id="checkForUpdatesMenuItem" mnemonicParsing="false"
+                                          text="Check for Updates...">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="H" control="UP" meta="DOWN" shift="UP"
                                                             shortcut="UP"/>
