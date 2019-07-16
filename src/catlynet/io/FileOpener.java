@@ -20,12 +20,15 @@
 package catlynet.io;
 
 import catlynet.action.NewWindow;
+import catlynet.format.ArrowNotation;
+import catlynet.format.ReactionNotation;
 import catlynet.window.MainWindow;
 import jloda.fx.util.NotificationManager;
 import jloda.fx.window.MainWindowManager;
-import jloda.util.Basic;
+import jloda.util.Pair;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.function.Consumer;
@@ -44,10 +47,15 @@ public class FileOpener implements Consumer<String> {
 
         try (BufferedReader r = new BufferedReader(new FileReader(fileName))) {
             window.getDocument().setFileName(fileName);
+            final Pair<ReactionNotation, ArrowNotation> pair = ReactionNotation.detectNotation(new File(fileName));
+            if (pair == null)
+                throw new IOException("Couldn't detect 'full', 'sparse' or 'tabbed' file format");
+
             window.getModel().clear();
-            ModelIO.read(window.getModel(), r);
-            window.getController().getInputTextArea().setText(ModelIO.getReactionsAsString(window.getModel()));
-            final String food = Basic.toString(window.getModel().getFoods(), " ");
+            ModelIO.read(window.getModel(), r, pair.getFirst());
+
+            window.getController().getInputTextArea().setText(ModelIO.toString(window.getModel(), false, true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
+            final String food = ModelIO.getFoodString(window.getModel(), false, window.getDocument().getReactionNotation());
             if (window.getController().getFoodSetComboBox().getItems().contains(food))
                 window.getController().getFoodSetComboBox().getItems().add(0, food);
             window.getController().getFoodSetComboBox().getSelectionModel().select(food);
@@ -57,6 +65,9 @@ public class FileOpener implements Consumer<String> {
 
             window.getLogStream().println("Read " + window.getModel().getReactions().size() + " reactions and " +
                     window.getModel().getFoods().size() + " foods from file: " + fileName);
+            window.getLogStream().println("Input format:   " + pair.getFirst());
+            window.getLogStream().println("Display format: " + window.getDocument().getReactionNotation());
+
         } catch (IOException e) {
             NotificationManager.showError("Open file failed: " + e.getMessage());
         }

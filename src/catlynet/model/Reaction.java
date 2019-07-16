@@ -37,8 +37,6 @@ public class Reaction implements Comparable<Reaction> {
     private final Set<MoleculeType> products = new TreeSet<>();
     private final Set<MoleculeType> catalysts = new TreeSet<>();
 
-    private boolean catalystsAnd = false;
-
     /**
      * constructor
      *
@@ -69,41 +67,40 @@ public class Reaction implements Comparable<Reaction> {
         return catalysts;
     }
 
-    public boolean isCatalystsAnd() {
-        return catalystsAnd;
-    }
-
-    public void setCatalystsAnd(boolean catalystsAnd) {
-        this.catalystsAnd = catalystsAnd;
-    }
-
-    public String toString() {
-        return String.format("%s : %s [%s] -> %s",
-                name, Basic.toString(reactants, " + "), Basic.toString(catalysts, catalystsAnd ? " & " : " "), Basic.toString(products, " + "));
-    }
-
-    public String toStringBothWays() {
-        return String.format("%s : %s [%s] <-> %s",
-                (name.endsWith("+") ? name.substring(0, name.length() - 1) : name), Basic.toString(reactants, " + "), Basic.toString(catalysts, catalystsAnd ? " & " : " "), Basic.toString(products, " + "));
-    }
-
     /**
      * parses a reaction
-     * Format:
+     * ReactionNotation:
      * name tab: reactant ... [ catalyst ...] -> product ...
      * or
      * name tab: reactant ... [ catalyst ...] <- product ...
      * or
      * name tab: reactant ... [ catalyst ...] <-> product ...
-     *
+     * <p>
      * Reactants can be separated by white space or +
      * Products can be separated by white space or +
      * Catalysts can be separated by white space or , (for or), or all can be separated by & (for 'and')
+     *
      * @param line
      * @return one or two reactions
      * @throws IOException
      */
-    public static Reaction[] parse(String line, final Set<Reaction> auxReactions) throws IOException {
+    public static Reaction[] parse(String line, final Set<Reaction> auxReactions, boolean tabbedFormat) throws IOException {
+        line = line.replaceAll("->", "=>").replaceAll("<-", "<=");
+
+        if (tabbedFormat) { // name <tab>  a+b -> c <tab> catalysts
+            final String[] tokens = Basic.trimAll(Basic.split(line, '\t'));
+            if (tokens.length == 3) {
+
+                int arrowStart = tokens[1].indexOf("<=");
+                if (arrowStart == -1)
+                    arrowStart = tokens[1].indexOf("=>");
+
+                if (arrowStart != -1) {
+                    line = tokens[0] + ": " + tokens[1].substring(0, arrowStart) + " [" + tokens[2] + "] " + tokens[1].substring(arrowStart);
+                }
+            }
+        }
+
         final int colonPos = line.indexOf(':');
         final int openSquare = line.indexOf('[');
         final int closeSquare = line.indexOf(']');
@@ -112,18 +109,18 @@ public class Reaction implements Comparable<Reaction> {
         boolean forward;
         boolean reverse;
         {
-            if (line.indexOf("<->") > 0) {
+            if (line.indexOf("<=>") > 0) {
                 forward = true;
                 reverse = true;
-                endArrow = line.indexOf("<->") + 3;
-            } else if (line.indexOf("->") > 0) {
+                endArrow = line.indexOf("<=>") + 3;
+            } else if (line.indexOf("=>") > 0) {
                 forward = true;
                 reverse = false;
-                endArrow = line.indexOf("->") + 2;
-            } else if (line.indexOf("<-") > 0) {
+                endArrow = line.indexOf("=>") + 2;
+            } else if (line.indexOf("<=") > 0) {
                 forward = false;
                 reverse = true;
-                endArrow = line.indexOf("<-") + 2;
+                endArrow = line.indexOf("<=") + 2;
             } else
                 throw new IOException("Can't parse reaction: " + line);
         }
@@ -135,21 +132,14 @@ public class Reaction implements Comparable<Reaction> {
 
         final String[] reactants = Basic.trimAll(line.substring(colonPos + 1, openSquare).trim().split("[+\\s]+"));
 
-        final boolean catalystsAnd;
         final String[] catalysts;
-        final String catalystsString = line.substring(openSquare + 1, closeSquare).trim();
-        if (catalystsString.contains("&")) {
-            catalysts = Basic.trimAll(line.substring(openSquare + 1, closeSquare).trim().split("[\\s]*&[\\s]*"));
-            for (String catalyst : catalysts) {
-                if (catalyst.replaceAll("\\s+", " ").contains(" ")) {
-                    throw new IOException("Catalyst contains both 'or' and 'and', not implemented: " + line);
-                }
-            }
-            catalystsAnd = true;
-        } else {
-            catalysts = Basic.trimAll(line.substring(openSquare + 1, closeSquare).trim().split("[,\\s]+"));
-            catalystsAnd = false;
-        }
+        final String catalystsString = line.substring(openSquare + 1, closeSquare).trim()
+                .replaceAll(",", " ")
+                .replaceAll("\\*", "&")
+                .replaceAll("\\s*&\\s*", "&");
+
+        catalysts = Basic.trimAll(catalystsString.split("\\s+"));
+
 
         final String[] products = Basic.trimAll(line.substring(endArrow + 1).trim().split("[+\\s]+"));
 
@@ -160,21 +150,18 @@ public class Reaction implements Comparable<Reaction> {
             reaction1.getReactants().addAll(MoleculeType.valueOf(reactants));
             reaction1.getProducts().addAll(MoleculeType.valueOf(products));
             reaction1.getCatalysts().addAll(MoleculeType.valueOf(catalysts));
-            reaction1.setCatalystsAnd(catalystsAnd);
             result.add(reaction1);
 
             final Reaction reaction2 = new Reaction(reactionName + "-");
             reaction2.getReactants().addAll(MoleculeType.valueOf(products)); // switch roles
             reaction2.getProducts().addAll(MoleculeType.valueOf(reactants));
             reaction2.getCatalysts().addAll(MoleculeType.valueOf(catalysts));
-            reaction2.setCatalystsAnd(catalystsAnd);
             result.add(reaction2);
         } else if (forward) {
             final Reaction reaction1 = new Reaction(reactionName);
             reaction1.getReactants().addAll(MoleculeType.valueOf(reactants));
             reaction1.getProducts().addAll(MoleculeType.valueOf(products));
             reaction1.getCatalysts().addAll(MoleculeType.valueOf(catalysts));
-            reaction1.setCatalystsAnd(catalystsAnd);
             result.add(reaction1);
         } else // reverse
         {
@@ -182,29 +169,31 @@ public class Reaction implements Comparable<Reaction> {
             reaction1.getReactants().addAll(MoleculeType.valueOf(products)); // switch roles
             reaction1.getProducts().addAll(MoleculeType.valueOf(reactants));
             reaction1.getCatalysts().addAll(MoleculeType.valueOf(catalysts));
-            reaction1.setCatalystsAnd(catalystsAnd);
             result.add(reaction1);
-
         }
 
-        if (catalystsAnd) {
-            final Reaction auxReaction = new Reaction(reactionName + "/");
-            auxReaction.getReactants().addAll(MoleculeType.valueOf(catalysts));
-            boolean found = false;
-            for (Reaction other : auxReactions) {
-                if (other.getReactants().equals(auxReaction.getReactants())) {
-                    found = true;
-                    break;
+        for (String catalyst : catalysts) {
+            if (catalyst.contains("&")) {
+                final String[] foods = Basic.split(catalyst, '&');
+                final Reaction auxReaction = new Reaction(reactionName + "/" + catalyst + "/");
+                for (String reactantName : foods) {
+                    auxReaction.getReactants().add(MoleculeType.valueOf(reactantName));
                 }
+                auxReaction.getCatalysts().add(MoleculeType.valueOf(catalyst));
+                auxReaction.getProducts().add(MoleculeType.valueOf(catalyst));
+                boolean found = false;
+                for (Reaction other : auxReactions) {
+                    if (other.getReactants().equals(auxReaction.getReactants()) && other.getCatalysts().equals(auxReaction.getCatalysts()) && other.getProducts().equals(auxReaction.getProducts())) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    auxReactions.add(auxReaction);
+                    result.add(auxReaction);
+                }
+            }
 
-            }
-            if (!found) {
-                final String auxMolecule = "/" + (auxReactions.size() + 1);
-                auxReaction.getProducts().add(MoleculeType.valueOf(auxMolecule));
-                auxReaction.getCatalysts().add(MoleculeType.valueOf(auxMolecule));
-                auxReactions.add(auxReaction);
-                result.add(auxReaction);
-            }
         }
         return result.toArray(new Reaction[0]);
     }

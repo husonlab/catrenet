@@ -1,5 +1,5 @@
 /*
- * Model.java Copyright (C) 2019. Daniel H. Huson
+ * ArrowNotation.java Copyright (C) 2019. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -17,30 +17,31 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package catlynet.model;
-
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+package catlynet.format;
 
 /**
- * the main  model
- * Daniel Huson, 6.2019
+ * arrow notation
+ * Daniel Huson, 7.2019
  */
-public class Model {
-    private final ObservableList<Reaction> reactions = FXCollections.observableArrayList();
-    private final ObservableList<MoleculeType> foods = FXCollections.observableArrayList();
+public enum ArrowNotation {
+    UsesEquals("=>"), UsesMinus("->");
 
+    private final String label;
 
-    public ObservableList<Reaction> getReactions() {
-        return reactions;
+    ArrowNotation(String label) {
+        this.label = label;
     }
 
-    public ObservableList<MoleculeType> getFoods() {
-        return foods;
+    public String getLabel() {
+        return label;
     }
 
-    public void clear() {
-        reactions.clear();
-        foods.clear();
+    public static ArrowNotation valueOfLabel(String label) {
+        if (UsesEquals.getLabel().equalsIgnoreCase(label))
+            return UsesEquals;
+        else if (UsesMinus.getLabel().equalsIgnoreCase(label))
+            return UsesMinus;
+        else
+            return null;
     }
 }

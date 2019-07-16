@@ -25,7 +25,6 @@ import catlynet.window.MainWindowController;
 import javafx.scene.control.ComboBox;
 import jloda.fx.util.BasicFX;
 import jloda.fx.util.NotificationManager;
-import jloda.util.Basic;
 import jloda.util.IOExceptionWithLineNumber;
 
 import java.io.IOException;
@@ -47,16 +46,16 @@ public class ParseInput {
 
         window.getModel().clear();
         try {
-            ModelIO.read(window.getModel(), new StringReader(controller.getInputTextArea().getText()));
+            ModelIO.read(window.getModel(), new StringReader(controller.getInputTextArea().getText()), window.getDocument().getReactionNotation());
             final ComboBox<String> foodCBox = controller.getFoodSetComboBox();
             if (foodCBox.getSelectionModel().getSelectedItem() != null)
-                ModelIO.read(window.getModel(), new StringReader("Food: " + foodCBox.getSelectionModel().getSelectedItem()));
-            final String foodString = Basic.toString(window.getModel().getFoods(), " ");
+                ModelIO.read(window.getModel(), new StringReader("Food: " + foodCBox.getSelectionModel().getSelectedItem()), window.getDocument().getReactionNotation());
+            final String foodString = ModelIO.getFoodString(window.getModel(), true, window.getDocument().getReactionNotation());
             foodCBox.getSelectionModel().select(foodString);
             if (!foodCBox.getItems().contains(foodString))
                 foodCBox.getItems().add(0, foodString);
 
-            controller.getInputTextArea().setText(ModelIO.getReactionsAsString(window.getModel()));
+            controller.getInputTextArea().setText(ModelIO.toString(window.getModel(), false, true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
             return true;
         } catch (IOException ex) {
             if (ex instanceof IOExceptionWithLineNumber) {

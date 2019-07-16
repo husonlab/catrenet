@@ -40,12 +40,12 @@ public class Save {
      * save file
      *
      * @param file
-     * @param mainWindow
+     * @param window
      * @throws IOException
      */
-    public static void apply(File file, MainWindow mainWindow) throws IOException {
+    public static void apply(File file, MainWindow window) throws IOException {
         try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-            ModelIO.write(mainWindow.getModel(), w, true, true);
+            ModelIO.write(window.getModel(), w, true, true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation());
         }
     }
 

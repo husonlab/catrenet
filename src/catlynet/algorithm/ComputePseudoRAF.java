@@ -60,23 +60,24 @@ public class ComputePseudoRAF {
             int i = 0;
 
             do {
-                final Set<MoleculeType> extendedFood = extendFood(foods.get(i), reactions.get(i), false, false);
+                final Set<MoleculeType> extendedFood = extendFood(inputFood, reactions.get(i), false, false);
                 final Set<Reaction> filteredReactions = filterReactions(extendedFood, reactions.get(i));
 
                 reactions.add(filteredReactions);
                 foods.add(extendedFood);
 
-                //  System.err.println("i=" + i + ":" + Basic.toString(reactions.get(i), ", ") + " Food: " + Basic.toString(foods.get(i), " "));
+
+                // System.err.println("i=" + i + ":" + Basic.toString(reactions.get(i), ", ") + " Food: " + Basic.toString(foods.get(i), " "));
 
                 i++;
             }
             while (reactions.get(i).size() > reactions.get(i - 1).size());
 
-            // System.err.println("Final:" + Basic.toString(reactions.get(i - 1), ", ") + " Food: " + Basic.toString(foods.get(i - 1), " "));
+            //System.err.println("Final:" + Basic.toString(reactions.get(i - 1), ", ") + " Food: " + Basic.toString(foods.get(i - 1), " "));
 
             if (reactions.get(i).size() > 0) {
-                result.getReactions().addAll(reactions.get(i));
-                result.getFoods().addAll(foods.get(i));
+                result.getReactions().setAll(reactions.get(i));
+                result.getFoods().setAll(foods.get(i));
             }
         }
     }

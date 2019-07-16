@@ -137,6 +137,13 @@
                                                             shortcut="UP"/>
                                     </accelerator>
                                 </MenuItem>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem fx:id="formatMenuItem" mnemonicParsing="false" text="Format...">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="J" control="UP" meta="DOWN" shift="UP"
+                                                            shortcut="UP"/>
+                                    </accelerator>
+                                </MenuItem>
                             </items>
                         </Menu>
                         <Menu fx:id="algorithmMenu" mnemonicParsing="false" text="Algorithm">
@@ -245,7 +252,7 @@
                                         </ToolBar>
                                     </children>
                                 </VBox>
-                                <TextArea fx:id="inputTextArea" promptText="Catalytic reactions" VBox.vgrow="ALWAYS"/>
+                                <TextArea fx:id="inputTextArea" promptText="Input reactions" VBox.vgrow="ALWAYS"/>
                             </children>
                         </VBox>
                     </center>
@@ -254,20 +261,7 @@
                     <children>
                         <TabPane fx:id="outputTabPane">
                             <tabs>
-                                <Tab fx:id="logTab" closable="false" text="Log">
-                                    <content>
-                                        <BorderPane>
-                                            <center>
-                                                <TextArea fx:id="logTextArea" editable="false" prefHeight="200.0"
-                                                          prefWidth="200.0" promptText="Log" wrapText="true"/>
-                                            </center>
-                                            <top>
-                                                <VBox fx:id="logVBox" minHeight="4.0" BorderPane.alignment="CENTER"/>
-                                            </top>
-                                        </BorderPane>
-                                    </content>
-                                </Tab>
-                                <Tab fx:id="reactionsTab" closable="false" disable="true" text="Reactions">
+                                <Tab fx:id="reactionsTab" closable="false" disable="true" text="Expanded">
                                     <content>
                                         <BorderPane>
                                             <center>
@@ -318,6 +312,19 @@
                                             <top>
                                                 <VBox fx:id="pseudoRafVBox" minHeight="4.0"
                                                       BorderPane.alignment="CENTER"/>
+                                            </top>
+                                        </BorderPane>
+                                    </content>
+                                </Tab>
+                                <Tab fx:id="logTab" closable="false" text="Log">
+                                    <content>
+                                        <BorderPane>
+                                            <center>
+                                                <TextArea fx:id="logTextArea" editable="false" prefHeight="200.0"
+                                                          prefWidth="200.0" promptText="Log" wrapText="true"/>
+                                            </center>
+                                            <top>
+                                                <VBox fx:id="logVBox" minHeight="4.0" BorderPane.alignment="CENTER"/>
                                             </top>
                                         </BorderPane>
                                     </content>

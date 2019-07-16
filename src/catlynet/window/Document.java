@@ -19,14 +19,28 @@
 
 package catlynet.window;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import catlynet.format.ArrowNotation;
+import catlynet.format.ReactionNotation;
+import javafx.beans.property.*;
+import jloda.util.ProgramProperties;
 
 public class Document {
     private final StringProperty fileName = new SimpleStringProperty("Untitled");
     private final BooleanProperty dirty = new SimpleBooleanProperty(false);
+
+    private final ObjectProperty<ReactionNotation> reactionNotation = new SimpleObjectProperty<>(ReactionNotation.valueOfIgnoreCase(ProgramProperties.get("ReactionNotation", "Sparse")));
+    private final ObjectProperty<ArrowNotation> arrowNotation = new SimpleObjectProperty<>(ArrowNotation.valueOfLabel(ProgramProperties.get("ArrowNotation", "=>")));
+
+    public Document() {
+        arrowNotationProperty().addListener((c, o, n) -> {
+            System.err.println("Arrow notation: " + n + " " + n.getLabel());
+        });
+
+        reactionNotationProperty().addListener((c, o, n) -> {
+            System.err.println("Reaction notation: " + n);
+        });
+    }
+
 
     public boolean isDirty() {
         return dirty.get();
@@ -50,5 +64,29 @@ public class Document {
 
     public void setFileName(String fileName) {
         this.fileName.set(fileName);
+    }
+
+    public ReactionNotation getReactionNotation() {
+        return reactionNotation.get();
+    }
+
+    public ObjectProperty<ReactionNotation> reactionNotationProperty() {
+        return reactionNotation;
+    }
+
+    public void setReactionNotation(ReactionNotation reactionNotation) {
+        this.reactionNotation.set(reactionNotation);
+    }
+
+    public ArrowNotation getArrowNotation() {
+        return arrowNotation.get();
+    }
+
+    public ObjectProperty<ArrowNotation> arrowNotationProperty() {
+        return arrowNotation;
+    }
+
+    public void setArrowNotation(ArrowNotation arrowNotation) {
+        this.arrowNotation.set(arrowNotation);
     }
 }

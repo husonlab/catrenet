@@ -26,7 +26,6 @@ import catlynet.window.MainWindow;
 import catlynet.window.MainWindowController;
 import jloda.fx.util.AService;
 import jloda.fx.util.NotificationManager;
-import jloda.util.Basic;
 
 /**
  * runs the RAF algorithm
@@ -47,9 +46,9 @@ public class RunRAF {
             NotificationManager.showInformation("RAF has " + result.getReactions().size() + " elements");
             window.getLogStream().println("CAF has " + result.getReactions().size() + " elements");
             if (result.getReactions().size() > 0)
-                controller.getRafTextArea().setText("Food: " + Basic.toString(result.getFoods(), " ") + "\n\n" + ModelIO.getReactionsAsString(result));
+                controller.getRafTextArea().setText("Max RAF:\n\n" + ModelIO.toString(result, true, true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
             else
-                controller.getRafTextArea().setText("");
+                controller.getRafTextArea().setText("No Max RAF\n");
         });
         service.start();
     }

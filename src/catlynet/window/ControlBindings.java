@@ -20,10 +20,12 @@
 package catlynet.window;
 
 import catlynet.action.*;
+import catlynet.format.FormatWindow;
 import catlynet.io.ModelIO;
 import catlynet.io.Save;
 import catlynet.io.SaveChangesDialog;
 import javafx.application.Platform;
+import javafx.stage.Stage;
 import jloda.fx.find.FindToolBar;
 import jloda.fx.find.TextAreaSearcher;
 import jloda.fx.util.NotificationManager;
@@ -36,8 +38,6 @@ import jloda.util.Basic;
 import jloda.util.FileOpenManager;
 import jloda.util.ProgramProperties;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.time.Duration;
 
 public class ControlBindings {
@@ -127,16 +127,27 @@ public class ControlBindings {
         controller.getVerifyInputMenuItem().setOnAction((e) -> {
             if (ParseInput.apply(window)) {
                 controller.getReactionsTab().getTabPane().getSelectionModel().select(controller.getReactionsTab());
-                try (StringWriter w = new StringWriter()) {
-                    ModelIO.write(window.getModel(), w, false, false);
-                    controller.getReactionsTextArea().setText(w.toString());
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+                controller.getReactionsTextArea().setText(ModelIO.toString(window.getModel(), true, false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
                 final String message = String.format("Input is valid. Found %,d reactions and %,d food items", window.getModel().getReactions().size(), window.getModel().getFoods().size());
                 NotificationManager.showInformation(message);
                 window.getLogStream().println(message);
             }
+        });
+
+        controller.getFormatMenuItem().setOnAction((e) -> {
+            Stage stage = null;
+            for (Stage auxStage : MainWindowManager.getInstance().getAuxiliaryWindows(window)) {
+                if (auxStage.getTitle().contains("ReactionNotation")) {
+                    stage = auxStage;
+                    break;
+                }
+            }
+            if (stage == null) {
+                final FormatWindow formatWindow = new FormatWindow(window);
+                stage = formatWindow.getStage();
+            }
+            stage.setIconified(false);
+            stage.toFront();
         });
 
         controller.getRunRAFMenuItem().setOnAction((e) -> {
@@ -168,12 +179,7 @@ public class ControlBindings {
             window.getLogStream().println("Run:");
 
             if (ParseInput.apply(window)) {
-                try (StringWriter w = new StringWriter()) {
-                    ModelIO.write(window.getModel(), w, false, false);
-                    controller.getReactionsTextArea().setText(w.toString());
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+                controller.getReactionsTextArea().setText("Expanded reactions:\n\n" + ModelIO.toString(window.getModel(), true, false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
                 RunCAF.apply(window);
                 RunRAF.apply(window);
                 RunPseudoRAF.apply(window);
@@ -208,6 +214,8 @@ public class ControlBindings {
         setupFind(window, controller);
 
         controller.getLogTextArea().appendText(Basic.stopCollectingStdErr());
+
+        //controller.getFoodSetComboBox().setStyle("-fx-font: 13px \"Courier New\";");
     }
 
     private static void setupFind(MainWindow window, MainWindowController controller) {

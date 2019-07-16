@@ -90,6 +90,8 @@ public class MainWindowController {
     @FXML
     private MenuItem findAgainMenuItem;
 
+    @FXML
+    private MenuItem formatMenuItem;
 
     @FXML
     private Menu algorithmMenu;
@@ -200,8 +202,8 @@ public class MainWindowController {
         assert fileMenu != null : "fx:id=\"fileMenu\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert newMenuItem != null : "fx:id=\"newMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert openMenuItem != null : "fx:id=\"openMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert saveMenItem != null : "fx:id=\"saveMenItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert recentFilesMenu != null : "fx:id=\"recentFilesMenu\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert saveMenItem != null : "fx:id=\"saveMenItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert pageSetupMenuItem != null : "fx:id=\"pageSetupMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert printMenuItem != null : "fx:id=\"printMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert closeMenuItem != null : "fx:id=\"closeMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
@@ -215,22 +217,42 @@ public class MainWindowController {
         assert clearMenuItem != null : "fx:id=\"clearMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert selectAllMenuItem != null : "fx:id=\"selectAllMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert selectNoneMenuItem != null : "fx:id=\"selectNoneMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert findMenuItem != null : "fx:id=\"findMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert findAgainMenuItem != null : "fx:id=\"findAgainMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert formatMenuItem != null : "fx:id=\"formatMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert algorithmMenu != null : "fx:id=\"algorithmMenu\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert runMenuItem != null : "fx:id=\"analyzeMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert windowMenu != null : "fx:id=\"helpMenu\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert verifyInputMenuItem != null : "fx:id=\"verifyInputMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert runRAFMenuItem != null : "fx:id=\"runRAFMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert runCAFMenuItem != null : "fx:id=\"runCAFMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert runPseudoRAFMenuItem != null : "fx:id=\"runPseudoRAFMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert runMenuItem != null : "fx:id=\"runMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert windowMenu != null : "fx:id=\"windowMenu\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert aboutMenuItem != null : "fx:id=\"aboutMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert checkForUpdatesMenuItem != null : "fx:id=\"checkForUpdatesMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert runButton != null : "fx:id=\"analyzeButton\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert runButton != null : "fx:id=\"runButton\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert statusFlowPane != null : "fx:id=\"statusFlowPane\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert memoryUsageLabel != null : "fx:id=\"memoryUsageLabel\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert outputPane != null : "fx:id=\"outputBorderPane\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert foodSetComboBox != null : "fx:id=\"foodSourcesComboBox\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert inputTextArea != null : "fx:id=\"crsTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert mainSplitPane != null : "fx:id=\"mainSplitPane\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert foodSetComboBox != null : "fx:id=\"foodSetComboBox\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert reactionsInputVBox != null : "fx:id=\"reactionsInputVBox\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert inputTextArea != null : "fx:id=\"inputTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert outputPane != null : "fx:id=\"outputPane\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert outputTabPane != null : "fx:id=\"outputTabPane\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert logTextArea != null : "fx:id=\"propertiesTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert rafTextArea != null : "fx:id=\"rafTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert reactionsTab != null : "fx:id=\"reactionsTab\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert reactionsTextArea != null : "fx:id=\"reactionsTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert reactionsVBox != null : "fx:id=\"reactionsVBox\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert cafTab != null : "fx:id=\"cafTab\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert cafTextArea != null : "fx:id=\"cafTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert cafVBox != null : "fx:id=\"cafVBox\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert rafTab != null : "fx:id=\"rafTab\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert rafTextArea != null : "fx:id=\"rafTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert rafVBox != null : "fx:id=\"rafVBox\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert pseudoRafTab != null : "fx:id=\"pseudoRafTab\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert pseudoRAFTextArea != null : "fx:id=\"pseudoRAFTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert pseudoRafVBox != null : "fx:id=\"pseudoRafVBox\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert logTab != null : "fx:id=\"logTab\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert logTextArea != null : "fx:id=\"logTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert logVBox != null : "fx:id=\"logVBox\" was not injected: check your FXML file 'MainWindow.fxml'.";
 
 
         // if we are running on MacOS, put the specific menu items in the right places
@@ -376,6 +398,10 @@ public class MainWindowController {
 
     public MenuItem getFindAgainMenuItem() {
         return findAgainMenuItem;
+    }
+
+    public MenuItem getFormatMenuItem() {
+        return formatMenuItem;
     }
 
     public Menu getAlgorithmMenu() {

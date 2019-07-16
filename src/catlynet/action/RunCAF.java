@@ -26,7 +26,6 @@ import catlynet.window.MainWindow;
 import catlynet.window.MainWindowController;
 import jloda.fx.util.AService;
 import jloda.fx.util.NotificationManager;
-import jloda.util.Basic;
 
 /**
  * run the CAF algorithm
@@ -46,9 +45,9 @@ public class RunCAF {
             NotificationManager.showInformation("CAF has " + result.getReactions().size() + " elements");
             window.getLogStream().println("CAF has " + result.getReactions().size() + " elements");
             if (result.getReactions().size() > 0)
-                controller.getCafTextArea().setText("Food: " + Basic.toString(result.getFoods(), " ") + "\n\n" + ModelIO.getReactionsAsString(result));
+                controller.getCafTextArea().setText("Max CAF:\n\n" + ModelIO.toString(result, true, true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
             else
-                controller.getCafTextArea().setText("");
+                controller.getCafTextArea().setText("No Max CAF\n");
         });
         service.start();
     }

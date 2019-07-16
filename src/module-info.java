@@ -9,6 +9,8 @@ module catlynet {
     exports catlynet.window;
 
     opens catlynet.window;
+    opens catlynet.format;
+
     opens catlynet.resources.images;
     opens catlynet.resources.icons;
 }
