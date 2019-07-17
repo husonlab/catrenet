@@ -42,8 +42,8 @@ public class RunPseudoRAF {
 
         service.setOnSucceeded((c) -> {
             final Model result = service.getValue();
-            NotificationManager.showInformation("Pseudo-RAF has " + result.getReactions().size() + " elements");
-            window.getLogStream().println("Pseudo RAF has " + result.getReactions().size() + " elements");
+            NotificationManager.showInformation("Max Pseudo-RAF has " + result.getReactions().size() + " elements");
+            window.getLogStream().println("Max Pseudo RAF has " + result.getReactions().size() + " elements");
             if (result.getReactions().size() > 0)
                 controller.getPseudoRAFTextArea().setText("Max Pseudo-RAF:\n\n"
                         + ModelIO.toString(result, true, true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));

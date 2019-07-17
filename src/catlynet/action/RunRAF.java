@@ -43,8 +43,8 @@ public class RunRAF {
 
         service.setOnSucceeded((c) -> {
             final Model result = service.getValue();
-            NotificationManager.showInformation("RAF has " + result.getReactions().size() + " elements");
-            window.getLogStream().println("CAF has " + result.getReactions().size() + " elements");
+            NotificationManager.showInformation("Max RAF has " + result.getReactions().size() + " elements");
+            window.getLogStream().println("Max RAF has " + result.getReactions().size() + " elements");
             if (result.getReactions().size() > 0)
                 controller.getRafTextArea().setText("Max RAF:\n\n" + ModelIO.toString(result, true, true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
             else

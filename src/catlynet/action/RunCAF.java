@@ -42,8 +42,8 @@ public class RunCAF {
 
         service.setOnSucceeded((c) -> {
             final Model result = service.getValue();
-            NotificationManager.showInformation("CAF has " + result.getReactions().size() + " elements");
-            window.getLogStream().println("CAF has " + result.getReactions().size() + " elements");
+            NotificationManager.showInformation("Max CAF has " + result.getReactions().size() + " elements");
+            window.getLogStream().println("Max CAF has " + result.getReactions().size() + " elements");
             if (result.getReactions().size() > 0)
                 controller.getCafTextArea().setText("Max CAF:\n\n" + ModelIO.toString(result, true, true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
             else
