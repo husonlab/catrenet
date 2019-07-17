@@ -67,7 +67,7 @@ public class CatlyNet extends Application {
         ResourceManagerFX.addResourceRoot(CatlyNet.class, "catlynet.resources");
         ProgramProperties.setProgramName(Version.NAME);
         ProgramProperties.setProgramVersion(Version.SHORT_DESCRIPTION);
-        ProgramProperties.setProgramLicence("This is an early (ALPHA) version of CatlyNet, made available for testing purposes. Source code will be released on publication.");
+        ProgramProperties.setProgramLicence("This is an early (BETA) version of CatlyNet. Source files available at: https://github.com/danielhuson/catlynet");
         ProgramProperties.getProgramIconsFX().addAll(ResourceManagerFX.getIcon("CatlyNet-16.png"), ResourceManagerFX.getIcon("CatlyNet-32.png"), ResourceManagerFX.getIcon("CatlyNet-64.png"),
                 ResourceManagerFX.getIcon("CatlyNet-128.png"));
         SplashScreen.setVersionString(Version.SHORT_DESCRIPTION);
