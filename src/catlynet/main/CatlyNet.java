@@ -65,9 +65,12 @@ public class CatlyNet extends Application {
         Basic.startCollectionStdErr();
 
         ResourceManagerFX.addResourceRoot(CatlyNet.class, "catlynet.resources");
+
         ProgramProperties.setProgramName(Version.NAME);
         ProgramProperties.setProgramVersion(Version.SHORT_DESCRIPTION);
-        ProgramProperties.setProgramLicence("This is an early (BETA) version of CatlyNet. Source files available at: https://github.com/danielhuson/catlynet");
+        ProgramProperties.setProgramLicence("Copyright (C) 2019 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.\n" +
+                "This is free software, licensed under the terms of the GNU General Public License, Version 3.\n" +
+                "Sources available at: https://github.com/danielhuson/catlynet");
         ProgramProperties.getProgramIconsFX().addAll(ResourceManagerFX.getIcon("CatlyNet-16.png"), ResourceManagerFX.getIcon("CatlyNet-32.png"), ResourceManagerFX.getIcon("CatlyNet-64.png"),
                 ResourceManagerFX.getIcon("CatlyNet-128.png"));
         SplashScreen.setVersionString(Version.SHORT_DESCRIPTION);
