@@ -50,6 +50,11 @@ public class ModelIO {
                 aLine = aLine.substring("Food:".length() + 1).trim();
             else
                 aLine = "";
+        } else if (aLine.startsWith("F:")) {
+            if (aLine.length() > "F:".length())
+                aLine = aLine.substring("F:".length() + 1).trim();
+            else
+                aLine = "";
         }
 
         final ArrayList<MoleculeType> array = new ArrayList<>();
@@ -82,7 +87,7 @@ public class ModelIO {
                 line = line.trim();
                 if (line.length() > 0)
                     try {
-                        if (line.startsWith("Food:")) {
+                        if (line.startsWith("Food:") || (line.startsWith("F:") && !line.contains("->") && !line.contains("=>") && !line.contains("<-") && !line.contains("<="))) {
                             model.getFoods().addAll(parseFood(line));
                         } else {
                             for (Reaction reaction : Reaction.parse(line, auxReactions, reactionNotation.equals(ReactionNotation.Tabbed))) {

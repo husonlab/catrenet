@@ -18,4 +18,4 @@ r15: ba+ab [abb] <-> baab
 r16: ab+ab [aabaabbb] <-> abab
 r17: aabaab+bb [baab] <-> aabaabbb
 
-Food: a b aa bb
+F: a b aa bb
