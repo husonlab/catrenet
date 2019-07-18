@@ -3,7 +3,7 @@
 
 CatlyNet is a program for working with autocatalytic networks. It is written in Java (12) and uses JavaFX.
 
-It is loosely based on this webpage written by Dietrich Radel: http://www.math.canterbury.ac.nz/bio/RAF/
+It is loosely based on this web application written by Dietrich Radel: http://www.math.canterbury.ac.nz/bio/RAF/
 
 Read more about autocatlyic networks and RAFs here:
 
