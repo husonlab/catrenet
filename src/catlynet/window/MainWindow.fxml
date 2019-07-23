@@ -137,6 +137,11 @@
                                                             shortcut="UP"/>
                                     </accelerator>
                                 </MenuItem>
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="View">
+                            <items>
+                                <CheckMenuItem fx:id="wrapTextMenuItem" mnemonicParsing="false" text="Wrap Text"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="formatMenuItem" mnemonicParsing="false" text="Format...">
                                     <accelerator>
@@ -276,6 +281,16 @@
                                         </BorderPane>
                                     </content>
                                 </Tab>
+                                <Tab fx:id="visualizationTab" closable="false" disable="true" text="Visualization">
+                                    <content>
+                                        <BorderPane fx:id="visualizationBorderPane">
+                                            <top>
+                                                <VBox fx:id="visualizationVBox" minHeight="4.0"
+                                                      BorderPane.alignment="CENTER"/>
+                                            </top>
+                                        </BorderPane>
+                                    </content>
+                                </Tab>
                                 <Tab fx:id="cafTab" closable="false" disable="true" text="Max CAF">
                                     <content>
                                         <BorderPane>
@@ -334,6 +349,9 @@
                     </children>
                 </StackPane>
             </items>
+            <BorderPane.margin>
+                <Insets left="2.0" right="2.0"/>
+            </BorderPane.margin>
         </SplitPane>
     </center>
 </BorderPane>

@@ -7,6 +7,7 @@ module catlynet {
 
     exports catlynet.main;
     exports catlynet.window;
+    exports catlynet.model;
 
     opens catlynet.window;
     opens catlynet.format;

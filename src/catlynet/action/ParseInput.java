@@ -20,6 +20,7 @@
 package catlynet.action;
 
 import catlynet.io.ModelIO;
+import catlynet.model.Model;
 import catlynet.window.MainWindow;
 import catlynet.window.MainWindowController;
 import javafx.scene.control.ComboBox;
@@ -44,18 +45,27 @@ public class ParseInput {
     public static boolean apply(MainWindow window) {
         final MainWindowController controller = window.getController();
 
-        window.getModel().clear();
         try {
-            ModelIO.read(window.getModel(), new StringReader(controller.getInputTextArea().getText()), window.getDocument().getReactionNotation());
+            final Model model = window.getModel();
+            model.clear();
+
+            ModelIO.read(model, new StringReader(controller.getInputTextArea().getText()), window.getDocument().getReactionNotation());
+
             final ComboBox<String> foodCBox = controller.getFoodSetComboBox();
             if (foodCBox.getSelectionModel().getSelectedItem() != null)
-                ModelIO.read(window.getModel(), new StringReader("Food: " + foodCBox.getSelectionModel().getSelectedItem()), window.getDocument().getReactionNotation());
-            final String foodString = ModelIO.getFoodString(window.getModel(), true, window.getDocument().getReactionNotation());
+                ModelIO.read(model, new StringReader("Food: " + foodCBox.getSelectionModel().getSelectedItem()), window.getDocument().getReactionNotation());
+            final String foodString = ModelIO.getFoodString(model, true, window.getDocument().getReactionNotation());
             foodCBox.getSelectionModel().select(foodString);
             if (!foodCBox.getItems().contains(foodString))
                 foodCBox.getItems().add(0, foodString);
 
-            controller.getInputTextArea().setText(ModelIO.toString(window.getModel(), false, true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
+            controller.getInputTextArea().setText(ModelIO.toString(model, false, true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
+
+            if (model.containsInhibitors()) {
+                window.getLogStream().println("Warning: Model contains inhibitors, these are currently ignored");
+                NotificationManager.showWarning("Warning: Model contains inhibitors, these are currently ignored");
+            }
+
             return true;
         } catch (IOException ex) {
             if (ex instanceof IOExceptionWithLineNumber) {

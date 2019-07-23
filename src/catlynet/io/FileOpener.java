@@ -22,8 +22,10 @@ package catlynet.io;
 import catlynet.action.NewWindow;
 import catlynet.format.ArrowNotation;
 import catlynet.format.ReactionNotation;
+import catlynet.model.Model;
 import catlynet.window.MainWindow;
 import jloda.fx.util.NotificationManager;
+import jloda.fx.util.RecentFilesManager;
 import jloda.fx.window.MainWindowManager;
 import jloda.util.Pair;
 
@@ -45,13 +47,15 @@ public class FileOpener implements Consumer<String> {
         if (window == null || !window.isEmpty())
             window = NewWindow.apply();
 
+        final Model model = window.getModel();
+
         try (BufferedReader r = new BufferedReader(new FileReader(fileName))) {
             window.getDocument().setFileName(fileName);
             final Pair<ReactionNotation, ArrowNotation> pair = ReactionNotation.detectNotation(new File(fileName));
             if (pair == null)
                 throw new IOException("Couldn't detect 'full', 'sparse' or 'tabbed' file format");
 
-            window.getModel().clear();
+            model.clear();
             ModelIO.read(window.getModel(), r, pair.getFirst());
 
             window.getController().getInputTextArea().setText(ModelIO.toString(window.getModel(), false, true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
@@ -60,13 +64,21 @@ public class FileOpener implements Consumer<String> {
                 window.getController().getFoodSetComboBox().getItems().add(0, food);
             window.getController().getFoodSetComboBox().getSelectionModel().select(food);
 
-            NotificationManager.showInformation("Read " + window.getModel().getReactions().size() + " reactions and " +
-                    window.getModel().getFoods().size() + " foods from file: " + fileName);
+            final String infoString;
 
-            window.getLogStream().println("Read " + window.getModel().getReactions().size() + " reactions and " +
-                    window.getModel().getFoods().size() + " foods from file: " + fileName);
+            if (model.getNumberOfTwoWayReactions() > 0) {
+                infoString = "Read " + model.getReactions().size() + " reactions (" + model.getNumberOfTwoWayReactions()
+                        + " two-way and " + model.getNumberOfOneWayReactions() + " one-way) and " + model.getFoods().size() + " food items from file: " + fileName;
+            } else
+                infoString = "Read " + model.getReactions().size() + " reactions and " + model.getFoods().size() + " food items from file: " + fileName;
+
+
+            NotificationManager.showInformation(infoString);
+
+            window.getLogStream().println(infoString);
             window.getLogStream().println("Input format:   " + pair.getFirst());
             window.getLogStream().println("Display format: " + window.getDocument().getReactionNotation());
+            RecentFilesManager.getInstance().insertRecentFile(fileName);
 
         } catch (IOException e) {
             NotificationManager.showError("Open file failed: " + e.getMessage());

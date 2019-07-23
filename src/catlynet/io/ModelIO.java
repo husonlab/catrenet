@@ -183,26 +183,30 @@ public class ModelIO {
 
     public static String toString(Reaction reaction, ReactionNotation reactionNotation, ArrowNotation arrowNotation) {
         if (reactionNotation == ReactionNotation.Tabbed)
-            return String.format("%s\t%s %s %s\t%s",
+            return String.format("%s\t%s %s %s\t%s%s",
                     reaction.getName(), Basic.toString(reaction.getReactants(), " + "),
-                    arrowNotation == ArrowNotation.UsesEquals ? "=>" : "->", Basic.toString(reaction.getProducts(), " + "), Basic.toString(reaction.getCatalysts(), " "));
+                    arrowNotation == ArrowNotation.UsesEquals ? "=>" : "->", Basic.toString(reaction.getProducts(), " + "), Basic.toString(reaction.getCatalysts(), " "),
+                    (reaction.getInhibitors().size() == 0 ? "" : "\t" + Basic.toString(reaction.getInhibitors(), " ")));
         else
-            return String.format("%s : %s [%s] %s %s",
+            return String.format("%s : %s [%s]%s%s %s",
                     reaction.getName(), Basic.toString(reaction.getReactants(), " + "), Basic.toString(reaction.getCatalysts(), reactionNotation == ReactionNotation.Full ? ", " : " "),
+                    (reaction.getInhibitors().size() == 0 ? " " : " (" + Basic.toString(reaction.getInhibitors(), reactionNotation == ReactionNotation.Full ? ", " : " ") + ") "),
                     arrowNotation == ArrowNotation.UsesEquals ? "=>" : "->", Basic.toString(reaction.getProducts(), " + "));
     }
 
     public static String toStringBothWays(Reaction reaction, ReactionNotation reactionNotation, ArrowNotation arrowNotation) {
         if (reactionNotation == ReactionNotation.Tabbed)
-            return String.format("%s\t%s %s %s\t%s",
+            return String.format("%s\t%s %s %s\t%s%s",
                     (reaction.getName().endsWith("+") ? reaction.getName().substring(0, reaction.getName().length() - 1) : reaction.getName()),
                     Basic.toString(reaction.getReactants(), " + "),
-                    arrowNotation == ArrowNotation.UsesEquals ? "<=>" : "<->", Basic.toString(reaction.getProducts(), " + "), Basic.toString(reaction.getCatalysts(), " "));
+                    arrowNotation == ArrowNotation.UsesEquals ? "<=>" : "<->", Basic.toString(reaction.getProducts(), " + "), Basic.toString(reaction.getCatalysts(), " "),
+                    (reaction.getInhibitors().size() == 0 ? "" : "\t" + Basic.toString(reaction.getInhibitors(), " ")));
         else
-            return String.format("%s : %s [%s] %s %s",
+            return String.format("%s : %s [%s]%s%s %s",
                     (reaction.getName().endsWith("+") ? reaction.getName().substring(0, reaction.getName().length() - 1) : reaction.getName()),
                     Basic.toString(reaction.getReactants(), " + "),
                     Basic.toString(reaction.getCatalysts(), reactionNotation == ReactionNotation.Full ? ", " : " "), arrowNotation == ArrowNotation.UsesEquals ? "<=>" : "<->",
+                    (reaction.getInhibitors().size() == 0 ? " " : " (" + Basic.toString(reaction.getInhibitors(), reactionNotation == ReactionNotation.Full ? ", " : " ") + ") "),
                     Basic.toString(reaction.getProducts(), " + "));
     }
 

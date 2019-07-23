@@ -19,13 +19,28 @@
 
 package catlynet.window;
 
-import catlynet.action.*;
+import catlynet.action.CheckForUpdate;
+import catlynet.action.NewWindow;
+import catlynet.action.ParseInput;
+import catlynet.action.RunAlgorithm;
+import catlynet.algorithm.MaxCAFAlgorithm;
+import catlynet.algorithm.MaxPseudoRAFAlgorithm;
+import catlynet.algorithm.MaxRAFAlgorithm;
 import catlynet.format.FormatWindow;
 import catlynet.io.ModelIO;
 import catlynet.io.Save;
 import catlynet.io.SaveChangesDialog;
+import catlynet.view.Visualization;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import jloda.fx.control.ZoomableScrollPane;
 import jloda.fx.find.FindToolBar;
 import jloda.fx.find.TextAreaSearcher;
 import jloda.fx.util.NotificationManager;
@@ -38,12 +53,17 @@ import jloda.util.Basic;
 import jloda.util.FileOpenManager;
 import jloda.util.ProgramProperties;
 
+import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.Date;
 
 public class ControlBindings {
 
     public static void setup(MainWindow window) {
         final MainWindowController controller = window.getController();
+
+        final Visualization visualization = new Visualization(window.getModel());
 
         RecentFilesManager.getInstance().setFileOpener(FileOpenManager.getFileOpener());
         RecentFilesManager.getInstance().setupMenu(controller.getRecentFilesMenu());
@@ -153,7 +173,7 @@ public class ControlBindings {
         controller.getRunRAFMenuItem().setOnAction((e) -> {
             if (ParseInput.apply(window)) {
                 controller.getRafTab().getTabPane().getSelectionModel().select(controller.getRafTab());
-                RunRAF.apply(window);
+                RunAlgorithm.apply(window, new MaxRAFAlgorithm(), controller.getRafTextArea());
             }
         });
         controller.getRunRAFMenuItem().disableProperty().bind(controller.getInputTextArea().textProperty().isEmpty());
@@ -161,7 +181,7 @@ public class ControlBindings {
         controller.getRunCAFMenuItem().setOnAction((e) -> {
             if (ParseInput.apply(window)) {
                 controller.getCafTab().getTabPane().getSelectionModel().select(controller.getCafTab());
-                RunCAF.apply(window);
+                RunAlgorithm.apply(window, new MaxCAFAlgorithm(), controller.getCafTextArea());
             }
         });
         controller.getRunCAFMenuItem().disableProperty().bind(controller.getInputTextArea().textProperty().isEmpty());
@@ -169,20 +189,25 @@ public class ControlBindings {
         controller.getRunPseudoRAFMenuItem().setOnAction((e) -> {
             if (ParseInput.apply(window)) {
                 controller.getPseudoRafTab().getTabPane().getSelectionModel().select(controller.getPseudoRafTab());
-                RunPseudoRAF.apply(window);
+                RunAlgorithm.apply(window, new MaxPseudoRAFAlgorithm(), controller.getPseudoRAFTextArea());
             }
         });
         controller.getRunPseudoRAFMenuItem().disableProperty().bind(controller.getInputTextArea().textProperty().isEmpty());
 
         controller.getRunMenuItem().setOnAction((e) -> {
-            controller.getLogTab().getTabPane().getSelectionModel().select(controller.getLogTab());
-            window.getLogStream().println("Run:");
+            // controller.getLogTab().getTabPane().getSelectionModel().select(controller.getLogTab());
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
+            window.getLogStream().println("\nRun +++++ " + simpleDateFormat.format(new Date()) + " +++++:");
 
             if (ParseInput.apply(window)) {
+                visualization.update();
+
                 controller.getReactionsTextArea().setText("Expanded reactions:\n\n" + ModelIO.toString(window.getModel(), true, false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
-                RunCAF.apply(window);
-                RunRAF.apply(window);
-                RunPseudoRAF.apply(window);
+                RunAlgorithm.apply(window, new MaxCAFAlgorithm(), controller.getCafTextArea());
+                RunAlgorithm.apply(window, new MaxRAFAlgorithm(), controller.getRafTextArea());
+                RunAlgorithm.apply(window, new MaxPseudoRAFAlgorithm(), controller.getPseudoRAFTextArea());
             }
         });
         controller.getRunMenuItem().disableProperty().bind(controller.getInputTextArea().textProperty().isEmpty());
@@ -214,6 +239,50 @@ public class ControlBindings {
         setupFind(window, controller);
 
         controller.getLogTextArea().appendText(Basic.stopCollectingStdErr());
+
+        for (TextArea textArea : Arrays.asList(controller.getInputTextArea(), controller.getLogTextArea(), controller.getCafTextArea(), controller.getRafTextArea(), controller.getPseudoRAFTextArea())) {
+            textArea.focusedProperty().addListener((c, o, n) -> {
+                if (n) {
+                    controller.getWrapTextMenuItem().setDisable(false);
+                    controller.getWrapTextMenuItem().selectedProperty().bindBidirectional(textArea.wrapTextProperty());
+                } else {
+                    controller.getWrapTextMenuItem().setDisable(true);
+                    controller.getWrapTextMenuItem().selectedProperty().unbindBidirectional(textArea.wrapTextProperty());
+                }
+            });
+        }
+
+
+        if (true) {
+            final Pane centerPane = new StackPane();
+            centerPane.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+
+            centerPane.getChildren().add(visualization.getWorld());
+
+            final ZoomableScrollPane scrollPane = new ZoomableScrollPane(centerPane) {
+                @Override // override node scaling to use coordinate scaling
+                public void updateScale() {
+                    final double zoomX = getZoomFactorX();
+                    final double zoomY = getZoomFactorY();
+                    for (javafx.scene.Node node : visualization.getWorld().getChildren()) {
+                        if (!node.translateXProperty().isBound())
+                            node.setTranslateX(node.getTranslateX() * zoomX);
+                        if (!node.translateYProperty().isBound())
+                            node.setTranslateY(node.getTranslateY() * zoomY);
+                    }
+                }
+            };
+            centerPane.minWidthProperty().bind(Bindings.createDoubleBinding(() ->
+                    scrollPane.getViewportBounds().getWidth(), scrollPane.viewportBoundsProperty()).subtract(20));
+            centerPane.minHeightProperty().bind(Bindings.createDoubleBinding(() ->
+                    scrollPane.getViewportBounds().getHeight(), scrollPane.viewportBoundsProperty()).subtract(20));
+
+            scrollPane.setLockAspectRatio(true);
+
+            controller.getVisualizationBorderPane().setCenter(scrollPane);
+
+            controller.getVisualizationTab().setDisable(false);
+        }
 
         //controller.getFoodSetComboBox().setStyle("-fx-font: 13px \"Courier New\";");
     }

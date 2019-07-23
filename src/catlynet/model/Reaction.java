@@ -36,6 +36,7 @@ public class Reaction implements Comparable<Reaction> {
     private final Set<MoleculeType> reactants = new TreeSet<>();
     private final Set<MoleculeType> products = new TreeSet<>();
     private final Set<MoleculeType> catalysts = new TreeSet<>();
+    private final Set<MoleculeType> inhibitors = new TreeSet<>();
 
     /**
      * constructor
@@ -67,14 +68,18 @@ public class Reaction implements Comparable<Reaction> {
         return catalysts;
     }
 
+    public Set<MoleculeType> getInhibitors() {
+        return inhibitors;
+    }
+
     /**
      * parses a reaction
      * ReactionNotation:
-     * name tab: reactant ... [ catalyst ...] -> product ...
+     * name tab: reactant ... [ catalyst ...] -|inhibitor ...|- > -> product ...
      * or
-     * name tab: reactant ... [ catalyst ...] <- product ...
+     * name tab: reactant ... [ catalyst ...] -|inhibitor ...|- <- product ...
      * or
-     * name tab: reactant ... [ catalyst ...] <-> product ...
+     * name tab: reactant ... [ catalyst ...] -|inhibitor ...|- <-> product ...
      * <p>
      * Reactants can be separated by white space or +
      * Products can be separated by white space or +
@@ -89,21 +94,27 @@ public class Reaction implements Comparable<Reaction> {
 
         if (tabbedFormat) { // name <tab>  a+b -> c <tab> catalysts
             final String[] tokens = Basic.trimAll(Basic.split(line, '\t'));
-            if (tokens.length == 3) {
+            if (tokens.length == 3 || tokens.length == 4) {
 
                 int arrowStart = tokens[1].indexOf("<=");
                 if (arrowStart == -1)
                     arrowStart = tokens[1].indexOf("=>");
 
                 if (arrowStart != -1) {
-                    line = tokens[0] + ": " + tokens[1].substring(0, arrowStart) + " [" + tokens[2] + "] " + tokens[1].substring(arrowStart);
+                    if (tokens.length == 3)
+                        line = tokens[0] + ": " + tokens[1].substring(0, arrowStart) + " [" + tokens[2] + "] " + tokens[1].substring(arrowStart);
+                    else // tokens.length==4
+                        line = tokens[0] + ": " + tokens[1].substring(0, arrowStart) + " [" + tokens[2] + "] (" + tokens[3] + ") " + tokens[1].substring(arrowStart);
                 }
             }
         }
 
         final int colonPos = line.indexOf(':');
-        final int openSquare = line.indexOf('[');
-        final int closeSquare = line.indexOf(']');
+        final int openSquareBracket = line.indexOf('[');
+        final int closeSquareBracket = line.indexOf(']');
+
+        final int openRoundBracket = line.indexOf("(");
+        final int closeRoundBracket = line.indexOf(")");
 
         final int endArrow;
         boolean forward;
@@ -125,21 +136,30 @@ public class Reaction implements Comparable<Reaction> {
                 throw new IOException("Can't parse reaction: " + line);
         }
 
-        if (!(colonPos > 0 && openSquare > colonPos && closeSquare > openSquare))
+        if (!(colonPos > 0 && openSquareBracket > colonPos && closeSquareBracket > openSquareBracket))
             throw new IOException("Can't parse reaction: " + line);
 
         final String reactionName = line.substring(0, colonPos).trim();
 
-        final String[] reactants = Basic.trimAll(line.substring(colonPos + 1, openSquare).trim().split("[+\\s]+"));
+        final String[] reactants = Basic.trimAll(line.substring(colonPos + 1, openSquareBracket).trim().split("[+\\s]+"));
 
         final String[] catalysts;
-        final String catalystsString = line.substring(openSquare + 1, closeSquare).trim()
-                .replaceAll(",", " ")
-                .replaceAll("\\*", "&")
-                .replaceAll("\\s*&\\s*", "&");
+        {
+            final String catalystsString = line.substring(openSquareBracket + 1, closeSquareBracket).trim()
+                    .replaceAll(",", " ")
+                    .replaceAll("\\*", "&")
+                    .replaceAll("\\s*&\\s*", "&");
+            catalysts = Basic.trimAll(catalystsString.split("\\s+"));
+        }
 
-        catalysts = Basic.trimAll(catalystsString.split("\\s+"));
-
+        final String[] inhibitors;
+        if (openRoundBracket != -1 && closeRoundBracket != -1) {
+            final String inhibitorsString = line.substring(openRoundBracket + 1, closeRoundBracket).trim().replaceAll(",", " ");
+            inhibitors = Basic.trimAll(inhibitorsString.split("\\s+"));
+        } else if ((openRoundBracket >= 0) != (closeRoundBracket >= 0))
+            throw new IOException("Can't parse reaction: " + line);
+        else
+            inhibitors = new String[0];
 
         final String[] products = Basic.trimAll(line.substring(endArrow + 1).trim().split("[+\\s]+"));
 
@@ -150,18 +170,21 @@ public class Reaction implements Comparable<Reaction> {
             reaction1.getReactants().addAll(MoleculeType.valueOf(reactants));
             reaction1.getProducts().addAll(MoleculeType.valueOf(products));
             reaction1.getCatalysts().addAll(MoleculeType.valueOf(catalysts));
+            reaction1.getInhibitors().addAll(MoleculeType.valueOf(inhibitors));
             result.add(reaction1);
 
             final Reaction reaction2 = new Reaction(reactionName + "-");
             reaction2.getReactants().addAll(MoleculeType.valueOf(products)); // switch roles
             reaction2.getProducts().addAll(MoleculeType.valueOf(reactants));
             reaction2.getCatalysts().addAll(MoleculeType.valueOf(catalysts));
+            reaction2.getInhibitors().addAll(MoleculeType.valueOf(inhibitors));
             result.add(reaction2);
         } else if (forward) {
             final Reaction reaction1 = new Reaction(reactionName);
             reaction1.getReactants().addAll(MoleculeType.valueOf(reactants));
             reaction1.getProducts().addAll(MoleculeType.valueOf(products));
             reaction1.getCatalysts().addAll(MoleculeType.valueOf(catalysts));
+            reaction1.getInhibitors().addAll(MoleculeType.valueOf(inhibitors));
             result.add(reaction1);
         } else // reverse
         {
@@ -169,6 +192,7 @@ public class Reaction implements Comparable<Reaction> {
             reaction1.getReactants().addAll(MoleculeType.valueOf(products)); // switch roles
             reaction1.getProducts().addAll(MoleculeType.valueOf(reactants));
             reaction1.getCatalysts().addAll(MoleculeType.valueOf(catalysts));
+            reaction1.getInhibitors().addAll(MoleculeType.valueOf(inhibitors));
             result.add(reaction1);
         }
 
@@ -201,5 +225,9 @@ public class Reaction implements Comparable<Reaction> {
     @Override
     public int compareTo(Reaction that) {
         return this.getName().compareTo(that.getName());
+    }
+
+    public String toString() {
+        return getName();
     }
 }

@@ -1,5 +1,5 @@
 /*
- * ComputePseudoRAF.java Copyright (C) 2019. Daniel H. Huson
+ * MaxCAFAlgorithm.java Copyright (C) 2019. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -27,58 +27,60 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static catlynet.algorithm.ComputeRAF.*;
+import static catlynet.algorithm.MaxRAFAlgorithm.*;
 
 /**
- * computes a pseudo-RAF
+ * computes a CAF
  * Daniel Huson, 7.2019
  * Based on notes by Mike Steel
  */
-public class ComputePseudoRAF {
+public class MaxCAFAlgorithm implements IModelAlgorithm {
     /**
-     * computes a pseudo-RAF
+     * computes a CAF
      *
      * @param input
      * @param result
      */
-    public static void apply(Model input, Model result) {
+    public void apply(Model input, Model result) {
         result.clear();
+        result.setName("Max CAF");
 
         final Set<Reaction> inputReactions = new TreeSet<>(input.getReactions());
         final Set<MoleculeType> inputFood = new TreeSet<>(input.getFoods());
         final Set<MoleculeType> mentionedFood = filterFood(inputFood, inputReactions);
 
-        final Set<MoleculeType> startingFood = extendFood(mentionedFood, inputReactions, false, false);
+        final Set<Reaction> startingReactions = filterReactions(mentionedFood, inputReactions);
 
-        if (inputReactions.size() > 0) {
+        if (startingReactions.size() > 0) {
             final ArrayList<Set<Reaction>> reactions = new ArrayList<>();
             final ArrayList<Set<MoleculeType>> foods = new ArrayList<>();
 
-            reactions.add(inputReactions);
-            foods.add(startingFood);
+            reactions.add(startingReactions);
+            foods.add(mentionedFood);
 
             int i = 0;
 
             do {
-                final Set<MoleculeType> extendedFood = extendFood(inputFood, reactions.get(i), false, false);
-                final Set<Reaction> filteredReactions = filterReactions(extendedFood, reactions.get(i));
+                // System.err.println("i=" + i + ": " + Basic.toString(reactions.get(i), ", ") + " Food: " + Basic.toString(foods.get(i), " "));
 
-                reactions.add(filteredReactions);
+                final Set<MoleculeType> extendedFood = extendFood(foods.get(i), reactions.get(i), false, false);
+                final Set<Reaction> nextReactions = filterReactions(extendedFood, inputReactions);
+                nextReactions.addAll(reactions.get(i));
+
+                reactions.add(nextReactions);
                 foods.add(extendedFood);
-
-
-                // System.err.println("i=" + i + ":" + Basic.toString(reactions.get(i), ", ") + " Food: " + Basic.toString(foods.get(i), " "));
 
                 i++;
             }
             while (reactions.get(i).size() > reactions.get(i - 1).size());
 
-            //System.err.println("Final:" + Basic.toString(reactions.get(i - 1), ", ") + " Food: " + Basic.toString(foods.get(i - 1), " "));
+            // System.err.println("End: " + Basic.toString(reactions.get(i - 1), ", ") + " Food: " + Basic.toString(foods.get(i - 1), " "));
 
             if (reactions.get(i).size() > 0) {
-                result.getReactions().setAll(reactions.get(i));
-                result.getFoods().setAll(foods.get(i));
+                result.getReactions().addAll(reactions.get(i));
+                result.getFoods().addAll(foods.get(i));
             }
         }
+
     }
 }

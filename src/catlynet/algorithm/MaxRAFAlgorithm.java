@@ -1,5 +1,5 @@
 /*
- * ComputeRAF.java Copyright (C) 2019. Daniel H. Huson
+ * MaxRAFAlgorithm.java Copyright (C) 2019. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -34,15 +34,16 @@ import java.util.TreeSet;
  * Daniel Huson, 7.2019
  * Based on notes by Mike Steel
  */
-public class ComputeRAF {
+public class MaxRAFAlgorithm implements IModelAlgorithm {
     /**
      * computes the RAF
      *
      * @param input
      * @param result, empty, it none exists
      */
-    public static void apply(Model input, Model result) {
+    public void apply(Model input, Model result) {
         result.clear();
+        result.setName("Max RAF");
 
         final Set<Reaction> inputReactions = new TreeSet<>(input.getReactions());
         final Set<MoleculeType> inputFood = new TreeSet<>(input.getFoods());

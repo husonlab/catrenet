@@ -5,10 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCharacterCombination;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import jloda.fx.control.SplittableTabPane;
 import jloda.fx.window.IMainWindow;
@@ -89,6 +86,9 @@ public class MainWindowController {
 
     @FXML
     private MenuItem findAgainMenuItem;
+
+    @FXML
+    private CheckMenuItem wrapTextMenuItem;
 
     @FXML
     private MenuItem formatMenuItem;
@@ -173,6 +173,16 @@ public class MainWindowController {
     private VBox reactionsInputVBox;
 
     @FXML
+    private Tab visualizationTab;
+
+    @FXML
+    private VBox visualizationVBox;
+
+    @FXML
+    private BorderPane visualizationBorderPane;
+
+
+    @FXML
     private Tab logTab;
     @FXML
     private VBox logVBox;
@@ -220,6 +230,7 @@ public class MainWindowController {
         assert findMenuItem != null : "fx:id=\"findMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert findAgainMenuItem != null : "fx:id=\"findAgainMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert formatMenuItem != null : "fx:id=\"formatMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert wrapTextMenuItem != null : "fx:id=\"wrapTextMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert algorithmMenu != null : "fx:id=\"algorithmMenu\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert verifyInputMenuItem != null : "fx:id=\"verifyInputMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert runRAFMenuItem != null : "fx:id=\"runRAFMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
@@ -404,6 +415,10 @@ public class MainWindowController {
         return formatMenuItem;
     }
 
+    public CheckMenuItem getWrapTextMenuItem() {
+        return wrapTextMenuItem;
+    }
+
     public Menu getAlgorithmMenu() {
         return algorithmMenu;
     }
@@ -463,6 +478,7 @@ public class MainWindowController {
     public SplittableTabPane getOutputSplittableTabPane() {
         return outputSplittableTabPane;
     }
+
 
     public TextArea getLogTextArea() {
         return logTextArea;
@@ -530,6 +546,18 @@ public class MainWindowController {
 
     public TextArea getReactionsTextArea() {
         return reactionsTextArea;
+    }
+
+    public Tab getVisualizationTab() {
+        return visualizationTab;
+    }
+
+    public VBox getVisualizationVBox() {
+        return visualizationVBox;
+    }
+
+    public BorderPane getVisualizationBorderPane() {
+        return visualizationBorderPane;
     }
 
     public VBox getReactionsVBox() {

@@ -45,6 +45,10 @@ import jloda.util.ProgramProperties;
 import java.io.PrintStream;
 import java.util.Arrays;
 
+/**
+ * the main window
+ * Daniel Huson, 7.2019
+ */
 public class MainWindow implements IMainWindow {
     private Stage stage;
     private final MainWindowController controller;
@@ -62,6 +66,9 @@ public class MainWindow implements IMainWindow {
     private BooleanProperty hasReactionsInput = new SimpleBooleanProperty(false);
     private final BooleanProperty empty = new SimpleBooleanProperty();
 
+    /**
+     * constructor
+     */
     public MainWindow() {
         Platform.setImplicitExit(false);
 
@@ -132,7 +139,7 @@ public class MainWindow implements IMainWindow {
         controller.getInputTextArea().textProperty().length().addListener((c, o, n) -> {
             hasReactionsInput.set(n.intValue() > 0);
         });
-        empty.bind(hasFoodInput.not().or(hasReactionsInput.not()));
+        empty.bind(hasFoodInput.not().and(hasReactionsInput.not()));
     }
 
     @Override
