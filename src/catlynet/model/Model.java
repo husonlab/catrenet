@@ -19,11 +19,17 @@
 
 package catlynet.model;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import jloda.util.Basic;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * the main  model
@@ -33,13 +39,7 @@ public class Model {
     private final ObservableList<Reaction> reactions = FXCollections.observableArrayList();
     private final ObservableList<MoleculeType> foods = FXCollections.observableArrayList();
 
-    public ObservableList<Reaction> getReactions() {
-        return reactions;
-    }
-
-    public ObservableList<MoleculeType> getFoods() {
-        return foods;
-    }
+    private final IntegerProperty size = new SimpleIntegerProperty();
 
     private int numberOfTwoWayReactions = 0;
 
@@ -47,18 +47,28 @@ public class Model {
 
 
     public Model() {
+        size.bind(Bindings.size(reactions));
+
         reactions.addListener((ListChangeListener<Reaction>) e -> {
             while (e.next()) {
                 for (Reaction reaction : e.getAddedSubList()) {
-                    if (reaction.getName().endsWith("+"))
+                    if (reaction.getDirection() == Reaction.Direction.both)
                         numberOfTwoWayReactions++;
                 }
                 for (Reaction reaction : e.getRemoved()) {
-                    if (reaction.getName().endsWith("+"))
+                    if (reaction.getDirection() == Reaction.Direction.both)
                         numberOfTwoWayReactions--;
                 }
             }
         });
+    }
+
+    public ObservableList<Reaction> getReactions() {
+        return reactions;
+    }
+
+    public ObservableList<MoleculeType> getFoods() {
+        return foods;
     }
 
     /**
@@ -68,9 +78,20 @@ public class Model {
      */
     public Model shallowCopy() {
         final Model result = new Model();
-        result.foods.addAll(foods);
-        result.reactions.addAll(reactions);
+        result.shallowCopy(this);
         return result;
+    }
+
+    /**
+     * sets this to a shallow copy of that
+     *
+     * @param that
+     */
+    public void shallowCopy(Model that) {
+        clear();
+        setName(that.getName());
+        foods.addAll(that.foods);
+        reactions.addAll(that.reactions);
     }
 
     public void clear() {
@@ -85,7 +106,16 @@ public class Model {
      * @return number of reactions
      */
     public int size() {
-        return reactions.size();
+        return size.get();
+    }
+
+    /**
+     * size property
+     *
+     * @return size
+     */
+    public ReadOnlyIntegerProperty sizeProperty() {
+        return size;
     }
 
     public int getNumberOfTwoWayReactions() {
@@ -93,7 +123,7 @@ public class Model {
     }
 
     public int getNumberOfOneWayReactions() {
-        return size() - 2 * getNumberOfTwoWayReactions();
+        return size() - numberOfTwoWayReactions;
     }
 
     public String getName() {
@@ -119,5 +149,109 @@ public class Model {
                 return true;
         }
         return false;
+    }
+
+    /**
+     * gets the expanded model in which each bi-direction reaction is replaced by two one-way reactions and
+     * for each 'and' set of catalysts the correspond enforcing reaction has been added
+     *
+     * @return
+     */
+    public Model getExpandedModel() {
+        final Model expanded = new Model();
+        expanded.setName(getName() + " (expanded)");
+        expanded.getFoods().setAll(getFoods());
+
+        final ArrayList<Reaction> auxilaryReactions = new ArrayList<>();
+
+        for (Reaction reaction : getReactions()) {
+            switch (reaction.getDirection()) {
+                case forward: {
+                    expanded.getReactions().add(reaction); // don't use create forward, as that changes the name
+                    break;
+                }
+                case reverse: {
+                    expanded.getReactions().add(reaction.createReverse());
+                    break;
+                }
+                case both: {
+                    expanded.getReactions().add(reaction.createForward());
+                    expanded.getReactions().add(reaction.createReverse());
+                    break;
+                }
+            }
+
+            for (MoleculeType catalyst : reaction.getCatalysts()) {
+                if (catalyst.getName().contains("&")) {
+                    final String[] foods = Basic.split(catalyst.getName(), '&');
+                    final Reaction auxReaction = new Reaction(reaction.getName() + "/" + catalyst + "/");
+                    for (String reactantName : foods) {
+                        auxReaction.getReactants().add(MoleculeType.valueOf(reactantName));
+                    }
+                    auxReaction.getCatalysts().add(catalyst);
+                    auxReaction.getProducts().add(catalyst);
+                    boolean found = false;
+                    for (Reaction other : auxilaryReactions) {
+                        if (other.getReactants().equals(auxReaction.getReactants()) && other.getCatalysts().equals(auxReaction.getCatalysts()) && other.getProducts().equals(auxReaction.getProducts())) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        auxilaryReactions.add(auxReaction);
+                        expanded.getReactions().add(auxReaction);
+                    }
+                }
+            }
+        }
+        return expanded;
+    }
+
+    /**
+     * compress set of expanded reactions
+     *
+     * @param reactions
+     * @return compressed set
+     */
+    public static Set<Reaction> compress(Set<Reaction> reactions) {
+        final Set<Reaction> result = new TreeSet<>();
+
+        for (Reaction reaction : reactions) {
+            if (reaction.getName().endsWith("+")) {
+                result.add(reaction.createBoth());
+            } else if (!reaction.getName().endsWith("-") && !reaction.getName().endsWith("/"))
+                result.add(reaction);
+        }
+        return result;
+    }
+
+    /**
+     * gets all mentioned molecule types
+     *
+     * @return
+     */
+    public Set<MoleculeType> getMoleculeTypes(boolean foodSet, boolean reactants, boolean products, boolean catalysts, boolean inhibitors) {
+        final Set<MoleculeType> moleculeTypes = new TreeSet<>();
+        if (foodSet)
+            moleculeTypes.addAll(getFoods());
+        for (Reaction reaction : getReactions()) {
+            if (reactants)
+                moleculeTypes.addAll(reaction.getReactants());
+            if (products)
+                moleculeTypes.addAll(reaction.getProducts());
+            if (catalysts)
+                moleculeTypes.addAll(reaction.getCatalysts());
+            if (inhibitors)
+                moleculeTypes.addAll(reaction.getInhibitors());
+        }
+        return moleculeTypes;
+    }
+
+    public Set<String> getReactionNames() {
+        final Set<String> names = new HashSet<>();
+        for (Reaction reaction : getReactions()) {
+            names.add(reaction.getName());
+        }
+        return names;
     }
 }

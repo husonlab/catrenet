@@ -45,8 +45,9 @@ public class MaxCAFAlgorithm implements IModelAlgorithm {
         result.clear();
         result.setName("Max CAF");
 
-        final Set<Reaction> inputReactions = new TreeSet<>(input.getReactions());
-        final Set<MoleculeType> inputFood = new TreeSet<>(input.getFoods());
+        final Model expanded = input.getExpandedModel();
+        final Set<Reaction> inputReactions = new TreeSet<>(expanded.getReactions());
+        final Set<MoleculeType> inputFood = new TreeSet<>(expanded.getFoods());
         final Set<MoleculeType> mentionedFood = filterFood(inputFood, inputReactions);
 
         final Set<Reaction> startingReactions = filterReactions(mentionedFood, inputReactions);
@@ -77,8 +78,8 @@ public class MaxCAFAlgorithm implements IModelAlgorithm {
             // System.err.println("End: " + Basic.toString(reactions.get(i - 1), ", ") + " Food: " + Basic.toString(foods.get(i - 1), " "));
 
             if (reactions.get(i).size() > 0) {
-                result.getReactions().addAll(reactions.get(i));
-                result.getFoods().addAll(foods.get(i));
+                result.getReactions().setAll(Model.compress(reactions.get(i)));
+                result.getFoods().setAll(input.getFoods());
             }
         }
 

@@ -47,7 +47,7 @@ public class FileOpener implements Consumer<String> {
         if (window == null || !window.isEmpty())
             window = NewWindow.apply();
 
-        final Model model = window.getModel();
+        final Model model = window.getInputModel();
 
         try (BufferedReader r = new BufferedReader(new FileReader(fileName))) {
             window.getDocument().setFileName(fileName);
@@ -56,22 +56,16 @@ public class FileOpener implements Consumer<String> {
                 throw new IOException("Couldn't detect 'full', 'sparse' or 'tabbed' file format");
 
             model.clear();
-            ModelIO.read(window.getModel(), r, pair.getFirst());
+            ModelIO.read(window.getInputModel(), r, pair.getFirst());
 
-            window.getController().getInputTextArea().setText(ModelIO.toString(window.getModel(), false, true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
-            final String food = ModelIO.getFoodString(window.getModel(), false, window.getDocument().getReactionNotation());
+            window.getController().getInputTextArea().setText(ModelIO.toString(window.getInputModel(), false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
+            final String food = ModelIO.getFoodString(window.getInputModel(), window.getDocument().getReactionNotation());
             if (window.getController().getFoodSetComboBox().getItems().contains(food))
                 window.getController().getFoodSetComboBox().getItems().add(0, food);
             window.getController().getFoodSetComboBox().getSelectionModel().select(food);
 
-            final String infoString;
-
-            if (model.getNumberOfTwoWayReactions() > 0) {
-                infoString = "Read " + model.getReactions().size() + " reactions (" + model.getNumberOfTwoWayReactions()
-                        + " two-way and " + model.getNumberOfOneWayReactions() + " one-way) and " + model.getFoods().size() + " food items from file: " + fileName;
-            } else
-                infoString = "Read " + model.getReactions().size() + " reactions and " + model.getFoods().size() + " food items from file: " + fileName;
-
+            final String infoString = "Read " + model.size() + " reactions" + (model.getNumberOfTwoWayReactions() > 0 ? "(" + model.getNumberOfTwoWayReactions() + " two-way)" : "")
+                    + " and " + model.getFoods().size() + " food items from file: " + fileName;
 
             NotificationManager.showInformation(infoString);
 

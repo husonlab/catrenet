@@ -46,7 +46,7 @@ public class ParseInput {
         final MainWindowController controller = window.getController();
 
         try {
-            final Model model = window.getModel();
+            final Model model = window.getInputModel();
             model.clear();
 
             ModelIO.read(model, new StringReader(controller.getInputTextArea().getText()), window.getDocument().getReactionNotation());
@@ -54,12 +54,12 @@ public class ParseInput {
             final ComboBox<String> foodCBox = controller.getFoodSetComboBox();
             if (foodCBox.getSelectionModel().getSelectedItem() != null)
                 ModelIO.read(model, new StringReader("Food: " + foodCBox.getSelectionModel().getSelectedItem()), window.getDocument().getReactionNotation());
-            final String foodString = ModelIO.getFoodString(model, true, window.getDocument().getReactionNotation());
+            final String foodString = ModelIO.getFoodString(model, window.getDocument().getReactionNotation());
             foodCBox.getSelectionModel().select(foodString);
             if (!foodCBox.getItems().contains(foodString))
                 foodCBox.getItems().add(0, foodString);
 
-            controller.getInputTextArea().setText(ModelIO.toString(model, false, true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
+            //controller.getInputTextArea().setText(ModelIO.toString(model, false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
 
             if (model.containsInhibitors()) {
                 window.getLogStream().println("Warning: Model contains inhibitors, these are currently ignored");

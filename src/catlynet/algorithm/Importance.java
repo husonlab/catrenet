@@ -35,18 +35,23 @@ public class Importance {
      *
      * @param model
      * @param algorithm
-     * @return list of food, immportance pairs, in order of decreasing importance (difference between model size and model size without given food item)
+     * @return list of food, immportance pairs, in order of decreasing importance (percent difference between model size and model size without given food item)
      */
-    public static ArrayList<Pair<MoleculeType, Integer>> computeFoodImportance(Model model, IModelAlgorithm algorithm) {
-        final ArrayList<Pair<MoleculeType, Integer>> result = new ArrayList<>();
+    public static ArrayList<Pair<MoleculeType, Float>> computeFoodImportance(Model model, IModelAlgorithm algorithm) {
+        final ArrayList<Pair<MoleculeType, Float>> result = new ArrayList<>();
+        final Model expandedModel = model.getExpandedModel();
+
         for (MoleculeType food : model.getFoods()) {
-            final Model inputModel = model.shallowCopy();
-            inputModel.getFoods().remove(food);
+            final Model expandedInputModel = expandedModel.shallowCopy();
+            expandedInputModel.setName("Food importance");
+            expandedInputModel.getFoods().remove(food);
             final Model outputModel = new Model();
-            algorithm.apply(inputModel, outputModel);
-            result.add(new Pair<>(food, model.size() - outputModel.size()));
+            algorithm.apply(expandedInputModel, outputModel);
+            final float importance = 100f * (expandedInputModel.size() - outputModel.size()) / (float) expandedInputModel.size();
+            if (importance > 0)
+                result.add(new Pair<>(food, importance));
         }
-        result.sort((a, b) -> -Integer.compare(a.getSecond(), b.getSecond()));
+        result.sort((a, b) -> -Float.compare(a.getSecond(), b.getSecond()));
         return result;
     }
 
@@ -57,16 +62,28 @@ public class Importance {
      * @param algorithm
      * @return list of reaction, immportance pairs, in order of decreasing importance (difference between model size and model size without given reaction)
      */
-    public static ArrayList<Pair<Reaction, Integer>> computeReactionImportance(Model model, IModelAlgorithm algorithm) {
-        final ArrayList<Pair<Reaction, Integer>> result = new ArrayList<>();
-        for (Reaction reaction : model.getReactions()) {
-            final Model inputModel = model.shallowCopy();
-            inputModel.getReactions().remove(reaction);
-            final Model outputModel = new Model();
-            algorithm.apply(inputModel, outputModel);
-            result.add(new Pair<>(reaction, model.size() - outputModel.size()));
+    public static ArrayList<Pair<Reaction, Float>> computeReactionImportance(Model model, IModelAlgorithm algorithm) {
+        final ArrayList<Pair<Reaction, Float>> result = new ArrayList<>();
+
+        if (model.getReactions().size() > 1) {
+            for (Reaction reaction : model.getReactions()) {
+                final Model inputModel = model.shallowCopy();
+                inputModel.getReactions().remove(reaction); // need to first remove reaction, then expand
+                final Model expandedInputModel = inputModel.getExpandedModel();
+                expandedInputModel.setName("Reaction importance");
+                expandedInputModel.getReactions().remove(reaction);
+                final Model outputModel = new Model();
+                algorithm.apply(expandedInputModel, outputModel);
+
+                // System.err.println(reaction.getName()+" "+expandedInputModel.size()+" -> "+outputModel.size());
+
+                final float importance = 100f * (expandedInputModel.size() - outputModel.size()) / (float) expandedInputModel.size();
+                if (importance > 0)
+                    result.add(new Pair<>(reaction, importance));
+            }
+            result.sort((a, b) -> -Float.compare(a.getSecond(), b.getSecond()));
         }
-        result.sort((a, b) -> -Integer.compare(a.getSecond(), b.getSecond()));
+
         return result;
     }
 
@@ -76,17 +93,17 @@ public class Importance {
      * @param foodImportance
      * @return food importance string
      */
-    public static String toStringFoodImportance(ArrayList<Pair<MoleculeType, Integer>> foodImportance) {
+    public static String toStringFoodImportance(ArrayList<Pair<MoleculeType, Float>> foodImportance) {
         final StringBuilder buf = new StringBuilder();
 
         buf.append("Food importance: ");
         boolean first = true;
-        for (Pair<MoleculeType, Integer> pair : foodImportance) {
+        for (Pair<MoleculeType, Float> pair : foodImportance) {
             if (first)
                 first = false;
             else
                 buf.append(", ");
-            buf.append(String.format("%s: %d", pair.getFirst().getName(), pair.getSecond()));
+            buf.append(String.format("%s %.0f%%", pair.getFirst().getName(), pair.getSecond()));
         }
         return buf.toString();
     }
@@ -94,21 +111,20 @@ public class Importance {
     /**
      * pretty print reaction importance
      *
-     * @param model
      * @param reactionImportance
      * @return food importance string
      */
-    public static String toStringReactionImportance(Model model, ArrayList<Pair<Reaction, Integer>> reactionImportance) {
+    public static String toStringReactionImportance(ArrayList<Pair<Reaction, Float>> reactionImportance) {
         final StringBuilder buf = new StringBuilder();
 
         buf.append("Reaction importance: ");
         boolean first = true;
-        for (Pair<Reaction, Integer> pair : reactionImportance) {
+        for (Pair<Reaction, Float> pair : reactionImportance) {
             if (first)
                 first = false;
             else
                 buf.append(", ");
-            buf.append(String.format("%s: %d", pair.getFirst().getName(), pair.getSecond()));
+            buf.append(String.format("%s %.0f%%", pair.getFirst().getName(), pair.getSecond()));
         }
         return buf.toString();
     }

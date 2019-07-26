@@ -45,8 +45,9 @@ public class MaxRAFAlgorithm implements IModelAlgorithm {
         result.clear();
         result.setName("Max RAF");
 
-        final Set<Reaction> inputReactions = new TreeSet<>(input.getReactions());
-        final Set<MoleculeType> inputFood = new TreeSet<>(input.getFoods());
+        final Model expanded = input.getExpandedModel();
+        final Set<Reaction> inputReactions = new TreeSet<>(expanded.getReactions());
+        final Set<MoleculeType> inputFood = new TreeSet<>(expanded.getFoods());
         final Set<MoleculeType> mentionedFood = filterFood(inputFood, inputReactions);
 
         if (inputReactions.size() > 0) {
@@ -58,8 +59,9 @@ public class MaxRAFAlgorithm implements IModelAlgorithm {
 
             int i = 0;
 
+            // if(!input.getName().contains("importance")) System.err.println("Running MaxRAF algorithm...");
             do {
-                // System.err.println("i=" + i + ":" + Basic.toString(reactions.get(i), ", ") + " Food: " + Basic.toString(foods.get(i), " "));
+                // if(!input.getName().contains("importance")) System.err.println("i=" + i + ":" + Basic.toString(reactions.get(i), ", ") + " Food: " + Basic.toString(foods.get(i), " "));
 
                 final Set<MoleculeType> extendedFood = extendFood(foods.get(i), reactions.get(i), true, false);
                 final Set<Reaction> filteredReactions = filterReactions(extendedFood, reactions.get(i));
@@ -72,11 +74,11 @@ public class MaxRAFAlgorithm implements IModelAlgorithm {
             }
             while (reactions.get(i).size() < reactions.get(i - 1).size());
 
-            //  System.err.println("Final:" + Basic.toString(reactions.get(i - 1), ", ") + " Food: " + Basic.toString(foods.get(i - 1), " "));
+            // if(!input.getName().contains("importance")) System.err.println("Final:" + Basic.toString(reactions.get(i - 1), ", ") + " Food: " + Basic.toString(foods.get(i - 1), " "));
 
             if (reactions.get(i).size() > 0) {
-                result.getReactions().setAll(reactions.get(i));
-                result.getFoods().setAll(filterFood(foods.get(i), reactions.get(i)));
+                result.getReactions().setAll(Model.compress(reactions.get(i)));
+                result.getFoods().setAll(filterFood(input.getFoods(), reactions.get(i)));
             }
         }
     }

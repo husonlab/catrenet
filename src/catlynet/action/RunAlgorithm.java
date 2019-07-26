@@ -34,33 +34,37 @@ import jloda.fx.util.NotificationManager;
  * Daniel Huson, 7.2019
  */
 public class RunAlgorithm {
-    public static void apply(MainWindow window, IModelAlgorithm algorithm, TextArea textArea) {
+    /**
+     * run an algorithm, return the resulting model and write to text area
+     *
+     * @param window
+     * @param algorithm
+     * @param result
+     * @param textArea
+     */
+    public static void apply(MainWindow window, final Model inputModel, IModelAlgorithm algorithm, final Model result, TextArea textArea) {
         final MainWindowController controller = window.getController();
+        result.clear();
 
         final AService<Model> service = new AService<>(() -> {
-            final Model result = new Model();
-            algorithm.apply(window.getModel(), result);
-            return result;
+            final Model outputModel = new Model();
+            algorithm.apply(inputModel, outputModel);
+            return outputModel;
         }, controller.getStatusFlowPane());
 
         service.setOnSucceeded((c) -> {
-            final Model result = service.getValue();
+            result.shallowCopy(service.getValue());
 
-            if (result.getReactions().size() > 0) {
-                final String headLine;
-                if (result.getNumberOfTwoWayReactions() > 0) {
-                    headLine = result.getName() + " has " + result.size() + " reactions (" + result.getNumberOfTwoWayReactions() + " two-way and " + result.getNumberOfOneWayReactions() + " one-way)";
-                } else {
-                    headLine = result.getName() + " has " + result.size() + " reactions";
-                }
+            if (result.size() > 0) {
+                final String headLine = result.getName() + " has " + result.size() + " reactions"
+                        + (result.getNumberOfTwoWayReactions() > 0 ? " (" + result.getNumberOfTwoWayReactions() + " two-way and " + result.getNumberOfOneWayReactions() + " one-way)":"");
 
                 final String infoLine1 = Importance.toStringFoodImportance(Importance.computeFoodImportance(result, algorithm));
-                final String infoLine2 = Importance.toStringReactionImportance(result, Importance.computeReactionImportance(result, algorithm));
-
+                final String infoLine2 = Importance.toStringReactionImportance(Importance.computeReactionImportance(result, algorithm));
 
                 NotificationManager.showInformation(headLine);
 
-                textArea.setText("# " + headLine + ":\n# " + infoLine1 + "\n# " + infoLine2 + "\n\n" + ModelIO.toString(result, true, true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
+                textArea.setText("# " + headLine + ":\n# " + infoLine1 + "\n# " + infoLine2 + "\n\n" + ModelIO.toString(result, false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
 
                 window.getLogStream().println("\n" + headLine);
                 window.getLogStream().println(infoLine1);

@@ -22,6 +22,7 @@ package catlynet.window;
 import catlynet.io.CRSFileFilter;
 import catlynet.io.FileOpener;
 import catlynet.model.Model;
+import catlynet.view.ReactionGraphView;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
@@ -60,7 +61,6 @@ public class MainWindow implements IMainWindow {
     private final UndoManager undoManager = new UndoManager();
 
     private final Document document = new Document();
-    private final Model model = new Model();
 
     private final BooleanProperty hasFoodInput = new SimpleBooleanProperty(false);
     private BooleanProperty hasReactionsInput = new SimpleBooleanProperty(false);
@@ -168,8 +168,20 @@ public class MainWindow implements IMainWindow {
         return document;
     }
 
-    public Model getModel() {
-        return model;
+    public Model getInputModel() {
+        return document.getInputModel();
+    }
+
+    public Model getMaxCAF() {
+        return document.getMaxCAF();
+    }
+
+    public Model getMaxRAF() {
+        return document.getMaxRAF();
+    }
+
+    public Model getMaxPseudoRAF() {
+        return document.getMaxPseudoRAF();
     }
 
     public PrintStream getLogStream() {
@@ -178,5 +190,9 @@ public class MainWindow implements IMainWindow {
 
     public ObservableBooleanValue emptyProperty() {
         return null;
+    }
+
+    public ReactionGraphView getReactionGraphView() {
+        return document.getReactionGraphView();
     }
 }

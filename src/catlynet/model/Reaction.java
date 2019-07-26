@@ -31,12 +31,15 @@ import java.util.TreeSet;
  * Daniel Huson, 6.2019
  */
 public class Reaction implements Comparable<Reaction> {
+    public enum Direction {forward, reverse, both}
     private final String name;
 
     private final Set<MoleculeType> reactants = new TreeSet<>();
     private final Set<MoleculeType> products = new TreeSet<>();
     private final Set<MoleculeType> catalysts = new TreeSet<>();
     private final Set<MoleculeType> inhibitors = new TreeSet<>();
+
+    private Direction direction = Direction.forward;
 
     /**
      * constructor
@@ -72,6 +75,14 @@ public class Reaction implements Comparable<Reaction> {
         return inhibitors;
     }
 
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+
     /**
      * parses a reaction
      * ReactionNotation:
@@ -86,10 +97,10 @@ public class Reaction implements Comparable<Reaction> {
      * Catalysts can be separated by white space or , (for or), or all can be separated by & (for 'and')
      *
      * @param line
-     * @return one or two reactions
+     * @return the reaction
      * @throws IOException
      */
-    public static Reaction[] parse(String line, final Set<Reaction> auxReactions, boolean tabbedFormat) throws IOException {
+    public static Reaction parse(String line, final Set<Reaction> auxReactions, boolean tabbedFormat) throws IOException {
         line = line.replaceAll("->", "=>").replaceAll("<-", "<=");
 
         if (tabbedFormat) { // name <tab>  a+b -> c <tab> catalysts
@@ -117,20 +128,17 @@ public class Reaction implements Comparable<Reaction> {
         final int closeRoundBracket = line.indexOf(")");
 
         final int endArrow;
-        boolean forward;
-        boolean reverse;
+
+        final Reaction.Direction direction;
         {
             if (line.indexOf("<=>") > 0) {
-                forward = true;
-                reverse = true;
+                direction = Direction.both;
                 endArrow = line.indexOf("<=>") + 3;
             } else if (line.indexOf("=>") > 0) {
-                forward = true;
-                reverse = false;
+                direction = Direction.forward;
                 endArrow = line.indexOf("=>") + 2;
             } else if (line.indexOf("<=") > 0) {
-                forward = false;
-                reverse = true;
+                direction = Direction.reverse;
                 endArrow = line.indexOf("<=") + 2;
             } else
                 throw new IOException("Can't parse reaction: " + line);
@@ -165,61 +173,13 @@ public class Reaction implements Comparable<Reaction> {
 
         final ArrayList<Reaction> result = new ArrayList<>();
 
-        if (forward && reverse) {
-            final Reaction reaction1 = new Reaction(reactionName + "+");
-            reaction1.getReactants().addAll(MoleculeType.valueOf(reactants));
-            reaction1.getProducts().addAll(MoleculeType.valueOf(products));
-            reaction1.getCatalysts().addAll(MoleculeType.valueOf(catalysts));
-            reaction1.getInhibitors().addAll(MoleculeType.valueOf(inhibitors));
-            result.add(reaction1);
-
-            final Reaction reaction2 = new Reaction(reactionName + "-");
-            reaction2.getReactants().addAll(MoleculeType.valueOf(products)); // switch roles
-            reaction2.getProducts().addAll(MoleculeType.valueOf(reactants));
-            reaction2.getCatalysts().addAll(MoleculeType.valueOf(catalysts));
-            reaction2.getInhibitors().addAll(MoleculeType.valueOf(inhibitors));
-            result.add(reaction2);
-        } else if (forward) {
-            final Reaction reaction1 = new Reaction(reactionName);
-            reaction1.getReactants().addAll(MoleculeType.valueOf(reactants));
-            reaction1.getProducts().addAll(MoleculeType.valueOf(products));
-            reaction1.getCatalysts().addAll(MoleculeType.valueOf(catalysts));
-            reaction1.getInhibitors().addAll(MoleculeType.valueOf(inhibitors));
-            result.add(reaction1);
-        } else // reverse
-        {
-            final Reaction reaction1 = new Reaction(reactionName);
-            reaction1.getReactants().addAll(MoleculeType.valueOf(products)); // switch roles
-            reaction1.getProducts().addAll(MoleculeType.valueOf(reactants));
-            reaction1.getCatalysts().addAll(MoleculeType.valueOf(catalysts));
-            reaction1.getInhibitors().addAll(MoleculeType.valueOf(inhibitors));
-            result.add(reaction1);
-        }
-
-        for (String catalyst : catalysts) {
-            if (catalyst.contains("&")) {
-                final String[] foods = Basic.split(catalyst, '&');
-                final Reaction auxReaction = new Reaction(reactionName + "/" + catalyst + "/");
-                for (String reactantName : foods) {
-                    auxReaction.getReactants().add(MoleculeType.valueOf(reactantName));
-                }
-                auxReaction.getCatalysts().add(MoleculeType.valueOf(catalyst));
-                auxReaction.getProducts().add(MoleculeType.valueOf(catalyst));
-                boolean found = false;
-                for (Reaction other : auxReactions) {
-                    if (other.getReactants().equals(auxReaction.getReactants()) && other.getCatalysts().equals(auxReaction.getCatalysts()) && other.getProducts().equals(auxReaction.getProducts())) {
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) {
-                    auxReactions.add(auxReaction);
-                    result.add(auxReaction);
-                }
-            }
-
-        }
-        return result.toArray(new Reaction[0]);
+        final Reaction reaction = new Reaction(reactionName);
+        reaction.getReactants().addAll(MoleculeType.valueOf(reactants));
+        reaction.getProducts().addAll(MoleculeType.valueOf(products));
+        reaction.getCatalysts().addAll(MoleculeType.valueOf(catalysts));
+        reaction.getInhibitors().addAll(MoleculeType.valueOf(inhibitors));
+        reaction.setDirection(direction);
+        return reaction;
     }
 
     @Override
@@ -229,5 +189,50 @@ public class Reaction implements Comparable<Reaction> {
 
     public String toString() {
         return getName();
+    }
+
+    /**
+     * creates the reverse reaction (and adds a - to the name) as a forward reaction by swapping reactants and products
+     *
+     * @return reverse reaction
+     */
+    public Reaction createReverse() {
+        final Reaction reverse = new Reaction(getName() + "-");
+        reverse.getReactants().addAll(getProducts());
+        reverse.getProducts().addAll(getReactants());
+        reverse.getCatalysts().addAll(getCatalysts());
+        reverse.getInhibitors().addAll(getInhibitors());
+        return reverse;
+    }
+
+    /**
+     * creates the forward reaction (and adds a + to the name)
+     *
+     * @return forward reaction
+     */
+    public Reaction createForward() {
+        final Reaction forward = new Reaction(getName() + "+");
+        forward.getReactants().addAll(getReactants());
+        forward.getProducts().addAll(getProducts());
+        forward.getCatalysts().addAll(getCatalysts());
+        forward.getInhibitors().addAll(getInhibitors());
+        return forward;
+    }
+
+    /**
+     * creates the both reaction (and removes a trailing + from the name)
+     *
+     * @return both reaction
+     */
+    public Reaction createBoth() {
+        if (!getName().endsWith("+"))
+            throw new IllegalArgumentException("name must end on '+'");
+        final Reaction both = new Reaction(getName().substring(0, getName().length() - 1));
+        both.getReactants().addAll(getReactants());
+        both.getProducts().addAll(getProducts());
+        both.getCatalysts().addAll(getCatalysts());
+        both.getInhibitors().addAll(getInhibitors());
+        both.setDirection(Direction.both);
+        return both;
     }
 }

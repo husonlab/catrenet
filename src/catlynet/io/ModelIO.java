@@ -90,14 +90,13 @@ public class ModelIO {
                         if (line.startsWith("Food:") || (line.startsWith("F:") && !line.contains("->") && !line.contains("=>") && !line.contains("<-") && !line.contains("<="))) {
                             model.getFoods().addAll(parseFood(line));
                         } else {
-                            for (Reaction reaction : Reaction.parse(line, auxReactions, reactionNotation.equals(ReactionNotation.Tabbed))) {
+                            Reaction reaction = Reaction.parse(line, auxReactions, reactionNotation.equals(ReactionNotation.Tabbed));
                                 if (reactionNames.contains(reaction.getName()))
                                     throw new IOException("Multiple reactions have the same name: " + reaction.getName());
                                 model.getReactions().add(reaction);
                                 reactionNames.add(reaction.getName());
-                            }
                         }
-                    } catch (IOException ex) {
+                    } catch (Exception ex) {
                         throw new IOExceptionWithLineNumber(ex.getMessage(), lineNumber);
                     }
             }
@@ -109,12 +108,11 @@ public class ModelIO {
      *
      * @param model
      * @param includeFood
-     * @param simplify
      * @return string
      */
-    public static String toString(Model model, boolean includeFood, boolean simplify, ReactionNotation reactionNotation, ArrowNotation arrowNotation) {
+    public static String toString(Model model, boolean includeFood, ReactionNotation reactionNotation, ArrowNotation arrowNotation) {
         try (StringWriter w = new StringWriter()) {
-            write(model, w, includeFood, simplify, reactionNotation, arrowNotation);
+            write(model, w, includeFood, reactionNotation, arrowNotation);
             return w.toString();
         } catch (IOException e) {
             Basic.caught(e);
@@ -128,25 +126,15 @@ public class ModelIO {
      * @param model
      * @param w
      * @param includeFood include food line
-     * @param simplify    simply all expanded reactions
      * @throws IOException
      */
-    public static void write(Model model, Writer w, boolean includeFood, boolean simplify, ReactionNotation reactionNotation, ArrowNotation arrowNotation) throws IOException {
+    public static void write(Model model, Writer w, boolean includeFood, ReactionNotation reactionNotation, ArrowNotation arrowNotation) throws IOException {
         if (includeFood) {
-            w.write("Food: " + getFoodString(model, simplify, reactionNotation) + "\n\n");
+            w.write("Food: " + getFoodString(model, reactionNotation) + "\n\n");
         }
 
         for (Reaction reaction : model.getReactions()) {
-            if (!simplify)
                 w.write(toString(reaction, reactionNotation, arrowNotation) + "\n");
-            else {
-                if (!reaction.getName().endsWith("/")) {
-                    if (reaction.getName().endsWith("+"))
-                        w.write(Basic.ensureSpaceAround(toStringBothWays(reaction, reactionNotation, arrowNotation), '&') + "\n");
-                    else if (!reaction.getName().endsWith("-"))
-                        w.write(Basic.ensureSpaceAround(toString(reaction, reactionNotation, arrowNotation), '&') + "\n");
-                }
-            }
         }
     }
 
@@ -155,26 +143,12 @@ public class ModelIO {
      * get the food string
      *
      * @param model
-     * @param simplify
      * @param reactionNotation
      * @return food string
      */
-    public static String getFoodString(Model model, boolean simplify, ReactionNotation reactionNotation) {
+    public static String getFoodString(Model model, ReactionNotation reactionNotation) {
         try (StringWriter w = new StringWriter()) {
-            if (!simplify)
                 w.write(Basic.toString(model.getFoods(), reactionNotation == ReactionNotation.Full ? ", " : " "));
-            else {
-                boolean first = true;
-                for (MoleculeType food : model.getFoods()) {
-                    if (!food.getName().contains("&")) {
-                        if (first)
-                            first = false;
-                        else
-                            w.write(reactionNotation == ReactionNotation.Full ? ", " : " ");
-                        w.write(food.getName());
-                    }
-                }
-            }
             return w.toString();
         } catch (IOException ex) {
             return "";
@@ -182,32 +156,30 @@ public class ModelIO {
     }
 
     public static String toString(Reaction reaction, ReactionNotation reactionNotation, ArrowNotation arrowNotation) {
+        final String arrow;
+        switch (reaction.getDirection()) {
+            default:
+            case forward:
+                arrow = (arrowNotation == ArrowNotation.UsesEquals ? "=>" : "->");
+                break;
+            case reverse:
+                arrow = (arrowNotation == ArrowNotation.UsesEquals ? "<=" : "<-");
+                break;
+            case both:
+                arrow = (arrowNotation == ArrowNotation.UsesEquals ? "<=>" : "<->");
+                break;
+        }
+
+
         if (reactionNotation == ReactionNotation.Tabbed)
             return String.format("%s\t%s %s %s\t%s%s",
                     reaction.getName(), Basic.toString(reaction.getReactants(), " + "),
-                    arrowNotation == ArrowNotation.UsesEquals ? "=>" : "->", Basic.toString(reaction.getProducts(), " + "), Basic.toString(reaction.getCatalysts(), " "),
+                    arrow, Basic.toString(reaction.getProducts(), " + "), Basic.toString(reaction.getCatalysts(), " "),
                     (reaction.getInhibitors().size() == 0 ? "" : "\t" + Basic.toString(reaction.getInhibitors(), " ")));
         else
             return String.format("%s : %s [%s]%s%s %s",
                     reaction.getName(), Basic.toString(reaction.getReactants(), " + "), Basic.toString(reaction.getCatalysts(), reactionNotation == ReactionNotation.Full ? ", " : " "),
                     (reaction.getInhibitors().size() == 0 ? " " : " (" + Basic.toString(reaction.getInhibitors(), reactionNotation == ReactionNotation.Full ? ", " : " ") + ") "),
-                    arrowNotation == ArrowNotation.UsesEquals ? "=>" : "->", Basic.toString(reaction.getProducts(), " + "));
+                    arrow, Basic.toString(reaction.getProducts(), " + "));
     }
-
-    public static String toStringBothWays(Reaction reaction, ReactionNotation reactionNotation, ArrowNotation arrowNotation) {
-        if (reactionNotation == ReactionNotation.Tabbed)
-            return String.format("%s\t%s %s %s\t%s%s",
-                    (reaction.getName().endsWith("+") ? reaction.getName().substring(0, reaction.getName().length() - 1) : reaction.getName()),
-                    Basic.toString(reaction.getReactants(), " + "),
-                    arrowNotation == ArrowNotation.UsesEquals ? "<=>" : "<->", Basic.toString(reaction.getProducts(), " + "), Basic.toString(reaction.getCatalysts(), " "),
-                    (reaction.getInhibitors().size() == 0 ? "" : "\t" + Basic.toString(reaction.getInhibitors(), " ")));
-        else
-            return String.format("%s : %s [%s]%s%s %s",
-                    (reaction.getName().endsWith("+") ? reaction.getName().substring(0, reaction.getName().length() - 1) : reaction.getName()),
-                    Basic.toString(reaction.getReactants(), " + "),
-                    Basic.toString(reaction.getCatalysts(), reactionNotation == ReactionNotation.Full ? ", " : " "), arrowNotation == ArrowNotation.UsesEquals ? "<=>" : "<->",
-                    (reaction.getInhibitors().size() == 0 ? " " : " (" + Basic.toString(reaction.getInhibitors(), reactionNotation == ReactionNotation.Full ? ", " : " ") + ") "),
-                    Basic.toString(reaction.getProducts(), " + "));
-    }
-
 }

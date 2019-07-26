@@ -21,6 +21,8 @@ package catlynet.window;
 
 import catlynet.format.ArrowNotation;
 import catlynet.format.ReactionNotation;
+import catlynet.model.Model;
+import catlynet.view.ReactionGraphView;
 import javafx.beans.property.*;
 import jloda.util.ProgramProperties;
 
@@ -31,16 +33,38 @@ public class Document {
     private final ObjectProperty<ReactionNotation> reactionNotation = new SimpleObjectProperty<>(ReactionNotation.valueOfIgnoreCase(ProgramProperties.get("ReactionNotation", "Sparse")));
     private final ObjectProperty<ArrowNotation> arrowNotation = new SimpleObjectProperty<>(ArrowNotation.valueOfLabel(ProgramProperties.get("ArrowNotation", "=>")));
 
-    public Document() {
-        arrowNotationProperty().addListener((c, o, n) -> {
-            System.err.println("Arrow notation: " + n + " " + n.getLabel());
-        });
+    private final Model inputModel = new Model();
 
-        reactionNotationProperty().addListener((c, o, n) -> {
-            System.err.println("Reaction notation: " + n);
-        });
+    private final Model maxCAF = new Model();
+    private final Model maxRAF = new Model();
+    private final Model maxPseudoRAF = new Model();
+
+
+    private final ReactionGraphView reactionGraphView = new ReactionGraphView(inputModel);
+
+
+    public Document() {
     }
 
+    public Model getInputModel() {
+        return inputModel;
+    }
+
+    public Model getMaxCAF() {
+        return maxCAF;
+    }
+
+    public Model getMaxRAF() {
+        return maxRAF;
+    }
+
+    public Model getMaxPseudoRAF() {
+        return maxPseudoRAF;
+    }
+
+    public ReactionGraphView getReactionGraphView() {
+        return reactionGraphView;
+    }
 
     public boolean isDirty() {
         return dirty.get();
@@ -89,4 +113,6 @@ public class Document {
     public void setArrowNotation(ArrowNotation arrowNotation) {
         this.arrowNotation.set(arrowNotation);
     }
+
+
 }

@@ -12,7 +12,7 @@ Hordijk, W. and Steel, M. (2017). [Chasing the tail: The emergence of autocataly
 # Todo:
 We intend to use this implementation
 * as a means of delivering new algorithms for calculating or analyzing catalytic networks, and
-* to provide different visualization and interactive exploration techniques for catayltic networks.
+* to provide different reactionGraphView and interactive exploration techniques for catayltic networks.
 
 # Installers
 One click installers for MacOS, Windows and Linux are available [here](http://ab.inf.uni-tuebingen.de/data/software/catlynet/download/welcome.html). 
