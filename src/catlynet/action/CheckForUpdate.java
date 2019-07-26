@@ -67,7 +67,6 @@ public class CheckForUpdate {
             ApplicationLauncher.launchApplicationInProcess("1691242391", null, new ApplicationLauncher.Callback() {
                 public void exited(int exitValue) {
                     System.err.println("Exit value: " + exitValue);
-                    //TODO add your code here (not invoked on event dispatch thread)
                 }
 
                 public void prepareShutdown() {
@@ -76,6 +75,6 @@ public class CheckForUpdate {
             }, ApplicationLauncher.WindowMode.FRAME, null);
         };
         SwingUtilities.invokeLater(runnable);
-        // Executors.newSingleThreadExecutor().submit(runnable);
+        //Executors.newSingleThreadExecutor().submit(runnable);
     }
 }
