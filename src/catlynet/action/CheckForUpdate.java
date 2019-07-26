@@ -24,11 +24,12 @@ import com.install4j.api.update.ApplicationDisplayMode;
 import com.install4j.api.update.UpdateChecker;
 import com.install4j.api.update.UpdateDescriptor;
 import com.install4j.api.update.UpdateDescriptorEntry;
-import javafx.application.Platform;
 import jloda.fx.util.NotificationManager;
 import jloda.swing.util.InfoMessage;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
+
+import javax.swing.*;
 
 /**
  * check for update and install, if present
@@ -60,9 +61,12 @@ public class CheckForUpdate {
             return;
         }
 
-        Platform.runLater(() -> {
+
+        final Runnable runnable = () -> {
+            System.err.println("Launching update dialog");
             ApplicationLauncher.launchApplicationInProcess("1691242391", null, new ApplicationLauncher.Callback() {
                 public void exited(int exitValue) {
+                    System.err.println("Exit value: " + exitValue);
                     //TODO add your code here (not invoked on event dispatch thread)
                 }
 
@@ -70,6 +74,8 @@ public class CheckForUpdate {
                     ProgramProperties.store();
                 }
             }, ApplicationLauncher.WindowMode.FRAME, null);
-        });
+        };
+        SwingUtilities.invokeLater(runnable);
+        // Executors.newSingleThreadExecutor().submit(runnable);
     }
 }
