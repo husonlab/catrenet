@@ -104,50 +104,40 @@ public class ControlBindings {
         });
         controller.getPrintMenuItem().disableProperty().bind(printableNode.isNull());
 
+        // cut, copy, paste and undo/redo all implemented by TextArea controls
+
         controller.getCutMenuItem().setOnAction((e) -> {
-            if (!controller.getInputTextArea().isFocused()) {
-                controller.getInputTextArea().requestFocus();
-                controller.getInputTextArea().cut();
-            }
         });
-        controller.getCutMenuItem().disableProperty().bind(controller.getInputTextArea().selectedTextProperty().isEmpty());
+        controller.getCutMenuItem().disableProperty().bind((controller.getInputTextArea().focusedProperty().or(controller.getFoodSetComboBox().focusedProperty())).not());
+
 
         controller.getCopyMenuItem().setOnAction((e) -> {
-            if (!controller.getInputTextArea().isFocused()) {
-                controller.getInputTextArea().requestFocus();
-                controller.getInputTextArea().copy();
-            }
         });
-        controller.getCopyMenuItem().disableProperty().bind(controller.getCutMenuItem().disableProperty());
+        controller.getCopyMenuItem().disableProperty().bind((controller.getInputTextArea().focusedProperty().or(controller.getFoodSetComboBox().focusedProperty())).not());
 
         controller.getPasteMenuItem().setOnAction((e) -> {
-            if (!controller.getInputTextArea().isFocused()) {
+        });
+        controller.getPasteMenuItem().disableProperty().bind((controller.getInputTextArea().focusedProperty().or(controller.getFoodSetComboBox().focusedProperty())).not());
+
+
+        controller.getUndoMenuItem().setOnAction((e) -> {
+        });
+        controller.getUndoMenuItem().disableProperty().bind(
+                ((controller.getInputTextArea().focusedProperty().and(controller.getInputTextArea().undoableProperty()))
+                        .or(controller.getFoodSetComboBox().focusedProperty())).not());
+
+        controller.getRedoMenuItem().setOnAction((e) -> {
+            if (false) {
                 controller.getInputTextArea().requestFocus();
-                controller.getInputTextArea().paste();
+                controller.getInputTextArea().redo();
             }
         });
-
-        controller.getClearMenuItem().setOnAction((e) -> {
-            controller.getInputTextArea().requestFocus();
-            controller.getInputTextArea().deleteText(controller.getInputTextArea().getSelection());
-        });
-        controller.getCutMenuItem().disableProperty().bind(controller.getInputTextArea().selectionProperty().isNull());
+        controller.getRedoMenuItem().disableProperty().bind(
+                ((controller.getInputTextArea().focusedProperty().and(controller.getInputTextArea().redoableProperty()))
+                        .or(controller.getFoodSetComboBox().focusedProperty())).not());
 
         controller.getClearLogMenuItem().setOnAction(e -> controller.getLogTextArea().clear());
         controller.getClearLogMenuItem().disableProperty().bind(controller.getLogTextArea().textProperty().isEmpty());
-
-        controller.getUndoMenuItem().setOnAction((e) -> {
-            controller.getInputTextArea().requestFocus();
-            controller.getInputTextArea().undo();
-        });
-        controller.getUndoMenuItem().disableProperty().bind(controller.getInputTextArea().undoableProperty().not());
-
-        controller.getRedoMenuItem().setOnAction((e) -> {
-            controller.getInputTextArea().requestFocus();
-            controller.getInputTextArea().redo();
-        });
-        controller.getRedoMenuItem().disableProperty().bind(controller.getInputTextArea().redoableProperty().not());
-
 
         controller.getVerifyInputMenuItem().setOnAction((e) -> {
             if (ParseInput.apply(window)) {

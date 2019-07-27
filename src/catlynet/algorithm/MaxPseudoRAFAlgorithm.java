@@ -27,14 +27,12 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static catlynet.algorithm.MaxRAFAlgorithm.*;
-
 /**
  * computes a pseudo-RAF
  * Daniel Huson, 7.2019
  * Based on notes by Mike Steel
  */
-public class MaxPseudoRAFAlgorithm implements IModelAlgorithm {
+public class MaxPseudoRAFAlgorithm extends ModelAlgorithmBase {
     /**
      * computes a pseudo-RAF
      *
@@ -44,38 +42,29 @@ public class MaxPseudoRAFAlgorithm implements IModelAlgorithm {
     public void apply(Model input, Model result) {
         result.clear();
         result.setName("Max Pseudo-RAF");
+
         final Model expanded = input.getExpandedModel();
         final Set<Reaction> inputReactions = new TreeSet<>(expanded.getReactions());
-        final Set<MoleculeType> inputFood = new TreeSet<>(expanded.getFoods());
-        final Set<MoleculeType> mentionedFood = filterFood(inputFood, inputReactions);
-
-        final Set<MoleculeType> startingFood = extendFood(mentionedFood, inputReactions, false, false);
-
         if (inputReactions.size() > 0) {
+            final Set<MoleculeType> inputFood = new TreeSet<>(expanded.getFoods());
+
             final ArrayList<Set<Reaction>> reactions = new ArrayList<>();
             final ArrayList<Set<MoleculeType>> foods = new ArrayList<>();
 
-            reactions.add(inputReactions);
-            foods.add(startingFood);
-
             int i = 0;
+            reactions.add(i, inputReactions);
+            foods.add(i, extendFood(inputFood, inputReactions));
 
             do {
-                final Set<MoleculeType> extendedFood = extendFood(inputFood, reactions.get(i), false, false);
-                final Set<Reaction> filteredReactions = filterReactions(extendedFood, reactions.get(i));
-
-                reactions.add(filteredReactions);
-                foods.add(extendedFood);
-
-
-                // System.err.println("i=" + i + ":" + Basic.toString(reactions.get(i), ", ") + " Food: " + Basic.toString(foods.get(i), " "));
+                final Set<Reaction> nextReactions = filterReactions(foods.get(i), reactions.get(i));
+                final Set<MoleculeType> nextFoodSet = extendFood(inputFood, nextReactions);
 
                 i++;
+                reactions.add(i, nextReactions);
+                foods.add(i, nextFoodSet);
             }
-            while (reactions.get(i).size() > reactions.get(i - 1).size());
-
-            //System.err.println("Final:" + Basic.toString(reactions.get(i - 1), ", ") + " Food: " + Basic.toString(foods.get(i - 1), " "));
-
+            while (reactions.get(i).size() < reactions.get(i - 1).size());
+            
             if (reactions.get(i).size() > 0) {
                 result.getReactions().setAll(Model.compress(reactions.get(i)));
                 result.getFoods().setAll(input.getFoods());

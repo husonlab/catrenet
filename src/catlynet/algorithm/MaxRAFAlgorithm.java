@@ -25,7 +25,6 @@ import catlynet.model.Reaction;
 import jloda.util.Basic;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -34,7 +33,7 @@ import java.util.TreeSet;
  * Daniel Huson, 7.2019
  * Based on notes by Mike Steel
  */
-public class MaxRAFAlgorithm implements IModelAlgorithm {
+public class MaxRAFAlgorithm extends ModelAlgorithmBase {
     /**
      * computes the RAF
      *
@@ -48,88 +47,37 @@ public class MaxRAFAlgorithm implements IModelAlgorithm {
         final Model expanded = input.getExpandedModel();
         final Set<Reaction> inputReactions = new TreeSet<>(expanded.getReactions());
         final Set<MoleculeType> inputFood = new TreeSet<>(expanded.getFoods());
-        final Set<MoleculeType> mentionedFood = filterFood(inputFood, inputReactions);
 
         if (inputReactions.size() > 0) {
             final ArrayList<Set<Reaction>> reactions = new ArrayList<>();
             final ArrayList<Set<MoleculeType>> foods = new ArrayList<>();
 
-            reactions.add(inputReactions);
-            foods.add(mentionedFood);
-
             int i = 0;
+            reactions.add(i, inputReactions);
+            foods.add(i, inputFood);
 
             // if(!input.getName().contains("importance")) System.err.println("Running MaxRAF algorithm...");
             do {
-                // if(!input.getName().contains("importance")) System.err.println("i=" + i + ":" + Basic.toString(reactions.get(i), ", ") + " Food: " + Basic.toString(foods.get(i), " "));
+                if (!input.getName().contains("importance"))
+                    System.err.println("i=" + i + ":" + Basic.toString(reactions.get(i), ", ") + " Food: " + Basic.toString(foods.get(i), " "));
 
-                final Set<MoleculeType> extendedFood = extendFood(foods.get(i), reactions.get(i), true, false);
-                final Set<Reaction> filteredReactions = filterReactions(extendedFood, reactions.get(i));
+                final Set<MoleculeType> nextFood = extendFood(foods.get(i), reactions.get(i));
+                final Set<MoleculeType> extendedFood = extendFood(inputFood, reactions.get(i));
 
-                reactions.add(filteredReactions);
-                foods.add(extendedFood);
-
+                final Set<Reaction> nextReactions = filterReactions(extendedFood, reactions.get(i));
 
                 i++;
+                reactions.add(i, nextReactions);
+                foods.add(i, nextFood);
             }
             while (reactions.get(i).size() < reactions.get(i - 1).size());
 
-            // if(!input.getName().contains("importance")) System.err.println("Final:" + Basic.toString(reactions.get(i - 1), ", ") + " Food: " + Basic.toString(foods.get(i - 1), " "));
+            // if(!input.getName().contains("importance")) System.err.println("Final: " + Basic.toString(reactions.get(i), ", ") + " Food: " + Basic.toString(foods.get(i), " "));
 
             if (reactions.get(i).size() > 0) {
                 result.getReactions().setAll(Model.compress(reactions.get(i)));
                 result.getFoods().setAll(filterFood(input.getFoods(), reactions.get(i)));
             }
         }
-    }
-
-    /**
-     * extend a food set by applying all reactions
-     *
-     * @param foodSet
-     * @param reactions
-     * @param requireCatalyst
-     * @return extended food set
-     */
-    public static Set<MoleculeType> extendFood(Set<MoleculeType> foodSet, Set<Reaction> reactions, boolean requireReactants, boolean requireCatalyst) {
-        final Set<MoleculeType> extendedFoodSet = new TreeSet<>(foodSet);
-        while (true) {
-            int size = extendedFoodSet.size();
-            for (Reaction reaction : reactions) {
-                if ((!requireReactants || extendedFoodSet.containsAll(reaction.getReactants())) && (!requireCatalyst || Basic.intersects(extendedFoodSet, reaction.getCatalysts()))) {
-                    extendedFoodSet.addAll(reaction.getProducts());
-                }
-            }
-            if (extendedFoodSet.size() == size)
-                break;
-        }
-        return extendedFoodSet;
-    }
-
-    /**
-     * filter reactions to only keep those that can be run given the current food
-     *
-     * @param food
-     * @param reactions
-     * @return filtered reactions
-     */
-    public static Set<Reaction> filterReactions(Set<MoleculeType> food, Set<Reaction> reactions) {
-        final Set<Reaction> filteredReactions = new TreeSet<>();
-        for (Reaction reaction : reactions) {
-            if (food.containsAll(reaction.getReactants()) && Basic.intersects(food, reaction.getCatalysts()))
-                filteredReactions.add(reaction);
-        }
-        return filteredReactions;
-    }
-
-    public static Set<MoleculeType> filterFood(Collection<MoleculeType> foodSet, Collection<Reaction> reactions) {
-        final Set<MoleculeType> filteredFood = new TreeSet<>();
-
-        for (Reaction reaction : reactions) {
-            filteredFood.addAll(Basic.intersection(foodSet, reaction.getReactants()));
-            filteredFood.addAll(Basic.intersection(foodSet, reaction.getCatalysts()));
-            filteredFood.addAll(Basic.intersection(foodSet, reaction.getProducts()));
-        }
-        return filteredFood;
     }
 }

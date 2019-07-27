@@ -181,6 +181,10 @@ public class ReactionGraphView {
     }
 
     public void clear() {
+        nodeSelection.clearSelection();
+        nodeSelection.setItems();
+        edgeSelection.clearSelection();
+        edgeSelection.setItems();
         graph.clear();
         world.getChildren().clear();
     }

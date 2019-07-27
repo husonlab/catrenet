@@ -19,8 +19,8 @@
 
 package catlynet.action;
 
-import catlynet.algorithm.IModelAlgorithm;
 import catlynet.algorithm.Importance;
+import catlynet.algorithm.ModelAlgorithmBase;
 import catlynet.io.ModelIO;
 import catlynet.model.Model;
 import catlynet.window.MainWindow;
@@ -42,7 +42,7 @@ public class RunAlgorithm {
      * @param result
      * @param textArea
      */
-    public static void apply(MainWindow window, final Model inputModel, IModelAlgorithm algorithm, final Model result, TextArea textArea) {
+    public static void apply(MainWindow window, final Model inputModel, ModelAlgorithmBase algorithm, final Model result, TextArea textArea) {
         final MainWindowController controller = window.getController();
         result.clear();
 
@@ -69,8 +69,10 @@ public class RunAlgorithm {
                 window.getLogStream().println("\n" + headLine);
                 window.getLogStream().println(infoLine1);
                 window.getLogStream().println(infoLine2);
-            } else
+            } else {
+                window.getLogStream().println("\nNo " + result.getName());
                 textArea.setText("# No " + result.getName() + "\n");
+            }
         });
         service.start();
     }

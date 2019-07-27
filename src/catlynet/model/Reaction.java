@@ -22,7 +22,6 @@ package catlynet.model;
 import jloda.util.Basic;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -133,13 +132,13 @@ public class Reaction implements Comparable<Reaction> {
         {
             if (line.indexOf("<=>") > 0) {
                 direction = Direction.both;
-                endArrow = line.indexOf("<=>") + 3;
+                endArrow = line.indexOf("<=>") + 2;
             } else if (line.indexOf("=>") > 0) {
                 direction = Direction.forward;
-                endArrow = line.indexOf("=>") + 2;
+                endArrow = line.indexOf("=>") + 1;
             } else if (line.indexOf("<=") > 0) {
                 direction = Direction.reverse;
-                endArrow = line.indexOf("<=") + 2;
+                endArrow = line.indexOf("<=") + 1;
             } else
                 throw new IOException("Can't parse reaction: " + line);
         }
@@ -170,8 +169,6 @@ public class Reaction implements Comparable<Reaction> {
             inhibitors = new String[0];
 
         final String[] products = Basic.trimAll(line.substring(endArrow + 1).trim().split("[+\\s]+"));
-
-        final ArrayList<Reaction> result = new ArrayList<>();
 
         final Reaction reaction = new Reaction(reactionName);
         reaction.getReactants().addAll(MoleculeType.valueOf(reactants));

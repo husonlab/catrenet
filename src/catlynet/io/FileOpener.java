@@ -70,8 +70,8 @@ public class FileOpener implements Consumer<String> {
             NotificationManager.showInformation(infoString);
 
             window.getLogStream().println(infoString);
-            window.getLogStream().println("Input format:   " + pair.getFirst());
-            window.getLogStream().println("Display format: " + window.getDocument().getReactionNotation());
+            // window.getLogStream().println("Input format:   " + pair.getFirst());
+            // window.getLogStream().println("Display format: " + window.getDocument().getReactionNotation());
             RecentFilesManager.getInstance().insertRecentFile(fileName);
 
         } catch (IOException e) {

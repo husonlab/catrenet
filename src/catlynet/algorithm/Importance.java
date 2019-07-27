@@ -37,7 +37,7 @@ public class Importance {
      * @param algorithm
      * @return list of food, immportance pairs, in order of decreasing importance (percent difference between model size and model size without given food item)
      */
-    public static ArrayList<Pair<MoleculeType, Float>> computeFoodImportance(Model model, IModelAlgorithm algorithm) {
+    public static ArrayList<Pair<MoleculeType, Float>> computeFoodImportance(Model model, ModelAlgorithmBase algorithm) {
         final ArrayList<Pair<MoleculeType, Float>> result = new ArrayList<>();
         final Model expandedModel = model.getExpandedModel();
 
@@ -62,7 +62,7 @@ public class Importance {
      * @param algorithm
      * @return list of reaction, immportance pairs, in order of decreasing importance (difference between model size and model size without given reaction)
      */
-    public static ArrayList<Pair<Reaction, Float>> computeReactionImportance(Model model, IModelAlgorithm algorithm) {
+    public static ArrayList<Pair<Reaction, Float>> computeReactionImportance(Model model, ModelAlgorithmBase algorithm) {
         final ArrayList<Pair<Reaction, Float>> result = new ArrayList<>();
 
         if (model.getReactions().size() > 1) {

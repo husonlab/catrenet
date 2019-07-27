@@ -27,14 +27,12 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static catlynet.algorithm.MaxRAFAlgorithm.*;
-
 /**
  * computes a CAF
  * Daniel Huson, 7.2019
  * Based on notes by Mike Steel
  */
-public class MaxCAFAlgorithm implements IModelAlgorithm {
+public class MaxCAFAlgorithm extends ModelAlgorithmBase {
     /**
      * computes a CAF
      *
@@ -56,32 +54,28 @@ public class MaxCAFAlgorithm implements IModelAlgorithm {
             final ArrayList<Set<Reaction>> reactions = new ArrayList<>();
             final ArrayList<Set<MoleculeType>> foods = new ArrayList<>();
 
-            reactions.add(startingReactions);
-            foods.add(mentionedFood);
 
             int i = 0;
+            reactions.add(i, startingReactions);
+            foods.add(i, mentionedFood);
 
             do {
                 // System.err.println("i=" + i + ": " + Basic.toString(reactions.get(i), ", ") + " Food: " + Basic.toString(foods.get(i), " "));
 
-                final Set<MoleculeType> extendedFood = extendFood(foods.get(i), reactions.get(i), false, false);
-                final Set<Reaction> nextReactions = filterReactions(extendedFood, inputReactions);
+                final Set<MoleculeType> nextFood = extendFood(foods.get(i), reactions.get(i));
+                final Set<Reaction> nextReactions = filterReactions(nextFood, inputReactions);
                 nextReactions.addAll(reactions.get(i));
 
-                reactions.add(nextReactions);
-                foods.add(extendedFood);
-
                 i++;
+                reactions.add(i, nextReactions);
+                foods.add(i, nextFood);
             }
             while (reactions.get(i).size() > reactions.get(i - 1).size());
-
-            // System.err.println("End: " + Basic.toString(reactions.get(i - 1), ", ") + " Food: " + Basic.toString(foods.get(i - 1), " "));
 
             if (reactions.get(i).size() > 0) {
                 result.getReactions().setAll(Model.compress(reactions.get(i)));
                 result.getFoods().setAll(input.getFoods());
             }
         }
-
     }
 }
