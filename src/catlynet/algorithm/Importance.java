@@ -19,9 +19,9 @@
 
 package catlynet.algorithm;
 
-import catlynet.model.Model;
 import catlynet.model.MoleculeType;
 import catlynet.model.Reaction;
+import catlynet.model.ReactionSystem;
 import jloda.util.Pair;
 
 import java.util.ArrayList;
@@ -33,21 +33,21 @@ public class Importance {
     /**
      * computes food importance
      *
-     * @param model
+     * @param inputSystem
      * @param algorithm
-     * @return list of food, immportance pairs, in order of decreasing importance (percent difference between model size and model size without given food item)
+     * @return list of food, importance pairs, in order of decreasing importance (percent difference between model size and model size without given food item)
      */
-    public static ArrayList<Pair<MoleculeType, Float>> computeFoodImportance(Model model, ModelAlgorithmBase algorithm) {
+    public static ArrayList<Pair<MoleculeType, Float>> computeFoodImportance(ReactionSystem inputSystem, ReactionSystem originalResult, AlgorithmBase algorithm) {
         final ArrayList<Pair<MoleculeType, Float>> result = new ArrayList<>();
-        final Model expandedModel = model.getExpandedModel();
+        final ReactionSystem expandedReactionSystem = inputSystem.getExpandedSystem();
 
-        for (MoleculeType food : model.getFoods()) {
-            final Model expandedInputModel = expandedModel.shallowCopy();
-            expandedInputModel.setName("Food importance");
-            expandedInputModel.getFoods().remove(food);
-            final Model outputModel = new Model();
-            algorithm.apply(expandedInputModel, outputModel);
-            final float importance = 100f * (expandedInputModel.size() - outputModel.size()) / (float) expandedInputModel.size();
+        for (MoleculeType food : inputSystem.getFoods()) {
+            final ReactionSystem replicateExpandedInput = expandedReactionSystem.shallowCopy();
+            replicateExpandedInput.setName("Food importance");
+            replicateExpandedInput.getFoods().remove(food);
+            final ReactionSystem replicateOutput = algorithm.apply(replicateExpandedInput).getCompressedSystem();
+
+            final float importance = 100f * (originalResult.size() - replicateOutput.size()) / (float) originalResult.size();
             if (importance > 0)
                 result.add(new Pair<>(food, importance));
         }
@@ -58,28 +58,29 @@ public class Importance {
     /**
      * computes reaction importance
      *
-     * @param model
+     * @param inputSystem
      * @param algorithm
      * @return list of reaction, immportance pairs, in order of decreasing importance (difference between model size and model size without given reaction)
      */
-    public static ArrayList<Pair<Reaction, Float>> computeReactionImportance(Model model, ModelAlgorithmBase algorithm) {
+    public static ArrayList<Pair<Reaction, Float>> computeReactionImportance(ReactionSystem inputSystem, ReactionSystem originalResult, AlgorithmBase algorithm) {
         final ArrayList<Pair<Reaction, Float>> result = new ArrayList<>();
 
-        if (model.getReactions().size() > 1) {
-            for (Reaction reaction : model.getReactions()) {
-                final Model inputModel = model.shallowCopy();
-                inputModel.getReactions().remove(reaction); // need to first remove reaction, then expand
-                final Model expandedInputModel = inputModel.getExpandedModel();
-                expandedInputModel.setName("Reaction importance");
-                expandedInputModel.getReactions().remove(reaction);
-                final Model outputModel = new Model();
-                algorithm.apply(expandedInputModel, outputModel);
+        for (Reaction reaction : inputSystem.getReactions()) {
+            if (originalResult.size() > 1) {
+                final ReactionSystem replicateInput = inputSystem.shallowCopy();
+                replicateInput.getReactions().remove(reaction); // need to first remove reaction, then expand
+                final ReactionSystem replicateExpandedInput = replicateInput.getExpandedSystem();
+                replicateExpandedInput.setName("Reaction importance");
+                replicateExpandedInput.getReactions().remove(reaction);
+                final ReactionSystem replicateOutput = algorithm.apply(replicateExpandedInput).getCompressedSystem();
 
                 // System.err.println(reaction.getName()+" "+expandedInputModel.size()+" -> "+outputModel.size());
 
-                final float importance = 100f * (expandedInputModel.size() - outputModel.size()) / (float) expandedInputModel.size();
-                if (importance > 0)
-                    result.add(new Pair<>(reaction, importance));
+                if (originalResult.size() - replicateOutput.size() > 1) {
+                    final float importance = 100f * (originalResult.size() - replicateOutput.size()) / (float) originalResult.size();
+                    if (importance > 0)
+                        result.add(new Pair<>(reaction, importance));
+                }
             }
             result.sort((a, b) -> -Float.compare(a.getSecond(), b.getSecond()));
         }

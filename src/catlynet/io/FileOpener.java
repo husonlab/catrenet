@@ -22,7 +22,7 @@ package catlynet.io;
 import catlynet.action.NewWindow;
 import catlynet.format.ArrowNotation;
 import catlynet.format.ReactionNotation;
-import catlynet.model.Model;
+import catlynet.model.ReactionSystem;
 import catlynet.window.MainWindow;
 import jloda.fx.util.NotificationManager;
 import jloda.fx.util.RecentFilesManager;
@@ -47,7 +47,7 @@ public class FileOpener implements Consumer<String> {
         if (window == null || !window.isEmpty())
             window = NewWindow.apply();
 
-        final Model model = window.getInputModel();
+        final ReactionSystem reactionSystem = window.getInputModel();
 
         try (BufferedReader r = new BufferedReader(new FileReader(fileName))) {
             window.getDocument().setFileName(fileName);
@@ -55,7 +55,7 @@ public class FileOpener implements Consumer<String> {
             if (pair == null)
                 throw new IOException("Couldn't detect 'full', 'sparse' or 'tabbed' file format");
 
-            model.clear();
+            reactionSystem.clear();
             ModelIO.read(window.getInputModel(), r, pair.getFirst());
 
             window.getController().getInputTextArea().setText(ModelIO.toString(window.getInputModel(), false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
@@ -64,8 +64,8 @@ public class FileOpener implements Consumer<String> {
                 window.getController().getFoodSetComboBox().getItems().add(0, food);
             window.getController().getFoodSetComboBox().getSelectionModel().select(food);
 
-            final String infoString = "Read " + model.size() + " reactions" + (model.getNumberOfTwoWayReactions() > 0 ? "(" + model.getNumberOfTwoWayReactions() + " two-way)" : "")
-                    + " and " + model.getFoods().size() + " food items from file: " + fileName;
+            final String infoString = "Read " + reactionSystem.size() + " reactions" + (reactionSystem.getNumberOfTwoWayReactions() > 0 ? "(" + reactionSystem.getNumberOfTwoWayReactions() + " two-way)" : "")
+                    + " and " + reactionSystem.getFoods().size() + " food items from file: " + fileName;
 
             NotificationManager.showInformation(infoString);
 

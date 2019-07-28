@@ -21,7 +21,7 @@ package catlynet.window;
 
 import catlynet.io.CRSFileFilter;
 import catlynet.io.FileOpener;
-import catlynet.model.Model;
+import catlynet.model.ReactionSystem;
 import catlynet.view.ReactionGraphView;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -168,19 +168,19 @@ public class MainWindow implements IMainWindow {
         return document;
     }
 
-    public Model getInputModel() {
-        return document.getInputModel();
+    public ReactionSystem getInputModel() {
+        return document.getInputReactionSystem();
     }
 
-    public Model getMaxCAF() {
+    public ReactionSystem getMaxCAF() {
         return document.getMaxCAF();
     }
 
-    public Model getMaxRAF() {
+    public ReactionSystem getMaxRAF() {
         return document.getMaxRAF();
     }
 
-    public Model getMaxPseudoRAF() {
+    public ReactionSystem getMaxPseudoRAF() {
         return document.getMaxPseudoRAF();
     }
 

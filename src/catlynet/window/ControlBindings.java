@@ -202,7 +202,7 @@ public class ControlBindings {
 
             if (ParseInput.apply(window)) {
                 window.getReactionGraphView().update();
-                controller.getReactionsTextArea().setText("Expanded reactions:\n\n" + ModelIO.toString(window.getInputModel().getExpandedModel(), true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
+                controller.getReactionsTextArea().setText("Expanded reactions:\n\n" + ModelIO.toString(window.getInputModel().getExpandedSystem(), true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
                 RunAlgorithm.apply(window, window.getInputModel(), new MaxCAFAlgorithm(), window.getMaxCAF(), controller.getCafTextArea());
                 RunAlgorithm.apply(window, window.getInputModel(), new MaxRAFAlgorithm(), window.getMaxRAF(), controller.getRafTextArea());
                 RunAlgorithm.apply(window, window.getInputModel(), new MaxPseudoRAFAlgorithm(), window.getMaxPseudoRAF(), controller.getPseudoRAFTextArea());

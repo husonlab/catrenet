@@ -20,7 +20,7 @@
 package catlynet.action;
 
 import catlynet.io.ModelIO;
-import catlynet.model.Model;
+import catlynet.model.ReactionSystem;
 import catlynet.window.MainWindow;
 import catlynet.window.MainWindowController;
 import javafx.scene.control.ComboBox;
@@ -46,22 +46,22 @@ public class ParseInput {
         final MainWindowController controller = window.getController();
 
         try {
-            final Model model = window.getInputModel();
-            model.clear();
+            final ReactionSystem reactionSystem = window.getInputModel();
+            reactionSystem.clear();
 
-            ModelIO.read(model, new StringReader(controller.getInputTextArea().getText()), window.getDocument().getReactionNotation());
+            ModelIO.read(reactionSystem, new StringReader(controller.getInputTextArea().getText()), window.getDocument().getReactionNotation());
 
             final ComboBox<String> foodCBox = controller.getFoodSetComboBox();
             if (foodCBox.getSelectionModel().getSelectedItem() != null)
-                ModelIO.read(model, new StringReader("Food: " + foodCBox.getSelectionModel().getSelectedItem()), window.getDocument().getReactionNotation());
-            final String foodString = ModelIO.getFoodString(model, window.getDocument().getReactionNotation());
+                ModelIO.read(reactionSystem, new StringReader("Food: " + foodCBox.getSelectionModel().getSelectedItem()), window.getDocument().getReactionNotation());
+            final String foodString = ModelIO.getFoodString(reactionSystem, window.getDocument().getReactionNotation());
             foodCBox.getSelectionModel().select(foodString);
             if (!foodCBox.getItems().contains(foodString))
                 foodCBox.getItems().add(0, foodString);
 
             //controller.getInputTextArea().setText(ModelIO.toString(model, false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
 
-            if (model.containsInhibitors()) {
+            if (reactionSystem.containsInhibitors()) {
                 window.getLogStream().println("Warning: Model contains inhibitors, these are currently ignored");
                 NotificationManager.showWarning("Warning: Model contains inhibitors, these are currently ignored");
             }

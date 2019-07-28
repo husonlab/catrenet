@@ -19,15 +19,16 @@
 
 package catlynet.action;
 
+import catlynet.algorithm.AlgorithmBase;
 import catlynet.algorithm.Importance;
-import catlynet.algorithm.ModelAlgorithmBase;
 import catlynet.io.ModelIO;
-import catlynet.model.Model;
+import catlynet.model.ReactionSystem;
 import catlynet.window.MainWindow;
 import catlynet.window.MainWindowController;
 import javafx.scene.control.TextArea;
 import jloda.fx.util.AService;
 import jloda.fx.util.NotificationManager;
+import jloda.util.Triplet;
 
 /**
  * runs an algorithm
@@ -42,25 +43,29 @@ public class RunAlgorithm {
      * @param result
      * @param textArea
      */
-    public static void apply(MainWindow window, final Model inputModel, ModelAlgorithmBase algorithm, final Model result, TextArea textArea) {
+    public static void apply(MainWindow window, final ReactionSystem inputReactions, AlgorithmBase algorithm, final ReactionSystem result, TextArea textArea) {
         final MainWindowController controller = window.getController();
         result.clear();
 
-        final AService<Model> service = new AService<>(() -> {
-            final Model outputModel = new Model();
-            algorithm.apply(inputModel, outputModel);
-            return outputModel;
+        final AService<Triplet<ReactionSystem, String, String>> service = new AService<>(() -> {
+            final ReactionSystem outputReactions = algorithm.apply(inputReactions).getCompressedSystem();
+            final String infoLine1 = Importance.toStringFoodImportance(Importance.computeFoodImportance(inputReactions, outputReactions, algorithm));
+            final String infoLine2 = Importance.toStringReactionImportance(Importance.computeReactionImportance(inputReactions, outputReactions, algorithm));
+
+            return new Triplet<>(outputReactions, infoLine1, infoLine2);
         }, controller.getStatusFlowPane());
 
         service.setOnSucceeded((c) -> {
-            result.shallowCopy(service.getValue());
+            final Triplet<ReactionSystem, String, String> triplet = service.getValue();
+
+            result.shallowCopy(triplet.getFirst());
 
             if (result.size() > 0) {
                 final String headLine = result.getName() + " has " + result.size() + " reactions"
                         + (result.getNumberOfTwoWayReactions() > 0 ? " (" + result.getNumberOfTwoWayReactions() + " two-way and " + result.getNumberOfOneWayReactions() + " one-way)":"");
 
-                final String infoLine1 = Importance.toStringFoodImportance(Importance.computeFoodImportance(result, algorithm));
-                final String infoLine2 = Importance.toStringReactionImportance(Importance.computeReactionImportance(result, algorithm));
+                final String infoLine1 = triplet.getSecond();
+                final String infoLine2 = triplet.getThird();
 
                 NotificationManager.showInformation(headLine);
 

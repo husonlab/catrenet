@@ -19,9 +19,9 @@
 
 package catlynet.view;
 
-import catlynet.model.Model;
 import catlynet.model.MoleculeType;
 import catlynet.model.Reaction;
+import catlynet.model.ReactionSystem;
 import catlynet.window.MainWindow;
 import catlynet.window.MainWindowController;
 import javafx.beans.property.BooleanProperty;
@@ -131,7 +131,7 @@ public class SelectionBindings {
     /**
      * select a given subset of nodes and/or edges
      *
-     * @param model
+     * @param reactionSystem
      * @param view
      * @param nodes
      * @param edges
@@ -140,10 +140,10 @@ public class SelectionBindings {
      * @param molecules
      * @param deselectNonMatched
      */
-    private static void select(Model model, ReactionGraphView view, boolean nodes, boolean edges, boolean food, boolean reactions, boolean molecules, boolean deselectNonMatched) {
+    private static void select(ReactionSystem reactionSystem, ReactionGraphView view, boolean nodes, boolean edges, boolean food, boolean reactions, boolean molecules, boolean deselectNonMatched) {
         for (Node v : view.getGraph().nodes()) {
             if (nodes || (reactions && v.getInfo() instanceof Reaction)
-                    || (food & v.getInfo() instanceof MoleculeType && model.getFoods().contains((MoleculeType) v.getInfo()))
+                    || (food & v.getInfo() instanceof MoleculeType && reactionSystem.getFoods().contains((MoleculeType) v.getInfo()))
                     || (molecules && v.getInfo() instanceof MoleculeType))
                 view.getNodeSelection().select(v);
             else if (deselectNonMatched)
@@ -159,10 +159,10 @@ public class SelectionBindings {
      * select subgraph associated with given (sub) model
      *
      * @param view
-     * @param subModel
+     * @param subReactionSystem
      */
-    private static void selectForAlgorithm(ReactionGraphView view, Model subModel) {
-        final Set<MoleculeType> molecules = subModel.getMoleculeTypes(true, true, true, false, false);
+    private static void selectForAlgorithm(ReactionGraphView view, ReactionSystem subReactionSystem) {
+        final Set<MoleculeType> molecules = subReactionSystem.getMoleculeTypes(true, true, true, false, false);
 
         final AMultipleSelectionModel<Node> nodeSelection = view.getNodeSelection();
         final AMultipleSelectionModel<Edge> edgeSelection = view.getEdgeSelection();
@@ -173,7 +173,7 @@ public class SelectionBindings {
         for (Node v : view.getGraph().nodes()) {
             if (v.getInfo() instanceof Reaction) {
                 final Reaction reaction = (Reaction) v.getInfo();
-                if (subModel.getReactionNames().contains(reaction.getName()))
+                if (subReactionSystem.getReactionNames().contains(reaction.getName()))
                     nodeSelection.select(v);
             } else if (v.getInfo() instanceof MoleculeType) {
                 final MoleculeType moleculeType = (MoleculeType) v.getInfo();

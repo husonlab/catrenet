@@ -35,7 +35,7 @@ import java.util.TreeSet;
  * the main  model
  * Daniel Huson, 6.2019
  */
-public class Model {
+public class ReactionSystem {
     private final ObservableList<Reaction> reactions = FXCollections.observableArrayList();
     private final ObservableList<MoleculeType> foods = FXCollections.observableArrayList();
 
@@ -46,7 +46,7 @@ public class Model {
     private final StringProperty name = new SimpleStringProperty("Reactions");
 
 
-    public Model() {
+    public ReactionSystem() {
         size.bind(Bindings.size(reactions));
 
         reactions.addListener((ListChangeListener<Reaction>) e -> {
@@ -76,8 +76,8 @@ public class Model {
      *
      * @return shallow copy of this model
      */
-    public Model shallowCopy() {
-        final Model result = new Model();
+    public ReactionSystem shallowCopy() {
+        final ReactionSystem result = new ReactionSystem();
         result.shallowCopy(this);
         return result;
     }
@@ -87,7 +87,7 @@ public class Model {
      *
      * @param that
      */
-    public void shallowCopy(Model that) {
+    public void shallowCopy(ReactionSystem that) {
         clear();
         setName(that.getName());
         foods.addAll(that.foods);
@@ -155,10 +155,10 @@ public class Model {
      * gets the expanded model in which each bi-direction reaction is replaced by two one-way reactions and
      * for each 'and' set of catalysts the correspond enforcing reaction has been added
      *
-     * @return
+     * @return expanded reaction system
      */
-    public Model getExpandedModel() {
-        final Model expanded = new Model();
+    public ReactionSystem getExpandedSystem() {
+        final ReactionSystem expanded = new ReactionSystem();
         expanded.setName(getName() + " (expanded)");
         expanded.getFoods().setAll(getFoods());
 
@@ -208,22 +208,23 @@ public class Model {
     }
 
     /**
-     * compress set of expanded reactions
+     * gets the compressed system (opposite of expanded)
      *
-     * @param reactions
-     * @return compressed set
+     * @return expanded reaction system
      */
-    public static Set<Reaction> compress(Set<Reaction> reactions) {
-        final Set<Reaction> result = new TreeSet<>();
-
+    public ReactionSystem getCompressedSystem() {
+        final ReactionSystem compressed = new ReactionSystem();
+        compressed.setName(getName().replaceAll(" (expanded)", ""));
+        compressed.getFoods().setAll(getFoods());
         for (Reaction reaction : reactions) {
             if (reaction.getName().endsWith("+")) {
-                result.add(reaction.createBoth());
+                compressed.getReactions().add(reaction.createBoth());
             } else if (!reaction.getName().endsWith("-") && !reaction.getName().endsWith("/"))
-                result.add(reaction);
+                compressed.getReactions().add(reaction);
         }
-        return result;
+        return compressed;
     }
+
 
     /**
      * gets all mentioned molecule types

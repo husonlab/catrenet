@@ -19,9 +19,9 @@
 
 package catlynet.view;
 
-import catlynet.model.Model;
 import catlynet.model.MoleculeType;
 import catlynet.model.Reaction;
+import catlynet.model.ReactionSystem;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.collections.ListChangeListener;
@@ -66,12 +66,12 @@ public class ReactionGraphView {
     public class AndNode {
     }
 
-    private final Model model;
+    private final ReactionSystem reactionSystem;
 
     private final Group world;
 
-    public ReactionGraphView(Model model) {
-        this.model = model;
+    public ReactionGraphView(ReactionSystem reactionSystem) {
+        this.reactionSystem = reactionSystem;
         this.world = new Group();
 
         nodeSelection.getSelectedItems().addListener((ListChangeListener<Node>) (e) -> {
@@ -124,7 +124,7 @@ public class ReactionGraphView {
 
         final Map<MoleculeType, Node> molecule2node = new HashMap<>();
 
-        for (Reaction reaction : model.getReactions()) {
+        for (Reaction reaction : reactionSystem.getReactions()) {
             final Node reactionNode = graph.newNode(reaction);
 
             for (Collection<MoleculeType> collection : Arrays.asList(reaction.getReactants(), reaction.getProducts(), reaction.getCatalysts(), reaction.getInhibitors())) {
@@ -175,7 +175,7 @@ public class ReactionGraphView {
         }));
 
         service.setOnSucceeded((e) -> {
-            world.getChildren().addAll(setupGraphView(model, graph, node2group, edge2group, service.getValue()));
+            world.getChildren().addAll(setupGraphView(reactionSystem, graph, node2group, edge2group, service.getValue()));
         });
         service.start();
     }
@@ -212,7 +212,7 @@ public class ReactionGraphView {
      * @param coordinates
      * @return graph view
      */
-    private Collection<? extends javafx.scene.Node> setupGraphView(Model model, Graph graph, NodeArray<Pair<javafx.scene.Node, javafx.scene.Node>> node2pair, EdgeArray<Group> edge2group, NodeArray<APoint2D> coordinates) {
+    private Collection<? extends javafx.scene.Node> setupGraphView(ReactionSystem reactionSystem, Graph graph, NodeArray<Pair<javafx.scene.Node, javafx.scene.Node>> node2pair, EdgeArray<Group> edge2group, NodeArray<APoint2D> coordinates) {
         final ArrayList<javafx.scene.Node> all = new ArrayList<>();
         final ArrayList<javafx.scene.Node> labels = new ArrayList<>();
 
@@ -247,7 +247,7 @@ public class ReactionGraphView {
                 final Shape shape = new SquareShape(10);
                 shape.setStroke(Color.BLACK);
                 shape.setFill(Color.WHITE);
-                if (model.getFoods().contains((MoleculeType) v.getInfo()))
+                if (reactionSystem.getFoods().contains((MoleculeType) v.getInfo()))
                     shape.setStrokeWidth(4);
                 else
                     shape.setStrokeWidth(2);

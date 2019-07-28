@@ -21,9 +21,9 @@ package catlynet.io;
 
 import catlynet.format.ArrowNotation;
 import catlynet.format.ReactionNotation;
-import catlynet.model.Model;
 import catlynet.model.MoleculeType;
 import catlynet.model.Reaction;
+import catlynet.model.ReactionSystem;
 import jloda.util.Basic;
 import jloda.util.IOExceptionWithLineNumber;
 
@@ -70,7 +70,7 @@ public class ModelIO {
      * @param r
      * @throws IOException
      */
-    public static void read(Model model, Reader r, ReactionNotation reactionNotation) throws IOException {
+    public static void read(ReactionSystem reactionSystem, Reader r, ReactionNotation reactionNotation) throws IOException {
         final Set<String> reactionNames = new HashSet<>();
         final Set<Reaction> auxReactions = new HashSet<>();
 
@@ -88,12 +88,12 @@ public class ModelIO {
                 if (line.length() > 0)
                     try {
                         if (line.startsWith("Food:") || (line.startsWith("F:") && !line.contains("->") && !line.contains("=>") && !line.contains("<-") && !line.contains("<="))) {
-                            model.getFoods().addAll(parseFood(line));
+                            reactionSystem.getFoods().addAll(parseFood(line));
                         } else {
                             Reaction reaction = Reaction.parse(line, auxReactions, reactionNotation.equals(ReactionNotation.Tabbed));
                                 if (reactionNames.contains(reaction.getName()))
                                     throw new IOException("Multiple reactions have the same name: " + reaction.getName());
-                                model.getReactions().add(reaction);
+                            reactionSystem.getReactions().add(reaction);
                                 reactionNames.add(reaction.getName());
                         }
                     } catch (Exception ex) {
@@ -106,13 +106,13 @@ public class ModelIO {
     /**
      * write model as string
      *
-     * @param model
+     * @param reactionSystem
      * @param includeFood
      * @return string
      */
-    public static String toString(Model model, boolean includeFood, ReactionNotation reactionNotation, ArrowNotation arrowNotation) {
+    public static String toString(ReactionSystem reactionSystem, boolean includeFood, ReactionNotation reactionNotation, ArrowNotation arrowNotation) {
         try (StringWriter w = new StringWriter()) {
-            write(model, w, includeFood, reactionNotation, arrowNotation);
+            write(reactionSystem, w, includeFood, reactionNotation, arrowNotation);
             return w.toString();
         } catch (IOException e) {
             Basic.caught(e);
@@ -123,17 +123,17 @@ public class ModelIO {
     /**
      * write model
      *
-     * @param model
+     * @param reactionSystem
      * @param w
      * @param includeFood include food line
      * @throws IOException
      */
-    public static void write(Model model, Writer w, boolean includeFood, ReactionNotation reactionNotation, ArrowNotation arrowNotation) throws IOException {
+    public static void write(ReactionSystem reactionSystem, Writer w, boolean includeFood, ReactionNotation reactionNotation, ArrowNotation arrowNotation) throws IOException {
         if (includeFood) {
-            w.write("Food: " + getFoodString(model, reactionNotation) + "\n\n");
+            w.write("Food: " + getFoodString(reactionSystem, reactionNotation) + "\n\n");
         }
 
-        for (Reaction reaction : model.getReactions()) {
+        for (Reaction reaction : reactionSystem.getReactions()) {
                 w.write(toString(reaction, reactionNotation, arrowNotation) + "\n");
         }
     }
@@ -142,13 +142,13 @@ public class ModelIO {
     /**
      * get the food string
      *
-     * @param model
+     * @param reactionSystem
      * @param reactionNotation
      * @return food string
      */
-    public static String getFoodString(Model model, ReactionNotation reactionNotation) {
+    public static String getFoodString(ReactionSystem reactionSystem, ReactionNotation reactionNotation) {
         try (StringWriter w = new StringWriter()) {
-                w.write(Basic.toString(model.getFoods(), reactionNotation == ReactionNotation.Full ? ", " : " "));
+            w.write(Basic.toString(reactionSystem.getFoods(), reactionNotation == ReactionNotation.Full ? ", " : " "));
             return w.toString();
         } catch (IOException ex) {
             return "";

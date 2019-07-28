@@ -1,5 +1,5 @@
 /*
- * IModelAlgorithm.java Copyright (C) 2019. Daniel H. Huson
+ * AlgorithmBase.java Copyright (C) 2019. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -19,9 +19,9 @@
 
 package catlynet.algorithm;
 
-import catlynet.model.Model;
 import catlynet.model.MoleculeType;
 import catlynet.model.Reaction;
+import catlynet.model.ReactionSystem;
 import jloda.util.Basic;
 
 import java.util.Collection;
@@ -32,33 +32,28 @@ import java.util.TreeSet;
  * computes a new reaction model from an old one
  * Daniel Huson, 7.2019
  */
-public abstract class ModelAlgorithmBase {
+public abstract class AlgorithmBase {
     /**
      * run the algorithm
      *
      * @param input
-     * @param output
+     * @return output
      */
-    abstract public void apply(Model input, Model output);
+    abstract public ReactionSystem apply(ReactionSystem input);
 
     /**
-     * extend a food set by add all reaction products (disregarding reactants, catalysts and inhibitors)
+     * add molecules mentioned as products to the given list of existing molecules
      *
-     * @param foodSet
+     * @param molecules existing molecules
      * @param reactions
      * @return extended food set
      */
-    protected Set<MoleculeType> extendFood(Collection<MoleculeType> foodSet, Collection<Reaction> reactions) {
-        final Set<MoleculeType> extendedFoodSet = new TreeSet<>(foodSet);
-        while (true) {
-            int size = extendedFoodSet.size();
-            for (Reaction reaction : reactions) {
-                extendedFoodSet.addAll(reaction.getProducts());
+    protected Set<MoleculeType> addAllMentionedMolecules(Collection<MoleculeType> molecules, Collection<Reaction> reactions) {
+        final Set<MoleculeType> products = new TreeSet<>(molecules);
+        for (Reaction reaction : reactions) {
+            products.addAll(reaction.getProducts());
             }
-            if (extendedFoodSet.size() == size)
-                break;
-        }
-        return extendedFoodSet;
+        return products;
     }
 
     /**
@@ -75,23 +70,5 @@ public abstract class ModelAlgorithmBase {
                 filteredReactions.add(reaction);
         }
         return filteredReactions;
-    }
-
-    /**
-     * filter food so as to only return food mentioned in the reactions
-     *
-     * @param foodSet
-     * @param reactions
-     * @return filtered food
-     */
-    protected Set<MoleculeType> filterFood(Collection<MoleculeType> foodSet, Collection<Reaction> reactions) {
-        final Set<MoleculeType> filteredFood = new TreeSet<>();
-
-        for (Reaction reaction : reactions) {
-            filteredFood.addAll(Basic.intersection(foodSet, reaction.getReactants()));
-            filteredFood.addAll(Basic.intersection(foodSet, reaction.getCatalysts()));
-            filteredFood.addAll(Basic.intersection(foodSet, reaction.getProducts()));
-        }
-        return filteredFood;
     }
 }

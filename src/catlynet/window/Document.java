@@ -21,7 +21,7 @@ package catlynet.window;
 
 import catlynet.format.ArrowNotation;
 import catlynet.format.ReactionNotation;
-import catlynet.model.Model;
+import catlynet.model.ReactionSystem;
 import catlynet.view.ReactionGraphView;
 import javafx.beans.property.*;
 import jloda.util.ProgramProperties;
@@ -33,32 +33,32 @@ public class Document {
     private final ObjectProperty<ReactionNotation> reactionNotation = new SimpleObjectProperty<>(ReactionNotation.valueOfIgnoreCase(ProgramProperties.get("ReactionNotation", "Sparse")));
     private final ObjectProperty<ArrowNotation> arrowNotation = new SimpleObjectProperty<>(ArrowNotation.valueOfLabel(ProgramProperties.get("ArrowNotation", "=>")));
 
-    private final Model inputModel = new Model();
+    private final ReactionSystem inputReactionSystem = new ReactionSystem();
 
-    private final Model maxCAF = new Model();
-    private final Model maxRAF = new Model();
-    private final Model maxPseudoRAF = new Model();
+    private final ReactionSystem maxCAF = new ReactionSystem();
+    private final ReactionSystem maxRAF = new ReactionSystem();
+    private final ReactionSystem maxPseudoRAF = new ReactionSystem();
 
 
-    private final ReactionGraphView reactionGraphView = new ReactionGraphView(inputModel);
+    private final ReactionGraphView reactionGraphView = new ReactionGraphView(inputReactionSystem);
 
 
     public Document() {
     }
 
-    public Model getInputModel() {
-        return inputModel;
+    public ReactionSystem getInputReactionSystem() {
+        return inputReactionSystem;
     }
 
-    public Model getMaxCAF() {
+    public ReactionSystem getMaxCAF() {
         return maxCAF;
     }
 
-    public Model getMaxRAF() {
+    public ReactionSystem getMaxRAF() {
         return maxRAF;
     }
 
-    public Model getMaxPseudoRAF() {
+    public ReactionSystem getMaxPseudoRAF() {
         return maxPseudoRAF;
     }
 
