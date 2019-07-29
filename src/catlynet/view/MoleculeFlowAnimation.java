@@ -87,8 +87,10 @@ public class MoleculeFlowAnimation {
         playing.addListener((c, o, n) -> {
             if (n)
                 foodService.restart();
-            else
+            else {
                 foodService.cancel();
+                edge2count.clear();
+            }
         });
     }
 
