@@ -141,7 +141,7 @@ public class SelectionBindings {
      * @param deselectNonMatched
      */
     private static void select(ReactionSystem reactionSystem, ReactionGraphView view, boolean nodes, boolean edges, boolean food, boolean reactions, boolean molecules, boolean deselectNonMatched) {
-        for (Node v : view.getGraph().nodes()) {
+        for (Node v : view.getReactionGraph().nodes()) {
             if (nodes || (reactions && v.getInfo() instanceof Reaction)
                     || (food & v.getInfo() instanceof MoleculeType && reactionSystem.getFoods().contains((MoleculeType) v.getInfo()))
                     || (molecules && v.getInfo() instanceof MoleculeType))
@@ -170,7 +170,7 @@ public class SelectionBindings {
         nodeSelection.clearSelection();
         edgeSelection.clearSelection();
 
-        for (Node v : view.getGraph().nodes()) {
+        for (Node v : view.getReactionGraph().nodes()) {
             if (v.getInfo() instanceof Reaction) {
                 final Reaction reaction = (Reaction) v.getInfo();
                 if (subReactionSystem.getReactionNames().contains(reaction.getName()))
@@ -181,7 +181,7 @@ public class SelectionBindings {
                     nodeSelection.select(v);
             }
         }
-        for (Node v : view.getGraph().nodes()) {
+        for (Node v : view.getReactionGraph().nodes()) {
             if (v.getInfo() instanceof ReactionGraphView.AndNode) {
                 boolean allNeighborsSelected = true;
                 for (Node w : v.adjacentNodes()) {
@@ -195,7 +195,7 @@ public class SelectionBindings {
             }
         }
 
-        for (Edge e : view.getGraph().edges()) {
+        for (Edge e : view.getReactionGraph().edges()) {
             if (nodeSelection.getSelectedItems().contains(e.getSource()) && nodeSelection.getSelectedItems().contains(e.getTarget()))
                 edgeSelection.select(e);
         }

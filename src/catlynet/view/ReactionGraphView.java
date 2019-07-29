@@ -54,9 +54,10 @@ import java.util.*;
  * Daniel Huson, 7.2019
  */
 public class ReactionGraphView {
-    private final Graph graph = new Graph();
-    private final NodeArray<Pair<javafx.scene.Node, javafx.scene.Node>> node2group = new NodeArray<>(graph);
-    private final EdgeArray<Group> edge2group = new EdgeArray<>(graph);
+    private final Graph reactionGraph = new Graph();
+    private final NodeSet foodNodes = new NodeSet(reactionGraph);
+    private final NodeArray<Pair<javafx.scene.Node, javafx.scene.Node>> node2group = new NodeArray<>(reactionGraph);
+    private final EdgeArray<Group> edge2group = new EdgeArray<>(reactionGraph);
 
     private final AMultipleSelectionModel<Node> nodeSelection = new AMultipleSelectionModel<>();
     private final AMultipleSelectionModel<Edge> edgeSelection = new AMultipleSelectionModel<>();
@@ -70,6 +71,13 @@ public class ReactionGraphView {
 
     private final Group world;
 
+    private final MoleculeFlowAnimation moleculeFlowAnimation;
+
+    /**
+     * construct a graph view for the given system
+     *
+     * @param reactionSystem
+     */
     public ReactionGraphView(ReactionSystem reactionSystem) {
         this.reactionSystem = reactionSystem;
         this.world = new Group();
@@ -114,6 +122,8 @@ public class ReactionGraphView {
                 }
             }
         });
+
+        moleculeFlowAnimation = new MoleculeFlowAnimation(reactionGraph, foodNodes, edge2group,world);
     }
 
     /**
@@ -125,67 +135,72 @@ public class ReactionGraphView {
         final Map<MoleculeType, Node> molecule2node = new HashMap<>();
 
         for (Reaction reaction : reactionSystem.getReactions()) {
-            final Node reactionNode = graph.newNode(reaction);
+            final Node reactionNode = reactionGraph.newNode(reaction);
 
             for (Collection<MoleculeType> collection : Arrays.asList(reaction.getReactants(), reaction.getProducts(), reaction.getCatalysts(), reaction.getInhibitors())) {
                 for (MoleculeType molecule : collection) {
                     if (molecule2node.get(molecule) == null) {
 
                         if (molecule.getName().contains("&")) {
-                            molecule2node.put(molecule, graph.newNode(new AndNode()));
+                            molecule2node.put(molecule, reactionGraph.newNode(new AndNode()));
 
                             for (MoleculeType catalyst : MoleculeType.valueOf(Basic.trimAll(Basic.split(molecule.getName(), '&')))) {
                                 if (molecule2node.get(catalyst) == null) {
-                                    molecule2node.put(catalyst, graph.newNode(catalyst));
+                                    molecule2node.put(catalyst, reactionGraph.newNode(catalyst));
                                 }
                             }
-                        } else
-                            molecule2node.put(molecule, graph.newNode(molecule));
+                        } else {
+                            final Node v = reactionGraph.newNode(molecule);
+                            molecule2node.put(molecule, v);
+                            if (reactionSystem.getFoods().contains(molecule))
+                                foodNodes.add(v);
+                        }
 
 
                     }
                 }
             }
             for (MoleculeType molecule : reaction.getReactants()) {
-                graph.newEdge(molecule2node.get(molecule), reactionNode, reaction.getDirection() == Reaction.Direction.both ? EdgeType.ReactantReversible : EdgeType.Reactant);
+                reactionGraph.newEdge(molecule2node.get(molecule), reactionNode, reaction.getDirection() == Reaction.Direction.both ? EdgeType.ReactantReversible : EdgeType.Reactant);
             }
             for (MoleculeType molecule : reaction.getProducts()) {
-                graph.newEdge(reactionNode, molecule2node.get(molecule), reaction.getDirection() == Reaction.Direction.both ? EdgeType.ProductReversible : EdgeType.Product);
+                reactionGraph.newEdge(reactionNode, molecule2node.get(molecule), reaction.getDirection() == Reaction.Direction.both ? EdgeType.ProductReversible : EdgeType.Product);
             }
             for (MoleculeType molecule : reaction.getCatalysts()) {
                 if (molecule.getName().contains("&")) {
                     for (MoleculeType catalyst : MoleculeType.valueOf(Basic.trimAll(Basic.split(molecule.getName(), '&')))) {
-                        graph.newEdge(molecule2node.get(catalyst), molecule2node.get(molecule), EdgeType.Catalyst);
+                        reactionGraph.newEdge(molecule2node.get(catalyst), molecule2node.get(molecule), EdgeType.Catalyst);
                     }
                 }
-                graph.newEdge(molecule2node.get(molecule), reactionNode, EdgeType.Catalyst);
+                reactionGraph.newEdge(molecule2node.get(molecule), reactionNode, EdgeType.Catalyst);
             }
             for (MoleculeType molecule : reaction.getInhibitors()) {
-                graph.newEdge(molecule2node.get(molecule), reactionNode, EdgeType.Inhibitor);
+                reactionGraph.newEdge(molecule2node.get(molecule), reactionNode, EdgeType.Inhibitor);
             }
         }
-        nodeSelection.setItems(graph.getNodesAsSet());
-        edgeSelection.setItems(graph.getEdgesAsSet());
+        nodeSelection.setItems(reactionGraph.getNodesAsSet());
+        edgeSelection.setItems(reactionGraph.getEdgesAsSet());
 
         AService<NodeArray<APoint2D>> service = new AService<>();
         service.setCallable((() -> {
-            final FruchtermanReingoldLayout layout = new FruchtermanReingoldLayout(graph);
+            final FruchtermanReingoldLayout layout = new FruchtermanReingoldLayout(reactionGraph);
 
             return layout.apply(10000);
         }));
 
         service.setOnSucceeded((e) -> {
-            world.getChildren().addAll(setupGraphView(reactionSystem, graph, node2group, edge2group, service.getValue()));
+            world.getChildren().addAll(setupGraphView(reactionSystem, reactionGraph, node2group, edge2group, service.getValue()));
         });
         service.start();
     }
 
     public void clear() {
+        foodNodes.clear();
         nodeSelection.clearSelection();
         nodeSelection.setItems();
         edgeSelection.clearSelection();
         edgeSelection.setItems();
-        graph.clear();
+        reactionGraph.clear();
         world.getChildren().clear();
     }
 
@@ -193,8 +208,8 @@ public class ReactionGraphView {
         return world;
     }
 
-    public Graph getGraph() {
-        return graph;
+    public Graph getReactionGraph() {
+        return reactionGraph;
     }
 
     public AMultipleSelectionModel<Node> getNodeSelection() {
@@ -568,5 +583,9 @@ public class ReactionGraphView {
                 return true;
         }
         return false;
+    }
+
+    public MoleculeFlowAnimation getMoleculeFlowAnimation() {
+        return moleculeFlowAnimation;
     }
 }

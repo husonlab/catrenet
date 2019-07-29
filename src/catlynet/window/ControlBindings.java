@@ -35,6 +35,8 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -295,10 +297,23 @@ public class ControlBindings {
                 }
             });
 
-            SelectionBindings.setup(window, controller);
+            centerPane.setOnContextMenuRequested((e) -> {
+                if (window.getReactionGraphView().getMoleculeFlowAnimation().isPlaying()) {
+                    final MenuItem menuItem = new MenuItem("Stop Animate Molecule Flow");
+                    menuItem.setOnAction((z) -> window.getReactionGraphView().getMoleculeFlowAnimation().setPlaying(false));
+                    (new ContextMenu(menuItem)).show(centerPane, e.getScreenX(), e.getScreenY());
+                } else {
+                    final MenuItem menuItem = new MenuItem("Start Animate Molecule Flow");
+                    menuItem.setOnAction((z) -> window.getReactionGraphView().getMoleculeFlowAnimation().setPlaying(true));
+                    (new ContextMenu(menuItem)).show(centerPane, e.getScreenX(), e.getScreenY());
+                }
+            });
         }
+        SelectionBindings.setup(window, controller);
 
         //controller.getFoodSetComboBox().setStyle("-fx-font: 13px \"Courier New\";");
+
+
     }
 
     /**

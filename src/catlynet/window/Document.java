@@ -39,9 +39,7 @@ public class Document {
     private final ReactionSystem maxRAF = new ReactionSystem();
     private final ReactionSystem maxPseudoRAF = new ReactionSystem();
 
-
     private final ReactionGraphView reactionGraphView = new ReactionGraphView(inputReactionSystem);
-
 
     public Document() {
     }
