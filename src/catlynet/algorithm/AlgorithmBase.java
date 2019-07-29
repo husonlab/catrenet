@@ -48,7 +48,7 @@ public abstract class AlgorithmBase {
      * @param reactions
      * @return extended food set
      */
-    protected Set<MoleculeType> addAllMentionedMolecules(Collection<MoleculeType> molecules, Collection<Reaction> reactions) {
+    protected Set<MoleculeType> addAllMentionedProducts(Collection<MoleculeType> molecules, Collection<Reaction> reactions) {
         final Set<MoleculeType> products = new TreeSet<>(molecules);
         for (Reaction reaction : reactions) {
             products.addAll(reaction.getProducts());

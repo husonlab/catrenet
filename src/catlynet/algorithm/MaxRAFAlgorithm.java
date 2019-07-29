@@ -54,14 +54,12 @@ public class MaxRAFAlgorithm extends AlgorithmBase {
             reactions.add(0, inputReactions);
             molecules.add(0, inputFood);
 
-            // if(!input.getName().contains("importance")) System.err.println("Running MaxRAF algorithm...");
             int i = -1;
             do {
                 i++;
-                //  if (!input.getName().contains("importance")) System.err.println("i=" + i + ":" + Basic.toString(reactions.get(i), ", ") + " Food: " + Basic.toString(foods.get(i), " "));
 
-                final Set<MoleculeType> nextMolecules = addAllMentionedMolecules(molecules.get(i), reactions.get(i));
-                final Set<MoleculeType> extendedFood = addAllMentionedMolecules(inputFood, reactions.get(i));
+                final Set<MoleculeType> nextMolecules = addAllMentionedProducts(molecules.get(i), reactions.get(i));
+                final Set<MoleculeType> extendedFood = addAllMentionedProducts(inputFood, reactions.get(i));
 
                 final Set<Reaction> nextReactions = filterReactions(extendedFood, reactions.get(i));
 
@@ -69,9 +67,6 @@ public class MaxRAFAlgorithm extends AlgorithmBase {
                 molecules.add(i + 1, nextMolecules);
             }
             while (reactions.get(i + 1).size() < reactions.get(i).size());
-
-            // if(!input.getName().contains("importance")) System.err.println("Final: " + Basic.toString(reactions.get(i), ", ") + " Food: " + Basic.toString(foods.get(i), " "));
-
 
             if (reactions.get(i).size() > 0) {
                 result.getReactions().setAll(reactions.get(i));

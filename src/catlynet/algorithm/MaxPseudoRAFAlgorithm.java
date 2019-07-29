@@ -52,16 +52,14 @@ public class MaxPseudoRAFAlgorithm extends AlgorithmBase {
             final ArrayList<Set<MoleculeType>> molecules = new ArrayList<>();
 
             reactions.add(0, inputReactions);
-            molecules.add(0, addAllMentionedMolecules(inputFood, inputReactions));
+            molecules.add(0, addAllMentionedProducts(inputFood, inputReactions));
 
             int i = -1;
             do {
                 i++;
-                final Set<Reaction> nextReactions = filterReactions(molecules.get(i), reactions.get(i));
-                final Set<MoleculeType> nextMolecules = new TreeSet<>(addAllMentionedMolecules(inputFood, nextReactions));
 
-                reactions.add(i + 1, nextReactions);
-                molecules.add(i + 1, nextMolecules);
+                reactions.add(i + 1, filterReactions(molecules.get(i), reactions.get(i)));
+                molecules.add(i + 1, addAllMentionedProducts(inputFood, reactions.get(i + 1)));
             }
             while (reactions.get(i + 1).size() < reactions.get(i).size());
             

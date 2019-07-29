@@ -45,7 +45,9 @@ public class ReactionSystem {
 
     private final StringProperty name = new SimpleStringProperty("Reactions");
 
-
+    /**
+     * construct a reactions systems
+     */
     public ReactionSystem() {
         size.bind(Bindings.size(reactions));
 
@@ -162,7 +164,7 @@ public class ReactionSystem {
         expanded.setName(getName() + " (expanded)");
         expanded.getFoods().setAll(getFoods());
 
-        final ArrayList<Reaction> auxilaryReactions = new ArrayList<>();
+        final ArrayList<Reaction> auxiliaryReactions = new ArrayList<>();
 
         for (Reaction reaction : getReactions()) {
             switch (reaction.getDirection()) {
@@ -191,14 +193,14 @@ public class ReactionSystem {
                     auxReaction.getCatalysts().add(catalyst);
                     auxReaction.getProducts().add(catalyst);
                     boolean found = false;
-                    for (Reaction other : auxilaryReactions) {
+                    for (Reaction other : auxiliaryReactions) {
                         if (other.getReactants().equals(auxReaction.getReactants()) && other.getCatalysts().equals(auxReaction.getCatalysts()) && other.getProducts().equals(auxReaction.getProducts())) {
                             found = true;
                             break;
                         }
                     }
                     if (!found) {
-                        auxilaryReactions.add(auxReaction);
+                        auxiliaryReactions.add(auxReaction);
                         expanded.getReactions().add(auxReaction);
                     }
                 }
@@ -210,7 +212,7 @@ public class ReactionSystem {
     /**
      * gets the compressed system (opposite of expanded)
      *
-     * @return expanded reaction system
+     * @return compressed reaction system
      */
     public ReactionSystem getCompressedSystem() {
         final ReactionSystem compressed = new ReactionSystem();

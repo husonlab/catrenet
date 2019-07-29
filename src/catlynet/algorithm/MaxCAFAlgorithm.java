@@ -47,33 +47,25 @@ public class MaxCAFAlgorithm extends AlgorithmBase {
         final Set<Reaction> inputReactions = new TreeSet<>(expanded.getReactions());
         final Set<MoleculeType> inputFood = new TreeSet<>(expanded.getFoods());
 
-        final Set<Reaction> startingReactions = filterReactions(inputFood, inputReactions);
+        final ArrayList<Set<Reaction>> reactions = new ArrayList<>();
+        final ArrayList<Set<MoleculeType>> molecules = new ArrayList<>();
 
-        if (startingReactions.size() > 0) {
-            final ArrayList<Set<Reaction>> reactions = new ArrayList<>();
-            final ArrayList<Set<MoleculeType>> molecules = new ArrayList<>();
+        reactions.add(0, filterReactions(inputFood, inputReactions));
+        molecules.add(0, inputFood);
 
-            reactions.add(0, startingReactions);
-            molecules.add(0, inputFood);
+        int i = -1;
+        do {
+            i++;
 
-            int i = -1;
-            do {
-                i++;
+            reactions.add(i + 1, filterReactions(molecules.get(i), inputReactions));
+            molecules.add(i + 1, addAllMentionedProducts(molecules.get(i), reactions.get(i)));
+        } while (i == 0 || reactions.get(i + 1).size() > reactions.get(i).size());
 
-                final Set<MoleculeType> nextMolecules = new TreeSet<>(addAllMentionedMolecules(molecules.get(i), reactions.get(i)));
-                final Set<Reaction> nextReactions = filterReactions(nextMolecules, inputReactions);
-                nextReactions.addAll(reactions.get(i));
-
-                reactions.add(i + 1, nextReactions);
-                molecules.add(i + 1, nextMolecules);
-            }
-            while (reactions.get(i + 1).size() > reactions.get(i).size());
-
-            if (reactions.get(i).size() > 0) {
-                result.getReactions().setAll(reactions.get(i));
-                result.getFoods().setAll(input.getFoods());
-            }
+        if (reactions.get(i).size() > 0) {
+            result.getReactions().setAll(reactions.get(i));
+            result.getFoods().setAll(input.getFoods());
         }
+
         return result;
     }
 }
