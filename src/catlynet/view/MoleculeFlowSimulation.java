@@ -65,6 +65,8 @@ public class MoleculeFlowSimulation {
     public MoleculeFlowSimulation(Graph reactionGraph, NodeSet foodNodes, EdgeArray<Group> edge2Group, Group world) {
         final EdgeIntegerArray edge2count = new EdgeIntegerArray(reactionGraph);
 
+        final Color color = Color.DARKRED.brighter().brighter().brighter().brighter();
+
         // this service pumps molecules into the system
         final Service<Boolean> service = new Service<>() {
             protected Task<Boolean> createTask() {
@@ -78,10 +80,10 @@ public class MoleculeFlowSimulation {
                             for (Node v : Basic.randomize(foodNodes, random)) {
                                 for (Edge e : Basic.randomize(v.adjacentEdges(), random)) {
                                     if (e.getInfo() == EdgeType.Reactant || e.getInfo() == EdgeType.ReactantReversible || e.getInfo() == EdgeType.Catalyst) {
-                                        Platform.runLater(() -> animateEdge(e, false, edge2count, edge2Group, Color.DARKRED, world));
+                                        Platform.runLater(() -> animateEdge(e, false, edge2count, edge2Group, color, world));
                                         break;
                                     } else if (e.getInfo() == EdgeType.ProductReversible) {
-                                        Platform.runLater(() -> animateEdge(e, true, edge2count, edge2Group, Color.DARKRED, world));
+                                        Platform.runLater(() -> animateEdge(e, true, edge2count, edge2Group, color, world));
                                         break;
                                     }
                                 }
@@ -95,10 +97,10 @@ public class MoleculeFlowSimulation {
                                     if (!foodNodes.contains(v) && v.getInfo() instanceof MoleculeType) {
                                         for (Edge e : Basic.randomize(v.adjacentEdges(), random)) {
                                             if (e.getInfo() == EdgeType.Reactant || e.getInfo() == EdgeType.ReactantReversible || e.getInfo() == EdgeType.Catalyst) {
-                                                Platform.runLater(() -> animateEdge(e, false, edge2count, edge2Group, Color.DARKRED, world));
+                                                Platform.runLater(() -> animateEdge(e, false, edge2count, edge2Group, color, world));
                                                 break loop;
                                             } else if (e.getInfo() == EdgeType.ProductReversible) {
-                                                Platform.runLater(() -> animateEdge(e, true, edge2count, edge2Group, Color.DARKRED, world));
+                                                Platform.runLater(() -> animateEdge(e, true, edge2count, edge2Group, color, world));
                                                 break loop;
                                             }
                                         }
@@ -188,7 +190,7 @@ public class MoleculeFlowSimulation {
                     path.setEffect(SelectionEffectRed.getInstance());
 
                     for (Pair<Edge, Boolean> pair : computeEdgesReadyToFire(edge, reverse ? edge.getSource() : edge.getTarget(), edge2count)) {
-                        animateEdge(pair.getFirst(), pair.getSecond(), edge2count, edge2Group, color.brighter(), world);
+                        animateEdge(pair.getFirst(), pair.getSecond(), edge2count, edge2Group, color.darker(), world);
                     }
                 } else
                     path.setEffect(null);
@@ -285,8 +287,8 @@ public class MoleculeFlowSimulation {
                 edge2count.decrement(f);
             }
             final ArrayList<Pair<Edge, Boolean>> result = new ArrayList<>();
-            for (Edge f : v.outEdges()) {
-                result.add(new Pair<>(f, false));
+            for (Edge f : Basic.randomize(v.outEdges(), random)) {
+                return new ArrayList<>(Collections.singletonList(new Pair<>(f, false)));
             }
             return result;
         } else if (v.getInfo() instanceof MoleculeType) {
@@ -314,4 +316,5 @@ public class MoleculeFlowSimulation {
         }
         return null;
     }
+
 }
