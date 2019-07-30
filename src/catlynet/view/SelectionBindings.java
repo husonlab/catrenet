@@ -72,6 +72,8 @@ public class SelectionBindings {
         });
         controller.getSelectNoneMenuItem().disableProperty().bind(inputHasFocus.not().and(visualizationHasFocus.not()));
 
+        controller.getSelectNoneContextMenuItem().setOnAction(controller.getSelectNodesMenuItem().getOnAction());
+        controller.getSelectNoneContextMenuItem().disableProperty().bind(controller.getSelectNoneMenuItem().disableProperty());
 
         controller.getSelectInvertedMenuItem().setOnAction((e) -> {
             view.getNodeSelection().invertSelection();
@@ -116,16 +118,26 @@ public class SelectionBindings {
         });
         controller.getSelectMaxCAFMenuItem().disableProperty().bind(visualizationHasFocus.not().or(window.getMaxCAF().sizeProperty().isEqualTo(0)));
 
+        controller.getSelectCAFContextMenuItem().setOnAction(controller.getSelectMaxCAFMenuItem().getOnAction());
+        controller.getSelectCAFContextMenuItem().disableProperty().bind(controller.getSelectMaxCAFMenuItem().disableProperty());
+
+
         controller.getSelectMaxRAFMenuItem().setOnAction((e) -> {
             selectForAlgorithm(view, window.getMaxRAF());
         });
         controller.getSelectMaxRAFMenuItem().disableProperty().bind(visualizationHasFocus.not().or(window.getMaxRAF().sizeProperty().isEqualTo(0)));
+
+        controller.getSelectRAFContextMenuItem().setOnAction(controller.getSelectMaxRAFMenuItem().getOnAction());
+        controller.getSelectRAFContextMenuItem().disableProperty().bind(controller.getSelectMaxRAFMenuItem().disableProperty());
 
         controller.getSelectMaxPseudoRAFMenuItem().setOnAction((e) -> {
             selectForAlgorithm(view, window.getMaxPseudoRAF());
 
         });
         controller.getSelectMaxPseudoRAFMenuItem().disableProperty().bind(visualizationHasFocus.not().or(window.getMaxPseudoRAF().sizeProperty().isEqualTo(0)));
+
+        controller.getSelectPseudoRAFContextMenuItem().setOnAction(controller.getSelectMaxPseudoRAFMenuItem().getOnAction());
+        controller.getSelectPseudoRAFContextMenuItem().disableProperty().bind(controller.getSelectMaxPseudoRAFMenuItem().disableProperty());
     }
 
     /**

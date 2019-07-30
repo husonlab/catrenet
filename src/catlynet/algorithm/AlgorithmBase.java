@@ -57,6 +57,65 @@ public abstract class AlgorithmBase {
     }
 
     /**
+     * gets the closure of the set of molecules with respect to the set of reactions, ignoring catalysts and inhibitors
+     *
+     * @param molecules existing molecules
+     * @param reactions
+     * @return extended food set
+     */
+    protected Set<MoleculeType> computeClosure(Collection<MoleculeType> molecules, Collection<Reaction> reactions) {
+        final Set<MoleculeType> allMolecules = new TreeSet<>(molecules);
+        boolean changed;
+        do {
+            changed = false;
+            for (Reaction reaction : reactions) {
+                if (allMolecules.containsAll(reaction.getReactants())) {
+                    if (!allMolecules.containsAll(reaction.getProducts())) {
+                        allMolecules.addAll(reaction.getProducts());
+                        changed = true;
+                    }
+                    ;
+                }
+            }
+        }
+        while (changed);
+        return allMolecules;
+    }
+
+    /**
+     * returns those molecules that are mentioned as catalysts
+     *
+     * @param molecules existing molecules
+     * @param reactions
+     * @return extended food set
+     */
+    protected Set<MoleculeType> filterMentionedInhibitors(Collection<MoleculeType> molecules, Collection<Reaction> reactions) {
+        final Set<MoleculeType> mentioned = new TreeSet<>();
+        for (Reaction reaction : reactions) {
+            mentioned.addAll(reaction.getInhibitors());
+        }
+        return Basic.intersection(molecules, mentioned);
+    }
+
+    /**
+     * returns those molecules that are mentioned anywhere
+     *
+     * @param molecules existing molecules
+     * @param reactions
+     * @return extended food set
+     */
+    protected Set<MoleculeType> filterMentionedMolecules(Collection<MoleculeType> molecules, Collection<Reaction> reactions) {
+        final Set<MoleculeType> mentioned = new TreeSet<>();
+        for (Reaction reaction : reactions) {
+            mentioned.addAll(reaction.getReactants());
+            mentioned.addAll(reaction.getProducts());
+            mentioned.addAll(reaction.getCatalysts());
+            mentioned.addAll(reaction.getInhibitors());
+        }
+        return Basic.intersection(molecules, mentioned);
+    }
+
+    /**
      * filter reactions to only keep those that can be run given the current food
      *
      * @param food

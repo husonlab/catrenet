@@ -177,38 +177,52 @@
                                 </MenuItem>
                             </items>
                         </Menu>
-                        <Menu fx:id="algorithmMenu" mnemonicParsing="false" text="Algorithm">
+                        <Menu fx:id="algorithmMenu" mnemonicParsing="false" text="Methods">
                             <items>
-                                <MenuItem fx:id="verifyInputMenuItem" mnemonicParsing="false" text="Verify Input">
+                                <MenuItem fx:id="parseInputMenuItem" mnemonicParsing="false" text="Parse Input">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="I" control="UP" meta="DOWN" shift="UP"
                                                             shortcut="UP"/>
                                     </accelerator>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="runRAFMenuItem" mnemonicParsing="false" text="Run Max RAF Algorithm">
-                                    <accelerator>
-                                        <KeyCodeCombination alt="UP" code="R" control="UP" meta="DOWN" shift="DOWN"
-                                                            shortcut="UP"/>
-                                    </accelerator>
-                                </MenuItem>
-                                <MenuItem fx:id="runCAFMenuItem" mnemonicParsing="false" text="Run Max CAF Algorithm">
-                                    <accelerator>
-                                        <KeyCodeCombination alt="UP" code="C" control="UP" meta="DOWN" shift="DOWN"
-                                                            shortcut="UP"/>
-                                    </accelerator>
-                                </MenuItem>
+                                <MenuItem fx:id="runRAFMenuItem" mnemonicParsing="false" text="Run Max RAF Algorithm"/>
+                                <MenuItem fx:id="runCAFMenuItem" mnemonicParsing="false" text="Run Max CAF Algorithm"/>
                                 <MenuItem fx:id="runPseudoRAFMenuItem" mnemonicParsing="false"
-                                          text="Run Max Pseudo RAF Algorithm">
-                                    <accelerator>
-                                        <KeyCodeCombination alt="UP" code="P" control="UP" meta="DOWN" shift="DOWN"
-                                                            shortcut="UP"/>
-                                    </accelerator>
-                                </MenuItem>
+                                          text="Run Max Pseudo RAF Algorithm"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="runMenuItem" mnemonicParsing="false" text="Run All">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="R" control="UP" meta="DOWN" shift="UP"
+                                                            shortcut="UP"/>
+                                    </accelerator>
+                                </MenuItem>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <CheckMenuItem fx:id="simulateCAFCheckMenuItem" mnemonicParsing="false"
+                                               text="Simulate CAF">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="C" control="UP" meta="DOWN" shift="DOWN"
+                                                            shortcut="UP"/>
+                                    </accelerator>
+                                </CheckMenuItem>
+                                <CheckMenuItem fx:id="simulateRAFCheckMenuItem" mnemonicParsing="false"
+                                               text="Simulate RAF">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="R" control="UP" meta="DOWN" shift="DOWN"
+                                                            shortcut="UP"/>
+                                    </accelerator>
+                                </CheckMenuItem>
+                                <CheckMenuItem fx:id="simulateMaxRAFCheckMenuItem" mnemonicParsing="false"
+                                               text="Simulate Pseudo RAF">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="P" control="UP" meta="DOWN" shift="DOWN"
+                                                            shortcut="UP"/>
+                                    </accelerator>
+                                </CheckMenuItem>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem fx:id="stopSimulationMenuItem" mnemonicParsing="false" text="Stop Simulation">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="SPACE" control="UP" meta="DOWN" shift="UP"
                                                             shortcut="UP"/>
                                     </accelerator>
                                 </MenuItem>
@@ -224,21 +238,17 @@
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="checkForUpdatesMenuItem" mnemonicParsing="false"
-                                          text="Check for Updates...">
-                                    <accelerator>
-                                        <KeyCodeCombination alt="UP" code="H" control="UP" meta="DOWN" shift="UP"
-                                                            shortcut="UP"/>
-                                    </accelerator>
-                                </MenuItem>
+                                          text="Check for Updates..."/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                             </items>
                         </Menu>
                     </menus>
                 </MenuBar>
-                <ToolBar minHeight="-Infinity" prefHeight="30.0">
+                <ToolBar fx:id="mainToolBar" minHeight="-Infinity" prefHeight="30.0">
                     <items>
                         <Button fx:id="runButton" minHeight="-Infinity" mnemonicParsing="false" prefHeight="24.0"
                                 text="Run"/>
+                        <Separator orientation="VERTICAL" prefHeight="200.0"/>
                     </items>
                 </ToolBar>
             </children>
@@ -302,14 +312,38 @@
                                             </top>
                                         </BorderPane>
                                     </content>
+                                    <contextMenu>
+                                        <ContextMenu fx:id="visualizationCenterPlaceholderButton">
+                                            <items>
+                                                <MenuItem fx:id="selectCAFContextMenuItem" mnemonicParsing="false"
+                                                          text="Select Max CAF"/>
+                                                <MenuItem fx:id="selectRAFContextMenuItem" mnemonicParsing="false"
+                                                          text="Select Max RAF"/>
+                                                <MenuItem fx:id="selectPseudoRAFContextMenuItem" mnemonicParsing="false"
+                                                          text="Select Max Pseudo-RAF"/>
+                                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                                <MenuItem fx:id="selectNoneContextMenuItem" mnemonicParsing="false"
+                                                          text="Select None"/>
+                                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                                <CheckMenuItem fx:id="simulateCAFContextMenuItem"
+                                                               mnemonicParsing="false" text="Simulate CAF"/>
+                                                <CheckMenuItem fx:id="simulateRAFContextMenuItem"
+                                                               mnemonicParsing="false" text="Simulate RAF"/>
+                                                <CheckMenuItem fx:id="simulatePseudoRAFContextMenuItem"
+                                                               mnemonicParsing="false" text="Simulate Pseudo-RAF"/>
+                                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                                <MenuItem fx:id="stopSimulationContextMenuItem" mnemonicParsing="false"
+                                                          text="Stop Simulation"/>
+                                            </items>
+                                        </ContextMenu>
+                                    </contextMenu>
                                 </Tab>
-                                <Tab fx:id="reactionsTab" closable="false" disable="true" text="Expanded">
+                                <Tab fx:id="parsedInputTab" closable="false" disable="true" text="Parsed Input">
                                     <content>
                                         <BorderPane>
                                             <center>
                                                 <TextArea fx:id="reactionsTextArea" editable="false" prefHeight="200.0"
-                                                          prefWidth="200.0" promptText="Expanded reactions"
-                                                          wrapText="true"/>
+                                                          prefWidth="200.0" promptText="Parsed input" wrapText="true"/>
                                             </center>
                                             <top>
                                                 <VBox fx:id="reactionsVBox" minHeight="4.0"
@@ -330,6 +364,10 @@
                                             </top>
                                         </BorderPane>
                                     </content>
+                                    <tooltip>
+                                        <Tooltip
+                                                text="Constructively autocatalytic F-generated reaction network (CAF)"/>
+                                    </tooltip>
                                 </Tab>
                                 <Tab fx:id="rafTab" closable="false" disable="true" text="Max RAF">
                                     <content>
@@ -343,6 +381,9 @@
                                             </top>
                                         </BorderPane>
                                     </content>
+                                    <tooltip>
+                                        <Tooltip text="Reflexively autocatalytic F-generated reaction network (RAF)"/>
+                                    </tooltip>
                                 </Tab>
                                 <Tab fx:id="pseudoRafTab" closable="false" disable="true" text="Max Pseudo RAF">
                                     <content>
@@ -357,6 +398,9 @@
                                             </top>
                                         </BorderPane>
                                     </content>
+                                    <tooltip>
+                                        <Tooltip text="Pseudo RAF"/>
+                                    </tooltip>
                                 </Tab>
                                 <Tab fx:id="logTab" closable="false" text="Log">
                                     <content>

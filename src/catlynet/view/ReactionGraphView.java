@@ -62,8 +62,6 @@ public class ReactionGraphView {
     private final AMultipleSelectionModel<Node> nodeSelection = new AMultipleSelectionModel<>();
     private final AMultipleSelectionModel<Edge> edgeSelection = new AMultipleSelectionModel<>();
 
-    public enum EdgeType {Reactant, Product, ReactantReversible, ProductReversible, Catalyst, Inhibitor}
-
     public class AndNode {
     }
 
@@ -71,7 +69,7 @@ public class ReactionGraphView {
 
     private final Group world;
 
-    private final MoleculeFlowAnimation moleculeFlowAnimation;
+    private final MoleculeFlowSimulation moleculeFlowSimulation;
 
     /**
      * construct a graph view for the given system
@@ -123,13 +121,14 @@ public class ReactionGraphView {
             }
         });
 
-        moleculeFlowAnimation = new MoleculeFlowAnimation(reactionGraph, foodNodes, edge2group,world);
+        moleculeFlowSimulation = new MoleculeFlowSimulation(reactionGraph, foodNodes, edge2group, world);
     }
 
     /**
      * update the visualization
      */
     public void update() {
+        //System.err.println("Updating graph");
         clear();
 
         final Map<MoleculeType, Node> molecule2node = new HashMap<>();
@@ -155,8 +154,6 @@ public class ReactionGraphView {
                             if (reactionSystem.getFoods().contains(molecule))
                                 foodNodes.add(v);
                         }
-
-
                     }
                 }
             }
@@ -178,6 +175,15 @@ public class ReactionGraphView {
                 reactionGraph.newEdge(molecule2node.get(molecule), reactionNode, EdgeType.Inhibitor);
             }
         }
+        for (Node v : reactionGraph.nodes()) {
+            if (v.getInfo() instanceof AndNode) {
+                for (Edge e : v.inEdges()) {
+                    if (e.getSource().getDegree() == 1)
+                        foodNodes.add(e.getSource());
+                }
+            }
+        }
+
         nodeSelection.setItems(reactionGraph.getNodesAsSet());
         edgeSelection.setItems(reactionGraph.getEdgesAsSet());
 
@@ -585,7 +591,7 @@ public class ReactionGraphView {
         return false;
     }
 
-    public MoleculeFlowAnimation getMoleculeFlowAnimation() {
-        return moleculeFlowAnimation;
+    public MoleculeFlowSimulation getMoleculeFlowSimulation() {
+        return moleculeFlowSimulation;
     }
 }
