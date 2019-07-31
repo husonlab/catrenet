@@ -142,16 +142,16 @@ public class MainWindowController {
     private MenuItem runMenuItem;
 
     @FXML
-    private CheckMenuItem simulateCAFCheckMenuItem;
+    private CheckMenuItem animateCAFCheckMenuItem;
 
     @FXML
-    private CheckMenuItem simulateRAFCheckMenuItem;
+    private CheckMenuItem animateRAFCheckMenuItem;
 
     @FXML
-    private CheckMenuItem simulateMaxRAFCheckMenuItem;
+    private CheckMenuItem animateMaxRAFCheckMenuItem;
 
     @FXML
-    private MenuItem stopSimulationMenuItem;
+    private MenuItem stopAnimationMenuItem;
 
     @FXML
     private Menu windowMenu;
@@ -167,6 +167,10 @@ public class MainWindowController {
 
     @FXML
     private Button runButton;
+
+    @FXML
+    private Button stopAnimationButton;
+
 
     @FXML
     private FlowPane statusFlowPane;
@@ -214,16 +218,16 @@ public class MainWindowController {
     private MenuItem selectNoneContextMenuItem;
 
     @FXML
-    private CheckMenuItem simulateCAFContextMenuItem;
+    private CheckMenuItem animateCAFContextMenuItem;
 
     @FXML
-    private CheckMenuItem simulateRAFContextMenuItem;
+    private CheckMenuItem animateRAFContextMenuItem;
 
     @FXML
-    private CheckMenuItem simulatePseudoRAFContextMenuItem;
+    private CheckMenuItem aminatePseudoRAFContextMenuItem;
 
     @FXML
-    private MenuItem stopSimulationContextMenuItem;
+    private MenuItem stopAnimationContextMenuItem;
 
     @FXML
     private Tab parsedInputTab;
@@ -313,14 +317,15 @@ public class MainWindowController {
         assert runCAFMenuItem != null : "fx:id=\"runCAFMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert runPseudoRAFMenuItem != null : "fx:id=\"runPseudoRAFMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert runMenuItem != null : "fx:id=\"runMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert simulateCAFCheckMenuItem != null : "fx:id=\"simualateCAFCheckMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert simulateRAFCheckMenuItem != null : "fx:id=\"simualateRAFCheckMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert simulateMaxRAFCheckMenuItem != null : "fx:id=\"simualatePseudoRAFCheckMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert stopSimulationMenuItem != null : "fx:id=\"stopSImulationMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert animateCAFCheckMenuItem != null : "fx:id=\"simualateCAFCheckMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert animateRAFCheckMenuItem != null : "fx:id=\"simualateRAFCheckMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert animateMaxRAFCheckMenuItem != null : "fx:id=\"simualatePseudoRAFCheckMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert stopAnimationMenuItem != null : "fx:id=\"stopAnimationMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert windowMenu != null : "fx:id=\"windowMenu\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert aboutMenuItem != null : "fx:id=\"aboutMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert checkForUpdatesMenuItem != null : "fx:id=\"checkForUpdatesMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert runButton != null : "fx:id=\"runButton\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert stopAnimationButton != null : "fx:id=\"stopAnimationButton\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert mainToolBar != null : "fx:id=\"mainToolBar\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert statusFlowPane != null : "fx:id=\"statusFlowPane\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert memoryUsageLabel != null : "fx:id=\"memoryUsageLabel\" was not injected: check your FXML file 'MainWindow.fxml'.";
@@ -337,10 +342,10 @@ public class MainWindowController {
         assert selectRAFContextMenuItem != null : "fx:id=\"selectRAFContextMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert selectPseudoRAFContextMenuItem != null : "fx:id=\"selectPseudoRAFContextMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert selectNoneContextMenuItem != null : "fx:id=\"selectNoneContextMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert simulateCAFContextMenuItem != null : "fx:id=\"simulateCAFContextMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert simulateRAFContextMenuItem != null : "fx:id=\"simulateRAFContextMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert simulatePseudoRAFContextMenuItem != null : "fx:id=\"simulatePseudoRAFContextMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert stopSimulationContextMenuItem != null : "fx:id=\"stopSimulationContextMenuItem11\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert animateCAFContextMenuItem != null : "fx:id=\"animateCAFContextMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert animateRAFContextMenuItem != null : "fx:id=\"animateRAFContextMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert aminatePseudoRAFContextMenuItem != null : "fx:id=\"aminatePseudoRAFContextMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert stopAnimationContextMenuItem != null : "fx:id=\"stopAnimationContextMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert parsedInputTab != null : "fx:id=\"reactionsTab\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert reactionsTextArea != null : "fx:id=\"reactionsTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert reactionsVBox != null : "fx:id=\"reactionsVBox\" was not injected: check your FXML file 'MainWindow.fxml'.";
@@ -579,20 +584,20 @@ public class MainWindowController {
         return runMenuItem;
     }
 
-    public CheckMenuItem getSimualateCAFCheckMenuItem() {
-        return simulateCAFCheckMenuItem;
+    public CheckMenuItem getAnimateCAFCheckMenuItem() {
+        return animateCAFCheckMenuItem;
     }
 
-    public CheckMenuItem getSimualateRAFCheckMenuItem() {
-        return simulateRAFCheckMenuItem;
+    public CheckMenuItem getAnimateRAFCheckMenuItem() {
+        return animateRAFCheckMenuItem;
     }
 
-    public CheckMenuItem getSimualatePseudoRAFCheckMenuItem() {
-        return simulateMaxRAFCheckMenuItem;
+    public CheckMenuItem getAnimateMaxRAFCheckMenuItem() {
+        return animateMaxRAFCheckMenuItem;
     }
 
-    public MenuItem getStopSImulationMenuItem() {
-        return stopSimulationMenuItem;
+    public MenuItem getStopAnimationMenuItem() {
+        return stopAnimationMenuItem;
     }
 
     public Menu getWindowMenu() {
@@ -609,6 +614,10 @@ public class MainWindowController {
 
     public Button getRunButton() {
         return runButton;
+    }
+
+    public Button getStopAnimationButton() {
+        return stopAnimationButton;
     }
 
     public ToolBar getMainToolBar() {
@@ -675,20 +684,20 @@ public class MainWindowController {
         return selectNoneContextMenuItem;
     }
 
-    public CheckMenuItem getSimulateCAFContextMenuItem() {
-        return simulateCAFContextMenuItem;
+    public CheckMenuItem getAnimateCAFContextMenuItem() {
+        return animateCAFContextMenuItem;
     }
 
-    public CheckMenuItem getSimulateRAFContextMenuItem() {
-        return simulateRAFContextMenuItem;
+    public CheckMenuItem getAnimateRAFContextMenuItem() {
+        return animateRAFContextMenuItem;
     }
 
-    public CheckMenuItem getSimulatePseudoRAFContextMenuItem() {
-        return simulatePseudoRAFContextMenuItem;
+    public CheckMenuItem getAminatePseudoRAFContextMenuItem() {
+        return aminatePseudoRAFContextMenuItem;
     }
 
-    public MenuItem getStopSimulationContextMenuItem11() {
-        return stopSimulationContextMenuItem;
+    public MenuItem getStopAnimationContextMenuItem() {
+        return stopAnimationContextMenuItem;
     }
 
     public Tab getReactionsTab() {

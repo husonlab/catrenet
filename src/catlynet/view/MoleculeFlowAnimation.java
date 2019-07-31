@@ -44,7 +44,7 @@ import java.util.Random;
  * run simulation on graph
  * Daniel Huson, 7.2019
  */
-public class MoleculeFlowSimulation {
+public class MoleculeFlowAnimation {
     static private final Random random = new Random();
 
     public enum Model {CAF, RAF, PseudoRAF}
@@ -62,7 +62,7 @@ public class MoleculeFlowSimulation {
      * @param edge2Group
      * @param world
      */
-    public MoleculeFlowSimulation(Graph reactionGraph, NodeSet foodNodes, EdgeArray<Group> edge2Group, Group world) {
+    public MoleculeFlowAnimation(Graph reactionGraph, NodeSet foodNodes, EdgeArray<Group> edge2Group, Group world) {
         final EdgeIntegerArray edge2count = new EdgeIntegerArray(reactionGraph);
 
         final Color color = Color.DARKRED.brighter().brighter().brighter().brighter();

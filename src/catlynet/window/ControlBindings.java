@@ -30,15 +30,13 @@ import catlynet.format.FormatWindow;
 import catlynet.io.ModelIO;
 import catlynet.io.Save;
 import catlynet.io.SaveChangesDialog;
-import catlynet.view.MoleculeFlowSimulation;
+import catlynet.view.MoleculeFlowAnimation;
 import catlynet.view.SelectionBindings;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
@@ -51,7 +49,6 @@ import jloda.fx.find.TextAreaSearcher;
 import jloda.fx.util.NotificationManager;
 import jloda.fx.util.Print;
 import jloda.fx.util.RecentFilesManager;
-import jloda.fx.util.ResourceManagerFX;
 import jloda.fx.window.MainWindowManager;
 import jloda.fx.window.SplashScreen;
 import jloda.fx.window.WindowGeometry;
@@ -92,7 +89,7 @@ public class ControlBindings {
         controller.getSaveMenItem().setOnAction(e -> Save.showSaveDialog(window));
 
         controller.getCloseMenuItem().setOnAction(e -> {
-            window.getReactionGraphView().getMoleculeFlowSimulation().setPlaying(false);
+            window.getReactionGraphView().getMoleculeFlowAnimation().setPlaying(false);
             if (SaveChangesDialog.apply(window)) {
                 ProgramProperties.put("WindowGeometry", (new WindowGeometry(window.getStage())).toString());
                 MainWindowManager.getInstance().closeMainWindow(window);
@@ -303,82 +300,76 @@ public class ControlBindings {
                 }
             });
 
-            controller.getSimualateCAFCheckMenuItem().selectedProperty().addListener((c, o, n) -> {
+            controller.getAnimateCAFCheckMenuItem().selectedProperty().addListener((c, o, n) -> {
                 if (n) {
-                    controller.getSimualateRAFCheckMenuItem().setSelected(false);
-                    controller.getSimualatePseudoRAFCheckMenuItem().setSelected(false);
-                    window.getReactionGraphView().getMoleculeFlowSimulation().setModel(MoleculeFlowSimulation.Model.CAF);
-                    window.getReactionGraphView().getMoleculeFlowSimulation().setPlaying(true);
+                    controller.getAnimateRAFCheckMenuItem().setSelected(false);
+                    controller.getAnimateMaxRAFCheckMenuItem().setSelected(false);
+                    window.getReactionGraphView().getMoleculeFlowAnimation().setModel(MoleculeFlowAnimation.Model.CAF);
+                    window.getReactionGraphView().getMoleculeFlowAnimation().setPlaying(true);
                 } else {
-                    window.getReactionGraphView().getMoleculeFlowSimulation().setPlaying(false);
+                    window.getReactionGraphView().getMoleculeFlowAnimation().setPlaying(false);
                 }
             });
-            controller.getSimualateCAFCheckMenuItem().disableProperty().bind(controller.getVisualizationTab().disableProperty().or(window.getReactionGraphView().getMoleculeFlowSimulation().playingProperty()));
+            controller.getAnimateCAFCheckMenuItem().disableProperty().bind(controller.getVisualizationTab().disableProperty().or(window.getReactionGraphView().getMoleculeFlowAnimation().playingProperty()));
 
-            controller.getSimulateCAFContextMenuItem().selectedProperty().bindBidirectional(controller.getSimualateCAFCheckMenuItem().selectedProperty());
-            controller.getSimulateCAFContextMenuItem().disableProperty().bind(controller.getSimualateCAFCheckMenuItem().disableProperty());
+            controller.getAnimateCAFContextMenuItem().selectedProperty().bindBidirectional(controller.getAnimateCAFCheckMenuItem().selectedProperty());
+            controller.getAnimateCAFContextMenuItem().disableProperty().bind(controller.getAnimateCAFCheckMenuItem().disableProperty());
 
-            controller.getSimualateRAFCheckMenuItem().selectedProperty().addListener((c, o, n) -> {
+            controller.getAnimateRAFCheckMenuItem().selectedProperty().addListener((c, o, n) -> {
                 if (n) {
-                    controller.getSimualateCAFCheckMenuItem().setSelected(false);
-                    controller.getSimualatePseudoRAFCheckMenuItem().setSelected(false);
-                    window.getReactionGraphView().getMoleculeFlowSimulation().setModel(MoleculeFlowSimulation.Model.RAF);
-                    window.getReactionGraphView().getMoleculeFlowSimulation().setPlaying(true);
+                    controller.getAnimateCAFCheckMenuItem().setSelected(false);
+                    controller.getAnimateMaxRAFCheckMenuItem().setSelected(false);
+                    window.getReactionGraphView().getMoleculeFlowAnimation().setModel(MoleculeFlowAnimation.Model.RAF);
+                    window.getReactionGraphView().getMoleculeFlowAnimation().setPlaying(true);
                 } else {
-                    window.getReactionGraphView().getMoleculeFlowSimulation().setPlaying(false);
+                    window.getReactionGraphView().getMoleculeFlowAnimation().setPlaying(false);
                 }
             });
-            controller.getSimualateRAFCheckMenuItem().disableProperty().bind(controller.getVisualizationTab().disableProperty().or(window.getReactionGraphView().getMoleculeFlowSimulation().playingProperty()));
+            controller.getAnimateRAFCheckMenuItem().disableProperty().bind(controller.getVisualizationTab().disableProperty().or(window.getReactionGraphView().getMoleculeFlowAnimation().playingProperty()));
 
-            controller.getSimulateRAFContextMenuItem().selectedProperty().bindBidirectional(controller.getSimualateRAFCheckMenuItem().selectedProperty());
-            controller.getSimulateRAFContextMenuItem().disableProperty().bind(controller.getSimualateRAFCheckMenuItem().disableProperty());
+            controller.getAnimateRAFContextMenuItem().selectedProperty().bindBidirectional(controller.getAnimateRAFCheckMenuItem().selectedProperty());
+            controller.getAnimateRAFContextMenuItem().disableProperty().bind(controller.getAnimateRAFCheckMenuItem().disableProperty());
 
-            controller.getSimualatePseudoRAFCheckMenuItem().selectedProperty().addListener((c, o, n) -> {
+            controller.getAnimateMaxRAFCheckMenuItem().selectedProperty().addListener((c, o, n) -> {
                 if (n) {
-                    controller.getSimualateCAFCheckMenuItem().setSelected(false);
-                    controller.getSimualateRAFCheckMenuItem().setSelected(false);
-                    window.getReactionGraphView().getMoleculeFlowSimulation().setModel(MoleculeFlowSimulation.Model.PseudoRAF);
-                    window.getReactionGraphView().getMoleculeFlowSimulation().setPlaying(true);
+                    controller.getAnimateCAFCheckMenuItem().setSelected(false);
+                    controller.getAnimateRAFCheckMenuItem().setSelected(false);
+                    window.getReactionGraphView().getMoleculeFlowAnimation().setModel(MoleculeFlowAnimation.Model.PseudoRAF);
+                    window.getReactionGraphView().getMoleculeFlowAnimation().setPlaying(true);
                 } else {
-                    window.getReactionGraphView().getMoleculeFlowSimulation().setPlaying(false);
+                    window.getReactionGraphView().getMoleculeFlowAnimation().setPlaying(false);
                 }
             });
-            controller.getSimualatePseudoRAFCheckMenuItem().disableProperty().bind(controller.getVisualizationTab().disableProperty().or(window.getReactionGraphView().getMoleculeFlowSimulation().playingProperty()));
+            controller.getAnimateMaxRAFCheckMenuItem().disableProperty().bind(controller.getVisualizationTab().disableProperty().or(window.getReactionGraphView().getMoleculeFlowAnimation().playingProperty()));
 
-            controller.getSimulatePseudoRAFContextMenuItem().selectedProperty().bindBidirectional(controller.getSimualatePseudoRAFCheckMenuItem().selectedProperty());
-            controller.getSimulatePseudoRAFContextMenuItem().disableProperty().bind(controller.getSimualatePseudoRAFCheckMenuItem().disableProperty());
+            controller.getAminatePseudoRAFContextMenuItem().selectedProperty().bindBidirectional(controller.getAnimateMaxRAFCheckMenuItem().selectedProperty());
+            controller.getAminatePseudoRAFContextMenuItem().disableProperty().bind(controller.getAnimateMaxRAFCheckMenuItem().disableProperty());
 
-            controller.getStopSImulationMenuItem().setOnAction(e -> {
-                window.getReactionGraphView().getMoleculeFlowSimulation().setPlaying(false);
+            controller.getStopAnimationMenuItem().setOnAction(e -> {
+                window.getReactionGraphView().getMoleculeFlowAnimation().setPlaying(false);
                 controller.getSelectAllMenuItem().getOnAction().handle(null);
                 controller.getSelectNoneMenuItem().getOnAction().handle(null);
-                controller.getSimualateCAFCheckMenuItem().setSelected(false);
-                controller.getSimualateRAFCheckMenuItem().setSelected(false);
-                controller.getSimualatePseudoRAFCheckMenuItem().setSelected(false);
+                controller.getAnimateCAFCheckMenuItem().setSelected(false);
+                controller.getAnimateRAFCheckMenuItem().setSelected(false);
+                controller.getAnimateMaxRAFCheckMenuItem().setSelected(false);
             });
-            controller.getStopSImulationMenuItem().disableProperty().bind(window.getReactionGraphView().getMoleculeFlowSimulation().playingProperty().not());
+            controller.getStopAnimationMenuItem().disableProperty().bind(window.getReactionGraphView().getMoleculeFlowAnimation().playingProperty().not());
 
-            controller.getStopSimulationContextMenuItem11().setOnAction(controller.getStopSImulationMenuItem().getOnAction());
-            controller.getStopSimulationContextMenuItem11().disableProperty().bind(controller.getStopSImulationMenuItem().disableProperty());
+            controller.getStopAnimationContextMenuItem().setOnAction(controller.getStopAnimationMenuItem().getOnAction());
+            controller.getStopAnimationContextMenuItem().disableProperty().bind(controller.getStopAnimationMenuItem().disableProperty());
 
-            final Button stopButton = new Button("Stop Simulation");
-            stopButton.setGraphic(new ImageView(ResourceManagerFX.getIcon("Close16.gif")));
-            stopButton.setOnAction(controller.getStopSImulationMenuItem().getOnAction());
-            window.getReactionGraphView().getMoleculeFlowSimulation().playingProperty().addListener((c, o, n) -> {
-                if (n)
-                    controller.getMainToolBar().getItems().add(stopButton);
-                else {
-                    controller.getMainToolBar().getItems().remove(stopButton);
-                }
-            });
+            controller.getStopAnimationButton().setVisible(false);
+            controller.getStopAnimationButton().setOnAction(controller.getStopAnimationMenuItem().getOnAction());
+            window.getReactionGraphView().getMoleculeFlowAnimation().playingProperty().addListener((c, o, n) -> controller.getStopAnimationButton().setVisible(n));
+            controller.getStopAnimationButton().textProperty().bind(window.getReactionGraphView().getMoleculeFlowAnimation().modelProperty().asString().concat(" animation"));
 
             controller.getVisualizationTab().disableProperty().addListener((c, o, n) -> {
                 if (n)
-                    window.getReactionGraphView().getMoleculeFlowSimulation().setPlaying(false);
+                    window.getReactionGraphView().getMoleculeFlowAnimation().setPlaying(false);
                 else {
-                    controller.getSimualateCAFCheckMenuItem().setSelected(false);
-                    controller.getSimualateRAFCheckMenuItem().setSelected(false);
-                    controller.getSimualatePseudoRAFCheckMenuItem().setSelected(false);
+                    controller.getAnimateCAFCheckMenuItem().setSelected(false);
+                    controller.getAnimateRAFCheckMenuItem().setSelected(false);
+                    controller.getAnimateMaxRAFCheckMenuItem().setSelected(false);
 
                     window.getReactionGraphView().clear();
                     window.getReactionGraphView().update();

@@ -21,6 +21,8 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.input.*?>
 <?import javafx.scene.layout.*?>
 <BorderPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.111"
@@ -198,29 +200,29 @@
                                     </accelerator>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <CheckMenuItem fx:id="simulateCAFCheckMenuItem" mnemonicParsing="false"
-                                               text="Simulate CAF">
+                                <CheckMenuItem fx:id="animateCAFCheckMenuItem" mnemonicParsing="false"
+                                               text="Animate CAF">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="C" control="UP" meta="DOWN" shift="DOWN"
                                                             shortcut="UP"/>
                                     </accelerator>
                                 </CheckMenuItem>
-                                <CheckMenuItem fx:id="simulateRAFCheckMenuItem" mnemonicParsing="false"
-                                               text="Simulate RAF">
+                                <CheckMenuItem fx:id="animateRAFCheckMenuItem" mnemonicParsing="false"
+                                               text="Animate RAF">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="R" control="UP" meta="DOWN" shift="DOWN"
                                                             shortcut="UP"/>
                                     </accelerator>
                                 </CheckMenuItem>
-                                <CheckMenuItem fx:id="simulateMaxRAFCheckMenuItem" mnemonicParsing="false"
-                                               text="Simulate Pseudo RAF">
+                                <CheckMenuItem fx:id="animateMaxRAFCheckMenuItem" mnemonicParsing="false"
+                                               text="Animate Pseudo RAF">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="P" control="UP" meta="DOWN" shift="DOWN"
                                                             shortcut="UP"/>
                                     </accelerator>
                                 </CheckMenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="stopSimulationMenuItem" mnemonicParsing="false" text="Stop Simulation">
+                                <MenuItem fx:id="stopAnimationMenuItem" mnemonicParsing="false" text="Stop Simulation">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="SPACE" control="UP" meta="DOWN" shift="UP"
                                                             shortcut="UP"/>
@@ -249,6 +251,16 @@
                         <Button fx:id="runButton" minHeight="-Infinity" mnemonicParsing="false" prefHeight="24.0"
                                 text="Run"/>
                         <Separator orientation="VERTICAL" prefHeight="200.0"/>
+                        <Button fx:id="stopAnimationButton" minHeight="-Infinity" mnemonicParsing="false"
+                                prefHeight="24.0" text="Animation">
+                            <graphic>
+                                <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="/catlynet/resources/icons/Close16.gif"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
                     </items>
                 </ToolBar>
             </children>
@@ -313,7 +325,7 @@
                                         </BorderPane>
                                     </content>
                                     <contextMenu>
-                                        <ContextMenu fx:id="visualizationCenterPlaceholderButton">
+                                        <ContextMenu fx:id="visualizationContextMenu">
                                             <items>
                                                 <MenuItem fx:id="selectCAFContextMenuItem" mnemonicParsing="false"
                                                           text="Select Max CAF"/>
@@ -325,14 +337,14 @@
                                                 <MenuItem fx:id="selectNoneContextMenuItem" mnemonicParsing="false"
                                                           text="Select None"/>
                                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                                <CheckMenuItem fx:id="simulateCAFContextMenuItem"
-                                                               mnemonicParsing="false" text="Simulate CAF"/>
-                                                <CheckMenuItem fx:id="simulateRAFContextMenuItem"
-                                                               mnemonicParsing="false" text="Simulate RAF"/>
-                                                <CheckMenuItem fx:id="simulatePseudoRAFContextMenuItem"
-                                                               mnemonicParsing="false" text="Simulate Pseudo-RAF"/>
+                                                <CheckMenuItem fx:id="animateCAFContextMenuItem" mnemonicParsing="false"
+                                                               text="Animate CAF"/>
+                                                <CheckMenuItem fx:id="animateRAFContextMenuItem" mnemonicParsing="false"
+                                                               text="Animate RAF"/>
+                                                <CheckMenuItem fx:id="aminatePseudoRAFContextMenuItem"
+                                                               mnemonicParsing="false" text="Animate Pseudo-RAF"/>
                                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                                <MenuItem fx:id="stopSimulationContextMenuItem" mnemonicParsing="false"
+                                                <MenuItem fx:id="stopAnimationContextMenuItem" mnemonicParsing="false"
                                                           text="Stop Simulation"/>
                                             </items>
                                         </ContextMenu>

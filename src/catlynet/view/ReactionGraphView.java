@@ -69,7 +69,7 @@ public class ReactionGraphView {
 
     private final Group world;
 
-    private final MoleculeFlowSimulation moleculeFlowSimulation;
+    private final MoleculeFlowAnimation moleculeFlowAnimation;
 
     /**
      * construct a graph view for the given system
@@ -121,7 +121,7 @@ public class ReactionGraphView {
             }
         });
 
-        moleculeFlowSimulation = new MoleculeFlowSimulation(reactionGraph, foodNodes, edge2group, world);
+        moleculeFlowAnimation = new MoleculeFlowAnimation(reactionGraph, foodNodes, edge2group, world);
     }
 
     /**
@@ -591,7 +591,7 @@ public class ReactionGraphView {
         return false;
     }
 
-    public MoleculeFlowSimulation getMoleculeFlowSimulation() {
-        return moleculeFlowSimulation;
+    public MoleculeFlowAnimation getMoleculeFlowAnimation() {
+        return moleculeFlowAnimation;
     }
 }
