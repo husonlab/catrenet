@@ -1,4 +1,5 @@
 # Example 4 on http://www.math.canterbury.ac.nz/bio/RAF/
+# maxCAF none, maxRAF all, max-pRAF all
 
 r1: f [t2,t3,t4,t5,t8] -> t1
 r2: f [t2,t8] -> t2

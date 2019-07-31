@@ -56,9 +56,9 @@ public class FileOpener implements Consumer<String> {
                 throw new IOException("Couldn't detect 'full', 'sparse' or 'tabbed' file format");
 
             reactionSystem.clear();
-            ModelIO.read(window.getInputModel(), r, pair.getFirst());
+            final String leadingComments = ModelIO.read(window.getInputModel(), r, pair.getFirst());
 
-            window.getController().getInputTextArea().setText(ModelIO.toString(window.getInputModel(), false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
+            window.getController().getInputTextArea().setText((leadingComments.length() > 0 ? leadingComments + "\n" : "") + ModelIO.toString(window.getInputModel(), false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
             final String food = ModelIO.getFoodString(window.getInputModel(), window.getDocument().getReactionNotation());
             if (window.getController().getFoodSetComboBox().getItems().contains(food))
                 window.getController().getFoodSetComboBox().getItems().add(0, food);

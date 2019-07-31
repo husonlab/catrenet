@@ -58,13 +58,8 @@ public class MaxRAFAlgorithm extends AlgorithmBase {
             do {
                 i++;
 
-                final Set<MoleculeType> nextMolecules = addAllMentionedProducts(molecules.get(i), reactions.get(i));
-                final Set<MoleculeType> foodClosure = computeClosure(inputFood, reactions.get(i));
-
-                final Set<Reaction> nextReactions = filterReactions(foodClosure, reactions.get(i));
-
-                reactions.add(i + 1, nextReactions);
-                molecules.add(i + 1, nextMolecules);
+                molecules.add(i + 1, computeClosure(inputFood, reactions.get(i)));
+                reactions.add(i + 1, filterReactions(molecules.get(i + 1), reactions.get(i)));
             }
             while (reactions.get(i + 1).size() < reactions.get(i).size());
 

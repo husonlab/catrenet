@@ -1,4 +1,5 @@
 # Example 5 on http://www.math.canterbury.ac.nz/bio/RAF/
+# maxCAF none, maxRAF all, max-pRAF all
 
 r11: f1+f2 [UA,UC,UG,UU] -> AA
 r12: f1+f2 [GA,GC,GG,GU] -> AC

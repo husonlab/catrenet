@@ -1,4 +1,5 @@
 # Default example on http://www.math.canterbury.ac.nz/bio/RAF/
+# maxCAF none, maxRAF size 3, max-pRAF size 6
 r1: a+b [e,f] -> d
 r2: b+c [f] -> e
 r3: e+c [d] -> b+f

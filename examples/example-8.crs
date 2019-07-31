@@ -1,3 +1,7 @@
+# Example 8 on http://www.math.canterbury.ac.nz/bio/RAF/
+# All reactions are two-way
+# maxCAF all, maxRAF all, max-pRAF all
+
 Food: a, b, aa, bb
 
 r01 : a + baa [aa, aabaabbb] <=> baaa

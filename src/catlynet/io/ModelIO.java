@@ -68,11 +68,14 @@ public class ModelIO {
      * read reactions and foods
      *
      * @param r
+     * @return leading comments
      * @throws IOException
      */
-    public static void read(ReactionSystem reactionSystem, Reader r, ReactionNotation reactionNotation) throws IOException {
+    public static String read(ReactionSystem reactionSystem, Reader r, ReactionNotation reactionNotation) throws IOException {
         final Set<String> reactionNames = new HashSet<>();
         final Set<Reaction> auxReactions = new HashSet<>();
+
+        final StringBuilder buf = new StringBuilder();
 
         int lineNumber = 0;
         String line;
@@ -81,9 +84,13 @@ public class ModelIO {
             br = (BufferedReader) r;
         else
             br = new BufferedReader(r);
+
+        boolean inLeadingComments = true;
+
         while ((line = br.readLine()) != null) {
             lineNumber++;
             if (!line.startsWith("#")) {
+                inLeadingComments = false;
                 line = line.trim();
                 if (line.length() > 0)
                     try {
@@ -99,8 +106,11 @@ public class ModelIO {
                     } catch (Exception ex) {
                         throw new IOExceptionWithLineNumber(ex.getMessage(), lineNumber);
                     }
+            } else if (inLeadingComments) {
+                buf.append(line).append("\n");
             }
         }
+        return buf.toString();
     }
 
     /**

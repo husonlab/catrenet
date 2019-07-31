@@ -1,4 +1,5 @@
 # Example 2 on http://www.math.canterbury.ac.nz/bio/RAF/
+# maxCAF size 3, maxRAF size 5, max-pRAF size 5
 r1: 10+0 [01100] -> 100
 r2: 01+100 [0] -> 01100
 r3: 10+1 [0] -> 101
