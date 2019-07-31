@@ -222,7 +222,7 @@
                                     </accelerator>
                                 </CheckMenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="stopAnimationMenuItem" mnemonicParsing="false" text="Stop Simulation">
+                                <MenuItem fx:id="stopAnimationMenuItem" mnemonicParsing="false" text="Stop Animation">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="SPACE" control="UP" meta="DOWN" shift="UP"
                                                             shortcut="UP"/>
@@ -345,7 +345,7 @@
                                                                mnemonicParsing="false" text="Animate Pseudo-RAF"/>
                                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                                 <MenuItem fx:id="stopAnimationContextMenuItem" mnemonicParsing="false"
-                                                          text="Stop Simulation"/>
+                                                          text="Stop Animation"/>
                                             </items>
                                         </ContextMenu>
                                     </contextMenu>

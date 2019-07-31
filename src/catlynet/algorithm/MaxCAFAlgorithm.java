@@ -56,9 +56,8 @@ public class MaxCAFAlgorithm extends AlgorithmBase {
         int i = -1;
         do {
             i++;
-
-            reactions.add(i + 1, filterReactions(molecules.get(i), inputReactions));
             molecules.add(i + 1, addAllMentionedProducts(molecules.get(i), reactions.get(i)));
+            reactions.add(i + 1, filterReactions(molecules.get(i + 1), inputReactions));
         } while (i == 0 || reactions.get(i + 1).size() > reactions.get(i).size());
 
         if (reactions.get(i).size() > 0) {
