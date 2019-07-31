@@ -21,3 +21,8 @@ We intend to
 ## Installers
 One click installers for MacOS, Windows and Linux are available [here](http://ab.inf.uni-tuebingen.de/data/software/catlynet/download/welcome.html). 
 
+## Animation
+We are working on animations to visualize different concepts, see this example:
+
+<img src="https://github.com/danielhuson/catlynet/blob/master/artwork/animation.gif" width="600"/>
+
