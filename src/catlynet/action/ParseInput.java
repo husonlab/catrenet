@@ -54,10 +54,12 @@ public class ParseInput {
             final ComboBox<String> foodCBox = controller.getFoodSetComboBox();
             if (foodCBox.getSelectionModel().getSelectedItem() != null)
                 ModelIO.read(reactionSystem, new StringReader("Food: " + foodCBox.getSelectionModel().getSelectedItem()), window.getDocument().getReactionNotation());
+
             final String foodString = ModelIO.getFoodString(reactionSystem, window.getDocument().getReactionNotation());
             foodCBox.getSelectionModel().select(foodString);
-            if (!foodCBox.getItems().contains(foodString))
-                foodCBox.getItems().add(0, foodString);
+            foodCBox.getItems().remove(foodString);
+            foodCBox.getItems().add(0, foodString);
+            foodCBox.getSelectionModel().select(0);
 
             //controller.getInputTextArea().setText(ModelIO.toString(model, false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
 
