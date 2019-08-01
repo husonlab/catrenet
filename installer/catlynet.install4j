@@ -13,7 +13,7 @@
     </searchSequence>
     <variables />
     <mergedProjects />
-    <codeSigning macEnabled="true" macPkcs12File="../../../../etc/application.p12" windowsEnabled="true" windowsKeySource="pkcs12" windowsPvkFile="" windowsSpcFile="" windowsPkcs12File="../../../../etc/catylnet.pfx" windowsPkcs11Library="" windowsPkcs11Slot="">
+    <codeSigning macEnabled="true" macPkcs12File="../../../../etc/application.p12" windowsEnabled="true" windowsKeySource="pkcs12" windowsPvkFile="" windowsSpcFile="" windowsPkcs12File="../../../../etc/windows.pfx" windowsPkcs11Library="" windowsPkcs11Slot="">
       <windowsKeystoreIdentifier issuer="" serial="" subject="" />
       <windowsPkcs11Identifier issuer="" serial="" subject="" />
     </codeSigning>
@@ -2386,7 +2386,6 @@ return true;</string>
     </windows>
   </mediaSets>
   <buildIds buildAll="false">
-    <mediaSet refId="1691242165" />
     <mediaSet refId="1691242288" />
   </buildIds>
   <buildOptions verbose="false" faster="false" disableSigning="false" disableJreBundling="false" debug="false" />
