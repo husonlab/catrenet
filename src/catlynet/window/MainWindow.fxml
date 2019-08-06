@@ -151,12 +151,12 @@
                                 <MenuItem fx:id="selectEdgesMenuItem" mnemonicParsing="false" text="Edges">
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem fx:id="selectMuCAFMenuItem" mnemonicParsing="false" text="MU CAF"/>
                                 <MenuItem fx:id="selectMaxCAFMenuItem" mnemonicParsing="false" text="Max CAF">
                                 </MenuItem>
                                 <MenuItem fx:id="selectMaxRAFMenuItem" mnemonicParsing="false" text="Max RAF">
                                 </MenuItem>
-                                <MenuItem fx:id="selectMaxPseudoRAFMenuItem" mnemonicParsing="false"
-                                          text="Max Pseudo RAF">
+                                <MenuItem fx:id="selectMaxPseudoRAFMenuItem" mnemonicParsing="false" text="Max p-RAF">
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="selectFoodMenuItem" mnemonicParsing="false" text="Food">
@@ -188,10 +188,11 @@
                                     </accelerator>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="runRAFMenuItem" mnemonicParsing="false" text="Run Max RAF Algorithm"/>
+                                <MenuItem fx:id="runMuCAFMenuItem" mnemonicParsing="false" text="Run MU CAF Algorithm"/>
                                 <MenuItem fx:id="runCAFMenuItem" mnemonicParsing="false" text="Run Max CAF Algorithm"/>
+                                <MenuItem fx:id="runRAFMenuItem" mnemonicParsing="false" text="Run Max RAF Algorithm"/>
                                 <MenuItem fx:id="runPseudoRAFMenuItem" mnemonicParsing="false"
-                                          text="Run Max Pseudo RAF Algorithm"/>
+                                          text="Run Max p-RAF Algorithm"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="runMenuItem" mnemonicParsing="false" text="Run All">
                                     <accelerator>
@@ -221,6 +222,9 @@
                                                             shortcut="UP"/>
                                     </accelerator>
                                 </CheckMenuItem>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <CheckMenuItem fx:id="animateInhibitionsMenuItem" mnemonicParsing="false"
+                                               text="Animate Inhibitions"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="stopAnimationMenuItem" mnemonicParsing="false" text="Stop Animation">
                                     <accelerator>
@@ -327,6 +331,8 @@
                                     <contextMenu>
                                         <ContextMenu fx:id="visualizationContextMenu">
                                             <items>
+                                                <MenuItem fx:id="selectMuCAFContextMenuItem" mnemonicParsing="false"
+                                                          text="Select MU CAF"/>
                                                 <MenuItem fx:id="selectCAFContextMenuItem" mnemonicParsing="false"
                                                           text="Select Max CAF"/>
                                                 <MenuItem fx:id="selectRAFContextMenuItem" mnemonicParsing="false"
@@ -344,13 +350,16 @@
                                                 <CheckMenuItem fx:id="aminatePseudoRAFContextMenuItem"
                                                                mnemonicParsing="false" text="Animate Pseudo-RAF"/>
                                                 <SeparatorMenuItem mnemonicParsing="false"/>
+                                                <CheckMenuItem fx:id="animateInhibitionsContextMenuItem"
+                                                               mnemonicParsing="false" text="Animate Inhibitions"/>
+                                                <SeparatorMenuItem mnemonicParsing="false"/>
                                                 <MenuItem fx:id="stopAnimationContextMenuItem" mnemonicParsing="false"
                                                           text="Stop Animation"/>
                                             </items>
                                         </ContextMenu>
                                     </contextMenu>
                                 </Tab>
-                                <Tab fx:id="parsedInputTab" closable="false" disable="true" text="Parsed Input">
+                                <Tab fx:id="parsedInputTab" closable="false" disable="true" text="Reactions">
                                     <content>
                                         <BorderPane>
                                             <center>
@@ -363,6 +372,22 @@
                                             </top>
                                         </BorderPane>
                                     </content>
+                                </Tab>
+                                <Tab fx:id="muCafTab" closable="false" disable="true" text="MU CAF">
+                                    <content>
+                                        <BorderPane>
+                                            <center>
+                                                <TextArea fx:id="muCafTextArea" editable="false" prefHeight="200.0"
+                                                          prefWidth="200.0" wrapText="true"/>
+                                            </center>
+                                            <top>
+                                                <VBox fx:id="muCafVBox" minHeight="4.0" BorderPane.alignment="CENTER"/>
+                                            </top>
+                                        </BorderPane>
+                                    </content>
+                                    <tooltip>
+                                        <Tooltip text="Maximally unihibitied CAF (mu-CAF)"/>
+                                    </tooltip>
                                 </Tab>
                                 <Tab fx:id="cafTab" closable="false" disable="true" text="Max CAF">
                                     <content>
@@ -397,7 +422,7 @@
                                         <Tooltip text="Reflexively autocatalytic F-generated reaction network (RAF)"/>
                                     </tooltip>
                                 </Tab>
-                                <Tab fx:id="pseudoRafTab" closable="false" disable="true" text="Max Pseudo RAF">
+                                <Tab fx:id="pseudoRafTab" closable="false" disable="true" text="Max p-RAF">
                                     <content>
                                         <BorderPane>
                                             <center>

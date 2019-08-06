@@ -23,7 +23,9 @@ import catlynet.model.MoleculeType;
 import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
 import javafx.beans.InvalidationListener;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
@@ -61,6 +63,9 @@ public class ReactionGraphView {
 
     private final AMultipleSelectionModel<Node> nodeSelection = new AMultipleSelectionModel<>();
     private final AMultipleSelectionModel<Edge> edgeSelection = new AMultipleSelectionModel<>();
+
+    private final ObjectProperty<Color> inhibitionEdgeColor = new SimpleObjectProperty<>(Color.LIGHTGREY);
+
 
     public class AndNode {
     }
@@ -121,7 +126,20 @@ public class ReactionGraphView {
             }
         });
 
+        inhibitionEdgeColor.addListener((c, o, n) -> {
+            for (Edge e : reactionGraph.edges()) {
+                if (e.getInfo() == EdgeType.Inhibitor) {
+                    for (javafx.scene.Node node : edge2group.get(e).getChildren()) {
+                        if (node instanceof Path || node instanceof Polyline)
+                            ((Shape) node).setStroke(n);
+                    }
+                }
+            }
+        });
+
         moleculeFlowAnimation = new MoleculeFlowAnimation(reactionGraph, foodNodes, edge2group, world);
+
+        moleculeFlowAnimation.animateInhibitionsProperty().addListener((c, o, n) -> inhibitionEdgeColor.set(n ? Color.BLACK : Color.LIGHTGREY));
     }
 
     /**
@@ -491,7 +509,11 @@ public class ReactionGraphView {
 
         if (edgeType == EdgeType.Catalyst) {
             path.getStrokeDashArray().addAll(2.0, 4.0);
+        } else if (edgeType == EdgeType.Inhibitor) {
+            path.getStrokeDashArray().addAll(2.0, 4.0);
+            path.setStroke(getInhibitionEdgeColor());
         }
+
         return new Group(path, arrowHead, circleShape);
     }
 
@@ -593,5 +615,31 @@ public class ReactionGraphView {
 
     public MoleculeFlowAnimation getMoleculeFlowAnimation() {
         return moleculeFlowAnimation;
+    }
+
+    public Color getInhibitionEdgeColor() {
+        return inhibitionEdgeColor.get();
+    }
+
+    public ObjectProperty<Color> inhibitionEdgeColorProperty() {
+        return inhibitionEdgeColor;
+    }
+
+    public void setInhibitionEdgeColor(Color inhibitionEdgeColor) {
+        this.inhibitionEdgeColor.set(inhibitionEdgeColor);
+    }
+
+    /**
+     * find a path in a group
+     *
+     * @param group
+     * @return path, if found
+     */
+    public static Path getPath(Group group) {
+        for (javafx.scene.Node child : group.getChildren()) {
+            if (child instanceof Path)
+                return (Path) child;
+        }
+        return null;
     }
 }

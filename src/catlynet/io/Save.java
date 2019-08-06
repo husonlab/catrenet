@@ -45,7 +45,7 @@ public class Save {
      */
     public static void apply(File file, MainWindow window) throws IOException {
         try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-            ModelIO.write(window.getInputModel(), w, true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation());
+            ModelIO.write(window.getInputReactionSystem(), w, true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation());
         }
     }
 

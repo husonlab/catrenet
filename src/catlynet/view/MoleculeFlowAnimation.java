@@ -54,6 +54,8 @@ public class MoleculeFlowAnimation {
 
     private final IntegerProperty uncatalyzedOrInhibitedThreshold = new SimpleIntegerProperty(8);
 
+    private final BooleanProperty animateInhibitions = new SimpleBooleanProperty(false);
+
     /**
      * setup molecule flow simulation
      *
@@ -125,6 +127,7 @@ public class MoleculeFlowAnimation {
                 edge2count.clear();
             }
         });
+
     }
 
     public boolean isPlaying() {
@@ -172,7 +175,7 @@ public class MoleculeFlowAnimation {
      * @param world
      */
     private void animateEdge(Edge edge, boolean reverse, EdgeIntegerArray edge2count, EdgeArray<Group> edge2Group, Color color, Group world) {
-        final Path path = getPath(edge2Group.get(edge));
+        final Path path = ReactionGraphView.getPath(edge2Group.get(edge));
 
         if (path != null) {
             final Ellipse blob = new Ellipse(4, 4);
@@ -224,7 +227,7 @@ public class MoleculeFlowAnimation {
             for (Edge f : v.inEdges()) {
                 if (f.getInfo() == EdgeType.Catalyst && edge2count.get(f) > 0) {
                     hasCatalyst = true;
-                } else if (f.getInfo() == EdgeType.Inhibitor && edge2count.get(f) > 0) {
+                } else if (isAnimateInhibitions() && f.getInfo() == EdgeType.Inhibitor && edge2count.get(f) > 0) {
                     hasInhibitor = true;
                 }
             }
@@ -293,7 +296,7 @@ public class MoleculeFlowAnimation {
             return result;
         } else if (v.getInfo() instanceof MoleculeType) {
             for (Edge f : Basic.randomize(v.adjacentEdges(), random)) {
-                if (f.getInfo() == EdgeType.Reactant || f.getInfo() == EdgeType.ReactantReversible || f.getInfo() == EdgeType.Catalyst) {
+                if (f.getInfo() == EdgeType.Reactant || f.getInfo() == EdgeType.ReactantReversible || f.getInfo() == EdgeType.Catalyst || (isAnimateInhibitions() && f.getInfo() == EdgeType.Inhibitor)) {
                     return new ArrayList<>(Collections.singletonList(new Pair<>(f, false)));
                 } else if (f.getInfo() == EdgeType.ProductReversible) {
                     return new ArrayList<>(Collections.singletonList(new Pair<>(f, true)));
@@ -303,18 +306,15 @@ public class MoleculeFlowAnimation {
         return empytList;
     }
 
-    /**
-     * find a path in a group
-     *
-     * @param group
-     * @return path, if found
-     */
-    private Path getPath(Group group) {
-        for (javafx.scene.Node child : group.getChildren()) {
-            if (child instanceof Path)
-                return (Path) child;
-        }
-        return null;
+    public boolean isAnimateInhibitions() {
+        return animateInhibitions.get();
     }
 
+    public BooleanProperty animateInhibitionsProperty() {
+        return animateInhibitions;
+    }
+
+    public void setAnimateInhibitions(boolean animateInhibitions) {
+        this.animateInhibitions.set(animateInhibitions);
+    }
 }

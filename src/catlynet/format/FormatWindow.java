@@ -114,9 +114,9 @@ public class FormatWindow {
                 if (arrowNotation != null)
                     mainWindow.getDocument().setArrowNotation(arrowNotation);
                 // rewrite input tab:
-                mainWindow.getController().getInputTextArea().setText(ModelIO.toString(mainWindow.getInputModel(), false,
+                mainWindow.getController().getInputTextArea().setText(ModelIO.toString(mainWindow.getInputReactionSystem(), false,
                         mainWindow.getDocument().getReactionNotation(), mainWindow.getDocument().getArrowNotation()));
-                final String foodString = ModelIO.getFoodString(mainWindow.getInputModel(), mainWindow.getDocument().getReactionNotation());
+                final String foodString = ModelIO.getFoodString(mainWindow.getInputReactionSystem(), mainWindow.getDocument().getReactionNotation());
                 mainWindow.getController().getFoodSetComboBox().getSelectionModel().select(foodString);
                 if (!mainWindow.getController().getFoodSetComboBox().getItems().contains(foodString))
                     mainWindow.getController().getFoodSetComboBox().getItems().add(0, foodString);

@@ -77,6 +77,8 @@ public class RunAlgorithm {
             } else {
                 window.getLogStream().println("\nNo " + result.getName());
                 textArea.setText("# No " + result.getName() + "\n");
+                NotificationManager.showInformation("No " + result.getName());
+
             }
         });
         service.start();

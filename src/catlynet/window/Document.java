@@ -26,39 +26,48 @@ import catlynet.view.ReactionGraphView;
 import javafx.beans.property.*;
 import jloda.util.ProgramProperties;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Document {
     private final StringProperty fileName = new SimpleStringProperty("Untitled");
     private final BooleanProperty dirty = new SimpleBooleanProperty(false);
 
+    private final Map<String, ReactionSystem> reactionSystems = new HashMap<>();
+
     private final ObjectProperty<ReactionNotation> reactionNotation = new SimpleObjectProperty<>(ReactionNotation.valueOfIgnoreCase(ProgramProperties.get("ReactionNotation", "Sparse")));
     private final ObjectProperty<ArrowNotation> arrowNotation = new SimpleObjectProperty<>(ArrowNotation.valueOfLabel(ProgramProperties.get("ArrowNotation", "=>")));
 
-    private final ReactionSystem inputReactionSystem = new ReactionSystem();
+    private final ReactionGraphView reactionGraphView = new ReactionGraphView(getInputReactionSystem());
 
-    private final ReactionSystem maxCAF = new ReactionSystem();
-    private final ReactionSystem maxRAF = new ReactionSystem();
-    private final ReactionSystem maxPseudoRAF = new ReactionSystem();
-
-    private final ReactionGraphView reactionGraphView = new ReactionGraphView(inputReactionSystem);
-
+    /**
+     * constructor
+     */
     public Document() {
     }
 
     public ReactionSystem getInputReactionSystem() {
+        return getReactionSystem(ReactionSystem.Type.Input);
+    }
+
+    public ReactionSystem getReactionSystem(String name) {
+        ReactionSystem inputReactionSystem = reactionSystems.get(name);
+        if (inputReactionSystem == null) {
+            inputReactionSystem = new ReactionSystem(name);
+            reactionSystems.put(name, inputReactionSystem);
+        }
         return inputReactionSystem;
     }
 
-    public ReactionSystem getMaxCAF() {
-        return maxCAF;
+    public ReactionSystem getReactionSystem(ReactionSystem.Type name) {
+        ReactionSystem inputReactionSystem = reactionSystems.get(name.toString());
+        if (inputReactionSystem == null) {
+            inputReactionSystem = new ReactionSystem(name.toString());
+            reactionSystems.put(name.toString(), inputReactionSystem);
+        }
+        return inputReactionSystem;
     }
 
-    public ReactionSystem getMaxRAF() {
-        return maxRAF;
-    }
-
-    public ReactionSystem getMaxPseudoRAF() {
-        return maxPseudoRAF;
-    }
 
     public ReactionGraphView getReactionGraphView() {
         return reactionGraphView;

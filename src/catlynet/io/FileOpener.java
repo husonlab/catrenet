@@ -47,7 +47,7 @@ public class FileOpener implements Consumer<String> {
         if (window == null || !window.isEmpty())
             window = NewWindow.apply();
 
-        final ReactionSystem reactionSystem = window.getInputModel();
+        final ReactionSystem reactionSystem = window.getInputReactionSystem();
 
         try (BufferedReader r = new BufferedReader(new FileReader(fileName))) {
             window.getDocument().setFileName(fileName);
@@ -56,10 +56,10 @@ public class FileOpener implements Consumer<String> {
                 throw new IOException("Couldn't detect 'full', 'sparse' or 'tabbed' file format");
 
             reactionSystem.clear();
-            final String leadingComments = ModelIO.read(window.getInputModel(), r, pair.getFirst());
+            final String leadingComments = ModelIO.read(window.getInputReactionSystem(), r, pair.getFirst());
 
-            window.getController().getInputTextArea().setText((leadingComments.length() > 0 ? leadingComments + "\n" : "") + ModelIO.toString(window.getInputModel(), false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
-            final String food = ModelIO.getFoodString(window.getInputModel(), window.getDocument().getReactionNotation());
+            window.getController().getInputTextArea().setText((leadingComments.length() > 0 ? leadingComments + "\n" : "") + ModelIO.toString(window.getInputReactionSystem(), false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
+            final String food = ModelIO.getFoodString(window.getInputReactionSystem(), window.getDocument().getReactionNotation());
             if (window.getController().getFoodSetComboBox().getItems().contains(food))
                 window.getController().getFoodSetComboBox().getItems().add(0, food);
             window.getController().getFoodSetComboBox().getSelectionModel().select(food);

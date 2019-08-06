@@ -23,6 +23,7 @@ import catlynet.action.CheckForUpdate;
 import catlynet.action.NewWindow;
 import catlynet.action.ParseInput;
 import catlynet.action.RunAlgorithm;
+import catlynet.algorithm.MUCAFAlgorithm;
 import catlynet.algorithm.MaxCAFAlgorithm;
 import catlynet.algorithm.MaxPseudoRAFAlgorithm;
 import catlynet.algorithm.MaxRAFAlgorithm;
@@ -30,6 +31,7 @@ import catlynet.format.FormatWindow;
 import catlynet.io.ModelIO;
 import catlynet.io.Save;
 import catlynet.io.SaveChangesDialog;
+import catlynet.model.ReactionSystem;
 import catlynet.view.MoleculeFlowAnimation;
 import catlynet.view.SelectionBindings;
 import javafx.application.Platform;
@@ -59,7 +61,6 @@ import jloda.util.ProgramProperties;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Arrays;
-import java.util.Date;
 
 /**
  * setup all control bindings
@@ -141,11 +142,11 @@ public class ControlBindings {
         controller.getClearLogMenuItem().setOnAction(e -> controller.getLogTextArea().clear());
         controller.getClearLogMenuItem().disableProperty().bind(controller.getLogTextArea().textProperty().isEmpty());
 
-        controller.getVerifyInputMenuItem().setOnAction((e) -> {
+        controller.getParseInputMenuItem().setOnAction((e) -> {
             if (ParseInput.apply(window)) {
-                controller.getReactionsTab().getTabPane().getSelectionModel().select(controller.getReactionsTab());
-                controller.getReactionsTextArea().setText(ModelIO.toString(window.getInputModel(), true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
-                final String message = String.format("Input is valid. Found %,d reactions and %,d food items", window.getInputModel().getReactions().size(), window.getInputModel().getFoods().size());
+                controller.getParsedInputTab().getTabPane().getSelectionModel().select(controller.getParsedInputTab());
+                controller.getReactionsTextArea().setText(ModelIO.toString(window.getInputReactionSystem(), true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
+                final String message = String.format("Input is valid. Found %,d reactions and %,d food items", window.getInputReactionSystem().getReactions().size(), window.getInputReactionSystem().getFoods().size());
                 NotificationManager.showInformation(message);
                 window.getLogStream().println(message);
 
@@ -171,7 +172,7 @@ public class ControlBindings {
         controller.getRunRAFMenuItem().setOnAction((e) -> {
             if (ParseInput.apply(window)) {
                 controller.getRafTab().getTabPane().getSelectionModel().select(controller.getRafTab());
-                RunAlgorithm.apply(window, window.getInputModel(), new MaxRAFAlgorithm(), window.getMaxRAF(), controller.getRafTextArea());
+                RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxRAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.MaxRAF), controller.getRafTextArea());
             }
         });
         controller.getRunRAFMenuItem().disableProperty().bind(controller.getInputTextArea().textProperty().isEmpty());
@@ -179,15 +180,26 @@ public class ControlBindings {
         controller.getRunCAFMenuItem().setOnAction((e) -> {
             if (ParseInput.apply(window)) {
                 controller.getCafTab().getTabPane().getSelectionModel().select(controller.getCafTab());
-                RunAlgorithm.apply(window, window.getInputModel(), new MaxCAFAlgorithm(), window.getMaxCAF(), controller.getCafTextArea());
+                RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxCAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.MaxCAF), controller.getCafTextArea());
             }
         });
         controller.getRunCAFMenuItem().disableProperty().bind(controller.getInputTextArea().textProperty().isEmpty());
 
+        controller.getRunMuCAFMenuItem().setOnAction((e) -> {
+            if (ParseInput.apply(window)) {
+                if (window.getInputReactionSystem().isInhibitorsPresent()) {
+                    controller.getCafTab().getTabPane().getSelectionModel().select(controller.getMuCafTab());
+                    RunAlgorithm.apply(window, window.getInputReactionSystem(), new MUCAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.MuCAF), controller.getMuCafTextArea());
+                } else
+                    NotificationManager.showWarning("Won't run MU CAF algorithm, no inhibitions present");
+            }
+        });
+        controller.getRunMuCAFMenuItem().disableProperty().bind(controller.getInputTextArea().textProperty().isEmpty().or(window.getInputReactionSystem().inhibitorsPresentProperty().not()));
+
         controller.getRunPseudoRAFMenuItem().setOnAction((e) -> {
             if (ParseInput.apply(window)) {
                 controller.getPseudoRafTab().getTabPane().getSelectionModel().select(controller.getPseudoRafTab());
-                RunAlgorithm.apply(window, window.getInputModel(), new MaxPseudoRAFAlgorithm(), window.getMaxPseudoRAF(), controller.getPseudoRAFTextArea());
+                RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxPseudoRAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.MaxPseudoRAF), controller.getPseudoRAFTextArea());
             }
         });
         controller.getRunPseudoRAFMenuItem().disableProperty().bind(controller.getInputTextArea().textProperty().isEmpty());
@@ -195,7 +207,7 @@ public class ControlBindings {
         controller.getRunMenuItem().setOnAction((e) -> {
             final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
-            window.getLogStream().println("\nRun +++++ " + simpleDateFormat.format(new Date()) + " +++++:");
+            window.getLogStream().println("\nRun +++++ " + simpleDateFormat.format(System.currentTimeMillis()) + " +++++:");
 
             controller.getReactionsTextArea().clear();
             controller.getCafTextArea().clear();
@@ -203,10 +215,15 @@ public class ControlBindings {
             controller.getPseudoRAFTextArea().clear();
 
             if (ParseInput.apply(window)) {
-                controller.getReactionsTextArea().setText("Expanded reactions:\n\n" + ModelIO.toString(window.getInputModel().getExpandedSystem(), true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
-                RunAlgorithm.apply(window, window.getInputModel(), new MaxCAFAlgorithm(), window.getMaxCAF(), controller.getCafTextArea());
-                RunAlgorithm.apply(window, window.getInputModel(), new MaxRAFAlgorithm(), window.getMaxRAF(), controller.getRafTextArea());
-                RunAlgorithm.apply(window, window.getInputModel(), new MaxPseudoRAFAlgorithm(), window.getMaxPseudoRAF(), controller.getPseudoRAFTextArea());
+                controller.getReactionsTextArea().setText("Expanded reactions:\n\n" + ModelIO.toString(window.getInputReactionSystem().getExpandedSystem(), true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
+                RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxCAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.MaxCAF), controller.getCafTextArea());
+                if (window.getInputReactionSystem().isInhibitorsPresent())
+                    RunAlgorithm.apply(window, window.getInputReactionSystem(), new MUCAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.MuCAF), controller.getMuCafTextArea());
+                else
+                    controller.getMuCafTextArea().clear();
+
+                RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxRAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.MaxRAF), controller.getRafTextArea());
+                RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxPseudoRAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.MaxPseudoRAF), controller.getPseudoRAFTextArea());
             }
         });
         controller.getRunMenuItem().disableProperty().bind(controller.getInputTextArea().textProperty().isEmpty());
@@ -214,12 +231,12 @@ public class ControlBindings {
         controller.getRunButton().setOnAction(controller.getRunMenuItem().getOnAction());
         controller.getRunButton().disableProperty().bind(controller.getInputTextArea().textProperty().isEmpty());
 
-        controller.getReactionsTab().disableProperty().bind(controller.getReactionsTextArea().textProperty().isEmpty());
-        controller.getVisualizationTab().disableProperty().bind(controller.getReactionsTab().disableProperty());
+        controller.getParsedInputTab().disableProperty().bind(controller.getReactionsTextArea().textProperty().isEmpty());
+        controller.getVisualizationTab().disableProperty().bind(controller.getParsedInputTab().disableProperty());
         controller.getRafTab().disableProperty().bind(controller.getRafTextArea().textProperty().isEmpty());
         controller.getCafTab().disableProperty().bind(controller.getCafTextArea().textProperty().isEmpty());
+        controller.getMuCafTab().disableProperty().bind(controller.getMuCafTextArea().textProperty().isEmpty().or(window.getInputReactionSystem().inhibitorsPresentProperty().not()));
         controller.getPseudoRafTab().disableProperty().bind(controller.getPseudoRAFTextArea().textProperty().isEmpty());
-
 
         controller.getAboutMenuItem().setOnAction((e) -> SplashScreen.getInstance().showSplash(Duration.ofMinutes(2)));
 
@@ -228,7 +245,6 @@ public class ControlBindings {
             controller.getCheckForUpdatesMenuItem().disableProperty().set(MainWindowManager.getInstance().size() > 1
                     || (MainWindowManager.getInstance().size() == 1 && !MainWindowManager.getInstance().getMainWindow(0).isEmpty()));
         });
-
 
         window.getStage().widthProperty().addListener((c, o, n) -> {
             if (!Double.isNaN(o.doubleValue()) && n.doubleValue() > 0)
@@ -278,6 +294,7 @@ public class ControlBindings {
                     }
                 }
             };
+            scrollPane.setRequireShiftOrControlToZoom(true);
             centerPane.minWidthProperty().bind(Bindings.createDoubleBinding(() ->
                     scrollPane.getViewportBounds().getWidth(), scrollPane.viewportBoundsProperty()).subtract(20));
             centerPane.minHeightProperty().bind(Bindings.createDoubleBinding(() ->
@@ -375,6 +392,11 @@ public class ControlBindings {
                     window.getReactionGraphView().update();
                 }
             });
+
+            window.getReactionGraphView().getMoleculeFlowAnimation().animateInhibitionsProperty().bind(controller.getAnimateInhibitionsMenuItem().selectedProperty());
+            controller.getAnimateInhibitionsContextMenuItem().selectedProperty().bindBidirectional(controller.getAnimateInhibitionsMenuItem().selectedProperty());
+            controller.getAnimateInhibitionsMenuItem().disableProperty().bind(window.getInputReactionSystem().inhibitorsPresentProperty().not());
+            controller.getAnimateInhibitionsContextMenuItem().disableProperty().bind(controller.getAnimateInhibitionsMenuItem().disableProperty());
         }
         SelectionBindings.setup(window, controller);
 

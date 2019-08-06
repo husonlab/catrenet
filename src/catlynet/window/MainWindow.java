@@ -169,21 +169,14 @@ public class MainWindow implements IMainWindow {
         return document;
     }
 
-    public ReactionSystem getInputModel() {
+    public ReactionSystem getInputReactionSystem() {
         return document.getInputReactionSystem();
     }
 
-    public ReactionSystem getMaxCAF() {
-        return document.getMaxCAF();
+    public ReactionSystem getReactionSystem(ReactionSystem.Type name) {
+        return document.getReactionSystem(name);
     }
 
-    public ReactionSystem getMaxRAF() {
-        return document.getMaxRAF();
-    }
-
-    public ReactionSystem getMaxPseudoRAF() {
-        return document.getMaxPseudoRAF();
-    }
 
     public PrintStream getLogStream() {
         return logStream;

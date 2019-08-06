@@ -57,7 +57,7 @@ public class SelectionBindings {
                 controller.getInputTextArea().requestFocus();
                 controller.getInputTextArea().selectAll();
             } else {
-                select(window.getInputModel(), view, true, true, false, false, false, false);
+                select(window.getInputReactionSystem(), view, true, true, false, false, false, false);
             }
         });
         controller.getSelectAllMenuItem().disableProperty().bind(inputHasFocus.not().and(visualizationHasFocus.not()));
@@ -67,7 +67,7 @@ public class SelectionBindings {
                 controller.getInputTextArea().requestFocus();
                 controller.getInputTextArea().selectRange(0, 0);
             } else {
-                select(window.getInputModel(), view, false, false, false, false, false, true);
+                select(window.getInputReactionSystem(), view, false, false, false, false, false, true);
             }
         });
         controller.getSelectNoneMenuItem().disableProperty().bind(inputHasFocus.not().and(visualizationHasFocus.not()));
@@ -82,59 +82,65 @@ public class SelectionBindings {
         controller.getSelectInvertedMenuItem().disableProperty().bind(visualizationHasFocus.not());
 
         controller.getSelectNodesMenuItem().setOnAction((e) -> {
-            select(window.getInputModel(), view, true, false, false, false, false, false);
+            select(window.getInputReactionSystem(), view, true, false, false, false, false, false);
 
         });
         controller.getSelectNodesMenuItem().disableProperty().bind(visualizationHasFocus.not());
 
         controller.getSelectEdgesMenuItem().setOnAction((e) -> {
-            select(window.getInputModel(), view, false, true, false, false, false, false);
+            select(window.getInputReactionSystem(), view, false, true, false, false, false, false);
 
         });
         controller.getSelectEdgesMenuItem().disableProperty().bind(visualizationHasFocus.not());
 
         controller.getSelectFoodMenuItem().setOnAction((e) -> {
-            select(window.getInputModel(), view, false, false, true, false, false, false);
+            select(window.getInputReactionSystem(), view, false, false, true, false, false, false);
 
         });
         controller.getSelectFoodMenuItem().disableProperty().bind(visualizationHasFocus.not());
 
-
         controller.getSelectMoleculesMenuItem().setOnAction((e) -> {
-            select(window.getInputModel(), view, false, false, false, false, true, false);
+            select(window.getInputReactionSystem(), view, false, false, false, false, true, false);
 
         });
         controller.getSelectMoleculesMenuItem().disableProperty().bind(visualizationHasFocus.not());
 
         controller.getSelectReactionsMenuItem().setOnAction((e) -> {
-            select(window.getInputModel(), view, false, false, false, true, false, false);
+            select(window.getInputReactionSystem(), view, false, false, false, true, false, false);
 
         });
         controller.getSelectReactionsMenuItem().disableProperty().bind(visualizationHasFocus.not());
 
 
         controller.getSelectMaxCAFMenuItem().setOnAction((e) -> {
-            selectForAlgorithm(view, window.getMaxCAF());
+            selectForAlgorithm(view, window.getReactionSystem(ReactionSystem.Type.MaxCAF));
         });
-        controller.getSelectMaxCAFMenuItem().disableProperty().bind(visualizationHasFocus.not().or(window.getMaxCAF().sizeProperty().isEqualTo(0)));
+        controller.getSelectMaxCAFMenuItem().disableProperty().bind(visualizationHasFocus.not().or(window.getReactionSystem(ReactionSystem.Type.MaxCAF).sizeProperty().isEqualTo(0)));
 
         controller.getSelectCAFContextMenuItem().setOnAction(controller.getSelectMaxCAFMenuItem().getOnAction());
         controller.getSelectCAFContextMenuItem().disableProperty().bind(controller.getSelectMaxCAFMenuItem().disableProperty());
 
+        controller.getSelectMuCAFMenuItem().setOnAction((e) -> {
+            selectForAlgorithm(view, window.getReactionSystem(ReactionSystem.Type.MuCAF));
+        });
+        controller.getSelectMuCAFMenuItem().disableProperty().bind(visualizationHasFocus.not().or(window.getReactionSystem(ReactionSystem.Type.MuCAF).sizeProperty().isEqualTo(0)));
+
+        controller.getSelectMuCAFMenuItem().setOnAction(controller.getSelectMuCAFMenuItem().getOnAction());
+        controller.getSelectMuCAFContextMenuItem().disableProperty().bind(controller.getSelectMuCAFMenuItem().disableProperty());
 
         controller.getSelectMaxRAFMenuItem().setOnAction((e) -> {
-            selectForAlgorithm(view, window.getMaxRAF());
+            selectForAlgorithm(view, window.getReactionSystem(ReactionSystem.Type.MaxRAF));
         });
-        controller.getSelectMaxRAFMenuItem().disableProperty().bind(visualizationHasFocus.not().or(window.getMaxRAF().sizeProperty().isEqualTo(0)));
+        controller.getSelectMaxRAFMenuItem().disableProperty().bind(visualizationHasFocus.not().or(window.getReactionSystem(ReactionSystem.Type.MaxRAF).sizeProperty().isEqualTo(0)));
 
         controller.getSelectRAFContextMenuItem().setOnAction(controller.getSelectMaxRAFMenuItem().getOnAction());
         controller.getSelectRAFContextMenuItem().disableProperty().bind(controller.getSelectMaxRAFMenuItem().disableProperty());
 
         controller.getSelectMaxPseudoRAFMenuItem().setOnAction((e) -> {
-            selectForAlgorithm(view, window.getMaxPseudoRAF());
+            selectForAlgorithm(view, window.getReactionSystem(ReactionSystem.Type.MaxPseudoRAF));
 
         });
-        controller.getSelectMaxPseudoRAFMenuItem().disableProperty().bind(visualizationHasFocus.not().or(window.getMaxPseudoRAF().sizeProperty().isEqualTo(0)));
+        controller.getSelectMaxPseudoRAFMenuItem().disableProperty().bind(visualizationHasFocus.not().or(window.getReactionSystem(ReactionSystem.Type.MaxPseudoRAF).sizeProperty().isEqualTo(0)));
 
         controller.getSelectPseudoRAFContextMenuItem().setOnAction(controller.getSelectMaxPseudoRAFMenuItem().getOnAction());
         controller.getSelectPseudoRAFContextMenuItem().disableProperty().bind(controller.getSelectMaxPseudoRAFMenuItem().disableProperty());

@@ -32,24 +32,36 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * the main  model
+ * a catalytic reaction system
  * Daniel Huson, 6.2019
  */
 public class ReactionSystem {
+    public enum Type {Input, MuCAF, MaxCAF, MaxRAF, MaxPseudoRAF, Reactions}
+
     private final ObservableList<Reaction> reactions = FXCollections.observableArrayList();
     private final ObservableList<MoleculeType> foods = FXCollections.observableArrayList();
+
+    private final BooleanProperty inhibitorsPresent = new SimpleBooleanProperty(false);
 
     private final IntegerProperty size = new SimpleIntegerProperty();
 
     private int numberOfTwoWayReactions = 0;
 
-    private final StringProperty name = new SimpleStringProperty("Reactions");
+    private final StringProperty name = new SimpleStringProperty(Type.Reactions.toString());
 
     /**
      * construct a reactions systems
      */
     public ReactionSystem() {
+        this(null);
+    }
+
+    /**
+     * construct a reactions systems
+     */
+    public ReactionSystem(final String name) {
         size.bind(Bindings.size(reactions));
+        setName(name);
 
         reactions.addListener((ListChangeListener<Reaction>) e -> {
             while (e.next()) {
@@ -63,6 +75,7 @@ public class ReactionSystem {
                 }
             }
         });
+        updateIsInhibitorsPresent();
     }
 
     public ObservableList<Reaction> getReactions() {
@@ -140,17 +153,22 @@ public class ReactionSystem {
         this.name.set(name);
     }
 
-    /**
-     * determines whether model currently contains inhibitors
-     *
-     * @return true, if inhibitors present
-     */
-    public boolean containsInhibitors() {
-        for (Reaction reaction : getReactions()) {
-            if (reaction.getInhibitors().size() > 0)
-                return true;
+    public boolean isInhibitorsPresent() {
+        return inhibitorsPresent.get();
+    }
+
+    public ReadOnlyBooleanProperty inhibitorsPresentProperty() {
+        return inhibitorsPresent;
+    }
+
+    public void updateIsInhibitorsPresent() {
+        for (Reaction reaction : reactions) {
+            if (reaction.getInhibitors().size() > 0) {
+                inhibitorsPresent.set(true);
+                return;
+            }
         }
-        return false;
+        inhibitorsPresent.set(false);
     }
 
     /**
@@ -226,7 +244,6 @@ public class ReactionSystem {
         }
         return compressed;
     }
-
 
     /**
      * gets all mentioned molecule types

@@ -28,7 +28,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * computes a pseudo-RAF
+ * computes a maximal pseudo-RAF
  * Daniel Huson, 7.2019
  * Based on notes by Mike Steel
  */
