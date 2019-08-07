@@ -20,6 +20,7 @@
 package catlynet.io;
 
 import catlynet.action.NewWindow;
+import catlynet.action.ParseInput;
 import catlynet.format.ArrowNotation;
 import catlynet.format.ReactionNotation;
 import catlynet.model.ReactionSystem;
@@ -74,6 +75,8 @@ public class FileOpener implements Consumer<String> {
             // window.getLogStream().println("Display format: " + window.getDocument().getReactionNotation());
             RecentFilesManager.getInstance().insertRecentFile(fileName);
 
+            ParseInput.apply(window);
+            
         } catch (IOException e) {
             NotificationManager.showError("Open file failed: " + e.getMessage());
         }
