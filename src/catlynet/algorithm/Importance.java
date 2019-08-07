@@ -28,6 +28,7 @@ import java.util.ArrayList;
 
 /**
  * computes importance of food items and reactions
+ * Daniel Huson, 7.2019
  */
 public class Importance {
     /**
@@ -39,6 +40,7 @@ public class Importance {
      */
     public static ArrayList<Pair<MoleculeType, Float>> computeFoodImportance(ReactionSystem inputSystem, ReactionSystem originalResult, AlgorithmBase algorithm) {
         final ArrayList<Pair<MoleculeType, Float>> result = new ArrayList<>();
+
         final ReactionSystem expandedReactionSystem = inputSystem.getExpandedSystem();
 
         for (MoleculeType food : inputSystem.getFoods()) {

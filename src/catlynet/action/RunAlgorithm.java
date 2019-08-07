@@ -21,6 +21,7 @@ package catlynet.action;
 
 import catlynet.algorithm.AlgorithmBase;
 import catlynet.algorithm.Importance;
+import catlynet.algorithm.MuCAFAlgorithm;
 import catlynet.io.ModelIO;
 import catlynet.model.ReactionSystem;
 import catlynet.window.MainWindow;
@@ -49,8 +50,15 @@ public class RunAlgorithm {
 
         final AService<Triplet<ReactionSystem, String, String>> service = new AService<>(() -> {
             final ReactionSystem outputReactions = algorithm.apply(inputReactions).getCompressedSystem();
-            final String infoLine1 = Importance.toStringFoodImportance(Importance.computeFoodImportance(inputReactions, outputReactions, algorithm));
-            final String infoLine2 = Importance.toStringReactionImportance(Importance.computeReactionImportance(inputReactions, outputReactions, algorithm));
+            final String infoLine1;
+            final String infoLine2;
+            if (algorithm instanceof MuCAFAlgorithm) {
+                infoLine1 = null;
+                infoLine2 = null;
+            } else {
+                infoLine1 = Importance.toStringFoodImportance(Importance.computeFoodImportance(inputReactions, outputReactions, algorithm));
+                infoLine2 = Importance.toStringReactionImportance(Importance.computeReactionImportance(inputReactions, outputReactions, algorithm));
+            }
 
             return new Triplet<>(outputReactions, infoLine1, infoLine2);
         }, controller.getStatusFlowPane());
@@ -69,11 +77,15 @@ public class RunAlgorithm {
 
                 NotificationManager.showInformation(headLine);
 
-                textArea.setText("# " + headLine + ":\n# " + infoLine1 + "\n# " + infoLine2 + "\n\n" + ModelIO.toString(result, false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
-
-                window.getLogStream().println("\n" + headLine);
-                window.getLogStream().println(infoLine1);
-                window.getLogStream().println(infoLine2);
+                if (infoLine1 != null && infoLine2 != null) {
+                    textArea.setText("# " + headLine + ":\n# " + infoLine1 + "\n# " + infoLine2 + "\n\n" + ModelIO.toString(result, false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
+                    window.getLogStream().println("\n" + headLine);
+                    window.getLogStream().println(infoLine1);
+                    window.getLogStream().println(infoLine2);
+                } else {
+                    textArea.setText("# " + headLine + "\n\n" + ModelIO.toString(result, false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
+                    window.getLogStream().println("\n" + headLine);
+                }
             } else {
                 window.getLogStream().println("\nNo " + result.getName());
                 textArea.setText("# No " + result.getName() + "\n");

@@ -46,7 +46,7 @@ public class ParseInput {
         final MainWindowController controller = window.getController();
 
         try {
-            final ReactionSystem reactionSystem = window.getInputReactionSystem();
+            final ReactionSystem reactionSystem = window.getDocument().getInputReactionSystem();
             reactionSystem.clear();
 
             ModelIO.read(reactionSystem, new StringReader(controller.getInputTextArea().getText()), window.getDocument().getReactionNotation());
@@ -64,10 +64,11 @@ public class ParseInput {
             //controller.getInputTextArea().setText(ModelIO.toString(model, false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
 
             reactionSystem.updateIsInhibitorsPresent();
-            if (reactionSystem.isInhibitorsPresent()) {
-                final String message = "Input catalytic reaction system contains inhibitions. These are ignored in the computation of Max CAF, Max RAF and Max Pseudo-RAF";
+            if (!window.getDocument().isWarnedAboutInhibitions() && reactionSystem.isInhibitorsPresent()) {
+                final String message = "Input catalytic reaction system contains inhibitions. These are ignored in the computation of maxCAF, maxRAF and maxPseudoRAF";
                 window.getLogStream().println(message);
                 NotificationManager.showInformation(message);
+                window.getDocument().setWarnedAboutInhibitions(true);
             }
 
             return true;

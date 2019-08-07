@@ -32,6 +32,7 @@ import java.util.Map;
 public class Document {
     private final StringProperty fileName = new SimpleStringProperty("Untitled");
     private final BooleanProperty dirty = new SimpleBooleanProperty(false);
+    private final BooleanProperty warnedAboutInhibitions = new SimpleBooleanProperty(false);
 
     private final Map<String, ReactionSystem> reactionSystems = new HashMap<>();
 
@@ -121,5 +122,15 @@ public class Document {
         this.arrowNotation.set(arrowNotation);
     }
 
+    public boolean isWarnedAboutInhibitions() {
+        return warnedAboutInhibitions.get();
+    }
 
+    public BooleanProperty warnedAboutInhibitionsProperty() {
+        return warnedAboutInhibitions;
+    }
+
+    public void setWarnedAboutInhibitions(boolean warnedAboutInhibitions) {
+        this.warnedAboutInhibitions.set(warnedAboutInhibitions);
+    }
 }

@@ -156,7 +156,8 @@
                                 </MenuItem>
                                 <MenuItem fx:id="selectMaxRAFMenuItem" mnemonicParsing="false" text="Max RAF">
                                 </MenuItem>
-                                <MenuItem fx:id="selectMaxPseudoRAFMenuItem" mnemonicParsing="false" text="Max p-RAF">
+                                <MenuItem fx:id="selectMaxPseudoRAFMenuItem" mnemonicParsing="false"
+                                          text="Max Pseudo RAF">
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="selectFoodMenuItem" mnemonicParsing="false" text="Food">
@@ -167,19 +168,7 @@
                                 </MenuItem>
                             </items>
                         </Menu>
-                        <Menu mnemonicParsing="false" text="View">
-                            <items>
-                                <CheckMenuItem fx:id="wrapTextMenuItem" mnemonicParsing="false" text="Wrap Text"/>
-                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="formatMenuItem" mnemonicParsing="false" text="Format...">
-                                    <accelerator>
-                                        <KeyCodeCombination alt="UP" code="J" control="UP" meta="DOWN" shift="UP"
-                                                            shortcut="UP"/>
-                                    </accelerator>
-                                </MenuItem>
-                            </items>
-                        </Menu>
-                        <Menu fx:id="algorithmMenu" mnemonicParsing="false" text="Methods">
+                        <Menu fx:id="algorithmMenu" mnemonicParsing="false" text="Run">
                             <items>
                                 <MenuItem fx:id="parseInputMenuItem" mnemonicParsing="false" text="Parse Input">
                                     <accelerator>
@@ -188,11 +177,14 @@
                                     </accelerator>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="runMuCAFMenuItem" mnemonicParsing="false" text="Run MU CAF Algorithm"/>
-                                <MenuItem fx:id="runCAFMenuItem" mnemonicParsing="false" text="Run Max CAF Algorithm"/>
-                                <MenuItem fx:id="runRAFMenuItem" mnemonicParsing="false" text="Run Max RAF Algorithm"/>
+                                <MenuItem fx:id="runMuCAFMenuItem" mnemonicParsing="false" text="MU CAF Algorithm"/>
+                                <MenuItem fx:id="runCAFMenuItem" mnemonicParsing="false" text="Max CAF Algorithm"/>
+                                <MenuItem fx:id="runRAFMenuItem" mnemonicParsing="false" text="Max RAF Algorithm"/>
                                 <MenuItem fx:id="runPseudoRAFMenuItem" mnemonicParsing="false"
-                                          text="Run Max p-RAF Algorithm"/>
+                                          text="Max Pseudo RAF Algorithm"/>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem fx:id="runMuCAFMultipleTimesMenuItem" mnemonicParsing="false"
+                                          text="Run MU CAF Multiple Times..."/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="runMenuItem" mnemonicParsing="false" text="Run All">
                                     <accelerator>
@@ -200,7 +192,10 @@
                                                             shortcut="UP"/>
                                     </accelerator>
                                 </MenuItem>
-                                <SeparatorMenuItem mnemonicParsing="false"/>
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Animate">
+                            <items>
                                 <CheckMenuItem fx:id="animateCAFCheckMenuItem" mnemonicParsing="false"
                                                text="Animate CAF">
                                     <accelerator>
@@ -229,6 +224,25 @@
                                 <MenuItem fx:id="stopAnimationMenuItem" mnemonicParsing="false" text="Stop Animation">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="SPACE" control="UP" meta="DOWN" shift="UP"
+                                                            shortcut="UP"/>
+                                    </accelerator>
+                                </MenuItem>
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="View">
+                            <items>
+                                <CheckMenuItem fx:id="wrapTextMenuItem" mnemonicParsing="false" text="Wrap Text"/>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem fx:id="formatMenuItem" mnemonicParsing="false" text="Format...">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="J" control="UP" meta="DOWN" shift="UP"
+                                                            shortcut="UP"/>
+                                    </accelerator>
+                                </MenuItem>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem fx:id="fullScreenMenuItem" mnemonicParsing="false" text="Enter Full Screen">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="F" control="UP" meta="DOWN" shift="DOWN"
                                                             shortcut="UP"/>
                                     </accelerator>
                                 </MenuItem>
@@ -387,7 +401,7 @@
                                         </BorderPane>
                                     </content>
                                     <tooltip>
-                                        <Tooltip text="Maximally unihibitied CAF (mu-CAF)"/>
+                                        <Tooltip text="Maximal uninhibited CAF (mu-CAF)"/>
                                     </tooltip>
                                 </Tab>
                                 <Tab fx:id="cafTab" closable="false" disable="true" text="Max CAF">

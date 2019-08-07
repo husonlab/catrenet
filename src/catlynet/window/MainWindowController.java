@@ -308,6 +308,12 @@ public class MainWindowController {
     private VBox logVBox;
 
     @FXML
+    private MenuItem fullScreenMenuItem;
+
+    @FXML
+    private MenuItem runMuCAFMultipleTimesMenuItem;
+
+    @FXML
     void initialize() {
         assert menuBar != null : "fx:id=\"menuBar\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert fileMenu != null : "fx:id=\"fileMenu\" was not injected: check your FXML file 'MainWindow.fxml'.";
@@ -841,5 +847,13 @@ public class MainWindowController {
 
     public CheckMenuItem getAnimateInhibitionsContextMenuItem() {
         return animateInhibitionsContextMenuItem;
+    }
+
+    public MenuItem getFullScreenMenuItem() {
+        return fullScreenMenuItem;
+    }
+
+    public MenuItem getRunMuCAFMultipleTimesMenuItem() {
+        return runMuCAFMultipleTimesMenuItem;
     }
 }

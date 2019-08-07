@@ -154,7 +154,7 @@ public class ReactionGraphView {
         for (Reaction reaction : reactionSystem.getReactions()) {
             final Node reactionNode = reactionGraph.newNode(reaction);
 
-            for (Collection<MoleculeType> collection : Arrays.asList(reaction.getReactants(), reaction.getProducts(), reaction.getCatalysts(), reaction.getInhibitors())) {
+            for (Collection<MoleculeType> collection : Arrays.asList(reaction.getReactants(), reaction.getProducts(), reaction.getCatalysts(), reaction.getInhibitions())) {
                 for (MoleculeType molecule : collection) {
                     if (molecule2node.get(molecule) == null) {
 
@@ -189,7 +189,7 @@ public class ReactionGraphView {
                 }
                 reactionGraph.newEdge(molecule2node.get(molecule), reactionNode, EdgeType.Catalyst);
             }
-            for (MoleculeType molecule : reaction.getInhibitors()) {
+            for (MoleculeType molecule : reaction.getInhibitions()) {
                 reactionGraph.newEdge(molecule2node.get(molecule), reactionNode, EdgeType.Inhibitor);
             }
         }

@@ -36,7 +36,7 @@ import java.util.TreeSet;
  * Daniel Huson, 6.2019
  */
 public class ReactionSystem {
-    public enum Type {Input, MuCAF, MaxCAF, MaxRAF, MaxPseudoRAF, Reactions}
+    public enum Type {Input, muCAF, maxCAF, maxRAF, maxPseudoRAF, Reactions}
 
     private final ObservableList<Reaction> reactions = FXCollections.observableArrayList();
     private final ObservableList<MoleculeType> foods = FXCollections.observableArrayList();
@@ -112,7 +112,7 @@ public class ReactionSystem {
     public void clear() {
         reactions.clear();
         foods.clear();
-        name.set("Reactions");
+        name.set(Type.Reactions.toString());
     }
 
     /**
@@ -163,7 +163,7 @@ public class ReactionSystem {
 
     public void updateIsInhibitorsPresent() {
         for (Reaction reaction : reactions) {
-            if (reaction.getInhibitors().size() > 0) {
+            if (reaction.getInhibitions().size() > 0) {
                 inhibitorsPresent.set(true);
                 return;
             }
@@ -262,7 +262,7 @@ public class ReactionSystem {
             if (catalysts)
                 moleculeTypes.addAll(reaction.getCatalysts());
             if (inhibitors)
-                moleculeTypes.addAll(reaction.getInhibitors());
+                moleculeTypes.addAll(reaction.getInhibitions());
         }
         return moleculeTypes;
     }

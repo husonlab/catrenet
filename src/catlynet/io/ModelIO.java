@@ -185,11 +185,11 @@ public class ModelIO {
             return String.format("%s\t%s %s %s\t%s%s",
                     reaction.getName(), Basic.toString(reaction.getReactants(), " + "),
                     arrow, Basic.toString(reaction.getProducts(), " + "), Basic.toString(reaction.getCatalysts(), " "),
-                    (reaction.getInhibitors().size() == 0 ? "" : "\t" + Basic.toString(reaction.getInhibitors(), " ")));
+                    (reaction.getInhibitions().size() == 0 ? "" : "\t" + Basic.toString(reaction.getInhibitions(), " ")));
         else
             return String.format("%s : %s [%s]%s%s %s",
                     reaction.getName(), Basic.toString(reaction.getReactants(), " + "), Basic.toString(reaction.getCatalysts(), reactionNotation == ReactionNotation.Full ? ", " : " "),
-                    (reaction.getInhibitors().size() == 0 ? " " : " (" + Basic.toString(reaction.getInhibitors(), reactionNotation == ReactionNotation.Full ? ", " : " ") + ") "),
+                    (reaction.getInhibitions().size() == 0 ? " " : " (" + Basic.toString(reaction.getInhibitions(), reactionNotation == ReactionNotation.Full ? ", " : " ") + ") "),
                     arrow, Basic.toString(reaction.getProducts(), " + "));
     }
 }

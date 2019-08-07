@@ -92,7 +92,7 @@ public abstract class AlgorithmBase {
     protected Set<MoleculeType> filterMentionedInhibitors(Collection<MoleculeType> molecules, Collection<Reaction> reactions) {
         final Set<MoleculeType> mentioned = new TreeSet<>();
         for (Reaction reaction : reactions) {
-            mentioned.addAll(reaction.getInhibitors());
+            mentioned.addAll(reaction.getInhibitions());
         }
         return Basic.intersection(molecules, mentioned);
     }
@@ -110,7 +110,7 @@ public abstract class AlgorithmBase {
             mentioned.addAll(reaction.getReactants());
             mentioned.addAll(reaction.getProducts());
             mentioned.addAll(reaction.getCatalysts());
-            mentioned.addAll(reaction.getInhibitors());
+            mentioned.addAll(reaction.getInhibitions());
         }
         return Basic.intersection(molecules, mentioned);
     }

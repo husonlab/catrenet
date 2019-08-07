@@ -36,7 +36,7 @@ public class Reaction implements Comparable<Reaction> {
     private final Set<MoleculeType> reactants = new TreeSet<>();
     private final Set<MoleculeType> products = new TreeSet<>();
     private final Set<MoleculeType> catalysts = new TreeSet<>();
-    private final Set<MoleculeType> inhibitors = new TreeSet<>();
+    private final Set<MoleculeType> inhibitions = new TreeSet<>();
 
     private Direction direction = Direction.forward;
 
@@ -70,8 +70,8 @@ public class Reaction implements Comparable<Reaction> {
         return catalysts;
     }
 
-    public Set<MoleculeType> getInhibitors() {
-        return inhibitors;
+    public Set<MoleculeType> getInhibitions() {
+        return inhibitions;
     }
 
     public Direction getDirection() {
@@ -174,7 +174,7 @@ public class Reaction implements Comparable<Reaction> {
         reaction.getReactants().addAll(MoleculeType.valueOf(reactants));
         reaction.getProducts().addAll(MoleculeType.valueOf(products));
         reaction.getCatalysts().addAll(MoleculeType.valueOf(catalysts));
-        reaction.getInhibitors().addAll(MoleculeType.valueOf(inhibitors));
+        reaction.getInhibitions().addAll(MoleculeType.valueOf(inhibitors));
         reaction.setDirection(direction);
         return reaction;
     }
@@ -198,7 +198,7 @@ public class Reaction implements Comparable<Reaction> {
         reverse.getReactants().addAll(getProducts());
         reverse.getProducts().addAll(getReactants());
         reverse.getCatalysts().addAll(getCatalysts());
-        reverse.getInhibitors().addAll(getInhibitors());
+        reverse.getInhibitions().addAll(getInhibitions());
         return reverse;
     }
 
@@ -212,7 +212,7 @@ public class Reaction implements Comparable<Reaction> {
         forward.getReactants().addAll(getReactants());
         forward.getProducts().addAll(getProducts());
         forward.getCatalysts().addAll(getCatalysts());
-        forward.getInhibitors().addAll(getInhibitors());
+        forward.getInhibitions().addAll(getInhibitions());
         return forward;
     }
 
@@ -228,7 +228,7 @@ public class Reaction implements Comparable<Reaction> {
         both.getReactants().addAll(getReactants());
         both.getProducts().addAll(getProducts());
         both.getCatalysts().addAll(getCatalysts());
-        both.getInhibitors().addAll(getInhibitors());
+        both.getInhibitions().addAll(getInhibitions());
         both.setDirection(Direction.both);
         return both;
     }

@@ -1,5 +1,5 @@
 /*
- * MUCAFAlgorithm.java Copyright (C) 2019. Daniel H. Huson
+ * MuCAFAlgorithm.java Copyright (C) 2019. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -31,7 +31,7 @@ import java.util.*;
  * Daniel Huson, 7.2019
  * Based on notes by Mike Steel
  */
-public class MUCAFAlgorithm extends AlgorithmBase {
+public class MuCAFAlgorithm extends AlgorithmBase {
     /**
      * computes a MU CAF
      *
@@ -43,14 +43,18 @@ public class MUCAFAlgorithm extends AlgorithmBase {
         result.setName("MU CAF");
 
         final ReactionSystem expanded = input.getExpandedSystem();
-        final Set<Reaction> inputReactions = new TreeSet<>(expanded.getReactions());
+        final ArrayList<Reaction> inputReactions = Basic.randomize(expanded.getReactions(), new Random());
+        //final ArrayList<Reaction> inputReactions = new ArrayList<>(expanded.getReactions());
+
         final Set<MoleculeType> inputFood = new TreeSet<>(expanded.getFoods());
 
         final ArrayList<Set<MoleculeType>> molecules = new ArrayList<>();
         final ArrayList<Set<Reaction>> reactions = new ArrayList<>();
+        final ArrayList<Set<MoleculeType>> inhibitions = new ArrayList<>();
 
         molecules.add(0, inputFood);
         reactions.add(0, new HashSet<>());
+        inhibitions.add(0, new HashSet<>());
 
         int i = 0;
         while (true) {
@@ -58,15 +62,20 @@ public class MUCAFAlgorithm extends AlgorithmBase {
 
             Reaction anUninhibitedReaction = null;
             for (Reaction reaction : Basic.difference(inputReactions, reactions.get(i - 1))) {
-                if (molecules.get(i - 1).containsAll(reaction.getProducts()) && molecules.get(i - 1).containsAll(reaction.getCatalysts())
-                        && !Basic.intersects(molecules.get(i - 1), reaction.getInhibitors())) {
+                if (!Basic.intersects(reaction.getProducts(), reaction.getInhibitions())
+                        && !Basic.intersects(inhibitions.get(i - 1), reaction.getProducts())
+                        && molecules.get(i - 1).containsAll(reaction.getReactants())
+                        && Basic.intersects(molecules.get(i - 1), reaction.getCatalysts())
+                        && !Basic.intersects(molecules.get(i - 1), reaction.getInhibitions())) {
                     anUninhibitedReaction = reaction;
                     break;
                 }
             }
+
             if (anUninhibitedReaction != null) {
-                molecules.add(i, addAllMentionedProducts(molecules.get(i - 1), reactions.get(i - 1)));
                 reactions.add(i, Basic.union(reactions.get(i - 1), Collections.singleton(anUninhibitedReaction)));
+                molecules.add(i, addAllMentionedProducts(molecules.get(i - 1), reactions.get(i)));
+                inhibitions.add(i, Basic.union(inhibitions.get(i - 1), anUninhibitedReaction.getInhibitions()));
             } else
                 break;
         }
