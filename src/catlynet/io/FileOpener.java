@@ -76,7 +76,7 @@ public class FileOpener implements Consumer<String> {
             RecentFilesManager.getInstance().insertRecentFile(fileName);
 
             ParseInput.apply(window);
-            
+
         } catch (IOException e) {
             NotificationManager.showError("Open file failed: " + e.getMessage());
         }
