@@ -21,9 +21,9 @@ package catlynet.io;
 
 import catlynet.window.MainWindow;
 import javafx.stage.FileChooser;
-import jloda.fx.util.NotificationManager;
 import jloda.fx.util.RecentFilesManager;
 import jloda.fx.util.TextFileFilter;
+import jloda.fx.window.NotificationManager;
 import jloda.util.ProgramProperties;
 
 import java.io.BufferedWriter;

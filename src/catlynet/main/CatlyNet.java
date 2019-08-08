@@ -25,9 +25,9 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import jloda.fx.util.ArgsOptions;
 import jloda.fx.util.ColorSchemeManager;
-import jloda.fx.util.NotificationManager;
 import jloda.fx.util.ResourceManagerFX;
 import jloda.fx.window.MainWindowManager;
+import jloda.fx.window.NotificationManager;
 import jloda.fx.window.SplashScreen;
 import jloda.fx.window.WindowGeometry;
 import jloda.util.Basic;
@@ -65,6 +65,7 @@ public class CatlyNet extends Application {
         Basic.startCollectionStdErr();
 
         ResourceManagerFX.addResourceRoot(CatlyNet.class, "catlynet.resources");
+        ProgramProperties.getProgramIconsFX().addAll(ResourceManagerFX.getIcons("CatlyNet-16.png", "CatlyNet-32.png", "CatlyNet-48.png", "CatlyNet-64.png", "CatlyNet-128.png"));
 
         ProgramProperties.setProgramName(Version.NAME);
         ProgramProperties.setProgramVersion(Version.SHORT_DESCRIPTION);
@@ -72,8 +73,6 @@ public class CatlyNet extends Application {
                 "This is free software, licensed under the terms of the GNU General Public License, Version 3.\n" +
                 "Sources available at: https://github.com/danielhuson/catlynet\n" +
                 "Installers available at: http://ab.inf.uni-tuebingen.de/data/software/catlynet/download/welcome.html\n");
-        ProgramProperties.getProgramIconsFX().addAll(ResourceManagerFX.getIcon("CatlyNet-16.png"), ResourceManagerFX.getIcon("CatlyNet-32.png"), ResourceManagerFX.getIcon("CatlyNet-64.png"),
-                ResourceManagerFX.getIcon("CatlyNet-128.png"));
         SplashScreen.setVersionString(Version.SHORT_DESCRIPTION);
 
         parseArguments(args);

@@ -25,7 +25,7 @@ import catlynet.window.MainWindow;
 import catlynet.window.MainWindowController;
 import javafx.scene.control.ComboBox;
 import jloda.fx.util.BasicFX;
-import jloda.fx.util.NotificationManager;
+import jloda.fx.window.NotificationManager;
 import jloda.util.IOExceptionWithLineNumber;
 
 import java.io.IOException;

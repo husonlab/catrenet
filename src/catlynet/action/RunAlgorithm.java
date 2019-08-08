@@ -28,7 +28,7 @@ import catlynet.window.MainWindow;
 import catlynet.window.MainWindowController;
 import javafx.scene.control.TextArea;
 import jloda.fx.util.AService;
-import jloda.fx.util.NotificationManager;
+import jloda.fx.window.NotificationManager;
 import jloda.util.Triplet;
 
 /**

@@ -25,9 +25,9 @@ import catlynet.format.ArrowNotation;
 import catlynet.format.ReactionNotation;
 import catlynet.model.ReactionSystem;
 import catlynet.window.MainWindow;
-import jloda.fx.util.NotificationManager;
 import jloda.fx.util.RecentFilesManager;
 import jloda.fx.window.MainWindowManager;
+import jloda.fx.window.NotificationManager;
 import jloda.util.Pair;
 
 import java.io.BufferedReader;
