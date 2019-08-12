@@ -37,7 +37,6 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import jloda.fx.control.AMultipleSelectionModel;
 import jloda.fx.shapes.CircleShape;
 import jloda.fx.shapes.SquareShape;
@@ -49,16 +48,20 @@ import jloda.util.APoint2D;
 import jloda.util.Basic;
 import jloda.util.Pair;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * maintains the visualization of a model
  * Daniel Huson, 7.2019
  */
 public class ReactionGraphView {
+    private final static ObjectProperty<Font> font = new SimpleObjectProperty<>(Font.font("Helvetica", 12));
     private final Graph reactionGraph = new Graph();
     private final NodeSet foodNodes = new NodeSet(reactionGraph);
-    private final NodeArray<Pair<javafx.scene.Node, javafx.scene.Node>> node2group = new NodeArray<>(reactionGraph);
+    private final NodeArray<Pair<Shape, Label>> node2shapeAndLabel = new NodeArray<>(reactionGraph);
     private final EdgeArray<Group> edge2group = new EdgeArray<>(reactionGraph);
 
     private final AMultipleSelectionModel<Node> nodeSelection = new AMultipleSelectionModel<>();
@@ -66,8 +69,7 @@ public class ReactionGraphView {
 
     private final ObjectProperty<Color> inhibitionEdgeColor = new SimpleObjectProperty<>(Color.LIGHTGREY);
 
-
-    public class AndNode {
+    static class AndNode {
     }
 
     private final ReactionSystem reactionSystem;
@@ -88,19 +90,18 @@ public class ReactionGraphView {
         nodeSelection.getSelectedItems().addListener((ListChangeListener<Node>) (e) -> {
             while (e.next()) {
                 for (Node v : e.getAddedSubList()) {
-                    final Pair<javafx.scene.Node, javafx.scene.Node> pair = node2group.get(v);
+                    final Pair<Shape, Label> pair = node2shapeAndLabel.get(v);
                     if (pair != null) {
-                        for (Object obj : pair) {
-                            ((javafx.scene.Node) obj).setEffect(SelectionEffectBlue.getInstance());
-
+                        for (Object oNode : pair) {
+                            ((javafx.scene.Node) oNode).setEffect(SelectionEffectBlue.getInstance());
                         }
                     }
                 }
                 for (Node v : e.getRemoved()) {
-                    final Pair<javafx.scene.Node, javafx.scene.Node> pair = node2group.get(v);
+                    final Pair<Shape, Label> pair = node2shapeAndLabel.get(v);
                     if (pair != null) {
-                        for (Object obj : pair) {
-                            ((javafx.scene.Node) obj).setEffect(null);
+                        for (Object oNode : pair) {
+                            ((javafx.scene.Node) oNode).setEffect(null);
                         }
                     }
                 }
@@ -212,9 +213,7 @@ public class ReactionGraphView {
             return layout.apply(10000);
         }));
 
-        service.setOnSucceeded((e) -> {
-            world.getChildren().addAll(setupGraphView(reactionSystem, reactionGraph, node2group, edge2group, service.getValue()));
-        });
+        service.setOnSucceeded((e) -> world.getChildren().setAll(setupGraphView(reactionSystem, reactionGraph, node2shapeAndLabel, edge2group, service.getValue())));
         service.start();
     }
 
@@ -251,85 +250,80 @@ public class ReactionGraphView {
      * @param coordinates
      * @return graph view
      */
-    private Collection<? extends javafx.scene.Node> setupGraphView(ReactionSystem reactionSystem, Graph graph, NodeArray<Pair<javafx.scene.Node, javafx.scene.Node>> node2pair, EdgeArray<Group> edge2group, NodeArray<APoint2D> coordinates) {
-        final ArrayList<javafx.scene.Node> all = new ArrayList<>();
-        final ArrayList<javafx.scene.Node> labels = new ArrayList<>();
+    private Collection<? extends javafx.scene.Node> setupGraphView(ReactionSystem reactionSystem, Graph graph, NodeArray<Pair<Shape, Label>> node2ShapeAndLabel, EdgeArray<Group> edge2group, NodeArray<APoint2D> coordinates) {
+        final Group spacers = new Group();
+        final Group nodes = new Group();
+        final Group edges = new Group();
+        final Group labels = new Group();
 
-        final Font labelFont = Font.font("Arial", 12);
         final Background labelBackground = new Background(new BackgroundFill(Color.WHITE.deriveColor(1, 1, 1, 0.7), null, null));
 
         final Map<Node, Shape> node2shape = new HashMap<>();
 
         for (Node v : graph.nodes()) {
+            final Shape shape;
+            final Label text;
+
             if (v.getInfo() instanceof Reaction) {
-                final Shape shape = new CircleShape(10);
+                shape = new CircleShape(10);
                 shape.setStroke(Color.BLACK);
                 shape.setFill(Color.WHITE);
                 shape.setStrokeWidth(2);
-                shape.setTranslateX(coordinates.get(v).getX());
-                shape.setTranslateY(coordinates.get(v).getY());
-                setupMouseInteraction(shape, shape, v, null);
-                node2shape.put(v, shape);
 
-                final Label text = new Label(((Reaction) v.getInfo()).getName());
-                text.setBackground(labelBackground);
-                text.setFont(labelFont);
-                text.setLayoutX(10);
-                text.translateXProperty().bind(shape.translateXProperty());
-                text.translateYProperty().bind(shape.translateYProperty());
-                labels.add(text);
-                setupMouseInteraction(text, text, v, null);
-
-                node2pair.put(v, new Pair<>(shape, text));
-
+                text = new Label(((Reaction) v.getInfo()).getName());
             } else if (v.getInfo() instanceof MoleculeType) {
-                final Shape shape = new SquareShape(10);
+                shape = new SquareShape(10);
                 shape.setStroke(Color.BLACK);
                 shape.setFill(Color.WHITE);
-                if (reactionSystem.getFoods().contains((MoleculeType) v.getInfo()))
+                if (reactionSystem.getFoods().contains(v.getInfo()))
                     shape.setStrokeWidth(4);
                 else
                     shape.setStrokeWidth(2);
-                shape.setTranslateX(coordinates.get(v).getX());
-                shape.setTranslateY(coordinates.get(v).getY());
-                node2shape.put(v, shape);
-                setupMouseInteraction(shape, shape, v, null);
 
-
-                final Label text = new Label(((MoleculeType) v.getInfo()).getName());
-                text.setFont(labelFont);
-                text.setBackground(labelBackground);
-                text.setLayoutX(10);
-                text.translateXProperty().bind(shape.translateXProperty());
-                text.translateYProperty().bind(shape.translateYProperty());
-                labels.add(text);
-
-                setupMouseInteraction(text, text, v, null);
-
-                node2pair.put(v, new Pair<>(shape, text));
+                text = new Label(((MoleculeType) v.getInfo()).getName());
 
             } else if (v.getInfo() instanceof AndNode) {
-                final Shape shape = new CircleShape(15);
+                shape = new CircleShape(15);
                 shape.setStroke(Color.WHITE);
                 shape.setFill(Color.WHITE);
                 shape.setStrokeWidth(2);
+
+                text = new Label("&");
+            } else {
+                System.err.println("Unsupported node type: " + v.getInfo());
+                shape = null;
+                text = null;
+            }
+
+            if (shape != null) {
                 shape.setTranslateX(coordinates.get(v).getX());
                 shape.setTranslateY(coordinates.get(v).getY());
+                setupMouseInteraction(shape, shape, v, null);
+                nodes.getChildren().add(shape);
                 node2shape.put(v, shape);
 
-                final Text text = new Text("&");
-                text.setFont(Font.font("Arial", 12));
-                text.setLayoutX(10);
-                text.translateXProperty().bind(shape.translateXProperty().subtract(15));
-                text.translateYProperty().bind(shape.translateYProperty().add(5));
-                labels.add(text);
-
                 setupMouseInteraction(text, shape, v, null);
+                text.setBackground(labelBackground);
+                text.setFont(getFont());
+                text.setLayoutX(10);
+                text.translateXProperty().bind(shape.translateXProperty());
+                text.translateYProperty().bind(shape.translateYProperty());
+                labels.getChildren().add(text);
+                setupMouseInteraction(text, text, v, null);
 
-                node2pair.put(v, new Pair<>(shape, text));
+                if (true) {  // add spacers to prevent graph from moving when molecules with long names arrive at a node that is on the boundary of the graph
+                    final Circle spacer = new Circle(100);
+                    spacer.translateXProperty().bind(shape.translateXProperty());
+                    spacer.translateYProperty().bind(shape.translateYProperty());
+                    spacer.setFill(Color.TRANSPARENT);
+                    spacer.setStroke(Color.TRANSPARENT);
+                    spacer.setMouseTransparent(true);
 
-            } else
-                System.err.println("Unsupported node type: " + v.getInfo());
+                    spacers.getChildren().add(spacer);
+                }
+
+                node2ShapeAndLabel.put(v, new Pair<>(shape, text));
+            }
         }
 
         for (Edge edge : graph.edges()) {
@@ -340,13 +334,11 @@ public class ReactionGraphView {
 
             final Group path = createPath(edge, sourceShape.translateXProperty(), sourceShape.translateYProperty(), targetShape.translateXProperty(), targetShape.translateYProperty(), edgeType);
 
-            all.add(path);
+            edges.getChildren().add(path);
             edge2group.put(edge, path);
         }
 
-        all.addAll(node2shape.values());
-        all.addAll(labels);
-        return all;
+        return Arrays.asList(spacers, edges, nodes, labels);
     }
 
     /**
@@ -635,11 +627,23 @@ public class ReactionGraphView {
      * @param group
      * @return path, if found
      */
-    public static Path getPath(Group group) {
+    static Path getPath(Group group) {
         for (javafx.scene.Node child : group.getChildren()) {
             if (child instanceof Path)
                 return (Path) child;
         }
         return null;
+    }
+
+    public static Font getFont() {
+        return font.get();
+    }
+
+    public static ObjectProperty<Font> fontProperty() {
+        return font;
+    }
+
+    public static void setFont(Font font) {
+        ReactionGraphView.font.set(font);
     }
 }

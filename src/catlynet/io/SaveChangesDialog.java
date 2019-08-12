@@ -55,9 +55,7 @@ public class SaveChangesDialog {
             if (result.isPresent()) {
                 if (result.get() == buttonTypeYes) {
                     return Save.showSaveDialog(mainWindow);
-                } else if (result.get() == buttonTypeNo) {
-                    return true;
-                }
+                } else return result.get() == buttonTypeNo;
             }
             return false; // canceled
         }

@@ -50,6 +50,7 @@ import javafx.stage.Stage;
 import jloda.fx.control.ZoomableScrollPane;
 import jloda.fx.find.FindToolBar;
 import jloda.fx.find.TextAreaSearcher;
+import jloda.fx.util.BasicFX;
 import jloda.fx.util.Print;
 import jloda.fx.util.RecentFilesManager;
 import jloda.fx.window.MainWindowManager;
@@ -84,9 +85,7 @@ public class ControlBindings {
             e.consume();
         });
 
-        controller.getNewMenuItem().setOnAction((e) -> {
-            NewWindow.apply();
-        });
+        controller.getNewMenuItem().setOnAction((e) -> NewWindow.apply());
 
         controller.getOpenMenuItem().setOnAction(FileOpenManager.createOpenFileEventHandler(window.getStage()));
 
@@ -264,10 +263,8 @@ public class ControlBindings {
         controller.getAboutMenuItem().setOnAction((e) -> SplashScreen.getInstance().showSplash(Duration.ofMinutes(2)));
 
         controller.getCheckForUpdatesMenuItem().setOnAction((e) -> CheckForUpdate.apply());
-        MainWindowManager.getInstance().changedProperty().addListener((c, o, n) -> {
-            controller.getCheckForUpdatesMenuItem().disableProperty().set(MainWindowManager.getInstance().size() > 1
-                    || (MainWindowManager.getInstance().size() == 1 && !MainWindowManager.getInstance().getMainWindow(0).isEmpty()));
-        });
+        MainWindowManager.getInstance().changedProperty().addListener((c, o, n) -> controller.getCheckForUpdatesMenuItem().disableProperty().set(MainWindowManager.getInstance().size() > 1
+                || (MainWindowManager.getInstance().size() == 1 && !MainWindowManager.getInstance().getMainWindow(0).isEmpty())));
 
         window.getStage().widthProperty().addListener((c, o, n) -> {
             if (!Double.isNaN(o.doubleValue()) && n.doubleValue() > 0)
@@ -298,9 +295,7 @@ public class ControlBindings {
             final Pane centerPane = new StackPane();
             centerPane.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
 
-            centerPane.setOnContextMenuRequested((e) -> {
-                controller.getVisualizationTabContextMenu().show(centerPane, e.getScreenX(), e.getScreenY());
-            });
+            centerPane.setOnContextMenuRequested((e) -> controller.getVisualizationTabContextMenu().show(centerPane, e.getScreenX(), e.getScreenY()));
 
             centerPane.getChildren().add(window.getReactionGraphView().getWorld());
 
@@ -309,7 +304,7 @@ public class ControlBindings {
                 public void updateScale() {
                     final double zoomX = getZoomFactorX();
                     final double zoomY = getZoomFactorY();
-                    for (javafx.scene.Node node : window.getReactionGraphView().getWorld().getChildren()) {
+                    for (javafx.scene.Node node : BasicFX.getAllChildrenRecursively(window.getReactionGraphView().getWorld().getChildren())) {
                         if (!node.translateXProperty().isBound())
                             node.setTranslateX(node.getTranslateX() * zoomX);
                         if (!node.translateYProperty().isBound())
@@ -382,8 +377,8 @@ public class ControlBindings {
             });
             controller.getAnimateMaxRAFCheckMenuItem().disableProperty().bind(controller.getVisualizationTab().disableProperty().or(window.getReactionGraphView().getMoleculeFlowAnimation().playingProperty()));
 
-            controller.getAminatePseudoRAFContextMenuItem().selectedProperty().bindBidirectional(controller.getAnimateMaxRAFCheckMenuItem().selectedProperty());
-            controller.getAminatePseudoRAFContextMenuItem().disableProperty().bind(controller.getAnimateMaxRAFCheckMenuItem().disableProperty());
+            controller.getAnimatePseudoRAFContextMenuItem().selectedProperty().bindBidirectional(controller.getAnimateMaxRAFCheckMenuItem().selectedProperty());
+            controller.getAnimatePseudoRAFContextMenuItem().disableProperty().bind(controller.getAnimateMaxRAFCheckMenuItem().disableProperty());
 
             controller.getStopAnimationMenuItem().setOnAction(e -> {
                 window.getReactionGraphView().getMoleculeFlowAnimation().setPlaying(false);
@@ -489,12 +484,8 @@ public class ControlBindings {
      * @param stage
      */
     public static void setupFullScreenMenuSupport(Stage stage, MenuItem menuItem) {
-        stage.fullScreenProperty().addListener((c, o, n) -> {
-            menuItem.setText(n ? "Exit Full Screen" : "Enter Full Screen");
-        });
-        menuItem.setOnAction((e) -> {
-            stage.setFullScreen(!stage.isFullScreen());
-        });
+        stage.fullScreenProperty().addListener((c, o, n) -> menuItem.setText(n ? "Exit Full Screen" : "Enter Full Screen"));
+        menuItem.setOnAction((e) -> stage.setFullScreen(!stage.isFullScreen()));
         menuItem.setDisable(false);
     }
 }

@@ -81,65 +81,41 @@ public class SelectionBindings {
         });
         controller.getSelectInvertedMenuItem().disableProperty().bind(visualizationHasFocus.not());
 
-        controller.getSelectNodesMenuItem().setOnAction((e) -> {
-            select(window.getInputReactionSystem(), view, true, false, false, false, false, false);
-
-        });
+        controller.getSelectNodesMenuItem().setOnAction((e) -> select(window.getInputReactionSystem(), view, true, false, false, false, false, false));
         controller.getSelectNodesMenuItem().disableProperty().bind(visualizationHasFocus.not());
 
-        controller.getSelectEdgesMenuItem().setOnAction((e) -> {
-            select(window.getInputReactionSystem(), view, false, true, false, false, false, false);
-
-        });
+        controller.getSelectEdgesMenuItem().setOnAction((e) -> select(window.getInputReactionSystem(), view, false, true, false, false, false, false));
         controller.getSelectEdgesMenuItem().disableProperty().bind(visualizationHasFocus.not());
 
-        controller.getSelectFoodMenuItem().setOnAction((e) -> {
-            select(window.getInputReactionSystem(), view, false, false, true, false, false, false);
-
-        });
+        controller.getSelectFoodMenuItem().setOnAction((e) -> select(window.getInputReactionSystem(), view, false, false, true, false, false, false));
         controller.getSelectFoodMenuItem().disableProperty().bind(visualizationHasFocus.not());
 
-        controller.getSelectMoleculesMenuItem().setOnAction((e) -> {
-            select(window.getInputReactionSystem(), view, false, false, false, false, true, false);
-
-        });
+        controller.getSelectMoleculesMenuItem().setOnAction((e) -> select(window.getInputReactionSystem(), view, false, false, false, false, true, false));
         controller.getSelectMoleculesMenuItem().disableProperty().bind(visualizationHasFocus.not());
 
-        controller.getSelectReactionsMenuItem().setOnAction((e) -> {
-            select(window.getInputReactionSystem(), view, false, false, false, true, false, false);
-
-        });
+        controller.getSelectReactionsMenuItem().setOnAction((e) -> select(window.getInputReactionSystem(), view, false, false, false, true, false, false));
         controller.getSelectReactionsMenuItem().disableProperty().bind(visualizationHasFocus.not());
 
 
-        controller.getSelectMaxCAFMenuItem().setOnAction((e) -> {
-            selectForAlgorithm(view, window.getReactionSystem(ReactionSystem.Type.maxCAF));
-        });
+        controller.getSelectMaxCAFMenuItem().setOnAction((e) -> selectForAlgorithm(view, window.getReactionSystem(ReactionSystem.Type.maxCAF)));
         controller.getSelectMaxCAFMenuItem().disableProperty().bind(visualizationHasFocus.not().or(window.getReactionSystem(ReactionSystem.Type.maxCAF).sizeProperty().isEqualTo(0)));
 
         controller.getSelectCAFContextMenuItem().setOnAction(controller.getSelectMaxCAFMenuItem().getOnAction());
         controller.getSelectCAFContextMenuItem().disableProperty().bind(controller.getSelectMaxCAFMenuItem().disableProperty());
 
-        controller.getSelectMuCAFMenuItem().setOnAction((e) -> {
-            selectForAlgorithm(view, window.getReactionSystem(ReactionSystem.Type.muCAF));
-        });
+        controller.getSelectMuCAFMenuItem().setOnAction((e) -> selectForAlgorithm(view, window.getReactionSystem(ReactionSystem.Type.muCAF)));
         controller.getSelectMuCAFMenuItem().disableProperty().bind(visualizationHasFocus.not().or(window.getReactionSystem(ReactionSystem.Type.muCAF).sizeProperty().isEqualTo(0)));
 
         controller.getSelectMuCAFMenuItem().setOnAction(controller.getSelectMuCAFMenuItem().getOnAction());
         controller.getSelectMuCAFContextMenuItem().disableProperty().bind(controller.getSelectMuCAFMenuItem().disableProperty());
 
-        controller.getSelectMaxRAFMenuItem().setOnAction((e) -> {
-            selectForAlgorithm(view, window.getReactionSystem(ReactionSystem.Type.maxRAF));
-        });
+        controller.getSelectMaxRAFMenuItem().setOnAction((e) -> selectForAlgorithm(view, window.getReactionSystem(ReactionSystem.Type.maxRAF)));
         controller.getSelectMaxRAFMenuItem().disableProperty().bind(visualizationHasFocus.not().or(window.getReactionSystem(ReactionSystem.Type.maxRAF).sizeProperty().isEqualTo(0)));
 
         controller.getSelectRAFContextMenuItem().setOnAction(controller.getSelectMaxRAFMenuItem().getOnAction());
         controller.getSelectRAFContextMenuItem().disableProperty().bind(controller.getSelectMaxRAFMenuItem().disableProperty());
 
-        controller.getSelectMaxPseudoRAFMenuItem().setOnAction((e) -> {
-            selectForAlgorithm(view, window.getReactionSystem(ReactionSystem.Type.maxPseudoRAF));
-
-        });
+        controller.getSelectMaxPseudoRAFMenuItem().setOnAction((e) -> selectForAlgorithm(view, window.getReactionSystem(ReactionSystem.Type.maxPseudoRAF)));
         controller.getSelectMaxPseudoRAFMenuItem().disableProperty().bind(visualizationHasFocus.not().or(window.getReactionSystem(ReactionSystem.Type.maxPseudoRAF).sizeProperty().isEqualTo(0)));
 
         controller.getSelectPseudoRAFContextMenuItem().setOnAction(controller.getSelectMaxPseudoRAFMenuItem().getOnAction());
@@ -161,7 +137,7 @@ public class SelectionBindings {
     private static void select(ReactionSystem reactionSystem, ReactionGraphView view, boolean nodes, boolean edges, boolean food, boolean reactions, boolean molecules, boolean deselectNonMatched) {
         for (Node v : view.getReactionGraph().nodes()) {
             if (nodes || (reactions && v.getInfo() instanceof Reaction)
-                    || (food & v.getInfo() instanceof MoleculeType && reactionSystem.getFoods().contains((MoleculeType) v.getInfo()))
+                    || (food & v.getInfo() instanceof MoleculeType && reactionSystem.getFoods().contains(v.getInfo()))
                     || (molecules && v.getInfo() instanceof MoleculeType))
                 view.getNodeSelection().select(v);
             else if (deselectNonMatched)

@@ -35,8 +35,6 @@ import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 
 public class FormatWindow {
-    private final FormatWindowController controller;
-    private final Parent root;
 
     private final Stage stage;
 
@@ -47,8 +45,8 @@ public class FormatWindow {
      */
     public FormatWindow(MainWindow mainWindow) {
         final ExtendedFXMLLoader<FormatWindowController> extendedFXMLLoader = new ExtendedFXMLLoader<>(this.getClass());
-        root = extendedFXMLLoader.getRoot();
-        controller = extendedFXMLLoader.getController();
+        Parent root = extendedFXMLLoader.getRoot();
+        FormatWindowController controller = extendedFXMLLoader.getController();
 
         final ToggleGroup formatToggleGroup = new ToggleGroup();
         formatToggleGroup.getToggles().addAll(controller.getFullFormatRadioButton(), controller.getSpareFormatRadioButton(), controller.getTabbedFormatRadioButton());
@@ -58,7 +56,6 @@ public class FormatWindow {
                 ProgramProperties.put("ReactionNotation", ((RadioButton) n).getText());
             }
         });
-
 
         for (Toggle toggle : formatToggleGroup.getToggles()) {
             if (ProgramProperties.get("ReactionNotation", controller.getSpareFormatRadioButton().getText()).equals(((RadioButton) toggle).getText())) {
@@ -127,7 +124,6 @@ public class FormatWindow {
             }
             stage.hide();
             MainWindowManager.getInstance().removeAuxiliaryWindow(mainWindow, stage);
-
         });
     }
 

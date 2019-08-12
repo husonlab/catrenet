@@ -133,13 +133,9 @@ public class MainWindow implements IMainWindow {
         stage.show();
 
 
-        controller.getFoodSetComboBox().getSelectionModel().selectedItemProperty().addListener((c, o, n) -> {
-            hasFoodInput.set(n != null && n.length() > 0);
-        });
+        controller.getFoodSetComboBox().getSelectionModel().selectedItemProperty().addListener((c, o, n) -> hasFoodInput.set(n != null && n.length() > 0));
 
-        controller.getInputTextArea().textProperty().length().addListener((c, o, n) -> {
-            hasReactionsInput.set(n.intValue() > 0);
-        });
+        controller.getInputTextArea().textProperty().length().addListener((c, o, n) -> hasReactionsInput.set(n.intValue() > 0));
         empty.bind(hasFoodInput.not().and(hasReactionsInput.not()));
     }
 

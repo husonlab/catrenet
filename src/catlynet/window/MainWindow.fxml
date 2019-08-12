@@ -375,7 +375,7 @@
                                                                text="Animate CAF"/>
                                                 <CheckMenuItem fx:id="animateRAFContextMenuItem" mnemonicParsing="false"
                                                                text="Animate RAF"/>
-                                                <CheckMenuItem fx:id="aminatePseudoRAFContextMenuItem"
+                                                <CheckMenuItem fx:id="animatePseudoRAFContextMenuItem"
                                                                mnemonicParsing="false" text="Animate Pseudo-RAF"/>
                                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                                 <CheckMenuItem fx:id="animateInhibitionsContextMenuItem"

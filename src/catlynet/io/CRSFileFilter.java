@@ -21,8 +21,10 @@ package catlynet.io;
 
 import javafx.stage.FileChooser;
 
-import java.io.File;
-
+/**
+ * catalytic reactions system file filter
+ * Daniel Huson, 7.2019
+ */
 public class CRSFileFilter {
     private static FileChooser.ExtensionFilter instance;
 
@@ -30,13 +32,5 @@ public class CRSFileFilter {
         if (instance == null)
             instance = new FileChooser.ExtensionFilter("Catalytic reaction system file", "*.crs", "*.crs.gz");
         return instance;
-    }
-
-    public static boolean accepts(File selectedFile) {
-        for (String ex : getInstance().getExtensions()) {
-            if (selectedFile.getName().toLowerCase().endsWith(ex))
-                return true;
-        }
-        return false;
     }
 }
