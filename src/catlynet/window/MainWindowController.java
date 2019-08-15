@@ -430,14 +430,11 @@ public class MainWindowController {
         if (outputSplittableTabPane.getTabs().size() > 0)
             outputSplittableTabPane.getSelectionModel().select(0);
 
+        final ArrayList<MenuItem> originalWindowMenuItems = new ArrayList<>(windowMenu.getItems());
+
         final InvalidationListener invalidationListener = observable -> {
-            windowMenu.getItems().clear();
-            if (true || !ProgramProperties.isMacOS()) {
-                windowMenu.getItems().add(getAboutMenuItem());
-                windowMenu.getItems().add(new SeparatorMenuItem());
-                windowMenu.getItems().add(getCheckForUpdatesMenuItem());
-                windowMenu.getItems().add(new SeparatorMenuItem());
-            }
+            windowMenu.getItems().setAll(originalWindowMenuItems);
+
             int count = 0;
             for (IMainWindow mainWindow : MainWindowManager.getInstance().getMainWindows()) {
                 if (mainWindow.getStage() != null) {

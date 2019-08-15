@@ -43,6 +43,7 @@ public class CatlyNet extends Application {
 
     @Override
     public void init() throws Exception {
+        Runtime.getRuntime().addShutdownHook(new Thread(ProgramProperties::store));
         ProgramProperties.setUseGUI(true);
 
         ColorSchemeManager.BuiltInColorTables = new String[]{"Alhambra;6;0X4d66cc;0Xb3e6e6;0Xcc9933;0X669966;0X666666;0X994d00;" +
@@ -158,6 +159,5 @@ public class CatlyNet extends Application {
     public void stop() {
         ProgramProperties.store();
         System.exit(0);
-
     }
 }
