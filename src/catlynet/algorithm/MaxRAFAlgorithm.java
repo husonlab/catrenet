@@ -34,7 +34,8 @@ import java.util.TreeSet;
  */
 public class MaxRAFAlgorithm extends AlgorithmBase {
     /**
-     * computes the RAF
+     * computes the RAF.
+     * Ignore all inhibitions.
      *
      * @param input
      * @returns result, empty, it none exists

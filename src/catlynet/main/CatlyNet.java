@@ -122,7 +122,7 @@ public class CatlyNet extends Application {
         SplashScreen.setImageResourceName("splash.png");
         SplashScreen.getInstance().showSplash(Duration.ofSeconds(5));
         try {
-            primaryStage.setTitle(Version.SHORT_DESCRIPTION);
+            primaryStage.setTitle("Untitled - " + ProgramProperties.getProgramName());
             NotificationManager.setShowNotifications(true);
 
             final MainWindow mainWindow = new MainWindow();

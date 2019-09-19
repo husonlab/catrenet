@@ -21,7 +21,6 @@ package catlynet.window;
 
 import catlynet.io.CRSFileFilter;
 import catlynet.io.FileOpener;
-import catlynet.main.Version;
 import catlynet.model.ReactionSystem;
 import catlynet.view.ReactionGraphView;
 import javafx.application.Platform;
@@ -115,9 +114,9 @@ public class MainWindow implements IMainWindow {
 
         final InvalidationListener listener = ((e) -> {
             if (document.getFileName() == null)
-                getStage().setTitle("Untitled - " + Version.SHORT_DESCRIPTION);
+                getStage().setTitle("Untitled - " + ProgramProperties.getProgramName());
             else
-                getStage().setTitle(Basic.getFileNameWithoutPath(document.getFileName()) + (document.isDirty() ? "*" : "") + " - " + Version.SHORT_DESCRIPTION);
+                getStage().setTitle(Basic.getFileNameWithoutPath(document.getFileName()) + (document.isDirty() ? "*" : "") + " - " + ProgramProperties.getProgramName());
         });
         document.fileNameProperty().addListener(listener);
 

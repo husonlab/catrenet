@@ -37,7 +37,7 @@ public class NewWindow {
      */
     public static MainWindow apply() {
         final MainWindow newWindow = (MainWindow) MainWindowManager.getInstance().createAndShowWindow(false);
-        newWindow.getStage().setTitle(ProgramProperties.getProgramName() + " [" + (++windowsCreated) + "]");
+        newWindow.getStage().setTitle("Untitled - " + ProgramProperties.getProgramName() + " [" + (++windowsCreated) + "]");
         MainWindowManager.getInstance().setLastFocusedMainWindow(newWindow);
         return newWindow;
     }

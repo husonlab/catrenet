@@ -36,7 +36,7 @@ import java.util.TreeSet;
  * Daniel Huson, 6.2019
  */
 public class ReactionSystem {
-    public enum Type {Input, muCAF, maxCAF, maxRAF, maxPseudoRAF, Reactions}
+    public enum Type {Input, maxCAF, maxRAF, maxPseudoRAF, Reactions, muCAF, uRAF}
 
     private final ObservableList<Reaction> reactions = FXCollections.observableArrayList();
     private final ObservableList<MoleculeType> foods = FXCollections.observableArrayList();

@@ -20,10 +20,7 @@
 package catlynet.window;
 
 import catlynet.action.*;
-import catlynet.algorithm.MaxCAFAlgorithm;
-import catlynet.algorithm.MaxPseudoRAFAlgorithm;
-import catlynet.algorithm.MaxRAFAlgorithm;
-import catlynet.algorithm.MuCAFAlgorithm;
+import catlynet.algorithm.*;
 import catlynet.format.FormatWindow;
 import catlynet.io.ModelIO;
 import catlynet.io.Save;
@@ -173,7 +170,7 @@ public class ControlBindings {
 
         controller.getRunRAFMenuItem().setOnAction((e) -> {
             if (ParseInput.apply(window)) {
-                controller.getRafTab().getTabPane().getSelectionModel().select(controller.getRafTab());
+                controller.getOutputTabPane().getSelectionModel().select(controller.getRafTab());
                 RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxRAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.maxRAF), controller.getRafTextArea());
             }
         });
@@ -181,26 +178,16 @@ public class ControlBindings {
 
         controller.getRunCAFMenuItem().setOnAction((e) -> {
             if (ParseInput.apply(window)) {
-                controller.getCafTab().getTabPane().getSelectionModel().select(controller.getCafTab());
+                controller.getOutputTabPane().getSelectionModel().select(controller.getCafTab());
                 RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxCAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.maxCAF), controller.getCafTextArea());
             }
         });
         controller.getRunCAFMenuItem().disableProperty().bind(controller.getInputTextArea().textProperty().isEmpty());
 
-        controller.getRunMuCAFMenuItem().setOnAction((e) -> {
-            if (ParseInput.apply(window)) {
-                if (window.getInputReactionSystem().isInhibitorsPresent()) {
-                    controller.getCafTab().getTabPane().getSelectionModel().select(controller.getMuCafTab());
-                    RunAlgorithm.apply(window, window.getInputReactionSystem(), new MuCAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.muCAF), controller.getMuCafTextArea());
-                } else
-                    NotificationManager.showWarning("Won't run MU CAF algorithm, no inhibitions present");
-            }
-        });
-        controller.getRunMuCAFMenuItem().disableProperty().bind(controller.getInputTextArea().textProperty().isEmpty().or(window.getInputReactionSystem().inhibitorsPresentProperty().not()));
 
         controller.getRunPseudoRAFMenuItem().setOnAction((e) -> {
             if (ParseInput.apply(window)) {
-                controller.getPseudoRafTab().getTabPane().getSelectionModel().select(controller.getPseudoRafTab());
+                controller.getOutputTabPane().getSelectionModel().select(controller.getPseudoRafTab());
                 RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxPseudoRAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.maxPseudoRAF), controller.getPseudoRAFTextArea());
             }
         });
@@ -216,22 +203,50 @@ public class ControlBindings {
             controller.getRafTextArea().clear();
             controller.getPseudoRAFTextArea().clear();
 
+            controller.getMuCafTextArea().clear();
+            controller.getuRAFTextArea().clear();
+
+
             if (ParseInput.apply(window)) {
                 controller.getReactionsTextArea().setText("Expanded reactions:\n\n" + ModelIO.toString(window.getInputReactionSystem().getExpandedSystem(), true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
                 RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxCAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.maxCAF), controller.getCafTextArea());
-                if (window.getInputReactionSystem().isInhibitorsPresent())
-                    RunAlgorithm.apply(window, window.getInputReactionSystem(), new MuCAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.muCAF), controller.getMuCafTextArea());
-                else
-                    controller.getMuCafTextArea().clear();
-
                 RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxRAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.maxRAF), controller.getRafTextArea());
                 RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxPseudoRAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.maxPseudoRAF), controller.getPseudoRAFTextArea());
+
+                if (window.getInputReactionSystem().isInhibitorsPresent()) {
+                    RunAlgorithm.apply(window, window.getInputReactionSystem(), new MuCAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.muCAF), controller.getMuCafTextArea());
+                    RunAlgorithm.apply(window, window.getInputReactionSystem(), new URAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.uRAF), controller.getuRAFTextArea());
+                }
             }
         });
         controller.getRunMenuItem().disableProperty().bind(controller.getInputTextArea().textProperty().isEmpty());
 
         controller.getRunButton().setOnAction(controller.getRunMenuItem().getOnAction());
         controller.getRunButton().disableProperty().bind(controller.getInputTextArea().textProperty().isEmpty());
+
+        controller.getRunMuCAFMenuItem().setOnAction((e) -> {
+            if (ParseInput.apply(window)) {
+                if (window.getInputReactionSystem().isInhibitorsPresent()) {
+                    controller.getOutputTabPane().getSelectionModel().select(controller.getMuCafTab());
+                    RunAlgorithm.apply(window, window.getInputReactionSystem(), new MuCAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.muCAF), controller.getMuCafTextArea());
+                } else
+                    NotificationManager.showWarning("Won't run MU CAF algorithm, no inhibitions present");
+            }
+        });
+
+        controller.getRunMuCAFMenuItem().disableProperty().bind(controller.getInputTextArea().textProperty().isEmpty().or(window.getInputReactionSystem().inhibitorsPresentProperty().not()));
+
+        controller.getRunRAFMenuItem().setOnAction((e) -> {
+            if (ParseInput.apply(window)) {
+                if (window.getInputReactionSystem().isInhibitorsPresent()) {
+                    controller.getOutputTabPane().getSelectionModel().select(controller.getuRAFTab());
+                    RunAlgorithm.apply(window, window.getInputReactionSystem(), new URAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.uRAF), controller.getMuCafTextArea());
+                } else
+                    NotificationManager.showWarning("Won't run U RAF algorithm, no inhibitions present");
+            }
+        });
+        controller.getRunRAFMenuItem().disableProperty().bind(controller.getInputTextArea().textProperty().isEmpty().or(window.getInputReactionSystem().inhibitorsPresentProperty().not()));
+
 
         controller.getRunMuCAFMultipleTimesMenuItem().setOnAction((e) -> {
             final TextInputDialog dialog = new TextInputDialog("10");
@@ -258,6 +273,7 @@ public class ControlBindings {
         controller.getRafTab().disableProperty().bind(controller.getRafTextArea().textProperty().isEmpty());
         controller.getCafTab().disableProperty().bind(controller.getCafTextArea().textProperty().isEmpty());
         controller.getMuCafTab().disableProperty().bind(controller.getMuCafTextArea().textProperty().isEmpty().or(window.getInputReactionSystem().inhibitorsPresentProperty().not()));
+        controller.getuRAFTab().disableProperty().bind(controller.getuRAFTextArea().textProperty().isEmpty().or(window.getInputReactionSystem().inhibitorsPresentProperty().not()));
         controller.getPseudoRafTab().disableProperty().bind(controller.getPseudoRAFTextArea().textProperty().isEmpty());
 
         controller.getAboutMenuItem().setOnAction((e) -> SplashScreen.getInstance().showSplash(Duration.ofMinutes(2)));
@@ -277,7 +293,7 @@ public class ControlBindings {
 
         controller.getLogTextArea().appendText(Basic.stopCollectingStdErr());
 
-        for (TextArea textArea : Arrays.asList(controller.getInputTextArea(), controller.getLogTextArea(), controller.getCafTextArea(), controller.getRafTextArea(), controller.getPseudoRAFTextArea())) {
+        for (TextArea textArea : Arrays.asList(controller.getInputTextArea(), controller.getLogTextArea(), controller.getCafTextArea(), controller.getRafTextArea(), controller.getPseudoRAFTextArea(), controller.getMuCafTextArea(), controller.getuRAFTextArea())) {
             textArea.focusedProperty().addListener((c, o, n) -> {
                 if (n) {
                     controller.getWrapTextMenuItem().setDisable(false);

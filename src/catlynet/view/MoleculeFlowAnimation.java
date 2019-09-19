@@ -31,7 +31,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Path;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import jloda.fx.util.SelectionEffectGray;
+import jloda.fx.util.SelectionEffectRed;
 import jloda.graph.*;
 import jloda.util.Basic;
 import jloda.util.Triplet;
@@ -194,7 +194,7 @@ public class MoleculeFlowAnimation {
                     edge2count.increment(edge);
                 }
                 if (edge.getOwner() != null && playing.get()) {
-                    path.setEffect(SelectionEffectGray.getInstance());
+                    path.setEffect(SelectionEffectRed.getInstance());
 
                     for (Triplet<Edge, Boolean, String> triplet : computeEdgesReadyToFire(edge, reverse ? edge.getSource() : edge.getTarget(), edge2count)) {
                         animateEdge(triplet.getFirst(), triplet.getSecond(), triplet.getThird(), edge2count, edge2Group, color.darker(), world);

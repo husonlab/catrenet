@@ -103,13 +103,16 @@ public class MainWindowController {
     private MenuItem selectMaxCAFMenuItem;
 
     @FXML
-    private MenuItem selectMuCAFMenuItem;
-
-    @FXML
     private MenuItem selectMaxRAFMenuItem;
 
     @FXML
     private MenuItem selectMaxPseudoRAFMenuItem;
+
+    @FXML
+    private MenuItem selectMuCAFMenuItem;
+
+    @FXML
+    private MenuItem selectURAFMenuItem;
 
     @FXML
     private MenuItem selectFoodMenuItem;
@@ -121,25 +124,16 @@ public class MainWindowController {
     private MenuItem selectReactionsMenuItem;
 
     @FXML
-    private CheckMenuItem wrapTextMenuItem;
-
-    @FXML
-    private MenuItem formatMenuItem;
-
-    @FXML
     private Menu algorithmMenu;
 
     @FXML
     private MenuItem parseInputMenuItem;
 
     @FXML
-    private MenuItem runRAFMenuItem;
-
-    @FXML
     private MenuItem runCAFMenuItem;
 
     @FXML
-    private MenuItem runMuCAFMenuItem;
+    private MenuItem runRAFMenuItem;
 
     @FXML
     private MenuItem runPseudoRAFMenuItem;
@@ -148,10 +142,16 @@ public class MainWindowController {
     private MenuItem runMenuItem;
 
     @FXML
-    private CheckMenuItem animateCAFCheckMenuItem;
+    private MenuItem runMuCAFMenuItem;
 
     @FXML
-    private CheckMenuItem animateUCAFCheckMenuItem;
+    private MenuItem runURAFMenuItem;
+
+    @FXML
+    private MenuItem runMuCAFMultipleTimesMenuItem;
+
+    @FXML
+    private CheckMenuItem animateCAFCheckMenuItem;
 
     @FXML
     private CheckMenuItem animateRAFCheckMenuItem;
@@ -164,6 +164,15 @@ public class MainWindowController {
 
     @FXML
     private MenuItem stopAnimationMenuItem;
+
+    @FXML
+    private CheckMenuItem wrapTextMenuItem;
+
+    @FXML
+    private MenuItem formatMenuItem;
+
+    @FXML
+    private MenuItem fullScreenMenuItem;
 
     @FXML
     private Menu windowMenu;
@@ -208,6 +217,15 @@ public class MainWindowController {
     private TabPane outputTabPane;
 
     @FXML
+    private Tab parsedInputTab;
+
+    @FXML
+    private TextArea reactionsTextArea;
+
+    @FXML
+    private VBox reactionsVBox;
+
+    @FXML
     private Tab visualizationTab;
 
     @FXML
@@ -216,21 +234,25 @@ public class MainWindowController {
     @FXML
     private VBox visualizationVBox;
 
-    @FXML
-    private ContextMenu visualizationContextMenu;
+
 
     @FXML
     private MenuItem selectCAFContextMenuItem;
-
-
-    @FXML
-    private MenuItem selectMuCAFContextMenuItem;
 
     @FXML
     private MenuItem selectRAFContextMenuItem;
 
     @FXML
     private MenuItem selectPseudoRAFContextMenuItem;
+
+    @FXML
+    private ContextMenu visualizationContextMenu;
+
+    @FXML
+    private MenuItem selectMuCAFContextMenuItem;
+
+    @FXML
+    private MenuItem selectURAFContextMenuItem;
 
     @FXML
     private MenuItem selectNoneContextMenuItem;
@@ -251,15 +273,6 @@ public class MainWindowController {
     private MenuItem stopAnimationContextMenuItem;
 
     @FXML
-    private Tab parsedInputTab;
-
-    @FXML
-    private TextArea reactionsTextArea;
-
-    @FXML
-    private VBox reactionsVBox;
-
-    @FXML
     private Tab cafTab;
 
     @FXML
@@ -267,15 +280,6 @@ public class MainWindowController {
 
     @FXML
     private VBox cafVBox;
-
-    @FXML
-    private Tab muCafTab;
-
-    @FXML
-    private TextArea muCafTextArea;
-
-    @FXML
-    private VBox muCafVBox;
 
     @FXML
     private Tab rafTab;
@@ -296,6 +300,24 @@ public class MainWindowController {
     private VBox pseudoRafVBox;
 
     @FXML
+    private Tab muCafTab;
+
+    @FXML
+    private TextArea muCafTextArea;
+
+    @FXML
+    private VBox muCafVBox;
+
+    @FXML
+    private Tab uRAFTab;
+
+    @FXML
+    private TextArea uRAFTextArea;
+
+    @FXML
+    private VBox uRAFVBox;
+
+    @FXML
     private Tab logTab;
 
     @FXML
@@ -306,12 +328,6 @@ public class MainWindowController {
 
     @FXML
     private VBox logVBox;
-
-    @FXML
-    private MenuItem fullScreenMenuItem;
-
-    @FXML
-    private MenuItem runMuCAFMultipleTimesMenuItem;
 
     @FXML
     void initialize() {
@@ -340,27 +356,30 @@ public class MainWindowController {
         assert selectNodesMenuItem != null : "fx:id=\"selectNodesMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert selectEdgesMenuItem != null : "fx:id=\"selectEdgesMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert selectMaxCAFMenuItem != null : "fx:id=\"selectMaxCAFMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert selectMuCAFMenuItem != null : "fx:id=\"selectMuCAFMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert selectMaxRAFMenuItem != null : "fx:id=\"selectMaxRAFMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert selectMaxPseudoRAFMenuItem != null : "fx:id=\"selectMaxPseudoRAFMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert selectMuCAFMenuItem != null : "fx:id=\"selectMuCAFMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert selectURAFMenuItem != null : "fx:id=\"selectURAFMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert selectFoodMenuItem != null : "fx:id=\"selectFoodMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert selectMoleculesMenuItem != null : "fx:id=\"selectMoleculesMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert selectReactionsMenuItem != null : "fx:id=\"selectReactionsMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert wrapTextMenuItem != null : "fx:id=\"wrapTextMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert formatMenuItem != null : "fx:id=\"formatMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert algorithmMenu != null : "fx:id=\"algorithmMenu\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert parseInputMenuItem != null : "fx:id=\"parseInputMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert runRAFMenuItem != null : "fx:id=\"runRAFMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert runCAFMenuItem != null : "fx:id=\"runCAFMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert runMuCAFMenuItem != null : "fx:id=\"runMuCAFMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert runRAFMenuItem != null : "fx:id=\"runRAFMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert runPseudoRAFMenuItem != null : "fx:id=\"runPseudoRAFMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert runMenuItem != null : "fx:id=\"runMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert runMuCAFMenuItem != null : "fx:id=\"runMuCAFMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert runURAFMenuItem != null : "fx:id=\"runURAFMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert runMuCAFMultipleTimesMenuItem != null : "fx:id=\"runMuCAFMultipleTimesMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert animateCAFCheckMenuItem != null : "fx:id=\"animateCAFCheckMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert animateUCAFCheckMenuItem != null : "fx:id=\"animateUCAFCheckMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert animateRAFCheckMenuItem != null : "fx:id=\"animateRAFCheckMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert animateMaxRAFCheckMenuItem != null : "fx:id=\"animateMaxRAFCheckMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert animateInhibitionsMenuItem != null : "fx:id=\"animateInhibitionsMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert stopAnimationMenuItem != null : "fx:id=\"stopAnimationMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert wrapTextMenuItem != null : "fx:id=\"wrapTextMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert formatMenuItem != null : "fx:id=\"formatMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert fullScreenMenuItem != null : "fx:id=\"fullScreenMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert windowMenu != null : "fx:id=\"windowMenu\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert aboutMenuItem != null : "fx:id=\"aboutMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert checkForUpdatesMenuItem != null : "fx:id=\"checkForUpdatesMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
@@ -375,12 +394,16 @@ public class MainWindowController {
         assert inputTextArea != null : "fx:id=\"inputTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert outputPane != null : "fx:id=\"outputPane\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert outputTabPane != null : "fx:id=\"outputTabPane\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert parsedInputTab != null : "fx:id=\"parsedInputTab\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert reactionsTextArea != null : "fx:id=\"reactionsTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert reactionsVBox != null : "fx:id=\"reactionsVBox\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert visualizationTab != null : "fx:id=\"visualizationTab\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert visualizationBorderPane != null : "fx:id=\"visualizationBorderPane\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert visualizationVBox != null : "fx:id=\"visualizationVBox\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert visualizationContextMenu != null : "fx:id=\"visualizationContextMenu\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert selectCAFContextMenuItem != null : "fx:id=\"selectCAFContextMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert selectMuCAFContextMenuItem != null : "fx:id=\"selectMuCAFContextMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert selectURAFContextMenuItem != null : "fx:id=\"selectURAFContextMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert selectCAFContextMenuItem != null : "fx:id=\"selectCAFContextMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert selectRAFContextMenuItem != null : "fx:id=\"selectRAFContextMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert selectPseudoRAFContextMenuItem != null : "fx:id=\"selectPseudoRAFContextMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert selectNoneContextMenuItem != null : "fx:id=\"selectNoneContextMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
@@ -389,31 +412,32 @@ public class MainWindowController {
         assert animatePseudoRAFContextMenuItem != null : "fx:id=\"animatePseudoRAFContextMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert animateInhibitionsContextMenuItem != null : "fx:id=\"animateInhibitionsContextMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert stopAnimationContextMenuItem != null : "fx:id=\"stopAnimationContextMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert parsedInputTab != null : "fx:id=\"parsedInputTab\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert reactionsTextArea != null : "fx:id=\"reactionsTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert reactionsVBox != null : "fx:id=\"reactionsVBox\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert cafTab != null : "fx:id=\"cafTab\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert cafTextArea != null : "fx:id=\"cafTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert cafVBox != null : "fx:id=\"cafVBox\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert muCafTab != null : "fx:id=\"muCafTab\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert muCafTextArea != null : "fx:id=\"muCafTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert muCafVBox != null : "fx:id=\"muCafVBox\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert rafTab != null : "fx:id=\"rafTab\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert rafTextArea != null : "fx:id=\"rafTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert rafVBox != null : "fx:id=\"rafVBox\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert pseudoRafTab != null : "fx:id=\"pseudoRafTab\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert pseudoRAFTextArea != null : "fx:id=\"pseudoRAFTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert pseudoRafVBox != null : "fx:id=\"pseudoRafVBox\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert muCafTab != null : "fx:id=\"muCafTab\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert muCafTextArea != null : "fx:id=\"muCafTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert muCafVBox != null : "fx:id=\"muCafVBox\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert uRAFTab != null : "fx:id=\"uRAFTab\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert uRAFTextArea != null : "fx:id=\"uRAFTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert uRAFVBox != null : "fx:id=\"uRAFVBox\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert logTab != null : "fx:id=\"logTab\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert logTextArea != null : "fx:id=\"logTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert clearLogMenuItem != null : "fx:id=\"clearLogMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert logVBox != null : "fx:id=\"logVBox\" was not injected: check your FXML file 'MainWindow.fxml'.";
 
+
         // if we are running on MacOS, put the specific menu items in the right places
         if (ProgramProperties.isMacOS()) {
             getMenuBar().setUseSystemMenuBar(true);
             fileMenu.getItems().remove(getQuitMenuItem());
-            windowMenu.getItems().remove(getAboutMenuItem());
+            // windowMenu.getItems().remove(getAboutMenuItem());
             //editMenu.getItems().remove(getPreferencesMenuItem());
         }
 
@@ -434,7 +458,6 @@ public class MainWindowController {
 
         final InvalidationListener invalidationListener = observable -> {
             windowMenu.getItems().setAll(originalWindowMenuItems);
-
             int count = 0;
             for (IMainWindow mainWindow : MainWindowManager.getInstance().getMainWindows()) {
                 if (mainWindow.getStage() != null) {
@@ -566,16 +589,20 @@ public class MainWindowController {
         return selectMaxCAFMenuItem;
     }
 
-    public MenuItem getSelectMuCAFMenuItem() {
-        return selectMuCAFMenuItem;
-    }
-
     public MenuItem getSelectMaxRAFMenuItem() {
         return selectMaxRAFMenuItem;
     }
 
     public MenuItem getSelectMaxPseudoRAFMenuItem() {
         return selectMaxPseudoRAFMenuItem;
+    }
+
+    public MenuItem getSelectMuCAFMenuItem() {
+        return selectMuCAFMenuItem;
+    }
+
+    public MenuItem getSelectURAFMenuItem() {
+        return selectURAFMenuItem;
     }
 
     public MenuItem getSelectFoodMenuItem() {
@@ -590,14 +617,6 @@ public class MainWindowController {
         return selectReactionsMenuItem;
     }
 
-    public CheckMenuItem getWrapTextMenuItem() {
-        return wrapTextMenuItem;
-    }
-
-    public MenuItem getFormatMenuItem() {
-        return formatMenuItem;
-    }
-
     public Menu getAlgorithmMenu() {
         return algorithmMenu;
     }
@@ -606,16 +625,12 @@ public class MainWindowController {
         return parseInputMenuItem;
     }
 
-    public MenuItem getRunRAFMenuItem() {
-        return runRAFMenuItem;
-    }
-
     public MenuItem getRunCAFMenuItem() {
         return runCAFMenuItem;
     }
 
-    public MenuItem getRunMuCAFMenuItem() {
-        return runMuCAFMenuItem;
+    public MenuItem getRunRAFMenuItem() {
+        return runRAFMenuItem;
     }
 
     public MenuItem getRunPseudoRAFMenuItem() {
@@ -626,12 +641,20 @@ public class MainWindowController {
         return runMenuItem;
     }
 
-    public CheckMenuItem getAnimateCAFCheckMenuItem() {
-        return animateCAFCheckMenuItem;
+    public MenuItem getRunMuCAFMenuItem() {
+        return runMuCAFMenuItem;
     }
 
-    public CheckMenuItem getAnimateUCAFCheckMenuItem() {
-        return animateUCAFCheckMenuItem;
+    public MenuItem getRunURAFMenuItem() {
+        return runURAFMenuItem;
+    }
+
+    public MenuItem getRunMuCAFMultipleTimesMenuItem() {
+        return runMuCAFMultipleTimesMenuItem;
+    }
+
+    public CheckMenuItem getAnimateCAFCheckMenuItem() {
+        return animateCAFCheckMenuItem;
     }
 
     public CheckMenuItem getAnimateRAFCheckMenuItem() {
@@ -642,8 +665,24 @@ public class MainWindowController {
         return animateMaxRAFCheckMenuItem;
     }
 
+    public CheckMenuItem getAnimateInhibitionsMenuItem() {
+        return animateInhibitionsMenuItem;
+    }
+
     public MenuItem getStopAnimationMenuItem() {
         return stopAnimationMenuItem;
+    }
+
+    public CheckMenuItem getWrapTextMenuItem() {
+        return wrapTextMenuItem;
+    }
+
+    public MenuItem getFormatMenuItem() {
+        return formatMenuItem;
+    }
+
+    public MenuItem getFullScreenMenuItem() {
+        return fullScreenMenuItem;
     }
 
     public Menu getWindowMenu() {
@@ -702,6 +741,18 @@ public class MainWindowController {
         return outputTabPane;
     }
 
+    public Tab getParsedInputTab() {
+        return parsedInputTab;
+    }
+
+    public TextArea getReactionsTextArea() {
+        return reactionsTextArea;
+    }
+
+    public VBox getReactionsVBox() {
+        return reactionsVBox;
+    }
+
     public Tab getVisualizationTab() {
         return visualizationTab;
     }
@@ -718,12 +769,16 @@ public class MainWindowController {
         return visualizationContextMenu;
     }
 
-    public MenuItem getSelectCAFContextMenuItem() {
-        return selectCAFContextMenuItem;
-    }
-
     public MenuItem getSelectMuCAFContextMenuItem() {
         return selectMuCAFContextMenuItem;
+    }
+
+    public MenuItem getSelectURAFContextMenuItem() {
+        return selectURAFContextMenuItem;
+    }
+
+    public MenuItem getSelectCAFContextMenuItem() {
+        return selectCAFContextMenuItem;
     }
 
     public MenuItem getSelectRAFContextMenuItem() {
@@ -750,24 +805,12 @@ public class MainWindowController {
         return animatePseudoRAFContextMenuItem;
     }
 
-    public CheckMenuItem getAnimateInhibitionsMenuItem() {
-        return animateInhibitionsMenuItem;
+    public CheckMenuItem getAnimateInhibitionsContextMenuItem() {
+        return animateInhibitionsContextMenuItem;
     }
 
     public MenuItem getStopAnimationContextMenuItem() {
         return stopAnimationContextMenuItem;
-    }
-
-    public Tab getParsedInputTab() {
-        return parsedInputTab;
-    }
-
-    public TextArea getReactionsTextArea() {
-        return reactionsTextArea;
-    }
-
-    public VBox getReactionsVBox() {
-        return reactionsVBox;
     }
 
     public Tab getCafTab() {
@@ -780,18 +823,6 @@ public class MainWindowController {
 
     public VBox getCafVBox() {
         return cafVBox;
-    }
-
-    public Tab getMuCafTab() {
-        return muCafTab;
-    }
-
-    public TextArea getMuCafTextArea() {
-        return muCafTextArea;
-    }
-
-    public VBox getMuCafVBox() {
-        return muCafVBox;
     }
 
     public Tab getRafTab() {
@@ -818,6 +849,30 @@ public class MainWindowController {
         return pseudoRafVBox;
     }
 
+    public Tab getMuCafTab() {
+        return muCafTab;
+    }
+
+    public TextArea getMuCafTextArea() {
+        return muCafTextArea;
+    }
+
+    public VBox getMuCafVBox() {
+        return muCafVBox;
+    }
+
+    public Tab getuRAFTab() {
+        return uRAFTab;
+    }
+
+    public TextArea getuRAFTextArea() {
+        return uRAFTextArea;
+    }
+
+    public VBox getuRAFVBox() {
+        return uRAFVBox;
+    }
+
     public Tab getLogTab() {
         return logTab;
     }
@@ -840,17 +895,5 @@ public class MainWindowController {
 
     public ContextMenu getVisualizationTabContextMenu() {
         return visualizationTabContextMenu;
-    }
-
-    public CheckMenuItem getAnimateInhibitionsContextMenuItem() {
-        return animateInhibitionsContextMenuItem;
-    }
-
-    public MenuItem getFullScreenMenuItem() {
-        return fullScreenMenuItem;
-    }
-
-    public MenuItem getRunMuCAFMultipleTimesMenuItem() {
-        return runMuCAFMultipleTimesMenuItem;
     }
 }
