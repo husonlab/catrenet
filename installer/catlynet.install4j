@@ -91,7 +91,7 @@
           <versionLine x="20" y="40" text="version ${compiler:sys.version}" fontSize="8" fontColor="0,0,0" bold="false" />
         </text>
       </splashScreen>
-      <java mainClass="catlynet/catlynet.main.CatlyNet" mainMode="2" vmParameters="-Duser.language=en -Duser.region=US --module-path=jars:openjfx/linux/lib  --add-modules=catlynet" arguments="" allowVMPassthroughParameters="true" preferredVM="" bundleRuntime="true">
+      <java mainClass="catlynet/catlynet.main.CatlyNet" mainMode="2" vmParameters="-server -Duser.language=en -Duser.region=US --add-modules=catlynet" arguments="" allowVMPassthroughParameters="true" preferredVM="" bundleRuntime="true">
         <classPath />
         <modulePath>
           <directory location="jars" failOnError="false" />

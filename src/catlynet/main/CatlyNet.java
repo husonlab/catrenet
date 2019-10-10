@@ -76,8 +76,19 @@ public class CatlyNet extends Application {
                 "Installers available at: http://ab.inf.uni-tuebingen.de/data/software/catlynet/download/welcome.html\n");
         SplashScreen.setVersionString(Version.SHORT_DESCRIPTION);
 
-        parseArguments(args);
+        try {
+            parseArguments(args);
+        } catch (Throwable th) {
+            //catch any exceptions and the like that propagate up to the top level
+            if (!th.getMessage().equals("Help")) {
+                System.err.println("Fatal error:" + "\n" + th.toString());
+                Basic.caught(th);
+                System.exit(1);
+            }
+        }
+
         launch(args);
+
     }
 
     protected static void parseArguments(String[] args) throws CanceledException, UsageException {
