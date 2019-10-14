@@ -20,7 +20,7 @@
 package catlynet.format;
 
 import jloda.util.Basic;
-import jloda.util.FileInputIterator;
+import jloda.util.FileLineIterator;
 import jloda.util.Pair;
 
 import java.io.File;
@@ -50,7 +50,7 @@ public enum ReactionNotation {
         boolean containsSquareBrackets = false;
         boolean containsCommas = false;
 
-        try (FileInputIterator it = new FileInputIterator(file)) {
+        try (FileLineIterator it = new FileLineIterator(file)) {
             int seen = 0;
             while (it.hasNext()) {
                 final String line = it.next();
