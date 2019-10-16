@@ -72,19 +72,19 @@ public class CatlyNet extends Application {
         ProgramProperties.setProgramVersion(Version.SHORT_DESCRIPTION);
         ProgramProperties.setProgramLicence("Copyright (C) 2019 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.\n" +
                 "This is free software, licensed under the terms of the GNU General Public License, Version 3.\n" +
-                "Sources available at: https://github.com/danielhuson/catlynet\n" +
-                "Installers available at: http://ab.inf.uni-tuebingen.de/data/software/catlynet/download/welcome.html\n");
+                "Sources available at: https://github.com/husonlab/catlynet\n" +
+                "Installers available at: http://software-ab.informatik.uni-tuebingen.de/download/catlynet\n");
         SplashScreen.setVersionString(Version.SHORT_DESCRIPTION);
 
         try {
             parseArguments(args);
         } catch (Throwable th) {
             //catch any exceptions and the like that propagate up to the top level
-            if (!th.getMessage().equals("Help")) {
+            if (!th.getMessage().startsWith("Help")) {
                 System.err.println("Fatal error:" + "\n" + th.toString());
                 Basic.caught(th);
-                System.exit(1);
             }
+                System.exit(1);
         }
 
         launch(args);
