@@ -24,7 +24,7 @@ import catlynet.algorithm.*;
 import catlynet.format.FormatWindow;
 import catlynet.io.ModelIO;
 import catlynet.io.Save;
-import catlynet.io.SaveChangesDialog;
+import catlynet.io.SaveBeforeClosingDialog;
 import catlynet.main.Version;
 import catlynet.model.ReactionSystem;
 import catlynet.view.MoleculeFlowAnimation;
@@ -90,7 +90,7 @@ public class ControlBindings {
 
         controller.getCloseMenuItem().setOnAction(e -> {
             window.getReactionGraphView().getMoleculeFlowAnimation().setPlaying(false);
-            if (SaveChangesDialog.apply(window)) {
+            if (SaveBeforeClosingDialog.apply(window) != SaveBeforeClosingDialog.Result.cancel) {
                 ProgramProperties.put("WindowGeometry", (new WindowGeometry(window.getStage())).toString());
                 MainWindowManager.getInstance().closeMainWindow(window);
             }
@@ -105,6 +105,14 @@ public class ControlBindings {
 
         });
         controller.getPrintMenuItem().disableProperty().bind(printableNode.isNull());
+
+        controller.getQuitMenuItem().setOnAction((e) -> {
+            while (MainWindowManager.getInstance().size() > 0) {
+                final MainWindow aWindow = (MainWindow) MainWindowManager.getInstance().getMainWindow(MainWindowManager.getInstance().size() - 1);
+                if (SaveBeforeClosingDialog.apply(aWindow) == SaveBeforeClosingDialog.Result.cancel)
+                    break;
+            }
+        });
 
         // cut, copy, paste and undo/redo all implemented by TextArea controls
 
@@ -276,7 +284,7 @@ public class ControlBindings {
         controller.getuRAFTab().disableProperty().bind(controller.getuRAFTextArea().textProperty().isEmpty().or(window.getInputReactionSystem().inhibitorsPresentProperty().not()));
         controller.getPseudoRafTab().disableProperty().bind(controller.getPseudoRAFTextArea().textProperty().isEmpty());
 
-        controller.getAboutMenuItem().setOnAction((e) -> SplashScreen.getInstance().showSplash(Duration.ofMinutes(2)));
+        controller.getAboutMenuItem().setOnAction((e) -> SplashScreen.showSplash(Duration.ofMinutes(2)));
 
         controller.getCheckForUpdatesMenuItem().setOnAction((e) -> CheckForUpdate.apply());
         MainWindowManager.getInstance().changedProperty().addListener((c, o, n) -> controller.getCheckForUpdatesMenuItem().disableProperty().set(MainWindowManager.getInstance().size() > 1

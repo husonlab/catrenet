@@ -21,24 +21,18 @@ package catlynet.action;
 
 import catlynet.window.MainWindow;
 import jloda.fx.window.MainWindowManager;
-import jloda.util.ProgramProperties;
 
 /**
  * create a new window
  * Daniel Huson, 7.2019
  */
 public class NewWindow {
-    private static int windowsCreated = 0;
-
     /**
      * create a new window
      *
      * @return new window
      */
     public static MainWindow apply() {
-        final MainWindow newWindow = (MainWindow) MainWindowManager.getInstance().createAndShowWindow(false);
-        newWindow.getStage().setTitle("Untitled - " + ProgramProperties.getProgramName() + " [" + (++windowsCreated) + "]");
-        MainWindowManager.getInstance().setLastFocusedMainWindow(newWindow);
-        return newWindow;
+        return (MainWindow) MainWindowManager.getInstance().createAndShowWindow(false);
     }
 }

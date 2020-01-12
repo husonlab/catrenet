@@ -1,5 +1,5 @@
 /*
- * SaveChangesDialog.java Copyright (C) 2019. Daniel H. Huson
+ * SaveBeforeClosingDialog.java Copyright (C) 2019. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -28,17 +28,19 @@ import javafx.scene.control.ButtonType;
 import java.util.Optional;
 
 
-public class SaveChangesDialog {
+public class SaveBeforeClosingDialog {
+    public enum Result {save, close, cancel}
+
     /**
      * ask whether to save before closing
      *
      * @param mainWindow
      * @return true if doesn't need saving or saved, false else
      */
-    public static boolean apply(MainWindow mainWindow) {
+    public static Result apply(MainWindow mainWindow) {
         final Document document = mainWindow.getDocument();
         if (!document.isDirty()) {
-            return true;
+            return Result.close;
         } else {
             mainWindow.getStage().toFront();
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -54,10 +56,10 @@ public class SaveChangesDialog {
             final Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent()) {
                 if (result.get() == buttonTypeYes) {
-                    return Save.showSaveDialog(mainWindow);
-                } else return result.get() == buttonTypeNo;
+                    return Save.showSaveDialog(mainWindow) ? Result.save : Result.close;
+                } else return result.get() == buttonTypeNo ? Result.close : Result.cancel;
             }
-            return false; // canceled
+            return Result.cancel; // canceled
         }
     }
 }

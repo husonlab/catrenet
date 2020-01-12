@@ -74,7 +74,9 @@ public class CatlyNet extends Application {
                 "This is free software, licensed under the terms of the GNU General Public License, Version 3.\n" +
                 "Sources available at: https://github.com/husonlab/catlynet\n" +
                 "Installers available at: http://software-ab.informatik.uni-tuebingen.de/download/catlynet\n");
-        SplashScreen.setVersionString(Version.SHORT_DESCRIPTION);
+        SplashScreen.setVersionString(ProgramProperties.getProgramVersion());
+        SplashScreen.setImageResourceName("splash.png");
+
 
         try {
             parseArguments(args);
@@ -128,10 +130,7 @@ public class CatlyNet extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // setup and show splash screen:
-        SplashScreen.setVersionString(ProgramProperties.getProgramVersion());
-        SplashScreen.setImageResourceName("splash.png");
-        SplashScreen.getInstance().showSplash(Duration.ofSeconds(5));
+        SplashScreen.showSplash(Duration.ofSeconds(5));
         try {
             primaryStage.setTitle("Untitled - " + ProgramProperties.getProgramName());
             NotificationManager.setShowNotifications(true);
@@ -148,7 +147,7 @@ public class CatlyNet extends Application {
             // setup about and preferences menu for apple:
             if (false) {
                 OSXIntegration.init();
-                OSXIntegration.populateAppleMenu(() -> SplashScreen.getInstance().showSplash(Duration.ofMinutes(1)), () -> System.err.println("Preferences"));
+                OSXIntegration.populateAppleMenu(() -> SplashScreen.showSplash(Duration.ofMinutes(1)), () -> System.err.println("Preferences"));
 
                 // open files by double-click under Mac OS: // untested
                 OSXIntegration.setOpenFilesHandler(files -> {
@@ -158,7 +157,6 @@ public class CatlyNet extends Application {
                 });
             }
             MainWindowManager.getInstance().addMainWindow(mainWindow);
-
 
         } catch (Exception ex) {
             Basic.caught(ex);

@@ -273,7 +273,7 @@
                             <graphic>
                                 <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
-                                        <Image url="/catlynet/resources/icons/Close16.gif"/>
+                                        <Image url="@/catlynet/resources/icons/Close16.gif"/>
                                     </image>
                                 </ImageView>
                             </graphic>
