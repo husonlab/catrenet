@@ -29,6 +29,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
@@ -155,7 +156,7 @@ public class ReactionGraphView {
         for (Reaction reaction : reactionSystem.getReactions()) {
             final Node reactionNode = reactionGraph.newNode(reaction);
 
-            for (Collection<MoleculeType> collection : Arrays.asList(reaction.getReactants(), reaction.getProducts(), reaction.getCatalysts(), reaction.getInhibitions())) {
+            for (Collection<MoleculeType> collection : Arrays.asList(reaction.getReactants(), reaction.getProducts(), reaction.getCatalystConjunctions(), reaction.getInhibitions())) {
                 for (MoleculeType molecule : collection) {
                     if (molecule2node.get(molecule) == null) {
 
@@ -182,7 +183,7 @@ public class ReactionGraphView {
             for (MoleculeType molecule : reaction.getProducts()) {
                 reactionGraph.newEdge(reactionNode, molecule2node.get(molecule), reaction.getDirection() == Reaction.Direction.both ? EdgeType.ProductReversible : EdgeType.Product);
             }
-            for (MoleculeType molecule : reaction.getCatalysts()) {
+            for (MoleculeType molecule : reaction.getCatalystConjunctions()) {
                 if (molecule.getName().contains("&")) {
                     for (MoleculeType catalyst : MoleculeType.valueOf(Basic.trimAll(Basic.split(molecule.getName(), '&')))) {
                         reactionGraph.newEdge(molecule2node.get(catalyst), molecule2node.get(molecule), EdgeType.Catalyst);
@@ -271,6 +272,9 @@ public class ReactionGraphView {
                 shape.setStrokeWidth(2);
 
                 text = new Label(((Reaction) v.getInfo()).getName());
+                text.setLayoutX(10);
+                setupMouseInteraction(text, text, v, null);
+                text.setBackground(labelBackground);
             } else if (v.getInfo() instanceof MoleculeType) {
                 shape = new SquareShape(10);
                 shape.setStroke(Color.BLACK);
@@ -281,14 +285,22 @@ public class ReactionGraphView {
                     shape.setStrokeWidth(2);
 
                 text = new Label(((MoleculeType) v.getInfo()).getName());
-
+                text.setLayoutX(10);
+                setupMouseInteraction(text, text, v, null);
+                text.setBackground(labelBackground);
             } else if (v.getInfo() instanceof AndNode) {
-                shape = new CircleShape(15);
-                shape.setStroke(Color.WHITE);
+                shape = new CircleShape(16);
+                shape.setStroke(Color.TRANSPARENT);
                 shape.setFill(Color.WHITE);
-                shape.setStrokeWidth(2);
+                //shape.setStrokeWidth(1);
 
                 text = new Label("&");
+                text.setFont(Font.font("Courier New", 11));
+                text.setAlignment(Pos.CENTER);
+                text.setLayoutX(-4);
+                text.setLayoutY(-8);
+                setupMouseInteraction(text, shape, v, null);
+
             } else {
                 System.err.println("Unsupported node type: " + v.getInfo());
                 shape = null;
@@ -302,14 +314,11 @@ public class ReactionGraphView {
                 nodes.getChildren().add(shape);
                 node2shape.put(v, shape);
 
-                setupMouseInteraction(text, shape, v, null);
-                text.setBackground(labelBackground);
+                // setupMouseInteraction(text, shape, v, null);
                 text.setFont(getFont());
-                text.setLayoutX(10);
                 text.translateXProperty().bind(shape.translateXProperty());
                 text.translateYProperty().bind(shape.translateYProperty());
                 labels.getChildren().add(text);
-                setupMouseInteraction(text, text, v, null);
 
                 if (true) {  // add spacers to prevent graph from moving when molecules with long names arrive at a node that is on the boundary of the graph
                     final Circle spacer = new Circle(100);
@@ -491,7 +500,6 @@ public class ReactionGraphView {
             circleShape.setStroke(Color.TRANSPARENT);
         }
 
-
         final Path path = new Path(moveToA, lineToB, quadCurveToD, lineToE);
         path.setStrokeWidth(2);
 
@@ -534,7 +542,6 @@ public class ReactionGraphView {
 
         lineToE.setX(ex);
         lineToE.setY(ey);
-
 
         if (distance <= 2 * straightSegmentLength) {
             lineToB.setX(ax);

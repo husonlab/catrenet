@@ -35,7 +35,7 @@ public class Reaction implements Comparable<Reaction> {
 
     private final Set<MoleculeType> reactants = new TreeSet<>();
     private final Set<MoleculeType> products = new TreeSet<>();
-    private final Set<MoleculeType> catalysts = new TreeSet<>();
+    private final TreeSet<MoleculeType> catalysts = new TreeSet<>();
     private final Set<MoleculeType> inhibitions = new TreeSet<>();
 
     private Direction direction = Direction.forward;
@@ -47,6 +47,20 @@ public class Reaction implements Comparable<Reaction> {
      */
     public Reaction(String name) {
         this.name = name;
+    }
+
+    /**
+     * copy constructor
+     *
+     * @param src
+     */
+    public Reaction(Reaction src) {
+        this(src.getName());
+        reactants.addAll(src.getReactants());
+        products.addAll(src.getReactants());
+        catalysts.addAll(src.getReactants());
+        inhibitions.addAll(src.getReactants());
+        direction = src.getDirection();
     }
 
     /**
@@ -66,8 +80,35 @@ public class Reaction implements Comparable<Reaction> {
         return products;
     }
 
-    public Set<MoleculeType> getCatalysts() {
+    public TreeSet<MoleculeType> getCatalysts() {
         return catalysts;
+    }
+
+    public Set<MoleculeType> getCatalystConjunctions() {
+        boolean hasDisjunction = false;
+        for (MoleculeType catalyst : getCatalysts()) {
+            final String string = catalyst.getName();
+            if (string.contains("&") && string.contains("(")) {
+                hasDisjunction = true;
+                break;
+            }
+        }
+        if (!hasDisjunction)
+            return getCatalysts();
+        else {
+            final Set<MoleculeType> set = new TreeSet<>();
+            for (MoleculeType catalyst : getCatalysts()) {
+                final String string = catalyst.getName();
+                if (string.contains("&") && string.contains("(")) {
+                    final String dnf = DisjunctiveNormalForm.compute(string);
+                    for (String part : dnf.split(",")) {
+                        set.add(MoleculeType.valueOf(part));
+                    }
+                } else
+                    set.add(catalyst);
+            }
+            return set;
+        }
     }
 
     public Set<MoleculeType> getInhibitions() {
@@ -155,7 +196,9 @@ public class Reaction implements Comparable<Reaction> {
             String catalystsString = line.substring(openSquareBracket + 1, closeSquareBracket).trim()
                     .replaceAll("\\s*,\\s*", ",")
                     .replaceAll("\\*", "&")
+                    .replaceAll("\\|", ",")
                     .replaceAll("\\s*&\\s*", "&");
+
             if (!catalystsString.contains("(") && !catalystsString.contains("&"))
                 catalystsString = catalystsString.replaceAll(", ", " ");
             catalysts = Basic.trimAll(catalystsString.split("\\s+"));
