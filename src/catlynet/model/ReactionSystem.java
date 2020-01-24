@@ -202,24 +202,31 @@ public class ReactionSystem {
             }
 
             for (MoleculeType catalyst : reaction.getCatalysts()) {
-                if (catalyst.getName().contains("&")) {
-                    final String[] foods = Basic.split(catalyst.getName(), '&');
-                    final Reaction auxReaction = new Reaction(reaction.getName() + "/" + catalyst + "/");
-                    for (String reactantName : foods) {
-                        auxReaction.getReactants().add(MoleculeType.valueOf(reactantName));
-                    }
-                    auxReaction.getCatalysts().add(catalyst);
-                    auxReaction.getProducts().add(catalyst);
-                    boolean found = false;
-                    for (Reaction other : auxiliaryReactions) {
-                        if (other.getReactants().equals(auxReaction.getReactants()) && other.getCatalysts().equals(auxReaction.getCatalysts()) && other.getProducts().equals(auxReaction.getProducts())) {
-                            found = true;
-                            break;
+                if (catalyst.getName().contains("&") || catalyst.getName().contains("(")) {
+                    final String[] parts = DisjunctiveNormalForm.compute(catalyst.getName()).split(",");
+                    for (String part : parts) {
+                        if (part.contains("&")) {
+                            final MoleculeType partType = MoleculeType.valueOf(part);
+
+                            final String[] foods = Basic.split(part, '&');
+                            final Reaction auxReaction = new Reaction(reaction.getName() + "/" + partType + "/");
+                            for (String reactantName : foods) {
+                                auxReaction.getReactants().add(MoleculeType.valueOf(reactantName));
+                            }
+                            auxReaction.getCatalysts().add(partType);
+                            auxReaction.getProducts().add(partType);
+                            boolean found = false;
+                            for (Reaction other : auxiliaryReactions) {
+                                if (other.getReactants().equals(auxReaction.getReactants()) && other.getCatalysts().equals(auxReaction.getCatalysts()) && other.getProducts().equals(auxReaction.getProducts())) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (!found) {
+                                auxiliaryReactions.add(auxReaction);
+                                expanded.getReactions().add(auxReaction);
+                            }
                         }
-                    }
-                    if (!found) {
-                        auxiliaryReactions.add(auxReaction);
-                        expanded.getReactions().add(auxReaction);
                     }
                 }
             }

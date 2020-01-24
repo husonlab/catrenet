@@ -30,7 +30,7 @@ public class CRSFileFilter {
 
     public static FileChooser.ExtensionFilter getInstance() {
         if (instance == null)
-            instance = new FileChooser.ExtensionFilter("Catalytic reaction system file", "*.crs", "*.crs.gz");
+            instance = new FileChooser.ExtensionFilter("Catalytic reaction system file", "*.crs", "*.crs.gz", "*.txt", "*.txt.gz");
         return instance;
     }
 }

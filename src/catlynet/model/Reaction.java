@@ -114,7 +114,7 @@ public class Reaction implements Comparable<Reaction> {
                     if (tokens.length == 3)
                         line = tokens[0] + ": " + tokens[1].substring(0, arrowStart) + " [" + tokens[2] + "] " + tokens[1].substring(arrowStart);
                     else // tokens.length==4
-                        line = tokens[0] + ": " + tokens[1].substring(0, arrowStart) + " [" + tokens[2] + "] (" + tokens[3] + ") " + tokens[1].substring(arrowStart);
+                        line = tokens[0] + ": " + tokens[1].substring(0, arrowStart) + " [" + tokens[2] + "] {" + tokens[3] + "} " + tokens[1].substring(arrowStart);
                 }
             }
         }
@@ -123,8 +123,8 @@ public class Reaction implements Comparable<Reaction> {
         final int openSquareBracket = line.indexOf('[');
         final int closeSquareBracket = line.indexOf(']');
 
-        final int openRoundBracket = line.indexOf("(");
-        final int closeRoundBracket = line.indexOf(")");
+        final int openCurlyBracket = line.indexOf("{");
+        final int closeCurlyBracket = line.indexOf("}");
 
         final int endArrow;
 
@@ -152,18 +152,20 @@ public class Reaction implements Comparable<Reaction> {
 
         final String[] catalysts;
         {
-            final String catalystsString = line.substring(openSquareBracket + 1, closeSquareBracket).trim()
-                    .replaceAll(",", " ")
+            String catalystsString = line.substring(openSquareBracket + 1, closeSquareBracket).trim()
+                    .replaceAll("\\s*,\\s*", ",")
                     .replaceAll("\\*", "&")
                     .replaceAll("\\s*&\\s*", "&");
+            if (!catalystsString.contains("(") && !catalystsString.contains("&"))
+                catalystsString = catalystsString.replaceAll(", ", " ");
             catalysts = Basic.trimAll(catalystsString.split("\\s+"));
         }
 
         final String[] inhibitors;
-        if (openRoundBracket != -1 && closeRoundBracket != -1) {
-            final String inhibitorsString = line.substring(openRoundBracket + 1, closeRoundBracket).trim().replaceAll(",", " ");
+        if (openCurlyBracket != -1 && closeCurlyBracket != -1) {
+            final String inhibitorsString = line.substring(openCurlyBracket + 1, closeCurlyBracket).trim().replaceAll(",", " ");
             inhibitors = Basic.trimAll(inhibitorsString.split("\\s+"));
-        } else if ((openRoundBracket >= 0) != (closeRoundBracket >= 0))
+        } else if ((openCurlyBracket >= 0) != (closeCurlyBracket >= 0))
             throw new IOException("Can't parse reaction: " + line);
         else
             inhibitors = new String[0];

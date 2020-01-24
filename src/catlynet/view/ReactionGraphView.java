@@ -381,7 +381,6 @@ public class ReactionGraphView {
             c.consume();
         });
 
-
         mouseTarget.setOnMouseReleased(c -> {
             if (!moved[0] && (v != null || e != null)) {
                 if (!c.isShiftDown()) {

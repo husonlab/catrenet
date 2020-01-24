@@ -36,7 +36,6 @@ import jloda.fx.undo.UndoManager;
 import jloda.fx.util.ExtendedFXMLLoader;
 import jloda.fx.util.MemoryUsage;
 import jloda.fx.util.PrintStreamToTextArea;
-import jloda.fx.util.TextFileFilter;
 import jloda.fx.window.IMainWindow;
 import jloda.fx.window.MainWindowManager;
 import jloda.util.Basic;
@@ -44,7 +43,7 @@ import jloda.util.FileOpenManager;
 import jloda.util.ProgramProperties;
 
 import java.io.PrintStream;
-import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * the main window
@@ -82,7 +81,7 @@ public class MainWindow implements IMainWindow {
             statusPane = controller.getStatusFlowPane();
         }
 
-        FileOpenManager.setExtensions(Arrays.asList(CRSFileFilter.getInstance(), TextFileFilter.getInstance()));
+        FileOpenManager.setExtensions(Collections.singletonList(CRSFileFilter.getInstance()));
         FileOpenManager.setFileOpener(new FileOpener());
     }
 

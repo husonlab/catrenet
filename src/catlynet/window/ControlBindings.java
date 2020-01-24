@@ -244,7 +244,7 @@ public class ControlBindings {
 
         controller.getRunMuCAFMenuItem().disableProperty().bind(controller.getInputTextArea().textProperty().isEmpty().or(window.getInputReactionSystem().inhibitorsPresentProperty().not()));
 
-        controller.getRunRAFMenuItem().setOnAction((e) -> {
+        controller.getRunURAFMenuItem().setOnAction((e) -> {
             if (ParseInput.apply(window)) {
                 if (window.getInputReactionSystem().isInhibitorsPresent()) {
                     controller.getOutputTabPane().getSelectionModel().select(controller.getuRAFTab());
@@ -253,7 +253,7 @@ public class ControlBindings {
                     NotificationManager.showWarning("Won't run U RAF algorithm, no inhibitions present");
             }
         });
-        controller.getRunRAFMenuItem().disableProperty().bind(controller.getInputTextArea().textProperty().isEmpty().or(window.getInputReactionSystem().inhibitorsPresentProperty().not()));
+        controller.getRunURAFMenuItem().disableProperty().bind(controller.getInputTextArea().textProperty().isEmpty().or(window.getInputReactionSystem().inhibitorsPresentProperty().not()));
 
 
         controller.getRunMuCAFMultipleTimesMenuItem().setOnAction((e) -> {

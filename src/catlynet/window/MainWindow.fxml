@@ -266,7 +266,7 @@
                 <ToolBar fx:id="mainToolBar" minHeight="-Infinity" prefHeight="30.0">
                     <items>
                         <Button fx:id="runButton" minHeight="-Infinity" mnemonicParsing="false" prefHeight="24.0"
-                                text="Run"/>
+                                text="Run All Algorithms"/>
                         <Separator orientation="VERTICAL" prefHeight="200.0"/>
                         <Button fx:id="stopAnimationButton" minHeight="-Infinity" mnemonicParsing="false"
                                 prefHeight="24.0" text="Animation">

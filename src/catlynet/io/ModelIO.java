@@ -50,6 +50,11 @@ public class ModelIO {
                 aLine = aLine.substring("Food:".length() + 1).trim();
             else
                 aLine = "";
+        } else if (aLine.startsWith("Food")) {
+            if (aLine.length() > "Food".length())
+                aLine = aLine.substring("Food".length() + 1).trim();
+            else
+                aLine = "";
         } else if (aLine.startsWith("F:")) {
             if (aLine.length() > "F:".length())
                 aLine = aLine.substring("F:".length() + 1).trim();
@@ -179,7 +184,6 @@ public class ModelIO {
                 arrow = (arrowNotation == ArrowNotation.UsesEquals ? "<=>" : "<->");
                 break;
         }
-
 
         if (reactionNotation == ReactionNotation.Tabbed)
             return String.format("%s\t%s %s %s\t%s%s",
