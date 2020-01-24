@@ -69,7 +69,8 @@
                         <Insets left="5.0"/>
                     </GridPane.margin>
                 </RadioButton>
-                <Label text="R1 (tab) a b =&gt; f g (tab) c d &amp; e" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                <Label text="R1 &lt;tab&gt; a b =&gt; f g &lt;tab&gt; c d &amp; e" GridPane.columnIndex="1"
+                       GridPane.rowIndex="3">
                     <font>
                         <Font name="Courier New" size="13.0"/>
                     </font>
