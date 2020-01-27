@@ -23,6 +23,8 @@ import catlynet.model.MoleculeType;
 import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
 import jloda.util.Basic;
+import jloda.util.CanceledException;
+import jloda.util.ProgressListener;
 
 import java.util.*;
 
@@ -38,7 +40,7 @@ public class MuCAFAlgorithm extends AlgorithmBase {
      * @param input - unexpanded catalytic reaction system
      * @return MU CAF or empty set
      */
-    public ReactionSystem apply(ReactionSystem input) {
+    public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException {
         final ReactionSystem result = new ReactionSystem();
         result.setName("MU CAF");
 
@@ -56,6 +58,7 @@ public class MuCAFAlgorithm extends AlgorithmBase {
         reactions.add(0, new HashSet<>());
         inhibitions.add(0, new HashSet<>());
 
+        progress.setMaximum(100);
         int i = 0;
         while (true) {
             i++;
@@ -78,6 +81,7 @@ public class MuCAFAlgorithm extends AlgorithmBase {
                 inhibitions.add(i, Basic.union(inhibitions.get(i - 1), anUninhibitedReaction.getInhibitions()));
             } else
                 break;
+            progress.setProgress(reactions.size());
         }
 
         if (reactions.get(i - 1).size() > 0) {

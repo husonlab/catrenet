@@ -22,6 +22,8 @@ package catlynet.algorithm;
 import catlynet.model.MoleculeType;
 import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
+import jloda.util.CanceledException;
+import jloda.util.ProgressListener;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -39,7 +41,7 @@ public class MaxCAFAlgorithm extends AlgorithmBase {
      * @param input
      * @return result
      */
-    public ReactionSystem apply(ReactionSystem input) {
+    public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException {
         final ReactionSystem result = new ReactionSystem();
         result.setName("Max CAF");
 
@@ -53,11 +55,15 @@ public class MaxCAFAlgorithm extends AlgorithmBase {
         molecules.add(0, inputFood);
         reactions.add(0, filterReactions(inputFood, inputReactions));
 
+        progress.setMaximum(100);
+        progress.setProgress(0);
+
         int i = 0;
         do {
             i++;
             molecules.add(i, addAllMentionedProducts(molecules.get(i - 1), reactions.get(i - 1)));
             reactions.add(i, filterReactions(molecules.get(i), inputReactions));
+            progress.setProgress(Math.min(100, reactions.size()));
         } while (reactions.get(i).size() > reactions.get(i - 1).size());
 
         if (reactions.get(i).size() > 0) {

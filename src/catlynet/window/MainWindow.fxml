@@ -170,6 +170,65 @@
                                 </MenuItem>
                             </items>
                         </Menu>
+                        <Menu mnemonicParsing="false" text="View">
+                            <items>
+                                <MenuItem fx:id="increaseFontSizeMenuItem" text="Increase Font Size">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="PLUS" control="UP" meta="UP" shift="UP"
+                                                            shortcut="DOWN"/>
+                                    </accelerator>
+                                </MenuItem>
+                                <MenuItem fx:id="decreaseFontSizeMenuItem" text="Decrease Font Size">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="MINUS" control="UP" meta="UP" shift="UP"
+                                                            shortcut="DOWN"/>
+                                    </accelerator>
+                                </MenuItem>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem fx:id="zoomInMenuItem" text="Zoom In">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="UP" control="UP" meta="UP" shift="UP"
+                                                            shortcut="DOWN"/>
+                                    </accelerator>
+                                </MenuItem>
+                                <MenuItem fx:id="zoomOutMenuItem" text="Zoom Out">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="DOWN" control="UP" meta="UP" shift="UP"
+                                                            shortcut="DOWN"/>
+                                    </accelerator>
+                                </MenuItem>
+                                <MenuItem fx:id="zoomToFitMenuItem" text="Zoom To Fit">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="PERIOD" control="UP" meta="UP" shift="UP"
+                                                            shortcut="DOWN"/>
+                                    </accelerator>
+                                </MenuItem>
+
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <CheckMenuItem fx:id="wrapTextMenuItem" mnemonicParsing="false" text="Wrap Text"/>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem fx:id="formatMenuItem" mnemonicParsing="false" text="Format...">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="J" control="UP" meta="DOWN" shift="UP"
+                                                            shortcut="UP"/>
+                                    </accelerator>
+                                </MenuItem>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem fx:id="showNodeLabels" mnemonicParsing="false" text="Show/Hide Node Labels">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="L" control="UP" meta="DOWN" shift="UP"
+                                                            shortcut="UP"/>
+                                    </accelerator>
+                                </MenuItem>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem fx:id="fullScreenMenuItem" mnemonicParsing="false" text="Enter Full Screen">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="F" control="DOWN" meta="DOWN" shift="UP"
+                                                            shortcut="UP"/>
+                                    </accelerator>
+                                </MenuItem>
+                            </items>
+                        </Menu>
                         <Menu fx:id="algorithmMenu" mnemonicParsing="false" text="Run">
                             <items>
                                 <MenuItem fx:id="parseInputMenuItem" mnemonicParsing="false" text="Parse Input">
@@ -196,6 +255,13 @@
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="runMuCAFMultipleTimesMenuItem" mnemonicParsing="false"
                                           text="Run MU CAF Multiple Times..."/>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <Menu mnemonicParsing="false" text="Options">
+                                    <items>
+                                        <CheckMenuItem fx:id="computeImportanceCheckMenuItem" mnemonicParsing="false"
+                                                       selected="true" text="Compute  Importance"/>
+                                    </items>
+                                </Menu>
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Animate">
@@ -228,25 +294,6 @@
                                 <MenuItem fx:id="stopAnimationMenuItem" mnemonicParsing="false" text="Stop Animation">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="SPACE" control="UP" meta="DOWN" shift="UP"
-                                                            shortcut="UP"/>
-                                    </accelerator>
-                                </MenuItem>
-                            </items>
-                        </Menu>
-                        <Menu mnemonicParsing="false" text="View">
-                            <items>
-                                <CheckMenuItem fx:id="wrapTextMenuItem" mnemonicParsing="false" text="Wrap Text"/>
-                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="formatMenuItem" mnemonicParsing="false" text="Format...">
-                                    <accelerator>
-                                        <KeyCodeCombination alt="UP" code="J" control="UP" meta="DOWN" shift="UP"
-                                                            shortcut="UP"/>
-                                    </accelerator>
-                                </MenuItem>
-                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="fullScreenMenuItem" mnemonicParsing="false" text="Enter Full Screen">
-                                    <accelerator>
-                                        <KeyCodeCombination alt="UP" code="F" control="DOWN" meta="DOWN" shift="UP"
                                                             shortcut="UP"/>
                                     </accelerator>
                                 </MenuItem>
@@ -286,9 +333,13 @@
     <bottom>
         <AnchorPane BorderPane.alignment="CENTER">
             <children>
-                <FlowPane fx:id="statusFlowPane" prefHeight="30.0" style="-fx-border-color: lightgray;"
-                          AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                          AnchorPane.topAnchor="0.0"/>
+                <FlowPane fx:id="statusFlowPane" alignment="CENTER_LEFT" prefHeight="30.0" rowValignment="TOP"
+                          style="-fx-border-color: lightgray;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                          AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <padding>
+                        <Insets right="50.0"/>
+                    </padding>
+                </FlowPane>
                 <Label fx:id="memoryUsageLabel" text="Memory" AnchorPane.bottomAnchor="3.0"
                        AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="3.0"/>
             </children>

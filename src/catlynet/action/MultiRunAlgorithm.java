@@ -24,6 +24,7 @@ import catlynet.io.ModelIO;
 import catlynet.model.ReactionSystem;
 import catlynet.window.MainWindow;
 import catlynet.window.MainWindowController;
+import javafx.beans.value.ChangeListener;
 import javafx.scene.control.TextArea;
 import jloda.fx.util.AService;
 import jloda.fx.window.NotificationManager;
@@ -44,13 +45,14 @@ public class MultiRunAlgorithm {
      * @param algorithm
      * @param textArea
      */
-    public static void apply(MainWindow window, final ReactionSystem inputReactions, AlgorithmBase algorithm, TextArea textArea, int numberOfRuns) {
+    public static void apply(MainWindow window, final ReactionSystem inputReactions, AlgorithmBase algorithm, TextArea textArea, int numberOfRuns, ChangeListener<Boolean> runningListener) {
         final MainWindowController controller = window.getController();
 
-        final AService<Collection<Pair<ReactionSystem, Integer>>> service = new AService<>(() -> {
+        final AService<Collection<Pair<ReactionSystem, Integer>>> service = new AService<>(controller.getStatusFlowPane());
+        service.setCallable(() -> {
             final Map<Set<String>, Pair<ReactionSystem, Integer>> names2reactions2counts = new HashMap<>();
             for (int i = 0; i < numberOfRuns; i++) {
-                final ReactionSystem outputReactions = algorithm.apply(inputReactions).getCompressedSystem();
+                final ReactionSystem outputReactions = algorithm.apply(inputReactions, service.getProgressListener()).getCompressedSystem();
                 final Set<String> reactionNames = new HashSet<>(outputReactions.getReactionNames());
                 Pair<ReactionSystem, Integer> pair = names2reactions2counts.get(reactionNames);
                 if (pair == null) {
@@ -60,8 +62,9 @@ public class MultiRunAlgorithm {
                 pair.setSecond(pair.getSecond() + 1);
             }
             return names2reactions2counts.values();
-        }, controller.getStatusFlowPane());
+        });
 
+        service.runningProperty().addListener(runningListener);
         service.setOnSucceeded((c) -> {
             final Collection<Pair<ReactionSystem, Integer>> results = service.getValue();
 

@@ -22,6 +22,7 @@ package catlynet.view;
 import catlynet.model.MoleculeType;
 import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
+import catlynet.window.MainWindowController;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
@@ -30,6 +31,7 @@ import javafx.collections.ListChangeListener;
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
@@ -43,7 +45,9 @@ import jloda.fx.shapes.CircleShape;
 import jloda.fx.shapes.SquareShape;
 import jloda.fx.util.AService;
 import jloda.fx.util.GeometryUtilsFX;
+import jloda.fx.util.ProgramExecutorService;
 import jloda.fx.util.SelectionEffectBlue;
+import jloda.fx.window.NotificationManager;
 import jloda.graph.*;
 import jloda.util.APoint2D;
 import jloda.util.Basic;
@@ -70,6 +74,24 @@ public class ReactionGraphView {
 
     private final ObjectProperty<Color> inhibitionEdgeColor = new SimpleObjectProperty<>(Color.LIGHTGREY);
 
+    private final MainWindowController controller;
+
+    public Rectangle2D getBBox() {
+        double minX = Double.MAX_VALUE;
+        double minY = Double.MAX_VALUE;
+        double maxX = Double.MIN_VALUE;
+        double maxY = Double.MIN_VALUE;
+
+        for (Node v : reactionGraph.nodes()) {
+            final Shape shape = node2shapeAndLabel.get(v).getFirst();
+            minX = Math.min(minX, shape.getTranslateX());
+            minY = Math.min(minY, shape.getTranslateY());
+            maxX = Math.max(maxX, shape.getTranslateY());
+            maxY = Math.max(maxY, shape.getTranslateY());
+        }
+        return new Rectangle2D(minX, minY, maxX - minX, maxY - minY);
+    }
+
     static class AndNode {
     }
 
@@ -84,8 +106,9 @@ public class ReactionGraphView {
      *
      * @param reactionSystem
      */
-    public ReactionGraphView(ReactionSystem reactionSystem) {
+    public ReactionGraphView(ReactionSystem reactionSystem, MainWindowController controller) {
         this.reactionSystem = reactionSystem;
+        this.controller = controller;
         this.world = new Group();
 
         nodeSelection.getSelectedItems().addListener((ListChangeListener<Node>) (e) -> {
@@ -207,13 +230,25 @@ public class ReactionGraphView {
         nodeSelection.setItems(reactionGraph.getNodesAsSet());
         edgeSelection.setItems(reactionGraph.getEdgesAsSet());
 
-        AService<NodeArray<APoint2D>> service = new AService<>();
-        service.setCallable((() -> {
-            final FruchtermanReingoldLayout layout = new FruchtermanReingoldLayout(reactionGraph);
+        final FruchtermanReingoldLayoutMultiThreaded layout = new FruchtermanReingoldLayoutMultiThreaded(reactionGraph);
+        final AService<NodeArray<APoint2D>> service = new AService<>(controller.getStatusFlowPane());
 
-            return layout.apply(10000);
-        }));
+        final NodeArray<APoint2D> result = new NodeArray<>(reactionGraph);
 
+        service.setCallable(() -> {
+            layout.apply(1000, result, service.getProgressListener(), ProgramExecutorService.getNumberOfCoresToUse());
+            return result;
+        });
+
+        service.setOnRunning(e -> service.getProgressListener().setTasks("Graph layout", ""));
+        service.setOnFailed(e -> NotificationManager.showError("Graph layout failed: " + service.getException().getMessage()));
+        service.setOnCancelled(e ->
+                {
+                    NotificationManager.showWarning("Graph layout CANCELED");
+                    if (!result.isClear()) // use what ever has been produced
+                        world.getChildren().setAll(setupGraphView(reactionSystem, reactionGraph, node2shapeAndLabel, edge2group, service.getValue()));
+                }
+        );
         service.setOnSucceeded((e) -> world.getChildren().setAll(setupGraphView(reactionSystem, reactionGraph, node2shapeAndLabel, edge2group, service.getValue())));
         service.start();
     }
@@ -289,7 +324,7 @@ public class ReactionGraphView {
                 setupMouseInteraction(text, text, v, null);
                 text.setBackground(labelBackground);
             } else if (v.getInfo() instanceof AndNode) {
-                shape = new CircleShape(16);
+                shape = new CircleShape(13);
                 shape.setStroke(Color.TRANSPARENT);
                 shape.setFill(Color.WHITE);
                 //shape.setStrokeWidth(1);
@@ -489,15 +524,17 @@ public class ReactionGraphView {
 
         {
             final Point2D lineCenter = updatePath(aX.get(), aY.get(), bX.get(), bY.get(), null, moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(edge));
-            circleShape.setTranslateX(lineCenter.getX());
-            circleShape.setTranslateY(lineCenter.getY());
-            circleShape.translateXProperty().addListener((c, o, n) ->
-                    updatePath(aX.get(), aY.get(), bX.get(), bY.get(), new Point2D(circleShape.getTranslateX(), circleShape.getTranslateY()), moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(edge)));
-            circleShape.translateYProperty().addListener((c, o, n) ->
-                    updatePath(aX.get(), aY.get(), bX.get(), bY.get(), new Point2D(circleShape.getTranslateX(), circleShape.getTranslateY()), moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(edge)));
-            // setupMouseInteraction(circleShape,circleShape);
-            circleShape.setFill(Color.TRANSPARENT);
-            circleShape.setStroke(Color.TRANSPARENT);
+            if (lineCenter != null) {
+                circleShape.setTranslateX(lineCenter.getX());
+                circleShape.setTranslateY(lineCenter.getY());
+                circleShape.translateXProperty().addListener((c, o, n) ->
+                        updatePath(aX.get(), aY.get(), bX.get(), bY.get(), new Point2D(circleShape.getTranslateX(), circleShape.getTranslateY()), moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(edge)));
+                circleShape.translateYProperty().addListener((c, o, n) ->
+                        updatePath(aX.get(), aY.get(), bX.get(), bY.get(), new Point2D(circleShape.getTranslateX(), circleShape.getTranslateY()), moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(edge)));
+                // setupMouseInteraction(circleShape,circleShape);
+                circleShape.setFill(Color.TRANSPARENT);
+                circleShape.setStroke(Color.TRANSPARENT);
+            }
         }
 
         final Path path = new Path(moveToA, lineToB, quadCurveToD, lineToE);
@@ -651,5 +688,15 @@ public class ReactionGraphView {
 
     public static void setFont(Font font) {
         ReactionGraphView.font.set(font);
+    }
+
+    public NodeArray<Pair<Shape, Label>> getNode2shapeAndLabel() {
+        return node2shapeAndLabel;
+    }
+
+    public void setNodeStyle(String style) {
+        for (Node v : reactionGraph.nodes()) {
+            node2shapeAndLabel.get(v).getSecond().setStyle(style);
+        }
     }
 }

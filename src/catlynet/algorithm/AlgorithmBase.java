@@ -23,6 +23,8 @@ import catlynet.model.MoleculeType;
 import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
 import jloda.util.Basic;
+import jloda.util.CanceledException;
+import jloda.util.ProgressListener;
 
 import java.util.Collection;
 import java.util.Set;
@@ -37,9 +39,10 @@ public abstract class AlgorithmBase {
      * run the algorithm
      *
      * @param input
+     * @param progress
      * @return output
      */
-    abstract public ReactionSystem apply(ReactionSystem input);
+    abstract public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException;
 
     /**
      * add molecules mentioned as products to the given list of existing molecules

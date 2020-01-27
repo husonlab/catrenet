@@ -22,6 +22,8 @@ package catlynet.algorithm;
 import catlynet.model.MoleculeType;
 import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
+import jloda.util.CanceledException;
+import jloda.util.ProgressListener;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -39,7 +41,7 @@ public class MaxPseudoRAFAlgorithm extends AlgorithmBase {
      * @param input
      * @return result
      */
-    public ReactionSystem apply(ReactionSystem input) {
+    public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException {
         final ReactionSystem result = new ReactionSystem();
         result.setName("Max Pseudo RAF");
 
@@ -54,12 +56,16 @@ public class MaxPseudoRAFAlgorithm extends AlgorithmBase {
             reactions.add(0, inputReactions);
             molecules.add(0, inputFood);
 
+            progress.setMaximum(100);
+            progress.setProgress(0);
+
             int i = -1;
             do {
                 i++;
 
                 molecules.add(i + 1, addAllMentionedProducts(inputFood, reactions.get(i)));
                 reactions.add(i + 1, filterReactions(molecules.get(i + 1), reactions.get(i)));
+                progress.setProgress(Math.min(100, reactions.size()));
             }
             while (reactions.get(i + 1).size() < reactions.get(i).size());
             

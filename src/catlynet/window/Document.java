@@ -22,7 +22,6 @@ package catlynet.window;
 import catlynet.format.ArrowNotation;
 import catlynet.format.ReactionNotation;
 import catlynet.model.ReactionSystem;
-import catlynet.view.ReactionGraphView;
 import javafx.beans.property.*;
 import jloda.util.ProgramProperties;
 
@@ -38,8 +37,6 @@ public class Document {
 
     private final ObjectProperty<ReactionNotation> reactionNotation = new SimpleObjectProperty<>(ReactionNotation.valueOfIgnoreCase(ProgramProperties.get("ReactionNotation", "Sparse")));
     private final ObjectProperty<ArrowNotation> arrowNotation = new SimpleObjectProperty<>(ArrowNotation.valueOfLabel(ProgramProperties.get("ArrowNotation", "=>")));
-
-    private final ReactionGraphView reactionGraphView = new ReactionGraphView(getInputReactionSystem());
 
     /**
      * constructor
@@ -67,11 +64,6 @@ public class Document {
             reactionSystems.put(name.toString(), inputReactionSystem);
         }
         return inputReactionSystem;
-    }
-
-
-    public ReactionGraphView getReactionGraphView() {
-        return reactionGraphView;
     }
 
     public boolean isDirty() {

@@ -26,9 +26,11 @@ import catlynet.io.ModelIO;
 import catlynet.model.ReactionSystem;
 import catlynet.window.MainWindow;
 import catlynet.window.MainWindowController;
+import javafx.beans.value.ChangeListener;
 import javafx.scene.control.TextArea;
 import jloda.fx.util.AService;
 import jloda.fx.window.NotificationManager;
+import jloda.util.Basic;
 import jloda.util.Triplet;
 
 /**
@@ -44,33 +46,38 @@ public class RunAlgorithm {
      * @param result
      * @param textArea
      */
-    public static void apply(MainWindow window, final ReactionSystem inputReactions, AlgorithmBase algorithm, final ReactionSystem result, TextArea textArea) {
+    public static void apply(MainWindow window, final ReactionSystem inputReactions, AlgorithmBase algorithm, final ReactionSystem result, TextArea textArea, ChangeListener<Boolean> runningListener) {
         final MainWindowController controller = window.getController();
         result.clear();
 
-        final AService<Triplet<ReactionSystem, String, String>> service = new AService<>(() -> {
-            final ReactionSystem outputReactions = algorithm.apply(inputReactions).getCompressedSystem();
+        final AService<Triplet<ReactionSystem, String, String>> service = new AService<>(controller.getStatusFlowPane());
+        service.setCallable(() -> {
+            final ReactionSystem outputReactions = algorithm.apply(inputReactions, service.getProgressListener()).getCompressedSystem();
             final String infoLine1;
             final String infoLine2;
-            if (algorithm instanceof MuCAFAlgorithm) {
+            if (algorithm instanceof MuCAFAlgorithm || !window.getController().getComputeImportanceCheckMenuItem().isSelected()) {
                 infoLine1 = null;
                 infoLine2 = null;
             } else {
-                infoLine1 = Importance.toStringFoodImportance(Importance.computeFoodImportance(inputReactions, outputReactions, algorithm));
-                infoLine2 = Importance.toStringReactionImportance(Importance.computeReactionImportance(inputReactions, outputReactions, algorithm));
+                infoLine1 = Importance.toStringFoodImportance(Importance.computeFoodImportance(inputReactions, outputReactions, algorithm, service.getProgressListener()));
+                infoLine2 = Importance.toStringReactionImportance(Importance.computeReactionImportance(inputReactions, outputReactions, algorithm, service.getProgressListener()));
             }
 
             return new Triplet<>(outputReactions, infoLine1, infoLine2);
-        }, controller.getStatusFlowPane());
+        });
 
-        service.setOnSucceeded((c) -> {
+        service.runningProperty().addListener(runningListener);
+
+        service.setOnRunning(c -> service.getProgressListener().setTasks(Basic.fromCamelCase(Basic.getShortName(algorithm.getClass())), ""));
+
+        service.setOnSucceeded(c -> {
             final Triplet<ReactionSystem, String, String> triplet = service.getValue();
 
             result.shallowCopy(triplet.getFirst());
 
             if (result.size() > 0) {
                 final String headLine = result.getName() + " has " + result.size() + " reactions"
-                        + (result.getNumberOfTwoWayReactions() > 0 ? " (" + result.getNumberOfTwoWayReactions() + " two-way and " + result.getNumberOfOneWayReactions() + " one-way)":"");
+                        + (result.getNumberOfTwoWayReactions() > 0 ? " (" + result.getNumberOfTwoWayReactions() + " two-way and " + result.getNumberOfOneWayReactions() + " one-way)" : "");
 
                 final String infoLine1 = triplet.getSecond();
                 final String infoLine2 = triplet.getThird();

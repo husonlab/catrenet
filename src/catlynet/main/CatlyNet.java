@@ -25,6 +25,7 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import jloda.fx.util.ArgsOptions;
 import jloda.fx.util.ColorSchemeManager;
+import jloda.fx.util.ProgramExecutorService;
 import jloda.fx.util.ResourceManagerFX;
 import jloda.fx.window.MainWindowManager;
 import jloda.fx.window.NotificationManager;
@@ -70,7 +71,7 @@ public class CatlyNet extends Application {
 
         ProgramProperties.setProgramName(Version.NAME);
         ProgramProperties.setProgramVersion(Version.SHORT_DESCRIPTION);
-        ProgramProperties.setProgramLicence("Copyright (C) 2019 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.\n" +
+        ProgramProperties.setProgramLicence("Copyright (C) 2020 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.\n" +
                 "This is free software, licensed under the terms of the GNU General Public License, Version 3.\n" +
                 "Sources available at: https://github.com/husonlab/catlynet\n" +
                 "Installers available at: http://software-ab.informatik.uni-tuebingen.de/download/catlynet\n");
@@ -111,6 +112,7 @@ public class CatlyNet extends Application {
         final String propertiesFile = options.getOption("-p", "propertiesFile", "Properties file", defaultPropertiesFile);
         final boolean showVersion = options.getOption("-V", "version", "Show version string", false);
         final boolean silentMode = options.getOption("-S", "silentMode", "Silent mode", false);
+        ProgramExecutorService.setNumberOfCoresToUse(options.getOption("-t", "threads", "Maximum number of threads to use in a parallel algorithm (0=all available)", 0));
         options.done();
 
         ProgramProperties.load(propertiesFile);

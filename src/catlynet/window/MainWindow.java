@@ -55,6 +55,9 @@ public class MainWindow implements IMainWindow {
     private final Parent root;
     private final FlowPane statusPane;
 
+
+    private final ReactionGraphView reactionGraphView;
+
     private final PrintStream logStream;
 
     private final UndoManager undoManager = new UndoManager();
@@ -79,6 +82,8 @@ public class MainWindow implements IMainWindow {
             logStream = new PrintStreamToTextArea(controller.getLogTextArea());
 
             statusPane = controller.getStatusFlowPane();
+
+            reactionGraphView = new ReactionGraphView(getInputReactionSystem(), controller);
         }
 
         FileOpenManager.setExtensions(Collections.singletonList(CRSFileFilter.getInstance()));
@@ -180,6 +185,6 @@ public class MainWindow implements IMainWindow {
     }
 
     public ReactionGraphView getReactionGraphView() {
-        return document.getReactionGraphView();
+        return reactionGraphView;
     }
 }

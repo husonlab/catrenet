@@ -22,7 +22,7 @@ package catlynet.algorithm;
 import catlynet.model.MoleculeType;
 import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
-import jloda.util.Pair;
+import jloda.util.*;
 
 import java.util.ArrayList;
 
@@ -38,20 +38,27 @@ public class Importance {
      * @param algorithm
      * @return list of food, importance pairs, in order of decreasing importance (percent difference between model size and model size without given food item)
      */
-    public static ArrayList<Pair<MoleculeType, Float>> computeFoodImportance(ReactionSystem inputSystem, ReactionSystem originalResult, AlgorithmBase algorithm) {
+    public static ArrayList<Pair<MoleculeType, Float>> computeFoodImportance(ReactionSystem inputSystem, ReactionSystem originalResult, AlgorithmBase algorithm, ProgressListener progress) throws CanceledException {
         final ArrayList<Pair<MoleculeType, Float>> result = new ArrayList<>();
 
         final ReactionSystem expandedReactionSystem = inputSystem.getExpandedSystem();
+
+        progress.setTasks(Basic.fromCamelCase(Basic.getShortName(algorithm.getClass())), "importance");
+        progress.setMaximum(inputSystem.getFoods().size());
+        progress.setMaximum(10000000);
+        progress.setProgress(0);
+        final int increment = 5000000 / inputSystem.getFoods().size();
 
         for (MoleculeType food : inputSystem.getFoods()) {
             final ReactionSystem replicateExpandedInput = expandedReactionSystem.shallowCopy();
             replicateExpandedInput.setName("Food importance");
             replicateExpandedInput.getFoods().remove(food);
-            final ReactionSystem replicateOutput = algorithm.apply(replicateExpandedInput).getCompressedSystem();
+            final ReactionSystem replicateOutput = algorithm.apply(replicateExpandedInput, new ProgressSilent()).getCompressedSystem();
 
             final float importance = 100f * (originalResult.size() - replicateOutput.size()) / (float) originalResult.size();
             if (importance > 0)
                 result.add(new Pair<>(food, importance));
+            progress.setProgress(progress.getProgress() + increment);
         }
         result.sort((a, b) -> -Float.compare(a.getSecond(), b.getSecond()));
         return result;
@@ -64,8 +71,14 @@ public class Importance {
      * @param algorithm
      * @return list of reaction, immportance pairs, in order of decreasing importance (difference between model size and model size without given reaction)
      */
-    public static ArrayList<Pair<Reaction, Float>> computeReactionImportance(ReactionSystem inputSystem, ReactionSystem originalResult, AlgorithmBase algorithm) {
+    public static ArrayList<Pair<Reaction, Float>> computeReactionImportance(ReactionSystem inputSystem, ReactionSystem originalResult, AlgorithmBase algorithm, ProgressListener progress) throws CanceledException {
         final ArrayList<Pair<Reaction, Float>> result = new ArrayList<>();
+
+        progress.setTasks(Basic.fromCamelCase(Basic.getShortName(algorithm.getClass())), "importance");
+        progress.setMaximum(inputSystem.getFoods().size());
+        progress.setMaximum(10000000);
+        progress.setProgress(5000000);
+        final int increment = 5000000 / inputSystem.getReactions().size();
 
         for (Reaction reaction : inputSystem.getReactions()) {
             if (originalResult.size() > 1) {
@@ -74,7 +87,7 @@ public class Importance {
                 final ReactionSystem replicateExpandedInput = replicateInput.getExpandedSystem();
                 replicateExpandedInput.setName("Reaction importance");
                 replicateExpandedInput.getReactions().remove(reaction);
-                final ReactionSystem replicateOutput = algorithm.apply(replicateExpandedInput).getCompressedSystem();
+                final ReactionSystem replicateOutput = algorithm.apply(replicateExpandedInput, new ProgressSilent()).getCompressedSystem();
 
                 // System.err.println(reaction.getName()+" "+expandedInputModel.size()+" -> "+outputModel.size());
 
@@ -85,6 +98,7 @@ public class Importance {
                 }
             }
             result.sort((a, b) -> -Float.compare(a.getSecond(), b.getSecond()));
+            progress.setProgress(progress.getProgress() + increment);
         }
 
         return result;
