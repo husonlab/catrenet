@@ -36,7 +36,6 @@ import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.Background;
@@ -487,7 +486,7 @@ public class ControlBindings {
         SelectionBindings.setup(window, controller);
 
         controller.getShowNodeLabels().setOnAction(e -> ShowHideNodeLabels.apply(window.getReactionGraphView()));
-        setupFullScreenMenuSupport(window.getStage(), controller.getFullScreenMenuItem());
+        BasicFX.setupFullScreenMenuSupport(window.getStage(), controller.getFullScreenMenuItem());
 
         //controller.getFoodSetComboBox().setStyle("-fx-font: 13px \"Courier New\";");
 
@@ -576,14 +575,4 @@ public class ControlBindings {
         });
     }
 
-    /**
-     * adds full screen support
-     *
-     * @param stage
-     */
-    public static void setupFullScreenMenuSupport(Stage stage, MenuItem menuItem) {
-        stage.fullScreenProperty().addListener((c, o, n) -> menuItem.setText(n ? "Exit Full Screen" : "Enter Full Screen"));
-        menuItem.setOnAction((e) -> stage.setFullScreen(!stage.isFullScreen()));
-        menuItem.setDisable(false);
-    }
 }
