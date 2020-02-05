@@ -11,6 +11,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import jloda.fx.control.SplittableTabPane;
+import jloda.fx.control.ZoomableScrollPane;
 import jloda.fx.window.IMainWindow;
 import jloda.fx.window.MainWindowManager;
 import jloda.util.ProgramProperties;
@@ -38,6 +39,9 @@ public class MainWindowController {
 
     @FXML
     private MenuItem openMenuItem;
+
+    @FXML
+    private MenuItem importMenuItem;
 
     @FXML
     private Menu recentFilesMenu;
@@ -127,7 +131,10 @@ public class MainWindowController {
     private Menu algorithmMenu;
 
     @FXML
-    private MenuItem parseInputMenuItem;
+    private MenuItem expandInputMenuItem;
+
+    @FXML
+    private MenuItem computeVisualizationMenuItem;
 
     @FXML
     private MenuItem runCAFMenuItem;
@@ -225,7 +232,9 @@ public class MainWindowController {
     private SplitPane mainSplitPane;
 
     @FXML
-    private ComboBox<String> foodSetComboBox;
+    private VBox foodInputVBox;
+    @FXML
+    private TextArea inputFoodTextArea;
 
     @FXML
     private VBox reactionsInputVBox;
@@ -240,13 +249,13 @@ public class MainWindowController {
     private TabPane outputTabPane;
 
     @FXML
-    private Tab parsedInputTab;
+    private Tab expandedReactionsTab;
 
     @FXML
-    private TextArea reactionsTextArea;
+    private TextArea expandedReactionsTextArea;
 
     @FXML
-    private VBox reactionsVBox;
+    private VBox expandedReactionsVBox;
 
     @FXML
     private Tab visualizationTab;
@@ -257,6 +266,11 @@ public class MainWindowController {
     @FXML
     private VBox visualizationVBox;
 
+    @FXML
+    private ScrollPane visualizationScrollPane;
+
+    @FXML
+    private StackPane visualizationCenterPane;
 
     @FXML
     private MenuItem selectCAFContextMenuItem;
@@ -351,6 +365,8 @@ public class MainWindowController {
     @FXML
     private VBox logVBox;
 
+    private ZoomableScrollPane zoomableScrollPane;
+
     @FXML
     void initialize() {
 
@@ -407,6 +423,10 @@ public class MainWindowController {
         };
         MainWindowManager.getInstance().changedProperty().addListener(invalidationListener);
         invalidationListener.invalidated(null);
+
+        visualizationScrollPane.setContent(null);
+        zoomableScrollPane = new ZoomableScrollPane(visualizationCenterPane);
+        visualizationBorderPane.setCenter(zoomableScrollPane);
     }
 
     private SplittableTabPane outputSplittableTabPane;
@@ -427,6 +447,10 @@ public class MainWindowController {
 
     public MenuItem getOpenMenuItem() {
         return openMenuItem;
+    }
+
+    public MenuItem getImportMenuItem() {
+        return importMenuItem;
     }
 
     public Menu getRecentFilesMenu() {
@@ -545,8 +569,12 @@ public class MainWindowController {
         return algorithmMenu;
     }
 
-    public MenuItem getParseInputMenuItem() {
-        return parseInputMenuItem;
+    public MenuItem getExpandInputMenuItem() {
+        return expandInputMenuItem;
+    }
+
+    public MenuItem getComputeVisualizationMenuItem() {
+        return computeVisualizationMenuItem;
     }
 
     public MenuItem getRunCAFMenuItem() {
@@ -673,8 +701,12 @@ public class MainWindowController {
         return mainSplitPane;
     }
 
-    public ComboBox<String> getFoodSetComboBox() {
-        return foodSetComboBox;
+    public VBox getFoodInputVBox() {
+        return foodInputVBox;
+    }
+
+    public TextArea getInputFoodTextArea() {
+        return inputFoodTextArea;
     }
 
     public VBox getReactionsInputVBox() {
@@ -693,16 +725,16 @@ public class MainWindowController {
         return outputTabPane;
     }
 
-    public Tab getParsedInputTab() {
-        return parsedInputTab;
+    public Tab getExpandedReactionsTab() {
+        return expandedReactionsTab;
     }
 
-    public TextArea getReactionsTextArea() {
-        return reactionsTextArea;
+    public TextArea getExpandedReactionsTextArea() {
+        return expandedReactionsTextArea;
     }
 
-    public VBox getReactionsVBox() {
-        return reactionsVBox;
+    public VBox getExpandedReactionsVBox() {
+        return expandedReactionsVBox;
     }
 
     public Tab getVisualizationTab() {
@@ -848,4 +880,14 @@ public class MainWindowController {
     public ContextMenu getVisualizationTabContextMenu() {
         return visualizationTabContextMenu;
     }
+
+    public StackPane getVisualizationCenterPane() {
+        return visualizationCenterPane;
+    }
+
+    public ZoomableScrollPane getVisualizationScrollPane() {
+        return zoomableScrollPane;
+    }
+
+
 }

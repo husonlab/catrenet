@@ -50,6 +50,11 @@ public class RunAlgorithm {
         final MainWindowController controller = window.getController();
         result.clear();
 
+        if (controller.getExpandedReactionsTextArea().getText().length() == 0) {
+            final ReactionSystem expandedReactionSystem = window.getInputReactionSystem().computeExpandedSystem();
+            controller.getExpandedReactionsTextArea().setText("Expanded reactions:\n\n" + ModelIO.toString(expandedReactionSystem, true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
+        }
+
         final AService<Triplet<ReactionSystem, String, String>> service = new AService<>(controller.getStatusFlowPane());
         service.setCallable(() -> {
             final ReactionSystem outputReactions = algorithm.apply(inputReactions, service.getProgressListener()).getCompressedSystem();
@@ -85,12 +90,16 @@ public class RunAlgorithm {
                 NotificationManager.showInformation(headLine);
 
                 if (infoLine1 != null && infoLine2 != null) {
-                    textArea.setText("# " + headLine + ":\n# " + infoLine1 + "\n# " + infoLine2 + "\n\n" + ModelIO.toString(result, false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
+                    //final String text="# " + headLine + ":\n# " + infoLine1 + "\n# " + infoLine2 + "\n\n" + ModelIO.toString(result, false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation());
+                    final String text = "# " + headLine + ":\n# " + infoLine1 + "\n# " + infoLine2 + "\n\n" + Basic.toString(result.getReactionNames(), "\n");
+                    textArea.setText(text);
                     window.getLogStream().println("\n" + headLine);
                     window.getLogStream().println(infoLine1);
                     window.getLogStream().println(infoLine2);
                 } else {
-                    textArea.setText("# " + headLine + "\n\n" + ModelIO.toString(result, false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
+                    //final String text= "# " + headLine + "\n\n" + ModelIO.toString(result, false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation());
+                    final String text = "# " + headLine + "\n\n" + Basic.toString(result.getReactionNames(), "\n");
+                    textArea.setText(text);
                     window.getLogStream().println("\n" + headLine);
                 }
             } else {

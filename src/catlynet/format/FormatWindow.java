@@ -114,9 +114,8 @@ public class FormatWindow {
                 mainWindow.getController().getInputTextArea().setText(ModelIO.toString(mainWindow.getInputReactionSystem(), false,
                         mainWindow.getDocument().getReactionNotation(), mainWindow.getDocument().getArrowNotation()));
                 final String foodString = ModelIO.getFoodString(mainWindow.getInputReactionSystem(), mainWindow.getDocument().getReactionNotation());
-                mainWindow.getController().getFoodSetComboBox().getSelectionModel().select(foodString);
-                if (!mainWindow.getController().getFoodSetComboBox().getItems().contains(foodString))
-                    mainWindow.getController().getFoodSetComboBox().getItems().add(0, foodString);
+
+                mainWindow.getController().getInputFoodTextArea().setText(foodString);
 
                 mainWindow.getController().getCafTextArea().clear();
                 mainWindow.getController().getRafTextArea().clear();

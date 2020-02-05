@@ -46,7 +46,7 @@ public class MaxRAFAlgorithm extends AlgorithmBase {
         final ReactionSystem result = new ReactionSystem();
         result.setName("Max RAF");
 
-        final ReactionSystem expanded = input.getExpandedSystem();
+        final ReactionSystem expanded = input.computeExpandedSystem();
         final Set<Reaction> inputReactions = new TreeSet<>(expanded.getReactions());
         final Set<MoleculeType> inputFood = new TreeSet<>(expanded.getFoods());
 

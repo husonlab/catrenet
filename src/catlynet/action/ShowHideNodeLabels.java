@@ -47,7 +47,8 @@ public class ShowHideNodeLabels {
 
         for (Node v : nodes) {
             final Label label = reactionGraphView.getNode2shapeAndLabel().get(v).getSecond();
-            label.setVisible(show);
+            if (!label.getText().equals("&"))
+                label.setVisible(show);
         }
     }
 }

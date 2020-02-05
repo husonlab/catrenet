@@ -49,6 +49,13 @@
                                 </MenuItem>
                                 <Menu fx:id="recentFilesMenu" mnemonicParsing="false" text="Recent"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem fx:id="importMenuItem" mnemonicParsing="false" text="Import...">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="O" control="UP" meta="DOWN" shift="UP"
+                                                            shortcut="UP"/>
+                                    </accelerator>
+                                </MenuItem>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="saveMenItem" mnemonicParsing="false" text="Save...">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="S" control="UP" meta="DOWN" shift="UP"
@@ -231,9 +238,16 @@
                         </Menu>
                         <Menu fx:id="algorithmMenu" mnemonicParsing="false" text="Run">
                             <items>
-                                <MenuItem fx:id="parseInputMenuItem" mnemonicParsing="false" text="Parse Input">
+                                <MenuItem fx:id="expandInputMenuItem" mnemonicParsing="false" text="Expand Input">
                                     <accelerator>
-                                        <KeyCodeCombination alt="UP" code="I" control="UP" meta="DOWN" shift="UP"
+                                        <KeyCodeCombination alt="UP" code="E" control="UP" meta="DOWN" shift="UP"
+                                                            shortcut="UP"/>
+                                    </accelerator>
+                                </MenuItem>
+                                <MenuItem fx:id="computeVisualizationMenuItem" mnemonicParsing="false"
+                                          text="Compute Visualization">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="V" control="UP" meta="DOWN" shift="DOWN"
                                                             shortcut="UP"/>
                                     </accelerator>
                                 </MenuItem>
@@ -351,47 +365,73 @@
             <items>
                 <BorderPane>
                     <center>
-                        <VBox BorderPane.alignment="CENTER">
-                            <children>
-                                <Label maxHeight="-Infinity" minHeight="-Infinity" prefHeight="26.0"
-                                       text="Input food set:">
-                                    <VBox.margin>
-                                        <Insets left="10.0"/>
-                                    </VBox.margin>
-                                </Label>
-                                <ComboBox fx:id="foodSetComboBox" editable="true" maxHeight="-Infinity"
-                                          maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="26.0"
-                                          promptText="Food set"/>
-                                <VBox fx:id="reactionsInputVBox">
-                                    <VBox.margin>
-                                        <Insets/>
-                                    </VBox.margin>
+                        <SplitPane dividerPositions="0.2" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0"
+                                   BorderPane.alignment="CENTER">
+                            <items>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                     <children>
-                                        <ToolBar maxHeight="-Infinity" minHeight="-Infinity" prefHeight="26.0">
-                                            <items>
-                                                <Label text="Input catalyic reactions:"/>
-                                            </items>
-                                        </ToolBar>
+                                        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                              AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <children>
+                                                <VBox fx:id="foodInputVBox">
+                                                    <children>
+                                                        <ToolBar maxHeight="-Infinity" minHeight="-Infinity"
+                                                                 prefHeight="26.0">
+                                                            <VBox.margin>
+                                                                <Insets/>
+                                                            </VBox.margin>
+                                                            <items>
+                                                                <Label maxHeight="-Infinity" minHeight="-Infinity"
+                                                                       prefHeight="26.0" text="Input food set:"/>
+                                                            </items>
+                                                        </ToolBar>
+                                                    </children>
+                                                </VBox>
+                                                <TextArea fx:id="inputFoodTextArea" promptText="Input food set"
+                                                          VBox.vgrow="ALWAYS"/>
+                                            </children>
+                                        </VBox>
                                     </children>
-                                </VBox>
-                                <TextArea fx:id="inputTextArea" promptText="Input reactions" VBox.vgrow="ALWAYS"/>
-                            </children>
-                        </VBox>
+                                </AnchorPane>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                    <children>
+                                        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                              AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <children>
+                                                <VBox fx:id="reactionsInputVBox">
+                                                    <children>
+                                                        <ToolBar maxHeight="-Infinity" minHeight="-Infinity"
+                                                                 prefHeight="26.0">
+                                                            <items>
+                                                                <Label text="Input catalyic reactions:"/>
+                                                            </items>
+                                                        </ToolBar>
+                                                    </children>
+                                                </VBox>
+                                                <TextArea fx:id="inputTextArea" promptText="Input reactions"
+                                                          VBox.vgrow="ALWAYS"/>
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </AnchorPane>
+                            </items>
+                        </SplitPane>
                     </center>
                 </BorderPane>
                 <StackPane fx:id="outputPane">
                     <children>
                         <TabPane fx:id="outputTabPane">
                             <tabs>
-                                <Tab fx:id="parsedInputTab" closable="false" disable="true" text="Reactions">
+                                <Tab fx:id="expandedReactionsTab" closable="false" disable="true" text="Expanded">
                                     <content>
                                         <BorderPane>
                                             <center>
-                                                <TextArea fx:id="reactionsTextArea" editable="false" prefHeight="200.0"
-                                                          prefWidth="200.0" promptText="Parsed input" wrapText="true"/>
+                                                <TextArea fx:id="expandedReactionsTextArea" editable="false"
+                                                          prefHeight="200.0" prefWidth="200.0"
+                                                          promptText="Expanded input" wrapText="true"/>
                                             </center>
                                             <top>
-                                                <VBox fx:id="reactionsVBox" minHeight="4.0"
+                                                <VBox fx:id="expandedReactionsVBox" minHeight="4.0"
                                                       BorderPane.alignment="CENTER"/>
                                             </top>
                                         </BorderPane>
@@ -404,6 +444,15 @@
                                                 <VBox fx:id="visualizationVBox" minHeight="4.0"
                                                       BorderPane.alignment="CENTER"/>
                                             </top>
+                                            <center>
+                                                <ScrollPane fx:id="visualizationScrollPane" prefHeight="200.0"
+                                                            prefWidth="200.0" BorderPane.alignment="CENTER">
+                                                    <content>
+                                                        <StackPane fx:id="visualizationCenterPane" prefHeight="150.0"
+                                                                   prefWidth="200.0"/>
+                                                    </content>
+                                                </ScrollPane>
+                                            </center>
                                         </BorderPane>
                                     </content>
                                     <contextMenu>

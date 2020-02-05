@@ -19,8 +19,9 @@
 
 package catlynet.io;
 
+import catlynet.action.ImportWimsFormat;
 import catlynet.action.NewWindow;
-import catlynet.action.ParseInput;
+import catlynet.action.VerifyInput;
 import catlynet.format.ArrowNotation;
 import catlynet.format.ReactionNotation;
 import catlynet.model.ReactionSystem;
@@ -28,12 +29,15 @@ import catlynet.window.MainWindow;
 import jloda.fx.util.RecentFilesManager;
 import jloda.fx.window.MainWindowManager;
 import jloda.fx.window.NotificationManager;
+import jloda.util.Basic;
 import jloda.util.Pair;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.function.Consumer;
 
 /**
@@ -50,35 +54,51 @@ public class FileOpener implements Consumer<String> {
 
         final ReactionSystem reactionSystem = window.getInputReactionSystem();
 
-        try (BufferedReader r = new BufferedReader(new FileReader(fileName))) {
-            window.getDocument().setFileName(fileName);
-            final Pair<ReactionNotation, ArrowNotation> pair = ReactionNotation.detectNotation(new File(fileName));
-            if (pair == null)
+        try {
+            final Pair<ReactionNotation, ArrowNotation> notation;
+            final ArrayList<String> inputLines;
+
+            if (ImportWimsFormat.isInWimsFormat(fileName)) {
+                inputLines = ImportWimsFormat.importToString(fileName);
+                notation = ReactionNotation.detectNotation(inputLines.subList(0, 10));
+                window.getDocument().setFileName(Basic.getFileWithNewUniqueName(Basic.replaceFileSuffix(fileName, ".crs")).getPath());
+                window.getDocument().setDirty(true);
+            } else {
+                inputLines = Basic.getLinesFromFile(fileName);
+                window.getDocument().setFileName(fileName);
+                final String[] lines = Basic.getFirstLinesFromFile(new File(fileName), 10);
+                if (lines == null)
+                    throw new IOException("Can't read file: " + fileName);
+                notation = ReactionNotation.detectNotation(Arrays.asList(lines));
+            }
+
+            if (notation == null)
                 throw new IOException("Couldn't detect 'full', 'sparse' or 'tabbed' file format");
 
-            reactionSystem.clear();
-            final String leadingComments = ModelIO.read(window.getInputReactionSystem(), r, pair.getFirst());
+            try (BufferedReader r = new BufferedReader(new StringReader(Basic.toString(inputLines, "\n")))) {
+                reactionSystem.clear();
+                final String leadingComments = ModelIO.read(window.getInputReactionSystem(), r, notation.getFirst());
 
-            window.getController().getInputTextArea().setText((leadingComments.length() > 0 ? leadingComments + "\n" : "") + ModelIO.toString(window.getInputReactionSystem(), false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
-            final String food = ModelIO.getFoodString(window.getInputReactionSystem(), window.getDocument().getReactionNotation());
-            if (window.getController().getFoodSetComboBox().getItems().contains(food))
-                window.getController().getFoodSetComboBox().getItems().add(0, food);
-            window.getController().getFoodSetComboBox().getSelectionModel().select(food);
+                window.getController().getInputTextArea().setText((leadingComments.length() > 0 ? leadingComments + "\n" : "") + ModelIO.toString(window.getInputReactionSystem(), false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
+                final String food = ModelIO.getFoodString(window.getInputReactionSystem(), window.getDocument().getReactionNotation());
 
-            final String infoString = "Read " + reactionSystem.size() + " reactions" + (reactionSystem.getNumberOfTwoWayReactions() > 0 ? "(" + reactionSystem.getNumberOfTwoWayReactions() + " two-way)" : "")
-                    + " and " + reactionSystem.getFoods().size() + " food items from file: " + fileName;
+                window.getController().getInputFoodTextArea().setText(food);
 
-            NotificationManager.showInformation(infoString);
+                final String infoString = "Read " + reactionSystem.size() + " reactions" + (reactionSystem.getNumberOfTwoWayReactions() > 0 ? "(" + reactionSystem.getNumberOfTwoWayReactions() + " two-way)" : "")
+                        + " and " + reactionSystem.getFoods().size() + " food items from file: " + fileName;
 
-            window.getLogStream().println(infoString);
-            // window.getLogStream().println("Input format:   " + pair.getFirst());
-            // window.getLogStream().println("Display format: " + window.getDocument().getReactionNotation());
-            RecentFilesManager.getInstance().insertRecentFile(fileName);
+                NotificationManager.showInformation(infoString);
 
-            ParseInput.apply(window);
+                window.getLogStream().println(infoString);
+                // window.getLogStream().println("Input format:   " + pair.getFirst());
+                // window.getLogStream().println("Display format: " + window.getDocument().getReactionNotation());
+                RecentFilesManager.getInstance().insertRecentFile(fileName);
+
+                VerifyInput.verify(window);
+            }
 
         } catch (IOException e) {
-            NotificationManager.showError("Open file failed: " + e.getMessage());
+            NotificationManager.showError("Open file '" + fileName + "' failed: " + e.getMessage());
         }
     }
 }

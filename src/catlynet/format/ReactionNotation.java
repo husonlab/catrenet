@@ -20,11 +20,10 @@
 package catlynet.format;
 
 import jloda.util.Basic;
-import jloda.util.FileLineIterator;
 import jloda.util.Pair;
 
-import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 
 /**
  * choice of input and output formats
@@ -39,37 +38,29 @@ public enum ReactionNotation {
     /**
      * detects the file format or returns null
      *
-     * @param file
+     * @param lines
      * @return pair of reaction notation format and arrow notation
      * @throws IOException
      */
-    public static Pair<ReactionNotation, ArrowNotation> detectNotation(File file) throws IOException {
+    public static Pair<ReactionNotation, ArrowNotation> detectNotation(Collection<String> lines) {
         boolean arrowsUseEquals = false;
         boolean arrowsUseMinus = false;
         boolean containsTabs = false;
         boolean containsSquareBrackets = false;
         boolean containsCommas = false;
 
-        try (FileLineIterator it = new FileLineIterator(file)) {
-            int seen = 0;
-            while (it.hasNext()) {
-                final String line = it.next();
-
-                if (!line.startsWith("#") && !line.startsWith("Food:") && !line.startsWith("F:")) {
-                    if (line.contains("\t"))
-                        containsTabs = true;
-                    if (line.contains(","))
-                        containsCommas = true;
-                    if (line.contains("[") || line.contains("]"))
-                        containsSquareBrackets = true;
-                    if (line.contains("=>") || line.contains("<="))
-                        arrowsUseEquals = true;
-                    if (line.contains("->") || line.contains("<-"))
-                        arrowsUseMinus = true;
-                    seen++;
-                }
-                if (seen >= 10)
-                    break; // ten lines should be enough...
+        for (String line : lines) {
+            if (!line.startsWith("#") && !line.startsWith("Food:") && !line.startsWith("F:")) {
+                if (line.contains("\t"))
+                    containsTabs = true;
+                if (line.contains(","))
+                    containsCommas = true;
+                if (line.contains("[") || line.contains("]"))
+                    containsSquareBrackets = true;
+                if (line.contains("=>") || line.contains("<="))
+                    arrowsUseEquals = true;
+                if (line.contains("->") || line.contains("<-"))
+                    arrowsUseMinus = true;
             }
         }
         if (arrowsUseEquals || arrowsUseMinus) { // arrows must be present

@@ -45,7 +45,7 @@ public class MaxPseudoRAFAlgorithm extends AlgorithmBase {
         final ReactionSystem result = new ReactionSystem();
         result.setName("Max Pseudo RAF");
 
-        final ReactionSystem expanded = input.getExpandedSystem();
+        final ReactionSystem expanded = input.computeExpandedSystem();
         final Set<Reaction> inputReactions = new TreeSet<>(expanded.getReactions());
         if (inputReactions.size() > 0) {
             final Set<MoleculeType> inputFood = new TreeSet<>(expanded.getFoods());

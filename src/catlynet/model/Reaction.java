@@ -22,6 +22,8 @@ package catlynet.model;
 import jloda.util.Basic;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -31,12 +33,16 @@ import java.util.TreeSet;
  */
 public class Reaction implements Comparable<Reaction> {
     public enum Direction {forward, reverse, both}
+
     private final String name;
 
     private final Set<MoleculeType> reactants = new TreeSet<>();
     private final Set<MoleculeType> products = new TreeSet<>();
     private final TreeSet<MoleculeType> catalysts = new TreeSet<>();
     private final Set<MoleculeType> inhibitions = new TreeSet<>();
+
+    private final Map<MoleculeType, Integer> reactantCoefficient = new HashMap<>();
+    private final Map<MoleculeType, Integer> productCoefficient = new HashMap<>();
 
     private Direction direction = Direction.forward;
 
@@ -57,9 +63,9 @@ public class Reaction implements Comparable<Reaction> {
     public Reaction(Reaction src) {
         this(src.getName());
         reactants.addAll(src.getReactants());
-        products.addAll(src.getReactants());
-        catalysts.addAll(src.getReactants());
-        inhibitions.addAll(src.getReactants());
+        products.addAll(src.getProducts());
+        catalysts.addAll(src.getCatalysts());
+        inhibitions.addAll(src.getInhibitions());
         direction = src.getDirection();
     }
 
@@ -126,11 +132,11 @@ public class Reaction implements Comparable<Reaction> {
     /**
      * parses a reaction
      * ReactionNotation:
-     * name tab: reactant ... [ catalyst ...] -|inhibitor ...|- > -> product ...
+     * name tab: [coefficient] reactant ... '[' catalyst ...']'  ['{' inhibitor ... '}'] -> [coefficient] product ...
      * or
-     * name tab: reactant ... [ catalyst ...] -|inhibitor ...|- <- product ...
+     * name tab: [coefficient] reactant ... '[' catalyst ... ']'  ['{' inhibitor ... '}'] <- [coefficient] product ...
      * or
-     * name tab: reactant ... [ catalyst ...] -|inhibitor ...|- <-> product ...
+     * name tab: [coefficient] reactant ... '[' catalyst ... ']' ['{' inhibitor ... '}'] <-> [coefficient] product ...
      * <p>
      * Reactants can be separated by white space or +
      * Products can be separated by white space or +
@@ -200,7 +206,7 @@ public class Reaction implements Comparable<Reaction> {
                     .replaceAll("\\s*&\\s*", "&");
 
             if (!catalystsString.contains("(") && !catalystsString.contains("&"))
-                catalystsString = catalystsString.replaceAll(", ", " ");
+                catalystsString = catalystsString.replaceAll(",", " ");
             catalysts = Basic.trimAll(catalystsString.split("\\s+"));
         }
 
@@ -216,8 +222,54 @@ public class Reaction implements Comparable<Reaction> {
         final String[] products = Basic.trimAll(line.substring(endArrow + 1).trim().split("[+\\s]+"));
 
         final Reaction reaction = new Reaction(reactionName);
-        reaction.getReactants().addAll(MoleculeType.valueOf(reactants));
-        reaction.getProducts().addAll(MoleculeType.valueOf(products));
+
+        if (false)
+            reaction.getReactants().addAll(MoleculeType.valueOf(reactants));
+        else {
+            int coefficient = -1;
+            for (String token : reactants) {
+                if (Basic.isInteger(token)) {
+                    if (coefficient == -1)
+                        coefficient = Basic.parseInt(token);
+                    else
+                        throw new IOException("Reactant name must start with letter: " + Basic.toString(reactants, " "));
+                } else {
+                    if (coefficient == -1 || coefficient > 0)
+                        reaction.getReactants().add(MoleculeType.valueOf(token));
+                    if (coefficient > 0)
+                        reaction.setReactantCoefficient(MoleculeType.valueOf(token), coefficient);
+                    coefficient = -1;
+                }
+                if (coefficient == -1 && Basic.isInteger(token))
+                    coefficient = Basic.parseInt(token);
+            }
+            if (coefficient != -1)
+                throw new IOException("Reactant name must start with letter: " + Basic.toString(reactants, " "));
+        }
+        if (false)
+            reaction.getProducts().addAll(MoleculeType.valueOf(products));
+        else {
+            int coefficient = -1;
+            for (String token : products) {
+                if (Basic.isInteger(token)) {
+                    if (coefficient == -1)
+                        coefficient = Basic.parseInt(token);
+                    else
+                        throw new IOException("Product name must start with letter: " + Basic.toString(products, " "));
+                } else {
+                    if (coefficient == -1 || coefficient > 0)
+                        reaction.getProducts().add(MoleculeType.valueOf(token));
+                    if (coefficient > 0)
+                        reaction.setProductCoefficient(MoleculeType.valueOf(token), coefficient);
+                    coefficient = -1;
+                }
+                if (coefficient == -1 && Basic.isInteger(token))
+                    coefficient = Basic.parseInt(token);
+            }
+            if (coefficient != -1)
+                throw new IOException("Reactant name must start with letter: " + Basic.toString(reactants, " "));
+
+        }
         reaction.getCatalysts().addAll(MoleculeType.valueOf(catalysts));
         reaction.getInhibitions().addAll(MoleculeType.valueOf(inhibitors));
         reaction.setDirection(direction);
@@ -276,5 +328,21 @@ public class Reaction implements Comparable<Reaction> {
         both.getInhibitions().addAll(getInhibitions());
         both.setDirection(Direction.both);
         return both;
+    }
+
+    public int getReactantCoefficient(MoleculeType reactant) {
+        return reactantCoefficient.getOrDefault(reactant, 1);
+    }
+
+    public void setReactantCoefficient(MoleculeType reactant, int coefficient) {
+        reactantCoefficient.put(reactant, coefficient);
+    }
+
+    public int getProductCoefficient(MoleculeType product) {
+        return productCoefficient.getOrDefault(product, 1);
+    }
+
+    public void setProductCoefficient(MoleculeType product, int coefficient) {
+        productCoefficient.put(product, coefficient);
     }
 }

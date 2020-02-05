@@ -172,15 +172,17 @@ public class ReactionSystem {
     }
 
     /**
-     * gets the expanded model in which each bi-direction reaction is replaced by two one-way reactions and
-     * for each 'and' set of catalysts the correspond enforcing reaction has been added
+     * computes the expanded model in which each bi-direction reaction is replaced by two one-way reactions and
+     * for each 'and' set of catalysts the correspond enforcing reaction has been added.
+     * Unused food items are removed.
      *
      * @return expanded reaction system
      */
-    public ReactionSystem getExpandedSystem() {
+    public ReactionSystem computeExpandedSystem() {
         final ReactionSystem expanded = new ReactionSystem();
         expanded.setName(getName() + " (expanded)");
-        expanded.getFoods().setAll(getFoods());
+
+        final Set<MoleculeType> mentionedMolecules = new HashSet<>();
 
         final ArrayList<Reaction> auxiliaryReactions = new ArrayList<>();
 
@@ -214,11 +216,13 @@ public class ReactionSystem {
             for (MoleculeType catalyst : reaction.getCatalysts()) {
                 final String name = catalyst.getName();
                 if (name.contains("&")) {
-                    final String[] foods = Basic.split(name, '&');
+                    final String[] molecules = Basic.split(name, '&');
                     final Reaction auxReaction = new Reaction(reaction.getName() + "/" + name + "/");
-                    for (String reactantName : foods) {
+                    for (String reactantName : molecules) {
                         auxReaction.getReactants().add(MoleculeType.valueOf(reactantName));
                     }
+                    mentionedMolecules.addAll(MoleculeType.valueOf(molecules));
+
                     auxReaction.getCatalysts().add(catalyst);
                     auxReaction.getProducts().add(catalyst);
                     boolean found = false;
@@ -231,10 +235,17 @@ public class ReactionSystem {
                     if (!found) {
                         auxiliaryReactions.add(auxReaction);
                         expanded.getReactions().add(auxReaction);
-                            }
-                        }
+                    }
                 }
             }
+            mentionedMolecules.addAll(reaction.getReactants());
+            mentionedMolecules.addAll(reaction.getProducts());
+            mentionedMolecules.addAll(reaction.getCatalysts());
+            mentionedMolecules.addAll(reaction.getInhibitions());
+        }
+
+        expanded.getFoods().setAll(Basic.intersection(getFoods(), mentionedMolecules));
+
         return expanded;
     }
 
@@ -279,7 +290,7 @@ public class ReactionSystem {
     }
 
     public Set<String> getReactionNames() {
-        final Set<String> names = new HashSet<>();
+        final Set<String> names = new TreeSet<>();
         for (Reaction reaction : getReactions()) {
             names.add(reaction.getName());
         }

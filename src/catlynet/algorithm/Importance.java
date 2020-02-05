@@ -41,7 +41,7 @@ public class Importance {
     public static ArrayList<Pair<MoleculeType, Float>> computeFoodImportance(ReactionSystem inputSystem, ReactionSystem originalResult, AlgorithmBase algorithm, ProgressListener progress) throws CanceledException {
         final ArrayList<Pair<MoleculeType, Float>> result = new ArrayList<>();
 
-        final ReactionSystem expandedReactionSystem = inputSystem.getExpandedSystem();
+        final ReactionSystem expandedReactionSystem = inputSystem.computeExpandedSystem();
 
         progress.setTasks(Basic.fromCamelCase(Basic.getShortName(algorithm.getClass())), "importance");
         progress.setMaximum(inputSystem.getFoods().size());
@@ -84,7 +84,7 @@ public class Importance {
             if (originalResult.size() > 1) {
                 final ReactionSystem replicateInput = inputSystem.shallowCopy();
                 replicateInput.getReactions().remove(reaction); // need to first remove reaction, then expand
-                final ReactionSystem replicateExpandedInput = replicateInput.getExpandedSystem();
+                final ReactionSystem replicateExpandedInput = replicateInput.computeExpandedSystem();
                 replicateExpandedInput.setName("Reaction importance");
                 replicateExpandedInput.getReactions().remove(reaction);
                 final ReactionSystem replicateOutput = algorithm.apply(replicateExpandedInput, new ProgressSilent()).getCompressedSystem();

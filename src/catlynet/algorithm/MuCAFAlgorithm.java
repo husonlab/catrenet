@@ -44,7 +44,7 @@ public class MuCAFAlgorithm extends AlgorithmBase {
         final ReactionSystem result = new ReactionSystem();
         result.setName("MU CAF");
 
-        final ReactionSystem expanded = input.getExpandedSystem();
+        final ReactionSystem expanded = input.computeExpandedSystem();
         final ArrayList<Reaction> inputReactions = Basic.randomize(expanded.getReactions(), new Random());
         //final ArrayList<Reaction> inputReactions = new ArrayList<>(expanded.getReactions());
 

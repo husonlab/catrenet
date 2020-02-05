@@ -193,7 +193,7 @@ public class ModelIO {
         else
             return String.format("%s : %s [%s]%s%s %s",
                     reaction.getName(), Basic.toString(reaction.getReactants(), " + "), Basic.toString(reaction.getCatalysts(), reactionNotation == ReactionNotation.Full ? "," : " "),
-                    (reaction.getInhibitions().size() == 0 ? " " : " (" + Basic.toString(reaction.getInhibitions(), reactionNotation == ReactionNotation.Full ? "," : " ") + ") "),
+                    (reaction.getInhibitions().size() == 0 ? " " : " {" + Basic.toString(reaction.getInhibitions(), reactionNotation == ReactionNotation.Full ? "," : " ") + "} "),
                     arrow, Basic.toString(reaction.getProducts(), " + "));
     }
 }

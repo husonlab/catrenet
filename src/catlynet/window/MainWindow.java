@@ -83,7 +83,7 @@ public class MainWindow implements IMainWindow {
 
             statusPane = controller.getStatusFlowPane();
 
-            reactionGraphView = new ReactionGraphView(getInputReactionSystem(), controller);
+            reactionGraphView = new ReactionGraphView(getInputReactionSystem(), controller, getLogStream());
         }
 
         FileOpenManager.setExtensions(Collections.singletonList(CRSFileFilter.getInstance()));
@@ -114,8 +114,6 @@ public class MainWindow implements IMainWindow {
         stage.setX(screenX);
         stage.setY(screenY);
 
-        document.dirtyProperty().bind(controller.getInputTextArea().undoableProperty());
-
         final InvalidationListener listener = ((e) -> {
             if (document.getFileName() == null)
                 getStage().setTitle("Untitled - " + ProgramProperties.getProgramName());
@@ -135,10 +133,10 @@ public class MainWindow implements IMainWindow {
 
         stage.show();
 
-        controller.getFoodSetComboBox().getSelectionModel().selectedItemProperty().addListener((c, o, n) -> hasFoodInput.set(n != null && n.length() > 0));
+        controller.getInputFoodTextArea().textProperty().length().addListener((c, o, n) -> hasFoodInput.set(n.intValue() > 0));
 
         controller.getInputTextArea().textProperty().length().addListener((c, o, n) -> hasReactionsInput.set(n.intValue() > 0));
-        empty.bind(hasFoodInput.not().and(hasReactionsInput.not()));
+        empty.bind(controller.getInputFoodTextArea().textProperty().isEmpty().and(controller.getInputTextArea().textProperty().isEmpty()));
     }
 
     @Override

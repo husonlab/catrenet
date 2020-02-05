@@ -24,9 +24,7 @@ import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
 import catlynet.window.MainWindowController;
 import javafx.beans.InvalidationListener;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyDoubleProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.*;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
@@ -40,7 +38,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
-import jloda.fx.control.AMultipleSelectionModel;
+import jloda.fx.control.ItemSelectionModel;
 import jloda.fx.shapes.CircleShape;
 import jloda.fx.shapes.SquareShape;
 import jloda.fx.util.AService;
@@ -53,6 +51,7 @@ import jloda.util.APoint2D;
 import jloda.util.Basic;
 import jloda.util.Pair;
 
+import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -63,34 +62,21 @@ import java.util.Map;
  * Daniel Huson, 7.2019
  */
 public class ReactionGraphView {
+
     private final static ObjectProperty<Font> font = new SimpleObjectProperty<>(Font.font("Helvetica", 12));
     private final Graph reactionGraph = new Graph();
     private final NodeSet foodNodes = new NodeSet(reactionGraph);
     private final NodeArray<Pair<Shape, Label>> node2shapeAndLabel = new NodeArray<>(reactionGraph);
     private final EdgeArray<Group> edge2group = new EdgeArray<>(reactionGraph);
 
-    private final AMultipleSelectionModel<Node> nodeSelection = new AMultipleSelectionModel<>();
-    private final AMultipleSelectionModel<Edge> edgeSelection = new AMultipleSelectionModel<>();
+    private final ItemSelectionModel<Node> nodeSelection = new ItemSelectionModel<>();
+    private final ItemSelectionModel<Edge> edgeSelection = new ItemSelectionModel<>();
 
     private final ObjectProperty<Color> inhibitionEdgeColor = new SimpleObjectProperty<>(Color.LIGHTGREY);
 
     private final MainWindowController controller;
 
-    public Rectangle2D getBBox() {
-        double minX = Double.MAX_VALUE;
-        double minY = Double.MAX_VALUE;
-        double maxX = Double.MIN_VALUE;
-        double maxY = Double.MIN_VALUE;
-
-        for (Node v : reactionGraph.nodes()) {
-            final Shape shape = node2shapeAndLabel.get(v).getFirst();
-            minX = Math.min(minX, shape.getTranslateX());
-            minY = Math.min(minY, shape.getTranslateY());
-            maxX = Math.max(maxX, shape.getTranslateY());
-            maxY = Math.max(maxY, shape.getTranslateY());
-        }
-        return new Rectangle2D(minX, minY, maxX - minX, maxY - minY);
-    }
+    private final BooleanProperty empty = new SimpleBooleanProperty(true);
 
     static class AndNode {
     }
@@ -101,15 +87,18 @@ public class ReactionGraphView {
 
     private final MoleculeFlowAnimation moleculeFlowAnimation;
 
+    private final PrintStream logStream;
+
     /**
      * construct a graph view for the given system
      *
      * @param reactionSystem
      */
-    public ReactionGraphView(ReactionSystem reactionSystem, MainWindowController controller) {
+    public ReactionGraphView(ReactionSystem reactionSystem, MainWindowController controller, PrintStream logStream) {
         this.reactionSystem = reactionSystem;
         this.controller = controller;
         this.world = new Group();
+        this.logStream = logStream;
 
         nodeSelection.getSelectedItems().addListener((ListChangeListener<Node>) (e) -> {
             while (e.next()) {
@@ -227,10 +216,12 @@ public class ReactionGraphView {
             }
         }
 
-        nodeSelection.setItems(reactionGraph.getNodesAsSet());
-        edgeSelection.setItems(reactionGraph.getEdgesAsSet());
+        final int numberOfConnectedComponts = reactionGraph.getNumberConnectedComponents();
+        if (numberOfConnectedComponts > 1)
+            logStream.println(String.format("Reaction graph has %d connected components", numberOfConnectedComponts));
 
-        final FruchtermanReingoldLayoutMultiThreaded layout = new FruchtermanReingoldLayoutMultiThreaded(reactionGraph);
+
+        final FruchtermanReingoldLayout layout = new FruchtermanReingoldLayout(reactionGraph);
         final AService<NodeArray<APoint2D>> service = new AService<>(controller.getStatusFlowPane());
 
         final NodeArray<APoint2D> result = new NodeArray<>(reactionGraph);
@@ -242,23 +233,24 @@ public class ReactionGraphView {
 
         service.setOnRunning(e -> service.getProgressListener().setTasks("Graph layout", ""));
         service.setOnFailed(e -> NotificationManager.showError("Graph layout failed: " + service.getException().getMessage()));
-        service.setOnCancelled(e ->
-                {
+        service.setOnCancelled(e -> {
                     NotificationManager.showWarning("Graph layout CANCELED");
                     if (!result.isClear()) // use what ever has been produced
                         world.getChildren().setAll(setupGraphView(reactionSystem, reactionGraph, node2shapeAndLabel, edge2group, service.getValue()));
                 }
         );
-        service.setOnSucceeded((e) -> world.getChildren().setAll(setupGraphView(reactionSystem, reactionGraph, node2shapeAndLabel, edge2group, service.getValue())));
+        service.setOnSucceeded((e) -> {
+            world.getChildren().setAll(setupGraphView(reactionSystem, reactionGraph, node2shapeAndLabel, edge2group, service.getValue()));
+            empty.set(reactionGraph.getNumberOfNodes() == 0);
+        });
         service.start();
     }
 
     public void clear() {
+        empty.set(true);
         foodNodes.clear();
         nodeSelection.clearSelection();
-        nodeSelection.setItems();
         edgeSelection.clearSelection();
-        edgeSelection.setItems();
         reactionGraph.clear();
         world.getChildren().clear();
     }
@@ -271,11 +263,11 @@ public class ReactionGraphView {
         return reactionGraph;
     }
 
-    public AMultipleSelectionModel<Node> getNodeSelection() {
+    public ItemSelectionModel<Node> getNodeSelection() {
         return nodeSelection;
     }
 
-    public AMultipleSelectionModel<Edge> getEdgeSelection() {
+    public ItemSelectionModel<Edge> getEdgeSelection() {
         return edgeSelection;
     }
 
@@ -324,13 +316,13 @@ public class ReactionGraphView {
                 setupMouseInteraction(text, text, v, null);
                 text.setBackground(labelBackground);
             } else if (v.getInfo() instanceof AndNode) {
-                shape = new CircleShape(13);
+                shape = new CircleShape(10);
                 shape.setStroke(Color.TRANSPARENT);
                 shape.setFill(Color.WHITE);
                 //shape.setStrokeWidth(1);
 
                 text = new Label("&");
-                text.setFont(Font.font("Courier New", 11));
+                text.setFont(Font.font("Courier New", 8));
                 text.setAlignment(Pos.CENTER);
                 text.setLayoutX(-4);
                 text.setLayoutY(-8);
@@ -698,5 +690,29 @@ public class ReactionGraphView {
         for (Node v : reactionGraph.nodes()) {
             node2shapeAndLabel.get(v).getSecond().setStyle(style);
         }
+    }
+
+    public Rectangle2D getBBox() {
+        double minX = Double.MAX_VALUE;
+        double minY = Double.MAX_VALUE;
+        double maxX = Double.MIN_VALUE;
+        double maxY = Double.MIN_VALUE;
+
+        for (Node v : reactionGraph.nodes()) {
+            final Shape shape = node2shapeAndLabel.get(v).getFirst();
+            minX = Math.min(minX, shape.getTranslateX());
+            minY = Math.min(minY, shape.getTranslateY());
+            maxX = Math.max(maxX, shape.getTranslateY());
+            maxY = Math.max(maxY, shape.getTranslateY());
+        }
+        return new Rectangle2D(minX, minY, maxX - minX, maxY - minY);
+    }
+
+    public boolean isEmpty() {
+        return empty.get();
+    }
+
+    public ReadOnlyBooleanProperty emptyProperty() {
+        return empty;
     }
 }
