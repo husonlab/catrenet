@@ -52,7 +52,7 @@ public class MoleculeFlowAnimation {
     private final BooleanProperty playing = new SimpleBooleanProperty(false);
     private final ObjectProperty<Model> model = new SimpleObjectProperty<>(Model.RAF);
 
-    private final IntegerProperty uncatalyzedOrInhibitedThreshold = new SimpleIntegerProperty(8);
+    private final IntegerProperty uncatalyzedOrInhibitedThreshold = new SimpleIntegerProperty(20);
 
     private final BooleanProperty animateInhibitions = new SimpleBooleanProperty(false);
 
