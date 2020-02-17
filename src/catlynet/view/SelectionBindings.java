@@ -152,7 +152,7 @@ public class SelectionBindings {
                 view.getNodeSelection().clearSelection(v);
         }
         if (edges) {
-            view.getEdgeSelection().getSelectedItems().addAll(view.getReactionGraph().getEdgesAsSet());
+            view.getEdgeSelection().selectAll(view.getReactionGraph().getEdgesAsSet());
         } else if (deselectNonMatched)
             view.getEdgeSelection().clearSelection();
     }
@@ -187,7 +187,7 @@ public class SelectionBindings {
             if (v.getInfo() instanceof ReactionGraphView.AndNode) {
                 boolean allNeighborsSelected = true;
                 for (Node w : v.adjacentNodes()) {
-                    if (!nodeSelection.getSelectedItems().contains(w)) {
+                    if (!nodeSelection.isSelected(w)) {
                         allNeighborsSelected = false;
                         break;
                     }
@@ -197,6 +197,6 @@ public class SelectionBindings {
             }
         }
 
-        view.getReactionGraph().edgeStream().filter(e -> nodeSelection.getSelectedItems().contains(e.getSource()) && nodeSelection.getSelectedItems().contains(e.getTarget())).forEach(edgeSelection::select);
+        view.getReactionGraph().edgeStream().filter(e -> nodeSelection.isSelected(e.getSource()) && nodeSelection.isSelected(e.getTarget())).forEach(edgeSelection::select);
     }
 }

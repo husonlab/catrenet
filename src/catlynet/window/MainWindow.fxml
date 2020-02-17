@@ -446,12 +446,7 @@
                                             </top>
                                             <center>
                                                 <ScrollPane fx:id="visualizationScrollPane" prefHeight="200.0"
-                                                            prefWidth="200.0" BorderPane.alignment="CENTER">
-                                                    <content>
-                                                        <StackPane fx:id="visualizationCenterPane" prefHeight="150.0"
-                                                                   prefWidth="200.0"/>
-                                                    </content>
-                                                </ScrollPane>
+                                                            prefWidth="200.0" BorderPane.alignment="CENTER"/>
                                             </center>
                                         </BorderPane>
                                     </content>

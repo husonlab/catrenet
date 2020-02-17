@@ -270,9 +270,6 @@ public class MainWindowController {
     private ScrollPane visualizationScrollPane;
 
     @FXML
-    private StackPane visualizationCenterPane;
-
-    @FXML
     private MenuItem selectCAFContextMenuItem;
 
     @FXML
@@ -424,8 +421,7 @@ public class MainWindowController {
         MainWindowManager.getInstance().changedProperty().addListener(invalidationListener);
         invalidationListener.invalidated(null);
 
-        visualizationScrollPane.setContent(null);
-        zoomableScrollPane = new ZoomableScrollPane(visualizationCenterPane);
+        zoomableScrollPane = new ZoomableScrollPane(null);
         visualizationBorderPane.setCenter(zoomableScrollPane);
     }
 
@@ -881,13 +877,7 @@ public class MainWindowController {
         return visualizationTabContextMenu;
     }
 
-    public StackPane getVisualizationCenterPane() {
-        return visualizationCenterPane;
-    }
-
     public ZoomableScrollPane getVisualizationScrollPane() {
         return zoomableScrollPane;
     }
-
-
 }

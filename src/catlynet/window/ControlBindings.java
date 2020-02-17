@@ -36,10 +36,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import jloda.fx.control.ZoomableScrollPane;
 import jloda.fx.util.BasicFX;
@@ -318,14 +316,11 @@ public class ControlBindings {
         }
 
         {
-            final Pane centerPane = controller.getVisualizationCenterPane();
-            centerPane.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
-
-            centerPane.setOnContextMenuRequested((e) -> controller.getVisualizationTabContextMenu().show(centerPane, e.getScreenX(), e.getScreenY()));
-
-            centerPane.getChildren().add(window.getReactionGraphView().getWorld());
-
             final ZoomableScrollPane scrollPane = controller.getVisualizationScrollPane();
+            scrollPane.setRequireShiftOrControlToZoom(true);
+            scrollPane.setLockAspectRatio(true);
+            scrollPane.setPannable(false);
+
             scrollPane.setUpdateScaleMethod(() -> {
                 final double zoomX = scrollPane.getZoomFactorX();
                 final double zoomY = scrollPane.getZoomFactorY();
@@ -336,13 +331,17 @@ public class ControlBindings {
                         node.setTranslateY(node.getTranslateY() * zoomY);
                 }
             });
-            scrollPane.setRequireShiftOrControlToZoom(true);
-            centerPane.minWidthProperty().bind(Bindings.createDoubleBinding(() ->
-                    scrollPane.getViewportBounds().getWidth(), scrollPane.viewportBoundsProperty()).subtract(20));
-            centerPane.minHeightProperty().bind(Bindings.createDoubleBinding(() ->
-                    scrollPane.getViewportBounds().getHeight(), scrollPane.viewportBoundsProperty()).subtract(20));
 
-            scrollPane.setLockAspectRatio(true);
+            final Pane visualizationContentPane = new StackPane(window.getReactionGraphView().getWorld());
+            visualizationContentPane.setStyle("-fx-background-color: white;");
+            scrollPane.setContent(visualizationContentPane);
+
+            visualizationContentPane.setOnContextMenuRequested((e) -> controller.getVisualizationTabContextMenu().show(visualizationContentPane, e.getScreenX(), e.getScreenY()));
+
+            visualizationContentPane.minWidthProperty().bind(Bindings.createDoubleBinding(() ->
+                    scrollPane.getViewportBounds().getWidth(), scrollPane.viewportBoundsProperty()).subtract(20));
+            visualizationContentPane.minHeightProperty().bind(Bindings.createDoubleBinding(() ->
+                    scrollPane.getViewportBounds().getHeight(), scrollPane.viewportBoundsProperty()).subtract(20));
 
             controller.getZoomInMenuItem().setOnAction(c -> scrollPane.zoomBy(1.1, 1.1));
             controller.getZoomInMenuItem().disableProperty().bind(controller.getOutputSplittableTabPane().getSelectionModel().selectedItemProperty().isNotEqualTo(controller.getVisualizationTab()));
@@ -352,26 +351,28 @@ public class ControlBindings {
             controller.getZoomToFitMenuItem().setOnAction(c -> {
                 scrollPane.resetZoom();
 
-                final Rectangle2D bbox = window.getReactionGraphView().getBBox();
-                final double zoomX = controller.getVisualizationBorderPane().getWidth() / bbox.getWidth();
-                final double zoomY = controller.getVisualizationBorderPane().getHeight() / bbox.getHeight();
+                Platform.runLater(() -> {
+                    final Rectangle2D bbox = window.getReactionGraphView().getBBox();
+                    final double zoomX = Math.max(100.0, (controller.getVisualizationBorderPane().getWidth() - 100.0)) / bbox.getWidth();
+                    final double zoomY = Math.max(100.0, (controller.getVisualizationBorderPane().getHeight() - 100.0)) / bbox.getHeight();
+                    System.err.println("zoomX: " + zoomX + " zoomY: " + zoomY);
+                    final double zoom = Math.min(zoomX, zoomY);
 
-                scrollPane.zoomBy(zoomX, zoomY);
+                    scrollPane.zoomBy(zoom, zoom);
+                });
             });
             controller.getZoomToFitMenuItem().disableProperty().bind(controller.getZoomInMenuItem().disableProperty());
-
-            controller.getVisualizationBorderPane().setCenter(scrollPane);
 
             // controller.getStatusFlowPane().prefHeightProperty().addListener((c,o,n)->System.err.println("PH changed: "+o+" -> "+n));
             // controller.getStatusFlowPane().heightProperty().addListener((c,o,n)->System.err.println("H changed: "+o+" -> "+n));
 
-            centerPane.focusedProperty().addListener((c, o, n) -> {
+            visualizationContentPane.focusedProperty().addListener((c, o, n) -> {
                 if (n)
                     printableNode.set(scrollPane.getContent());
             });
             controller.getVisualizationTab().getTabPane().getSelectionModel().selectedItemProperty().addListener((c, o, n) -> printableNode.set(scrollPane.getContent()));
 
-            centerPane.setOnMousePressed((e) -> {
+            visualizationContentPane.setOnMousePressed((e) -> {
                 if (e.getClickCount() == 2) {
                     window.getReactionGraphView().getNodeSelection().clearSelection();
                     window.getReactionGraphView().getEdgeSelection().clearSelection();

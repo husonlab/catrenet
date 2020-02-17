@@ -19,8 +19,9 @@
 
 package catlynet.window;
 
-import catlynet.view.ReactionGraphSearcher;
+import catlynet.view.ReactionGraphView;
 import jloda.fx.find.FindToolBar;
+import jloda.fx.find.GraphSearcher;
 import jloda.fx.find.TextAreaSearcher;
 
 /**
@@ -57,7 +58,8 @@ public class SetupFind {
         final FindToolBar muCAFFindToolBar = new FindToolBar(new TextAreaSearcher("Mu-CAF", controller.getPseudoRAFTextArea()));
         controller.getMuCafVBox().getChildren().add(muCAFFindToolBar);
 
-        final FindToolBar graphFindToolBar = new FindToolBar(new ReactionGraphSearcher(window.getController().getVisualizationScrollPane(), window.getReactionGraphView()));
+        final ReactionGraphView gv = window.getReactionGraphView();
+        final FindToolBar graphFindToolBar = new FindToolBar(new GraphSearcher(window.getController().getVisualizationScrollPane(), gv.getReactionGraph(), gv.getNodeSelection(), (v) -> gv.getNode2shapeAndLabel().get(v).getSecond(), null));
         controller.getVisualizationVBox().getChildren().add(graphFindToolBar);
 
         controller.getFindMenuItem().setOnAction((e) -> {

@@ -22,10 +22,7 @@ package catlynet.model;
 import jloda.util.Basic;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * a reaction
@@ -223,9 +220,9 @@ public class Reaction implements Comparable<Reaction> {
 
         final Reaction reaction = new Reaction(reactionName);
 
-        if (false)
+        if (Arrays.stream(reactants).allMatch(Basic::isDouble)) { // all tokens look like numbers, don't allow coefficients
             reaction.getReactants().addAll(MoleculeType.valueOf(reactants));
-        else {
+        } else { // some tokens are not numbers, assume this is mix of coefficients and reactants
             int coefficient = -1;
             for (String token : reactants) {
                 if (Basic.isInteger(token)) {
@@ -246,30 +243,8 @@ public class Reaction implements Comparable<Reaction> {
             if (coefficient != -1)
                 throw new IOException("Reactant name must start with letter: " + Basic.toString(reactants, " "));
         }
-        if (false)
-            reaction.getProducts().addAll(MoleculeType.valueOf(products));
-        else {
-            int coefficient = -1;
-            for (String token : products) {
-                if (Basic.isInteger(token)) {
-                    if (coefficient == -1)
-                        coefficient = Basic.parseInt(token);
-                    else
-                        throw new IOException("Product name must start with letter: " + Basic.toString(products, " "));
-                } else {
-                    if (coefficient == -1 || coefficient > 0)
-                        reaction.getProducts().add(MoleculeType.valueOf(token));
-                    if (coefficient > 0)
-                        reaction.setProductCoefficient(MoleculeType.valueOf(token), coefficient);
-                    coefficient = -1;
-                }
-                if (coefficient == -1 && Basic.isInteger(token))
-                    coefficient = Basic.parseInt(token);
-            }
-            if (coefficient != -1)
-                throw new IOException("Reactant name must start with letter: " + Basic.toString(reactants, " "));
 
-        }
+        reaction.getProducts().addAll(MoleculeType.valueOf(products));
         reaction.getCatalysts().addAll(MoleculeType.valueOf(catalysts));
         reaction.getInhibitions().addAll(MoleculeType.valueOf(inhibitors));
         reaction.setDirection(direction);

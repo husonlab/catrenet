@@ -100,7 +100,7 @@ public class ReactionGraphView {
         this.world = new Group();
         this.logStream = logStream;
 
-        nodeSelection.getSelectedItems().addListener((ListChangeListener<Node>) (e) -> {
+        nodeSelection.getSelectedItemsUnmodifiable().addListener((ListChangeListener<Node>) (e) -> {
             while (e.next()) {
                 for (Node v : e.getAddedSubList()) {
                     final Pair<Shape, Label> pair = node2shapeAndLabel.get(v);
@@ -121,7 +121,7 @@ public class ReactionGraphView {
             }
         });
 
-        edgeSelection.getSelectedItems().addListener((ListChangeListener<Edge>) (e) -> {
+        edgeSelection.getSelectedItemsUnmodifiable().addListener((ListChangeListener<Edge>) (e) -> {
             while (e.next()) {
                 for (Edge edge : e.getAddedSubList()) {
                     final Group group = edge2group.get(edge);
@@ -428,13 +428,13 @@ public class ReactionGraphView {
                         edgeSelection.select(e);
                 } else {
                     if (v != null) {
-                        if (nodeSelection.getSelectedItems().contains(v))
+                        if (nodeSelection.isSelected(v))
                             nodeSelection.clearSelection(v);
                         else
                             nodeSelection.select(v);
                     }
                     if (e != null) {
-                        if (edgeSelection.getSelectedItems().contains(e))
+                        if (edgeSelection.isSelected(e))
                             edgeSelection.clearSelection(e);
                         else
                             edgeSelection.select(e);
