@@ -19,6 +19,7 @@
 
 package catlynet.model;
 
+import jloda.fx.window.NotificationManager;
 import jloda.util.Basic;
 
 import java.io.IOException;
@@ -30,6 +31,8 @@ import java.util.*;
  */
 public class Reaction implements Comparable<Reaction> {
     public enum Direction {forward, reverse, both}
+
+    private static boolean warnedAboutSuppressingCoefficients = false;
 
     private final String name;
 
@@ -229,22 +232,54 @@ public class Reaction implements Comparable<Reaction> {
                     if (coefficient == -1)
                         coefficient = Basic.parseInt(token);
                     else
-                        throw new IOException("Reactant name must start with letter: " + Basic.toString(reactants, " "));
+                        throw new IOException("Can't distinguish between coefficients and reactant names : " + Basic.toString(reactants, " "));
                 } else {
                     if (coefficient == -1 || coefficient > 0)
                         reaction.getReactants().add(MoleculeType.valueOf(token));
-                    if (coefficient > 0)
+                    if (coefficient > 0) {
                         reaction.setReactantCoefficient(MoleculeType.valueOf(token), coefficient);
+                        if (!warnedAboutSuppressingCoefficients) {
+                            NotificationManager.showWarning("Any coefficients found in reactions are ignored");
+                            warnedAboutSuppressingCoefficients = true;
+                        }
+                    }
                     coefficient = -1;
                 }
                 if (coefficient == -1 && Basic.isInteger(token))
                     coefficient = Basic.parseInt(token);
             }
             if (coefficient != -1)
-                throw new IOException("Reactant name must start with letter: " + Basic.toString(reactants, " "));
+                throw new IOException("Can't distinguish between coefficients and reactant names : " + Basic.toString(reactants, " "));
         }
 
-        reaction.getProducts().addAll(MoleculeType.valueOf(products));
+        if (Arrays.stream(products).allMatch(Basic::isDouble)) { // all tokens look like numbers, don't allow coefficients
+            reaction.getProducts().addAll(MoleculeType.valueOf(products));
+        } else { // some tokens are not numbers, assume this is mix of coefficients and reactants
+            int coefficient = -1;
+            for (String token : products) {
+                if (Basic.isInteger(token)) {
+                    if (coefficient == -1)
+                        coefficient = Basic.parseInt(token);
+                    else
+                        throw new IOException("Can't distinguish between coefficients and product names : " + Basic.toString(products, " "));
+                } else {
+                    if (coefficient == -1 || coefficient > 0)
+                        reaction.getProducts().add(MoleculeType.valueOf(token));
+                    if (coefficient > 0) {
+                        reaction.setProductCoefficient(MoleculeType.valueOf(token), coefficient);
+                        if (!warnedAboutSuppressingCoefficients) {
+                            NotificationManager.showWarning("Any coefficients found in reactions are ignored");
+                            warnedAboutSuppressingCoefficients = true;
+                        }
+                    }
+                    coefficient = -1;
+                }
+                if (coefficient == -1 && Basic.isInteger(token))
+                    coefficient = Basic.parseInt(token);
+            }
+            if (coefficient != -1)
+                throw new IOException("Can't distinguish between coefficients and product names : " + Basic.toString(products, " "));
+        }
         reaction.getCatalysts().addAll(MoleculeType.valueOf(catalysts));
         reaction.getInhibitions().addAll(MoleculeType.valueOf(inhibitors));
         reaction.setDirection(direction);
