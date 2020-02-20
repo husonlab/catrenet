@@ -46,6 +46,8 @@ public class RunAll {
         controller.getMuCafTextArea().clear();
         controller.getuRAFTextArea().clear();
 
+        window.getExportManager().clear();
+
         if (VerifyInput.verify(window)) {
             final ReactionSystem expandedReactionSystem = window.getInputReactionSystem().computeExpandedSystem();
             controller.getExpandedReactionsTextArea().setText("Expanded reactions:\n\n" + ModelIO.toString(expandedReactionSystem, true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));

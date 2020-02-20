@@ -68,7 +68,7 @@ public class MaxCAFAlgorithm extends AlgorithmBase {
 
         if (reactions.get(i).size() > 0) {
             result.getReactions().setAll(reactions.get(i));
-            result.getFoods().setAll(input.getFoods());
+            result.getFoods().setAll(result.computeMentionedFoods(input.getFoods()));
         }
 
         return result;

@@ -44,6 +44,9 @@ public class MainWindowController {
     private MenuItem importMenuItem;
 
     @FXML
+    private Menu exportMenu;
+
+    @FXML
     private Menu recentFilesMenu;
 
     @FXML
@@ -199,6 +202,12 @@ public class MainWindowController {
 
     @FXML
     private MenuItem showNodeLabels;
+
+    @FXML
+    private CheckMenuItem suppressCatalystEdgesMenuItem;
+
+    @FXML
+    private CheckMenuItem useMultiCopyFoodNodesMenuItem;
 
 
     @FXML
@@ -449,6 +458,10 @@ public class MainWindowController {
         return importMenuItem;
     }
 
+    public Menu getExportMenu() {
+        return exportMenu;
+    }
+
     public Menu getRecentFilesMenu() {
         return recentFilesMenu;
     }
@@ -659,6 +672,14 @@ public class MainWindowController {
 
     public MenuItem getShowNodeLabels() {
         return showNodeLabels;
+    }
+
+    public CheckMenuItem getSuppressCatalystEdgesMenuItem() {
+        return suppressCatalystEdgesMenuItem;
+    }
+
+    public CheckMenuItem getUseMultiCopyFoodNodesMenuItem() {
+        return useMultiCopyFoodNodesMenuItem;
     }
 
     public Menu getWindowMenu() {

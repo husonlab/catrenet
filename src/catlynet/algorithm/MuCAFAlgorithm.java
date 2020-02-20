@@ -86,7 +86,7 @@ public class MuCAFAlgorithm extends AlgorithmBase {
 
         if (reactions.get(i - 1).size() > 0) {
             result.getReactions().setAll(reactions.get(i - 1));
-            result.getFoods().setAll(input.getFoods());
+            result.getFoods().setAll(result.computeMentionedFoods(input.getFoods()));
         }
 
         return result;

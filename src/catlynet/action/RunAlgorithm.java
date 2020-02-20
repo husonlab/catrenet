@@ -26,6 +26,7 @@ import catlynet.io.ModelIO;
 import catlynet.model.ReactionSystem;
 import catlynet.window.MainWindow;
 import catlynet.window.MainWindowController;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.TextArea;
 import jloda.fx.util.AService;
@@ -58,6 +59,7 @@ public class RunAlgorithm {
         final AService<Triplet<ReactionSystem, String, String>> service = new AService<>(controller.getStatusFlowPane());
         service.setCallable(() -> {
             final ReactionSystem outputReactions = algorithm.apply(inputReactions, service.getProgressListener()).getCompressedSystem();
+            Platform.runLater(() -> window.getExportManager().addOrReplace(outputReactions));
             final String infoLine1;
             final String infoLine2;
             if (algorithm instanceof MuCAFAlgorithm || !window.getController().getComputeImportanceCheckMenuItem().isSelected()) {

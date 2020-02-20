@@ -36,6 +36,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -64,6 +66,7 @@ public class ControlBindings {
         final ObjectProperty<javafx.scene.Node> printableNode = new SimpleObjectProperty<>();
 
         final MainWindowController controller = window.getController();
+        final ReactionGraphView graphView = window.getReactionGraphView();
 
         final IntegerProperty algorithmsRunning = new SimpleIntegerProperty(0);
         final ChangeListener<Boolean> runningListener = new ChangeListener<Boolean>() {
@@ -105,7 +108,7 @@ public class ControlBindings {
             if (MainWindowManager.getInstance().size() > 1 && algorithmsRunning.get() > 0)
                 NotificationManager.showWarning(algorithmsRunning.get() + " computation(s) running, please cancel before closing");
             else {
-                window.getReactionGraphView().getMoleculeFlowAnimation().setPlaying(false);
+                graphView.getMoleculeFlowAnimation().setPlaying(false);
                 if (SaveBeforeClosingDialog.apply(window) != SaveBeforeClosingDialog.Result.cancel) {
                     ProgramProperties.put("WindowGeometry", (new WindowGeometry(window.getStage())).toString());
                     MainWindowManager.getInstance().closeMainWindow(window);
@@ -142,8 +145,16 @@ public class ControlBindings {
         controller.getCutMenuItem().disableProperty().bind((controller.getInputTextArea().focusedProperty().or(controller.getInputFoodTextArea().focusedProperty())).not());
 
         controller.getCopyMenuItem().setOnAction((e) -> {
+            if (controller.getVisualizationTab().isSelected()) {
+                final ClipboardContent content = new ClipboardContent();
+                if (graphView.getNodeSelection().size() > 0)
+                    content.putString(Basic.toString(graphView.getSelectedLabels(), "\n"));
+                content.putImage(controller.getVisualizationScrollPane().getContent().snapshot(null, null));
+                Clipboard.getSystemClipboard().setContent(content);
+            }
         });
-        controller.getCopyMenuItem().disableProperty().bind((controller.getInputTextArea().focusedProperty().or(controller.getInputFoodTextArea().focusedProperty())).not());
+        controller.getCopyMenuItem().disableProperty().bind((controller.getInputTextArea().focusedProperty().or(controller.getInputFoodTextArea().focusedProperty())
+                .or(controller.getVisualizationTab().selectedProperty()).not()));
 
         controller.getPasteMenuItem().setOnAction((e) -> {
         });
@@ -189,9 +200,9 @@ public class ControlBindings {
 
         controller.getVisualizationTab().disableProperty().addListener((c, o, n) -> {
             if (n)
-                window.getReactionGraphView().getMoleculeFlowAnimation().setPlaying(false);
+                graphView.getMoleculeFlowAnimation().setPlaying(false);
         });
-        window.getReactionGraphView().emptyProperty().addListener((c, o, n) -> controller.getVisualizationTab().setDisable(n));
+        graphView.emptyProperty().addListener((c, o, n) -> controller.getVisualizationTab().setDisable(n));
         controller.getVisualizationTab().setDisable(true);
 
 
@@ -293,7 +304,7 @@ public class ControlBindings {
             controller.getMainSplitPane().setDividerPosition(0, 200.0 / window.getStage().getWidth());
 
         final DoubleProperty fontSize = new SimpleDoubleProperty(controller.getInputTextArea().getFont().getSize());
-        setupFontSizeBindings(controller, window.getReactionGraphView(), fontSize);
+        setupFontSizeBindings(controller, graphView, fontSize);
         controller.getIncreaseFontSizeMenuItem().setOnAction(e -> fontSize.set(fontSize.get() + 2));
 
         controller.getDecreaseFontSizeMenuItem().setOnAction(e -> fontSize.set(fontSize.get() - 2));
@@ -317,6 +328,7 @@ public class ControlBindings {
 
         {
             final ZoomableScrollPane scrollPane = controller.getVisualizationScrollPane();
+            scrollPane.setMouseScrollZoomFactor(1.05);
             scrollPane.setRequireShiftOrControlToZoom(true);
             scrollPane.setLockAspectRatio(true);
             scrollPane.setPannable(false);
@@ -324,7 +336,7 @@ public class ControlBindings {
             scrollPane.setUpdateScaleMethod(() -> {
                 final double zoomX = scrollPane.getZoomFactorX();
                 final double zoomY = scrollPane.getZoomFactorY();
-                for (javafx.scene.Node node : BasicFX.getAllChildrenRecursively(window.getReactionGraphView().getWorld().getChildren())) {
+                for (javafx.scene.Node node : BasicFX.getAllChildrenRecursively(graphView.getWorld().getChildren())) {
                     if (!node.translateXProperty().isBound())
                         node.setTranslateX(node.getTranslateX() * zoomX);
                     if (!node.translateYProperty().isBound())
@@ -332,7 +344,7 @@ public class ControlBindings {
                 }
             });
 
-            final Pane visualizationContentPane = new StackPane(window.getReactionGraphView().getWorld());
+            final Pane visualizationContentPane = new StackPane(graphView.getWorld());
             visualizationContentPane.setStyle("-fx-background-color: white;");
             scrollPane.setContent(visualizationContentPane);
 
@@ -352,7 +364,7 @@ public class ControlBindings {
                 scrollPane.resetZoom();
 
                 Platform.runLater(() -> {
-                    final Rectangle2D bbox = window.getReactionGraphView().getBBox();
+                    final Rectangle2D bbox = graphView.getBBox();
                     final double zoomX = Math.max(100.0, (controller.getVisualizationBorderPane().getWidth() - 100.0)) / bbox.getWidth();
                     final double zoomY = Math.max(100.0, (controller.getVisualizationBorderPane().getHeight() - 100.0)) / bbox.getHeight();
                     System.err.println("zoomX: " + zoomX + " zoomY: " + zoomY);
@@ -370,12 +382,15 @@ public class ControlBindings {
                 if (n)
                     printableNode.set(scrollPane.getContent());
             });
-            controller.getVisualizationTab().getTabPane().getSelectionModel().selectedItemProperty().addListener((c, o, n) -> printableNode.set(scrollPane.getContent()));
+            controller.getVisualizationTab().selectedProperty().addListener((c, o, n) -> {
+                if (n)
+                    printableNode.set(scrollPane.getContent());
+            });
 
             visualizationContentPane.setOnMousePressed((e) -> {
                 if (e.getClickCount() == 2) {
-                    window.getReactionGraphView().getNodeSelection().clearSelection();
-                    window.getReactionGraphView().getEdgeSelection().clearSelection();
+                    graphView.getNodeSelection().clearSelection();
+                    graphView.getEdgeSelection().clearSelection();
                 }
             });
 
@@ -383,13 +398,13 @@ public class ControlBindings {
                 if (n) {
                     controller.getAnimateRAFCheckMenuItem().setSelected(false);
                     controller.getAnimateMaxRAFCheckMenuItem().setSelected(false);
-                    window.getReactionGraphView().getMoleculeFlowAnimation().setModel(MoleculeFlowAnimation.Model.CAF);
-                    window.getReactionGraphView().getMoleculeFlowAnimation().setPlaying(true);
+                    graphView.getMoleculeFlowAnimation().setModel(MoleculeFlowAnimation.Model.CAF);
+                    graphView.getMoleculeFlowAnimation().setPlaying(true);
                 } else {
-                    window.getReactionGraphView().getMoleculeFlowAnimation().setPlaying(false);
+                    graphView.getMoleculeFlowAnimation().setPlaying(false);
                 }
             });
-            controller.getAnimateCAFCheckMenuItem().disableProperty().bind(controller.getVisualizationTab().disableProperty().or(window.getReactionGraphView().getMoleculeFlowAnimation().playingProperty()));
+            controller.getAnimateCAFCheckMenuItem().disableProperty().bind(controller.getVisualizationTab().disableProperty().or(graphView.getMoleculeFlowAnimation().playingProperty()));
 
             controller.getAnimateCAFContextMenuItem().selectedProperty().bindBidirectional(controller.getAnimateCAFCheckMenuItem().selectedProperty());
             controller.getAnimateCAFContextMenuItem().disableProperty().bind(controller.getAnimateCAFCheckMenuItem().disableProperty());
@@ -398,13 +413,13 @@ public class ControlBindings {
                 if (n) {
                     controller.getAnimateCAFCheckMenuItem().setSelected(false);
                     controller.getAnimateMaxRAFCheckMenuItem().setSelected(false);
-                    window.getReactionGraphView().getMoleculeFlowAnimation().setModel(MoleculeFlowAnimation.Model.RAF);
-                    window.getReactionGraphView().getMoleculeFlowAnimation().setPlaying(true);
+                    graphView.getMoleculeFlowAnimation().setModel(MoleculeFlowAnimation.Model.RAF);
+                    graphView.getMoleculeFlowAnimation().setPlaying(true);
                 } else {
-                    window.getReactionGraphView().getMoleculeFlowAnimation().setPlaying(false);
+                    graphView.getMoleculeFlowAnimation().setPlaying(false);
                 }
             });
-            controller.getAnimateRAFCheckMenuItem().disableProperty().bind(controller.getVisualizationTab().disableProperty().or(window.getReactionGraphView().getMoleculeFlowAnimation().playingProperty()));
+            controller.getAnimateRAFCheckMenuItem().disableProperty().bind(controller.getVisualizationTab().disableProperty().or(graphView.getMoleculeFlowAnimation().playingProperty()));
 
             controller.getAnimateRAFContextMenuItem().selectedProperty().bindBidirectional(controller.getAnimateRAFCheckMenuItem().selectedProperty());
             controller.getAnimateRAFContextMenuItem().disableProperty().bind(controller.getAnimateRAFCheckMenuItem().disableProperty());
@@ -413,45 +428,56 @@ public class ControlBindings {
                 if (n) {
                     controller.getAnimateCAFCheckMenuItem().setSelected(false);
                     controller.getAnimateRAFCheckMenuItem().setSelected(false);
-                    window.getReactionGraphView().getMoleculeFlowAnimation().setModel(MoleculeFlowAnimation.Model.PseudoRAF);
-                    window.getReactionGraphView().getMoleculeFlowAnimation().setPlaying(true);
+                    graphView.getMoleculeFlowAnimation().setModel(MoleculeFlowAnimation.Model.PseudoRAF);
+                    graphView.getMoleculeFlowAnimation().setPlaying(true);
                 } else {
-                    window.getReactionGraphView().getMoleculeFlowAnimation().setPlaying(false);
+                    graphView.getMoleculeFlowAnimation().setPlaying(false);
                 }
             });
-            controller.getAnimateMaxRAFCheckMenuItem().disableProperty().bind(controller.getVisualizationTab().disableProperty().or(window.getReactionGraphView().getMoleculeFlowAnimation().playingProperty()));
+            controller.getAnimateMaxRAFCheckMenuItem().disableProperty().bind(controller.getVisualizationTab().disableProperty().or(graphView.getMoleculeFlowAnimation().playingProperty()));
 
             controller.getAnimatePseudoRAFContextMenuItem().selectedProperty().bindBidirectional(controller.getAnimateMaxRAFCheckMenuItem().selectedProperty());
             controller.getAnimatePseudoRAFContextMenuItem().disableProperty().bind(controller.getAnimateMaxRAFCheckMenuItem().disableProperty());
 
             controller.getStopAnimationMenuItem().setOnAction(e -> {
-                window.getReactionGraphView().getMoleculeFlowAnimation().setPlaying(false);
+                graphView.getMoleculeFlowAnimation().setPlaying(false);
                 controller.getSelectAllMenuItem().getOnAction().handle(null);
                 controller.getSelectNoneMenuItem().getOnAction().handle(null);
                 controller.getAnimateCAFCheckMenuItem().setSelected(false);
                 controller.getAnimateRAFCheckMenuItem().setSelected(false);
                 controller.getAnimateMaxRAFCheckMenuItem().setSelected(false);
             });
-            controller.getStopAnimationMenuItem().disableProperty().bind(window.getReactionGraphView().getMoleculeFlowAnimation().playingProperty().not());
+            controller.getStopAnimationMenuItem().disableProperty().bind(graphView.getMoleculeFlowAnimation().playingProperty().not());
 
             controller.getStopAnimationContextMenuItem().setOnAction(controller.getStopAnimationMenuItem().getOnAction());
             controller.getStopAnimationContextMenuItem().disableProperty().bind(controller.getStopAnimationMenuItem().disableProperty());
 
             controller.getStopAnimationButton().setVisible(false);
             controller.getStopAnimationButton().setOnAction(controller.getStopAnimationMenuItem().getOnAction());
-            window.getReactionGraphView().getMoleculeFlowAnimation().playingProperty().addListener((c, o, n) -> controller.getStopAnimationButton().setVisible(n));
-            controller.getStopAnimationButton().textProperty().bind(window.getReactionGraphView().getMoleculeFlowAnimation().modelProperty().asString().concat(" animation"));
+            graphView.getMoleculeFlowAnimation().playingProperty().addListener((c, o, n) -> controller.getStopAnimationButton().setVisible(n));
+            controller.getStopAnimationButton().textProperty().bind(graphView.getMoleculeFlowAnimation().modelProperty().asString().concat(" animation"));
 
-
-            window.getReactionGraphView().getMoleculeFlowAnimation().animateInhibitionsProperty().bind(controller.getAnimateInhibitionsMenuItem().selectedProperty());
+            graphView.getMoleculeFlowAnimation().animateInhibitionsProperty().bind(controller.getAnimateInhibitionsMenuItem().selectedProperty());
             controller.getAnimateInhibitionsContextMenuItem().selectedProperty().bindBidirectional(controller.getAnimateInhibitionsMenuItem().selectedProperty());
             controller.getAnimateInhibitionsMenuItem().disableProperty().bind(window.getInputReactionSystem().inhibitorsPresentProperty().not());
             controller.getAnimateInhibitionsContextMenuItem().disableProperty().bind(controller.getAnimateInhibitionsMenuItem().disableProperty());
         }
         SelectionBindings.setup(window, controller);
 
-        controller.getShowNodeLabels().setOnAction(e -> ShowHideNodeLabels.apply(window.getReactionGraphView()));
+        controller.getShowNodeLabels().setOnAction(e -> ShowHideNodeLabels.apply(graphView));
         BasicFX.setupFullScreenMenuSupport(window.getStage(), controller.getFullScreenMenuItem());
+
+        controller.getSuppressCatalystEdgesMenuItem().selectedProperty().addListener((c, o, n) -> {
+            graphView.setSuppressCatalystEdges(n);
+            graphView.update();
+        });
+        controller.getSuppressCatalystEdgesMenuItem().disableProperty().bind(controller.getVisualizationTab().disableProperty());
+
+        controller.getUseMultiCopyFoodNodesMenuItem().selectedProperty().addListener((c, o, n) -> {
+            graphView.setUseMultiCopyFoodNodes(n);
+            graphView.update();
+        });
+        controller.getUseMultiCopyFoodNodesMenuItem().disableProperty().bind(controller.getVisualizationTab().disableProperty());
 
         SetupFind.apply(window);
 

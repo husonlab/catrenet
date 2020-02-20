@@ -59,7 +59,7 @@ public class SetupFind {
         controller.getMuCafVBox().getChildren().add(muCAFFindToolBar);
 
         final ReactionGraphView gv = window.getReactionGraphView();
-        final FindToolBar graphFindToolBar = new FindToolBar(new GraphSearcher(window.getController().getVisualizationScrollPane(), gv.getReactionGraph(), gv.getNodeSelection(), (v) -> gv.getNode2shapeAndLabel().get(v).getSecond(), null));
+        final FindToolBar graphFindToolBar = new FindToolBar(new GraphSearcher(window.getController().getVisualizationScrollPane(), gv.getReactionGraph(), gv.getNodeSelection(), gv::getLabel, null));
         controller.getVisualizationVBox().getChildren().add(graphFindToolBar);
 
         controller.getFindMenuItem().setOnAction((e) -> {

@@ -51,10 +51,11 @@
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="importMenuItem" mnemonicParsing="false" text="Import...">
                                     <accelerator>
-                                        <KeyCodeCombination alt="UP" code="O" control="UP" meta="DOWN" shift="UP"
+                                        <KeyCodeCombination alt="UP" code="O" control="UP" meta="DOWN" shift="DOWN"
                                                             shortcut="UP"/>
                                     </accelerator>
                                 </MenuItem>
+                                <Menu fx:id="exportMenu" mnemonicParsing="false" text="Export"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="saveMenItem" mnemonicParsing="false" text="Save...">
                                     <accelerator>
@@ -151,11 +152,23 @@
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="selectInvertedMenuItem" mnemonicParsing="false" text="Invert">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="I" control="UP" meta="UP" shift="UP"
+                                                            shortcut="DOWN"/>
+                                    </accelerator>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="selectNodesMenuItem" mnemonicParsing="false" text="Nodes">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="N" control="UP" meta="UP" shift="DOWN"
+                                                            shortcut="DOWN"/>
+                                    </accelerator>
                                 </MenuItem>
                                 <MenuItem fx:id="selectEdgesMenuItem" mnemonicParsing="false" text="Edges">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="E" control="UP" meta="UP" shift="DOWN"
+                                                            shortcut="DOWN"/>
+                                    </accelerator>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="selectMaxCAFMenuItem" mnemonicParsing="false" text="Max CAF">
@@ -170,10 +183,22 @@
                                 <MenuItem fx:id="selectURAFMenuItem" mnemonicParsing="false" text="U RAF"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="selectFoodMenuItem" mnemonicParsing="false" text="Food">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="F" control="UP" meta="UP" shift="DOWN"
+                                                            shortcut="DOWN"/>
+                                    </accelerator>
                                 </MenuItem>
                                 <MenuItem fx:id="selectMoleculesMenuItem" mnemonicParsing="false" text="Molecules">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="M" control="UP" meta="UP" shift="DOWN"
+                                                            shortcut="DOWN"/>
+                                    </accelerator>
                                 </MenuItem>
                                 <MenuItem fx:id="selectReactionsMenuItem" mnemonicParsing="false" text="Reactions">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="R" control="UP" meta="UP" shift="DOWN"
+                                                            shortcut="DOWN"/>
+                                    </accelerator>
                                 </MenuItem>
                             </items>
                         </Menu>
@@ -212,14 +237,13 @@
                                 </MenuItem>
 
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <CheckMenuItem fx:id="wrapTextMenuItem" mnemonicParsing="false" text="Wrap Text"/>
-                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="formatMenuItem" mnemonicParsing="false" text="Format...">
+                                <MenuItem fx:id="formatMenuItem" mnemonicParsing="false" text="Reaction Format...">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="J" control="UP" meta="DOWN" shift="UP"
                                                             shortcut="UP"/>
                                     </accelerator>
                                 </MenuItem>
+                                <CheckMenuItem fx:id="wrapTextMenuItem" mnemonicParsing="false" text="Wrap Text"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="showNodeLabels" mnemonicParsing="false" text="Show/Hide Node Labels">
                                     <accelerator>
@@ -227,6 +251,11 @@
                                                             shortcut="UP"/>
                                     </accelerator>
                                 </MenuItem>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <CheckMenuItem fx:id="suppressCatalystEdgesMenuItem" mnemonicParsing="false"
+                                               text="Suppress Catalyst Edges"/>
+                                <CheckMenuItem fx:id="useMultiCopyFoodNodesMenuItem" mnemonicParsing="false"
+                                               text="Use Multicopy Food  Nodes"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="fullScreenMenuItem" mnemonicParsing="false" text="Enter Full Screen">
                                     <accelerator>
@@ -281,26 +310,11 @@
                         <Menu mnemonicParsing="false" text="Animate">
                             <items>
                                 <CheckMenuItem fx:id="animateCAFCheckMenuItem" mnemonicParsing="false"
-                                               text="Animate CAF">
-                                    <accelerator>
-                                        <KeyCodeCombination alt="UP" code="C" control="UP" meta="DOWN" shift="DOWN"
-                                                            shortcut="UP"/>
-                                    </accelerator>
-                                </CheckMenuItem>
+                                               text="Animate CAF"/>
                                 <CheckMenuItem fx:id="animateRAFCheckMenuItem" mnemonicParsing="false"
-                                               text="Animate RAF">
-                                    <accelerator>
-                                        <KeyCodeCombination alt="UP" code="R" control="UP" meta="DOWN" shift="DOWN"
-                                                            shortcut="UP"/>
-                                    </accelerator>
-                                </CheckMenuItem>
+                                               text="Animate RAF"/>
                                 <CheckMenuItem fx:id="animateMaxRAFCheckMenuItem" mnemonicParsing="false"
-                                               text="Animate Pseudo RAF">
-                                    <accelerator>
-                                        <KeyCodeCombination alt="UP" code="P" control="UP" meta="DOWN" shift="DOWN"
-                                                            shortcut="UP"/>
-                                    </accelerator>
-                                </CheckMenuItem>
+                                               text="Animate Pseudo RAF"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <CheckMenuItem fx:id="animateInhibitionsMenuItem" mnemonicParsing="false"
                                                text="Animate Inhibitions"/>

@@ -19,6 +19,7 @@
 
 package catlynet.io;
 
+import catlynet.model.ReactionSystem;
 import catlynet.window.MainWindow;
 import javafx.stage.FileChooser;
 import jloda.fx.util.RecentFilesManager;
@@ -43,23 +44,23 @@ public class Save {
      * @param window
      * @throws IOException
      */
-    public static void apply(File file, MainWindow window) throws IOException {
+    public static void apply(File file, MainWindow window, ReactionSystem reactionSystem) throws IOException {
         try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
-            ModelIO.write(window.getInputReactionSystem(), w, true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation());
+            ModelIO.write(reactionSystem, w, true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation());
         }
     }
 
     /**
      * show save dialog
      *
-     * @param mainWindow
+     * @param window
      * @return true, if save
      */
-    public static boolean showSaveDialog(MainWindow mainWindow) {
+    public static boolean showSaveDialog(MainWindow window) {
         final FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save File - " + ProgramProperties.getProgramVersion());
 
-        File currentFile = new File(mainWindow.getDocument().getFileName());
+        File currentFile = new File(window.getDocument().getFileName());
 
         fileChooser.getExtensionFilters().addAll(CRSFileFilter.getInstance(), TextFileFilter.getInstance());
 
@@ -73,12 +74,12 @@ public class Save {
             }
         }
 
-        final File selectedFile = fileChooser.showSaveDialog(mainWindow.getStage());
+        final File selectedFile = fileChooser.showSaveDialog(window.getStage());
 
         if (selectedFile != null) {
             try {
-                apply(selectedFile, mainWindow);
-                mainWindow.getDocument().setFileName(selectedFile.getPath());
+                apply(selectedFile, window, window.getInputReactionSystem());
+                window.getDocument().setFileName(selectedFile.getPath());
                 ProgramProperties.put("SaveFileDir", selectedFile.getParent());
                 NotificationManager.showInformation("Saved to file: " + selectedFile);
                 RecentFilesManager.getInstance().insertRecentFile(selectedFile.getPath());

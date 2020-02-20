@@ -52,10 +52,8 @@ import jloda.util.Basic;
 import jloda.util.Pair;
 
 import java.io.PrintStream;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * maintains the visualization of a model
@@ -73,6 +71,9 @@ public class ReactionGraphView {
     private final ItemSelectionModel<Edge> edgeSelection = new ItemSelectionModel<>();
 
     private final ObjectProperty<Color> inhibitionEdgeColor = new SimpleObjectProperty<>(Color.LIGHTGREY);
+
+    private final BooleanProperty suppressCatalystEdges = new SimpleBooleanProperty(false);
+    private final BooleanProperty useMultiCopyFoodNodes = new SimpleBooleanProperty(false);
 
     private final MainWindowController controller;
 
@@ -168,43 +169,49 @@ public class ReactionGraphView {
         for (Reaction reaction : reactionSystem.getReactions()) {
             final Node reactionNode = reactionGraph.newNode(reaction);
 
-            for (Collection<MoleculeType> collection : Arrays.asList(reaction.getReactants(), reaction.getProducts(), reaction.getCatalystConjunctions(), reaction.getInhibitions())) {
-                for (MoleculeType molecule : collection) {
-                    if (molecule2node.get(molecule) == null) {
-
-                        if (molecule.getName().contains("&")) {
-                            molecule2node.put(molecule, reactionGraph.newNode(new AndNode()));
-
-                            for (MoleculeType catalyst : MoleculeType.valueOf(Basic.trimAll(Basic.split(molecule.getName(), '&')))) {
-                                if (molecule2node.get(catalyst) == null) {
-                                    molecule2node.put(catalyst, reactionGraph.newNode(catalyst));
-                                }
+            final Set<MoleculeType> molecules = new HashSet<>();
+            molecules.addAll(reaction.getReactants());
+            molecules.addAll(reaction.getProducts());
+            if (!isSuppressCatalystEdges()) {
+                molecules.addAll(reaction.getCatalysts());
+                molecules.addAll(reaction.getInhibitions());
+            }
+            for (MoleculeType molecule : molecules) {
+                if (molecule2node.get(molecule) == null) {
+                    if (molecule.getName().contains("&")) {
+                        molecule2node.put(molecule, reactionGraph.newNode(new AndNode()));
+                        for (MoleculeType catalyst : MoleculeType.valueOf(Basic.trimAll(Basic.split(molecule.getName(), '&')))) {
+                            if (molecule2node.get(catalyst) == null) {
+                                molecule2node.put(catalyst, reactionGraph.newNode(catalyst));
                             }
-                        } else {
-                            final Node v = reactionGraph.newNode(molecule);
-                            molecule2node.put(molecule, v);
-                            if (reactionSystem.getFoods().contains(molecule))
-                                foodNodes.add(v);
                         }
+                    } else {
+                        final Node v = reactionGraph.newNode(molecule);
+                        molecule2node.put(molecule, v);
+                        if (reactionSystem.getFoods().contains(molecule))
+                            foodNodes.add(v);
                     }
                 }
             }
+
             for (MoleculeType molecule : reaction.getReactants()) {
-                reactionGraph.newEdge(molecule2node.get(molecule), reactionNode, reaction.getDirection() == Reaction.Direction.both ? EdgeType.ReactantReversible : EdgeType.Reactant);
+                reactionGraph.newEdge(getNode(molecule, molecule2node, isUseMultiCopyFoodNodes()), reactionNode, reaction.getDirection() == Reaction.Direction.both ? EdgeType.ReactantReversible : EdgeType.Reactant);
             }
             for (MoleculeType molecule : reaction.getProducts()) {
-                reactionGraph.newEdge(reactionNode, molecule2node.get(molecule), reaction.getDirection() == Reaction.Direction.both ? EdgeType.ProductReversible : EdgeType.Product);
+                reactionGraph.newEdge(reactionNode, getNode(molecule, molecule2node, isUseMultiCopyFoodNodes()), reaction.getDirection() == Reaction.Direction.both ? EdgeType.ProductReversible : EdgeType.Product);
             }
-            for (MoleculeType molecule : reaction.getCatalystConjunctions()) {
-                if (molecule.getName().contains("&")) {
-                    for (MoleculeType catalyst : MoleculeType.valueOf(Basic.trimAll(Basic.split(molecule.getName(), '&')))) {
-                        reactionGraph.newEdge(molecule2node.get(catalyst), molecule2node.get(molecule), EdgeType.Catalyst);
+            if (!isSuppressCatalystEdges()) {
+                for (MoleculeType molecule : reaction.getCatalystConjunctions()) {
+                    if (molecule.getName().contains("&")) {
+                        for (MoleculeType catalyst : MoleculeType.valueOf(Basic.trimAll(Basic.split(molecule.getName(), '&')))) {
+                            reactionGraph.newEdge(getNode(catalyst, molecule2node, isUseMultiCopyFoodNodes()), molecule2node.get(molecule), EdgeType.Catalyst);
+                        }
                     }
+                    reactionGraph.newEdge(getNode(molecule, molecule2node, isUseMultiCopyFoodNodes()), reactionNode, EdgeType.Catalyst);
                 }
-                reactionGraph.newEdge(molecule2node.get(molecule), reactionNode, EdgeType.Catalyst);
-            }
-            for (MoleculeType molecule : reaction.getInhibitions()) {
-                reactionGraph.newEdge(molecule2node.get(molecule), reactionNode, EdgeType.Inhibitor);
+                for (MoleculeType molecule : reaction.getInhibitions()) {
+                    reactionGraph.newEdge(getNode(molecule, molecule2node, isUseMultiCopyFoodNodes()), reactionNode, EdgeType.Inhibitor);
+                }
             }
         }
         for (Node v : reactionGraph.nodes()) {
@@ -244,6 +251,28 @@ public class ReactionGraphView {
             empty.set(reactionGraph.getNumberOfNodes() == 0);
         });
         service.start();
+    }
+
+    /**
+     * gets the node to use for a given molecule
+     *
+     * @param molecule
+     * @param molecule2node
+     * @param multiCopyFoodNodes - if set, creates a new none for every usage of a food node
+     * @return node
+     */
+    private Node getNode(MoleculeType molecule, Map<MoleculeType, Node> molecule2node, boolean multiCopyFoodNodes) {
+        if (!multiCopyFoodNodes)
+            return molecule2node.get(molecule);
+        else {
+            if (molecule2node.containsKey(molecule)) {
+                final Node v = molecule2node.get(molecule);
+                if (reactionSystem.getFoods().contains(molecule))
+                    molecule2node.remove(molecule);
+                return v;
+            } else
+                return reactionGraph.newNode(molecule);
+        }
     }
 
     public void clear() {
@@ -682,8 +711,12 @@ public class ReactionGraphView {
         ReactionGraphView.font.set(font);
     }
 
-    public NodeArray<Pair<Shape, Label>> getNode2shapeAndLabel() {
-        return node2shapeAndLabel;
+    public Shape getShape(Node v) {
+        return node2shapeAndLabel.get(v).getFirst();
+    }
+
+    public Label getLabel(Node v) {
+        return node2shapeAndLabel.get(v).getSecond();
     }
 
     public void setNodeStyle(String style) {
@@ -714,5 +747,33 @@ public class ReactionGraphView {
 
     public ReadOnlyBooleanProperty emptyProperty() {
         return empty;
+    }
+
+    public boolean isSuppressCatalystEdges() {
+        return suppressCatalystEdges.get();
+    }
+
+    public BooleanProperty suppressCatalystEdgesProperty() {
+        return suppressCatalystEdges;
+    }
+
+    public void setSuppressCatalystEdges(boolean suppressCatalystEdges) {
+        this.suppressCatalystEdges.set(suppressCatalystEdges);
+    }
+
+    public boolean isUseMultiCopyFoodNodes() {
+        return useMultiCopyFoodNodes.get();
+    }
+
+    public BooleanProperty useMultiCopyFoodNodesProperty() {
+        return useMultiCopyFoodNodes;
+    }
+
+    public void setUseMultiCopyFoodNodes(boolean useMultiCopyFoodNodes) {
+        this.useMultiCopyFoodNodes.set(useMultiCopyFoodNodes);
+    }
+
+    public Collection<String> getSelectedLabels() {
+        return getNodeSelection().getSelectedItemsUnmodifiable().stream().map(v -> getLabel(v).getText()).filter(s -> s.length() > 0).collect(Collectors.toList());
     }
 }

@@ -19,6 +19,7 @@
 
 package catlynet.window;
 
+import catlynet.action.ExportManager;
 import catlynet.io.CRSFileFilter;
 import catlynet.io.FileOpener;
 import catlynet.model.ReactionSystem;
@@ -27,7 +28,6 @@ import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ObservableBooleanValue;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.FlowPane;
@@ -62,6 +62,8 @@ public class MainWindow implements IMainWindow {
 
     private final UndoManager undoManager = new UndoManager();
 
+    private final ExportManager exportManager;
+
     private final Document document = new Document();
 
     private final BooleanProperty hasFoodInput = new SimpleBooleanProperty(false);
@@ -85,6 +87,8 @@ public class MainWindow implements IMainWindow {
 
             reactionGraphView = new ReactionGraphView(getInputReactionSystem(), controller, getLogStream());
         }
+
+        exportManager = new ExportManager(this);
 
         FileOpenManager.setExtensions(Collections.singletonList(CRSFileFilter.getInstance()));
         FileOpenManager.setFileOpener(new FileOpener());
@@ -178,11 +182,11 @@ public class MainWindow implements IMainWindow {
         return logStream;
     }
 
-    public ObservableBooleanValue emptyProperty() {
-        return null;
-    }
-
     public ReactionGraphView getReactionGraphView() {
         return reactionGraphView;
+    }
+
+    public ExportManager getExportManager() {
+        return exportManager;
     }
 }

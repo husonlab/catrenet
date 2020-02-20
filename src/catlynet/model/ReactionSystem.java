@@ -26,10 +26,8 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import jloda.util.Basic;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * a catalytic reaction system
@@ -295,5 +293,16 @@ public class ReactionSystem {
             names.add(reaction.getName());
         }
         return names;
+    }
+
+    public Collection<? extends MoleculeType> computeMentionedFoods(Collection<MoleculeType> foods) {
+        final Set<MoleculeType> set = new HashSet<>();
+        reactions.forEach(r -> {
+            set.addAll(r.getReactants());
+            set.addAll(r.getCatalysts());
+            set.addAll(r.getInhibitions());
+            set.addAll(r.getProducts());
+        });
+        return foods.stream().filter(set::contains).collect(Collectors.toList());
     }
 }
