@@ -122,17 +122,17 @@ public class ReactionGraphView {
             }
         });
 
-        edgeSelection.getSelectedItemsUnmodifiable().addListener((ListChangeListener<Edge>) (e) -> {
-            while (e.next()) {
-                for (Edge edge : e.getAddedSubList()) {
-                    final Group group = edge2view.get(edge);
+        edgeSelection.getSelectedItemsUnmodifiable().addListener((ListChangeListener<Edge>) c -> {
+            while (c.next()) {
+                for (Edge e : c.getAddedSubList()) {
+                    final Group group = edge2view.get(e);
                     if (group != null) {
                         for (javafx.scene.Node node : group.getChildren())
                             node.setEffect(SelectionEffectBlue.getInstance());
                     }
                 }
-                for (Edge edge : e.getRemoved()) {
-                    final Group group = edge2view.get(edge);
+                for (Edge e : c.getRemoved()) {
+                    final Group group = edge2view.get(e);
                     if (group != null) {
                         for (javafx.scene.Node node : group.getChildren())
                             node.setEffect(null);
