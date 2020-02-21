@@ -21,5 +21,5 @@ package catlynet.main;
 
 public class Version {
     static public String NAME = "CatlyNet";
-    static public String SHORT_DESCRIPTION = "CatlyNet (version 0.0.24_beta, built 17 Feb 2020)";
+    static public String SHORT_DESCRIPTION = "CatlyNet (version 0.0.25_beta, built 20 Feb 2020)";
 }

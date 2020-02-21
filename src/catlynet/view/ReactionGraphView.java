@@ -20,36 +20,28 @@
 package catlynet.view;
 
 import catlynet.model.MoleculeType;
-import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
 import catlynet.window.MainWindowController;
-import javafx.beans.InvalidationListener;
+import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.ListChangeListener;
-import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
-import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.*;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.Polyline;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import jloda.fx.control.ItemSelectionModel;
-import jloda.fx.shapes.CircleShape;
-import jloda.fx.shapes.SquareShape;
 import jloda.fx.util.AService;
-import jloda.fx.util.GeometryUtilsFX;
 import jloda.fx.util.ProgramExecutorService;
 import jloda.fx.util.SelectionEffectBlue;
 import jloda.fx.window.NotificationManager;
 import jloda.graph.*;
 import jloda.util.APoint2D;
 import jloda.util.Basic;
-import jloda.util.Pair;
 
 import java.io.PrintStream;
 import java.util.*;
@@ -60,12 +52,16 @@ import java.util.stream.Collectors;
  * Daniel Huson, 7.2019
  */
 public class ReactionGraphView {
-
     private final static ObjectProperty<Font> font = new SimpleObjectProperty<>(Font.font("Helvetica", 12));
+
+    public enum Type {fullGraph, dependencyGraph, reactantDependencyGraph}
+
+    private final ObjectProperty<Type> graphType = new SimpleObjectProperty<>();
+
     private final Graph reactionGraph = new Graph();
     private final NodeSet foodNodes = new NodeSet(reactionGraph);
-    private final NodeArray<Pair<Shape, Label>> node2shapeAndLabel = new NodeArray<>(reactionGraph);
-    private final EdgeArray<Group> edge2group = new EdgeArray<>(reactionGraph);
+    private final NodeArray<NodeView> node2view = new NodeArray<>(reactionGraph);
+    private final EdgeArray<EdgeView> edge2view = new EdgeArray<>(reactionGraph);
 
     private final ItemSelectionModel<Node> nodeSelection = new ItemSelectionModel<>();
     private final ItemSelectionModel<Edge> edgeSelection = new ItemSelectionModel<>();
@@ -74,6 +70,8 @@ public class ReactionGraphView {
 
     private final BooleanProperty suppressCatalystEdges = new SimpleBooleanProperty(false);
     private final BooleanProperty useMultiCopyFoodNodes = new SimpleBooleanProperty(false);
+
+    private final IntegerProperty embeddingIterations = new SimpleIntegerProperty(1000);
 
     private final MainWindowController controller;
 
@@ -102,22 +100,29 @@ public class ReactionGraphView {
         this.logStream = logStream;
 
         nodeSelection.getSelectedItemsUnmodifiable().addListener((ListChangeListener<Node>) (e) -> {
+            final Set<MoleculeType> molecules = new HashSet<>();
             while (e.next()) {
                 for (Node v : e.getAddedSubList()) {
-                    final Pair<Shape, Label> pair = node2shapeAndLabel.get(v);
-                    if (pair != null) {
-                        for (Object oNode : pair) {
-                            ((javafx.scene.Node) oNode).setEffect(SelectionEffectBlue.getInstance());
-                        }
+                    final NodeView nv = node2view.get(v);
+                    if (nv != null) {
+                        nv.getLabel().setEffect(SelectionEffectBlue.getInstance());
+                        nv.getShape().setEffect(SelectionEffectBlue.getInstance());
                     }
+                    if (isUseMultiCopyFoodNodes() && v.getInfo() instanceof MoleculeType)
+                        molecules.add((MoleculeType) v.getInfo());
                 }
                 for (Node v : e.getRemoved()) {
-                    final Pair<Shape, Label> pair = node2shapeAndLabel.get(v);
-                    if (pair != null) {
-                        for (Object oNode : pair) {
-                            ((javafx.scene.Node) oNode).setEffect(null);
-                        }
+                    final NodeView nv = node2view.get(v);
+                    if (nv != null) {
+                        nv.getLabel().setEffect(null);
+                        nv.getShape().setEffect(null);
                     }
+                }
+                if (molecules.size() > 0) {
+                    Platform.runLater(() -> {
+                        nodeSelection.selectAll(reactionGraph.nodeStream()
+                                .filter(v -> !nodeSelection.isSelected(v) && v.getInfo() instanceof MoleculeType && molecules.contains((MoleculeType) v.getInfo())).collect(Collectors.toList()));
+                    });
                 }
             }
         });
@@ -125,14 +130,14 @@ public class ReactionGraphView {
         edgeSelection.getSelectedItemsUnmodifiable().addListener((ListChangeListener<Edge>) (e) -> {
             while (e.next()) {
                 for (Edge edge : e.getAddedSubList()) {
-                    final Group group = edge2group.get(edge);
+                    final Group group = edge2view.get(edge);
                     if (group != null) {
                         for (javafx.scene.Node node : group.getChildren())
                             node.setEffect(SelectionEffectBlue.getInstance());
                     }
                 }
                 for (Edge edge : e.getRemoved()) {
-                    final Group group = edge2group.get(edge);
+                    final Group group = edge2view.get(edge);
                     if (group != null) {
                         for (javafx.scene.Node node : group.getChildren())
                             node.setEffect(null);
@@ -144,7 +149,7 @@ public class ReactionGraphView {
         inhibitionEdgeColor.addListener((c, o, n) -> {
             for (Edge e : reactionGraph.edges()) {
                 if (e.getInfo() == EdgeType.Inhibitor) {
-                    for (javafx.scene.Node node : edge2group.get(e).getChildren()) {
+                    for (javafx.scene.Node node : edge2view.get(e).getChildren()) {
                         if (node instanceof Path || node instanceof Polyline)
                             ((Shape) node).setStroke(n);
                     }
@@ -152,13 +157,17 @@ public class ReactionGraphView {
             }
         });
 
-        moleculeFlowAnimation = new MoleculeFlowAnimation(reactionGraph, foodNodes, edge2group, world);
+        moleculeFlowAnimation = new MoleculeFlowAnimation(reactionGraph, foodNodes, edge2view, world);
 
         moleculeFlowAnimation.animateInhibitionsProperty().addListener((c, o, n) -> inhibitionEdgeColor.set(n ? Color.BLACK : Color.LIGHTGREY));
+
+        graphType.addListener(c -> update());
+        suppressCatalystEdges.addListener(c -> update());
+        useMultiCopyFoodNodes.addListener(c -> update());
     }
 
     /**
-     * update the visualization
+     * apply the visualization
      */
     public void update() {
         //System.err.println("Updating graph");
@@ -166,60 +175,19 @@ public class ReactionGraphView {
 
         final Map<MoleculeType, Node> molecule2node = new HashMap<>();
 
-        for (Reaction reaction : reactionSystem.getReactions()) {
-            final Node reactionNode = reactionGraph.newNode(reaction);
-
-            final Set<MoleculeType> molecules = new HashSet<>();
-            molecules.addAll(reaction.getReactants());
-            molecules.addAll(reaction.getProducts());
-            if (!isSuppressCatalystEdges()) {
-                molecules.addAll(reaction.getCatalysts());
-                molecules.addAll(reaction.getInhibitions());
+        switch (getGraphType()) {
+            default:
+            case fullGraph: {
+                SetupFullGraph.apply(reactionGraph, reactionSystem, foodNodes, molecule2node, isSuppressCatalystEdges(), isUseMultiCopyFoodNodes());
+                break;
             }
-            for (MoleculeType molecule : molecules) {
-                if (molecule2node.get(molecule) == null) {
-                    if (molecule.getName().contains("&")) {
-                        molecule2node.put(molecule, reactionGraph.newNode(new AndNode()));
-                        for (MoleculeType catalyst : MoleculeType.valueOf(Basic.trimAll(Basic.split(molecule.getName(), '&')))) {
-                            if (molecule2node.get(catalyst) == null) {
-                                molecule2node.put(catalyst, reactionGraph.newNode(catalyst));
-                            }
-                        }
-                    } else {
-                        final Node v = reactionGraph.newNode(molecule);
-                        molecule2node.put(molecule, v);
-                        if (reactionSystem.getFoods().contains(molecule))
-                            foodNodes.add(v);
-                    }
-                }
+            case dependencyGraph: {
+                SetupDependencyGraph.apply(reactionGraph, reactionSystem, true);
+                break;
             }
-
-            for (MoleculeType molecule : reaction.getReactants()) {
-                reactionGraph.newEdge(getNode(molecule, molecule2node, isUseMultiCopyFoodNodes()), reactionNode, reaction.getDirection() == Reaction.Direction.both ? EdgeType.ReactantReversible : EdgeType.Reactant);
-            }
-            for (MoleculeType molecule : reaction.getProducts()) {
-                reactionGraph.newEdge(reactionNode, getNode(molecule, molecule2node, isUseMultiCopyFoodNodes()), reaction.getDirection() == Reaction.Direction.both ? EdgeType.ProductReversible : EdgeType.Product);
-            }
-            if (!isSuppressCatalystEdges()) {
-                for (MoleculeType molecule : reaction.getCatalystConjunctions()) {
-                    if (molecule.getName().contains("&")) {
-                        for (MoleculeType catalyst : MoleculeType.valueOf(Basic.trimAll(Basic.split(molecule.getName(), '&')))) {
-                            reactionGraph.newEdge(getNode(catalyst, molecule2node, isUseMultiCopyFoodNodes()), molecule2node.get(molecule), EdgeType.Catalyst);
-                        }
-                    }
-                    reactionGraph.newEdge(getNode(molecule, molecule2node, isUseMultiCopyFoodNodes()), reactionNode, EdgeType.Catalyst);
-                }
-                for (MoleculeType molecule : reaction.getInhibitions()) {
-                    reactionGraph.newEdge(getNode(molecule, molecule2node, isUseMultiCopyFoodNodes()), reactionNode, EdgeType.Inhibitor);
-                }
-            }
-        }
-        for (Node v : reactionGraph.nodes()) {
-            if (v.getInfo() instanceof AndNode) {
-                for (Edge e : v.inEdges()) {
-                    if (e.getSource().getDegree() == 1)
-                        foodNodes.add(e.getSource());
-                }
+            case reactantDependencyGraph: {
+                SetupDependencyGraph.apply(reactionGraph, reactionSystem, false);
+                break;
             }
         }
 
@@ -234,7 +202,7 @@ public class ReactionGraphView {
         final NodeArray<APoint2D> result = new NodeArray<>(reactionGraph);
 
         service.setCallable(() -> {
-            layout.apply(1000, result, service.getProgressListener(), ProgramExecutorService.getNumberOfCoresToUse());
+            layout.apply(getEmbeddingIterations(), result, service.getProgressListener(), ProgramExecutorService.getNumberOfCoresToUse());
             return result;
         });
 
@@ -243,36 +211,14 @@ public class ReactionGraphView {
         service.setOnCancelled(e -> {
                     NotificationManager.showWarning("Graph layout CANCELED");
                     if (!result.isClear()) // use what ever has been produced
-                        world.getChildren().setAll(setupGraphView(reactionSystem, reactionGraph, node2shapeAndLabel, edge2group, service.getValue()));
+                        world.getChildren().setAll(setupGraphView(reactionSystem, reactionGraph, node2view, edge2view, service.getValue()));
                 }
         );
         service.setOnSucceeded((e) -> {
-            world.getChildren().setAll(setupGraphView(reactionSystem, reactionGraph, node2shapeAndLabel, edge2group, service.getValue()));
+            world.getChildren().setAll(setupGraphView(reactionSystem, reactionGraph, node2view, edge2view, service.getValue()));
             empty.set(reactionGraph.getNumberOfNodes() == 0);
         });
         service.start();
-    }
-
-    /**
-     * gets the node to use for a given molecule
-     *
-     * @param molecule
-     * @param molecule2node
-     * @param multiCopyFoodNodes - if set, creates a new none for every usage of a food node
-     * @return node
-     */
-    private Node getNode(MoleculeType molecule, Map<MoleculeType, Node> molecule2node, boolean multiCopyFoodNodes) {
-        if (!multiCopyFoodNodes)
-            return molecule2node.get(molecule);
-        else {
-            if (molecule2node.containsKey(molecule)) {
-                final Node v = molecule2node.get(molecule);
-                if (reactionSystem.getFoods().contains(molecule))
-                    molecule2node.remove(molecule);
-                return v;
-            } else
-                return reactionGraph.newNode(molecule);
-        }
     }
 
     public void clear() {
@@ -307,100 +253,30 @@ public class ReactionGraphView {
      * @param coordinates
      * @return graph view
      */
-    private Collection<? extends javafx.scene.Node> setupGraphView(ReactionSystem reactionSystem, Graph graph, NodeArray<Pair<Shape, Label>> node2ShapeAndLabel, EdgeArray<Group> edge2group, NodeArray<APoint2D> coordinates) {
+    private Collection<? extends javafx.scene.Node> setupGraphView(ReactionSystem reactionSystem, Graph graph, NodeArray<NodeView> node2view, EdgeArray<EdgeView> edge2view, NodeArray<APoint2D> coordinates) {
         final Group spacers = new Group();
         final Group nodes = new Group();
         final Group edges = new Group();
         final Group labels = new Group();
 
-        final Background labelBackground = new Background(new BackgroundFill(Color.WHITE.deriveColor(1, 1, 1, 0.7), null, null));
-
-        final Map<Node, Shape> node2shape = new HashMap<>();
-
-        for (Node v : graph.nodes()) {
-            final Shape shape;
-            final Label text;
-
-            if (v.getInfo() instanceof Reaction) {
-                shape = new CircleShape(10);
-                shape.setStroke(Color.BLACK);
-                shape.setFill(Color.WHITE);
-                shape.setStrokeWidth(2);
-
-                text = new Label(((Reaction) v.getInfo()).getName());
-                text.setLayoutX(10);
-                setupMouseInteraction(text, text, v, null);
-                text.setBackground(labelBackground);
-            } else if (v.getInfo() instanceof MoleculeType) {
-                shape = new SquareShape(10);
-                shape.setStroke(Color.BLACK);
-                shape.setFill(Color.WHITE);
-                if (reactionSystem.getFoods().contains(v.getInfo()))
-                    shape.setStrokeWidth(4);
-                else
-                    shape.setStrokeWidth(2);
-
-                text = new Label(((MoleculeType) v.getInfo()).getName());
-                text.setLayoutX(10);
-                setupMouseInteraction(text, text, v, null);
-                text.setBackground(labelBackground);
-            } else if (v.getInfo() instanceof AndNode) {
-                shape = new CircleShape(10);
-                shape.setStroke(Color.TRANSPARENT);
-                shape.setFill(Color.WHITE);
-                //shape.setStrokeWidth(1);
-
-                text = new Label("&");
-                text.setFont(Font.font("Courier New", 8));
-                text.setAlignment(Pos.CENTER);
-                text.setLayoutX(-4);
-                text.setLayoutY(-8);
-                setupMouseInteraction(text, shape, v, null);
-
-            } else {
-                System.err.println("Unsupported node type: " + v.getInfo());
-                shape = null;
-                text = null;
-            }
-
-            if (shape != null) {
-                shape.setTranslateX(coordinates.get(v).getX());
-                shape.setTranslateY(coordinates.get(v).getY());
-                setupMouseInteraction(shape, shape, v, null);
-                nodes.getChildren().add(shape);
-                node2shape.put(v, shape);
-
-                // setupMouseInteraction(text, shape, v, null);
-                text.setFont(getFont());
-                text.translateXProperty().bind(shape.translateXProperty());
-                text.translateYProperty().bind(shape.translateYProperty());
-                labels.getChildren().add(text);
-
-                if (true) {  // add spacers to prevent graph from moving when molecules with long names arrive at a node that is on the boundary of the graph
-                    final Circle spacer = new Circle(100);
-                    spacer.translateXProperty().bind(shape.translateXProperty());
-                    spacer.translateYProperty().bind(shape.translateYProperty());
-                    spacer.setFill(Color.TRANSPARENT);
-                    spacer.setStroke(Color.TRANSPARENT);
-                    spacer.setMouseTransparent(true);
-
-                    spacers.getChildren().add(spacer);
-                }
-
-                node2ShapeAndLabel.put(v, new Pair<>(shape, text));
-            }
-        }
+        graph.nodeStream().forEach(v -> {
+            final NodeView nv = new NodeView(this, reactionSystem.getFoods(), v, coordinates.get(v).getX(), coordinates.get(v).getY());
+            node2view.put(v, nv);
+            spacers.getChildren().add(nv.getSpacer());
+            nodes.getChildren().add(nv.getShape());
+            labels.getChildren().add(nv.getLabel());
+        });
 
         for (Edge edge : graph.edges()) {
             final EdgeType edgeType = (EdgeType) edge.getInfo();
 
-            final Shape sourceShape = node2shape.get(edge.getSource());
-            final Shape targetShape = node2shape.get(edge.getTarget());
+            final Shape sourceShape = node2view.get(edge.getSource()).getShape();
+            final Shape targetShape = node2view.get(edge.getTarget()).getShape();
 
-            final Group path = createPath(edge, sourceShape.translateXProperty(), sourceShape.translateYProperty(), targetShape.translateXProperty(), targetShape.translateYProperty(), edgeType);
+            final EdgeView edgeView = new EdgeView(this, edge, sourceShape.translateXProperty(), sourceShape.translateYProperty(), targetShape.translateXProperty(), targetShape.translateYProperty(), edgeType);
 
-            edges.getChildren().add(path);
-            edge2group.put(edge, path);
+            edges.getChildren().add(edgeView);
+            edge2view.put(edge, edgeView);
         }
 
         return Arrays.asList(spacers, edges, nodes, labels);
@@ -412,7 +288,7 @@ public class ReactionGraphView {
      * @param mouseTarget
      * @param nodeToMove
      */
-    private void setupMouseInteraction(javafx.scene.Node mouseTarget, javafx.scene.Node nodeToMove, Node v, Edge e) {
+    public void setupMouseInteraction(javafx.scene.Node mouseTarget, javafx.scene.Node nodeToMove, Node v, Edge e) {
         mouseTarget.setCursor(Cursor.CROSSHAIR);
 
         final double[] mouseDown = new double[2];
@@ -429,15 +305,22 @@ public class ReactionGraphView {
             final double mouseX = c.getSceneX();
             final double mouseY = c.getSceneY();
 
-            if (nodeToMove.translateXProperty().isBound())
-                nodeToMove.setLayoutX(nodeToMove.getLayoutX() + (mouseX - mouseDown[0]));
-            else
-                nodeToMove.setTranslateX(nodeToMove.getTranslateX() + (mouseX - mouseDown[0]));
-            if (nodeToMove.translateYProperty().isBound())
-                nodeToMove.setLayoutY(nodeToMove.getLayoutY() + (mouseY - mouseDown[1]));
+            if (v != null && !nodeToMove.translateXProperty().isBound()) {
+                for (Node w : nodeSelection.getSelectedItemsUnmodifiable()) {
+                    node2view.get(w).translate(mouseX - mouseDown[0], mouseY - mouseDown[1]);
+                }
+            } else {
 
-            else
-                nodeToMove.setTranslateY(nodeToMove.getTranslateY() + (mouseY - mouseDown[1]));
+                if (nodeToMove.translateXProperty().isBound())
+                    nodeToMove.setLayoutX(nodeToMove.getLayoutX() + (mouseX - mouseDown[0]));
+                else
+                    nodeToMove.setTranslateX(nodeToMove.getTranslateX() + (mouseX - mouseDown[0]));
+                if (nodeToMove.translateYProperty().isBound())
+                    nodeToMove.setLayoutY(nodeToMove.getLayoutY() + (mouseY - mouseDown[1]));
+
+                else
+                    nodeToMove.setTranslateY(nodeToMove.getTranslateY() + (mouseY - mouseDown[1]));
+            }
 
             mouseDown[0] = c.getSceneX();
             mouseDown[1] = c.getSceneY();
@@ -472,201 +355,27 @@ public class ReactionGraphView {
                 }
             }
         });
-    }
 
-    /**
-     * create a path to represent an edge
-     *
-     * @param aX
-     * @param aY
-     * @param bX
-     * @param bY
-     * @param edgeType
-     * @return path
-     */
-    private Group createPath(Edge edge, ReadOnlyDoubleProperty aX, ReadOnlyDoubleProperty aY, ReadOnlyDoubleProperty bX, ReadOnlyDoubleProperty bY, EdgeType edgeType) {
-        final Shape arrowHead;
-        switch (edgeType) {
-            default:
-            case Catalyst: {
-                arrowHead = new Polyline(-5, -3, 5, 0, -5, 3);
-                break;
+        mouseTarget.setOnMouseClicked(c -> {
+            if (c.getClickCount() == 2) {
+                if (v != null) {
+                    nodeSelection.selectAll(Basic.asList(v.adjacentNodes()));
+                    edgeSelection.selectAll(Basic.asList(v.adjacentEdges()));
+                }
+            } else if (c.getClickCount() == 3) {
+                final NodeSet nodes = new NodeSet(reactionGraph);
+                reactionGraph.visitConnectedComponent(v, nodes);
+                nodeSelection.selectAll(nodes);
+                final EdgeSet edges = new EdgeSet(reactionGraph);
+                for (Node p : nodes) {
+                    for (Edge f : p.adjacentEdges()) {
+                        if (nodes.contains(f.getOpposite(p)))
+                            edges.add(f);
+                    }
+                }
+                edgeSelection.selectAll(edges);
             }
-            case Reactant: {
-                arrowHead = new Polygon(-5, -3, 5, 0, -5, 3);
-                arrowHead.setFill(Color.WHITE);
-                break;
-            }
-            case ReactantReversible: {
-                arrowHead = new Polygon(-6, 0, 0, 4, 6, 0, 0, -4);
-                arrowHead.setFill(Color.WHITE);
-                break;
-            }
-            case Product: {
-                arrowHead = new Polygon(-5, -3, 5, 0, -5, 3);
-                arrowHead.setFill(Color.LIGHTGREY);
-                break;
-            }
-            case ProductReversible: {
-                arrowHead = new Polygon(-6, 0, 0, 4, 6, 0, 0, -4);
-                arrowHead.setFill(Color.LIGHTGREY);
-                break;
-            }
-            case Inhibitor: {
-                arrowHead = new Polyline(0, -5, 0, 5);
-                break;
-            }
-        }
-        arrowHead.setStroke(Color.BLACK);
-
-        final MoveTo moveToA = new MoveTo();
-
-        final LineTo lineToB = new LineTo();
-
-        final QuadCurveTo quadCurveToD = new QuadCurveTo();
-
-        final LineTo lineToE = new LineTo();
-
-        final CircleShape circleShape = new CircleShape(3);
-
-        final InvalidationListener invalidationListener = (e) -> {
-            final Point2D lineCenter = updatePath(aX.get(), aY.get(), bX.get(), bY.get(), null, moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(edge));
-
-            if (lineCenter != null) {
-                circleShape.setTranslateX(lineCenter.getX());
-                circleShape.setTranslateY(lineCenter.getY());
-            }
-        };
-
-        aX.addListener(invalidationListener);
-        aY.addListener(invalidationListener);
-        bX.addListener(invalidationListener);
-        bY.addListener(invalidationListener);
-
-        {
-            final Point2D lineCenter = updatePath(aX.get(), aY.get(), bX.get(), bY.get(), null, moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(edge));
-            if (lineCenter != null) {
-                circleShape.setTranslateX(lineCenter.getX());
-                circleShape.setTranslateY(lineCenter.getY());
-                circleShape.translateXProperty().addListener((c, o, n) ->
-                        updatePath(aX.get(), aY.get(), bX.get(), bY.get(), new Point2D(circleShape.getTranslateX(), circleShape.getTranslateY()), moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(edge)));
-                circleShape.translateYProperty().addListener((c, o, n) ->
-                        updatePath(aX.get(), aY.get(), bX.get(), bY.get(), new Point2D(circleShape.getTranslateX(), circleShape.getTranslateY()), moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(edge)));
-                // setupMouseInteraction(circleShape,circleShape);
-                circleShape.setFill(Color.TRANSPARENT);
-                circleShape.setStroke(Color.TRANSPARENT);
-            }
-        }
-
-        final Path path = new Path(moveToA, lineToB, quadCurveToD, lineToE);
-        path.setStrokeWidth(2);
-
-        setupMouseInteraction(path, circleShape, null, edge);
-
-
-        if (edgeType == EdgeType.Catalyst) {
-            path.getStrokeDashArray().addAll(2.0, 4.0);
-        } else if (edgeType == EdgeType.Inhibitor) {
-            path.getStrokeDashArray().addAll(2.0, 4.0);
-            path.setStroke(getInhibitionEdgeColor());
-        }
-
-        return new Group(path, arrowHead, circleShape);
-    }
-
-    /**
-     * update the path representing an edge
-     *
-     * @param ax
-     * @param ay
-     * @param ex
-     * @param ey
-     * @param moveToA
-     * @param lineToB
-     * @param quadCurveToD
-     * @param lineToE
-     * @param arrowHead
-     * @param clockwise
-     * @return center point
-     */
-    private static Point2D updatePath(double ax, double ay, double ex, double ey, Point2D center, MoveTo moveToA, LineTo lineToB, QuadCurveTo quadCurveToD, LineTo lineToE, EdgeType edgeType, Shape arrowHead, boolean clockwise) {
-        final double straightSegmentLength = 25;
-        final double liftFactor = 0.2;
-
-        final double distance = GeometryUtilsFX.distance(ax, ay, ex, ey);
-
-        moveToA.setX(ax);
-        moveToA.setY(ay);
-
-        lineToE.setX(ex);
-        lineToE.setY(ey);
-
-        if (distance <= 2 * straightSegmentLength) {
-            lineToB.setX(ax);
-            lineToB.setY(ay);
-
-            quadCurveToD.setX(ax);
-            quadCurveToD.setY(ay);
-            quadCurveToD.setControlX(ax);
-            quadCurveToD.setControlY(ay);
-
-            arrowHead.setTranslateX(0.5 * (quadCurveToD.getX() + lineToE.getX()));
-            arrowHead.setTranslateY(0.5 * (quadCurveToD.getY() + lineToE.getY()));
-        } else {
-            final double alpha = GeometryUtilsFX.computeAngle(new Point2D(ex - ax, ey - ay));
-
-            final Point2D m = new Point2D(0.5 * (ax + ex), 0.5 * (ay + ey));
-            if (center == null) {
-                final Point2D c;
-                if (!clockwise)
-                    center = m.add(-Math.sin(GeometryUtilsFX.deg2rad(alpha)) * liftFactor * distance, Math.cos(GeometryUtilsFX.deg2rad(alpha)) * liftFactor * distance);
-                else
-                    center = m.subtract(-Math.sin(GeometryUtilsFX.deg2rad(alpha)) * liftFactor * distance, Math.cos(GeometryUtilsFX.deg2rad(alpha)) * liftFactor * distance);
-            }
-
-            final double beta = GeometryUtilsFX.computeAngle(center.subtract(ax, ay));
-
-            final Point2D b = new Point2D(ax + straightSegmentLength * Math.cos(GeometryUtilsFX.deg2rad(beta)), ay + straightSegmentLength * Math.sin(GeometryUtilsFX.deg2rad(beta)));
-
-            lineToB.setX(b.getX());
-            lineToB.setY(b.getY());
-
-            final double delta = GeometryUtilsFX.computeAngle(center.subtract(ex, ey));
-            final Point2D d = new Point2D(ex + straightSegmentLength * Math.cos(GeometryUtilsFX.deg2rad(delta)), ey + straightSegmentLength * Math.sin(GeometryUtilsFX.deg2rad(delta)));
-
-            quadCurveToD.setX(d.getX());
-            quadCurveToD.setY(d.getY());
-            quadCurveToD.setControlX(center.getX());
-            quadCurveToD.setControlY(center.getY());
-
-            arrowHead.setTranslateX(0.75 * d.getX() + 0.25 * lineToE.getX());
-            arrowHead.setTranslateY(0.75 * d.getY() + 0.25 * lineToE.getY());
-        }
-        if (edgeType == EdgeType.Inhibitor) {
-            lineToE.setX(arrowHead.getTranslateX());
-            lineToE.setY(arrowHead.getTranslateY());
-        }
-
-        final double angle = GeometryUtilsFX.computeAngle(new Point2D(lineToE.getX() - quadCurveToD.getX(), lineToE.getY() - quadCurveToD.getY()));
-        arrowHead.setRotationAxis(new Point3D(0, 0, 1));
-        arrowHead.setRotate(angle);
-        return center;
-
-    }
-
-    /**
-     * is this edge the second of two edges that both connect the same two nodes?
-     * (If so, will flip its bend)
-     *
-     * @param edge
-     * @return true, if second of two edges
-     */
-    private static boolean isSecondOfTwoEdges(Edge edge) {
-        for (Edge f : edge.getSource().adjacentEdges()) {
-            if (f.getTarget() == edge.getTarget() && edge.getId() > f.getId())
-                return true;
-        }
-        return false;
+        });
     }
 
     public MoleculeFlowAnimation getMoleculeFlowAnimation() {
@@ -712,16 +421,16 @@ public class ReactionGraphView {
     }
 
     public Shape getShape(Node v) {
-        return node2shapeAndLabel.get(v).getFirst();
+        return node2view.get(v).getShape();
     }
 
     public Label getLabel(Node v) {
-        return node2shapeAndLabel.get(v).getSecond();
+        return node2view.get(v).getLabel();
     }
 
     public void setNodeStyle(String style) {
         for (Node v : reactionGraph.nodes()) {
-            node2shapeAndLabel.get(v).getSecond().setStyle(style);
+            node2view.get(v).getShape().setStyle(style);
         }
     }
 
@@ -732,7 +441,7 @@ public class ReactionGraphView {
         double maxY = Double.MIN_VALUE;
 
         for (Node v : reactionGraph.nodes()) {
-            final Shape shape = node2shapeAndLabel.get(v).getFirst();
+            final Shape shape = node2view.get(v).getShape();
             minX = Math.min(minX, shape.getTranslateX());
             minY = Math.min(minY, shape.getTranslateY());
             maxX = Math.max(maxX, shape.getTranslateY());
@@ -775,5 +484,29 @@ public class ReactionGraphView {
 
     public Collection<String> getSelectedLabels() {
         return getNodeSelection().getSelectedItemsUnmodifiable().stream().map(v -> getLabel(v).getText()).filter(s -> s.length() > 0).collect(Collectors.toList());
+    }
+
+    public int getEmbeddingIterations() {
+        return embeddingIterations.get();
+    }
+
+    public IntegerProperty embeddingIterationsProperty() {
+        return embeddingIterations;
+    }
+
+    public void setEmbeddingIterations(int embeddingIterations) {
+        this.embeddingIterations.set(embeddingIterations);
+    }
+
+    public Type getGraphType() {
+        return graphType.get();
+    }
+
+    public ObjectProperty<Type> graphTypeProperty() {
+        return graphType;
+    }
+
+    public void setGraphType(Type graphType) {
+        this.graphType.set(graphType);
     }
 }

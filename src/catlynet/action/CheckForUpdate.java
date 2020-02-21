@@ -32,12 +32,12 @@ import jloda.util.ProgramProperties;
 import javax.swing.*;
 
 /**
- * check for update and install, if present
+ * check for apply and install, if present
  * Daniel Huson, 5.2018
  */
 public class CheckForUpdate {
     /**
-     * check for update and install, if present
+     * check for apply and install, if present
      */
     public static void apply() {
         ApplicationDisplayMode applicationDisplayMode = ProgramProperties.isUseGUI() ? ApplicationDisplayMode.GUI : ApplicationDisplayMode.CONSOLE;
@@ -63,7 +63,7 @@ public class CheckForUpdate {
 
 
         final Runnable runnable = () -> {
-            System.err.println("Launching update dialog");
+            System.err.println("Launching apply dialog");
             ApplicationLauncher.launchApplicationInProcess("1691242391", null, new ApplicationLauncher.Callback() {
                 public void exited(int exitValue) {
                     System.err.println("Exit value: " + exitValue);

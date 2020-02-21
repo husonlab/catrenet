@@ -35,7 +35,10 @@ import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.Pane;
@@ -55,6 +58,7 @@ import jloda.util.ProgramProperties;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * setup all control bindings
@@ -67,6 +71,12 @@ public class ControlBindings {
 
         final MainWindowController controller = window.getController();
         final ReactionGraphView graphView = window.getReactionGraphView();
+
+        final BooleanProperty disableGraphItems = new SimpleBooleanProperty(true);
+        final BooleanProperty disableFullGraphItems = new SimpleBooleanProperty(true);
+        disableFullGraphItems.bind(disableGraphItems.or(graphView.graphTypeProperty().isNotEqualTo(ReactionGraphView.Type.fullGraph)));
+
+        final RadioMenuItem noGraphTypeSet = new RadioMenuItem();
 
         final IntegerProperty algorithmsRunning = new SimpleIntegerProperty(0);
         final ChangeListener<Boolean> runningListener = new ChangeListener<Boolean>() {
@@ -154,7 +164,7 @@ public class ControlBindings {
             }
         });
         controller.getCopyMenuItem().disableProperty().bind((controller.getInputTextArea().focusedProperty().or(controller.getInputFoodTextArea().focusedProperty())
-                .or(controller.getVisualizationTab().selectedProperty()).not()));
+                .or(disableGraphItems.not()).not()));
 
         controller.getPasteMenuItem().setOnAction((e) -> {
         });
@@ -192,19 +202,21 @@ public class ControlBindings {
         controller.getExpandInputMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()).or(controller.getInputFoodTextArea().textProperty().isEmpty()));
 
         controller.getComputeVisualizationMenuItem().setOnAction(c -> {
-            controller.getVisualizationTab().setDisable(false);
+            disableGraphItems.set(false);
+            if (noGraphTypeSet.isSelected())
+                controller.getFullGraphRadioMenuItem().setSelected(true);
+
             controller.getVisualizationTab().getTabPane().getSelectionModel().select(controller.getVisualizationTab());
             ComputeGraph.apply(window, controller);
         });
         controller.getComputeVisualizationMenuItem().disableProperty().bind(controller.getExpandInputMenuItem().disableProperty());
 
-        controller.getVisualizationTab().disableProperty().addListener((c, o, n) -> {
+        disableGraphItems.addListener((c, o, n) -> {
             if (n)
                 graphView.getMoleculeFlowAnimation().setPlaying(false);
         });
-        graphView.emptyProperty().addListener((c, o, n) -> controller.getVisualizationTab().setDisable(n));
-        controller.getVisualizationTab().setDisable(true);
-
+        graphView.emptyProperty().addListener((c, o, n) -> disableGraphItems.set(n));
+        controller.getVisualizationTab().disableProperty().bind(disableGraphItems);
 
         controller.getFormatMenuItem().setOnAction((e) -> {
             Stage stage = null;
@@ -404,7 +416,7 @@ public class ControlBindings {
                     graphView.getMoleculeFlowAnimation().setPlaying(false);
                 }
             });
-            controller.getAnimateCAFCheckMenuItem().disableProperty().bind(controller.getVisualizationTab().disableProperty().or(graphView.getMoleculeFlowAnimation().playingProperty()));
+            controller.getAnimateCAFCheckMenuItem().disableProperty().bind(disableFullGraphItems.or(graphView.getMoleculeFlowAnimation().playingProperty()));
 
             controller.getAnimateCAFContextMenuItem().selectedProperty().bindBidirectional(controller.getAnimateCAFCheckMenuItem().selectedProperty());
             controller.getAnimateCAFContextMenuItem().disableProperty().bind(controller.getAnimateCAFCheckMenuItem().disableProperty());
@@ -419,7 +431,7 @@ public class ControlBindings {
                     graphView.getMoleculeFlowAnimation().setPlaying(false);
                 }
             });
-            controller.getAnimateRAFCheckMenuItem().disableProperty().bind(controller.getVisualizationTab().disableProperty().or(graphView.getMoleculeFlowAnimation().playingProperty()));
+            controller.getAnimateRAFCheckMenuItem().disableProperty().bind(disableFullGraphItems.or(graphView.getMoleculeFlowAnimation().playingProperty()));
 
             controller.getAnimateRAFContextMenuItem().selectedProperty().bindBidirectional(controller.getAnimateRAFCheckMenuItem().selectedProperty());
             controller.getAnimateRAFContextMenuItem().disableProperty().bind(controller.getAnimateRAFCheckMenuItem().disableProperty());
@@ -434,7 +446,7 @@ public class ControlBindings {
                     graphView.getMoleculeFlowAnimation().setPlaying(false);
                 }
             });
-            controller.getAnimateMaxRAFCheckMenuItem().disableProperty().bind(controller.getVisualizationTab().disableProperty().or(graphView.getMoleculeFlowAnimation().playingProperty()));
+            controller.getAnimateMaxRAFCheckMenuItem().disableProperty().bind(disableFullGraphItems.or(graphView.getMoleculeFlowAnimation().playingProperty()));
 
             controller.getAnimatePseudoRAFContextMenuItem().selectedProperty().bindBidirectional(controller.getAnimateMaxRAFCheckMenuItem().selectedProperty());
             controller.getAnimatePseudoRAFContextMenuItem().disableProperty().bind(controller.getAnimateMaxRAFCheckMenuItem().disableProperty());
@@ -467,17 +479,44 @@ public class ControlBindings {
         controller.getShowNodeLabels().setOnAction(e -> ShowHideNodeLabels.apply(graphView));
         BasicFX.setupFullScreenMenuSupport(window.getStage(), controller.getFullScreenMenuItem());
 
-        controller.getSuppressCatalystEdgesMenuItem().selectedProperty().addListener((c, o, n) -> {
-            graphView.setSuppressCatalystEdges(n);
-            graphView.update();
-        });
-        controller.getSuppressCatalystEdgesMenuItem().disableProperty().bind(controller.getVisualizationTab().disableProperty());
+        final ToggleGroup graphTypeButtonGroup = new ToggleGroup();
+        graphTypeButtonGroup.getToggles().addAll(controller.getFullGraphRadioMenuItem(), controller.getDependencyGraphRadioMenuItem(), controller.getReactantDependencyGraphRadioMenuItem());
 
-        controller.getUseMultiCopyFoodNodesMenuItem().selectedProperty().addListener((c, o, n) -> {
-            graphView.setUseMultiCopyFoodNodes(n);
-            graphView.update();
+
+        graphTypeButtonGroup.selectToggle(noGraphTypeSet);
+        controller.getGraphTypeLabel().setText("");
+        graphView.graphTypeProperty().addListener((c, o, n) -> controller.getGraphTypeLabel().setText(Basic.capitalizeFirstLetter(Basic.fromCamelCase(n.name()))));
+
+        controller.getFullGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> graphView.setGraphType(ReactionGraphView.Type.fullGraph));
+        controller.getFullGraphRadioMenuItem().disableProperty().bind(controller.getRunMenuItem().disableProperty());
+
+        controller.getDependencyGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> graphView.setGraphType(ReactionGraphView.Type.dependencyGraph));
+        controller.getDependencyGraphRadioMenuItem().disableProperty().bind(controller.getRunMenuItem().disableProperty());
+
+        controller.getReactantDependencyGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> graphView.setGraphType(ReactionGraphView.Type.reactantDependencyGraph));
+        controller.getReactantDependencyGraphRadioMenuItem().disableProperty().bind(controller.getRunMenuItem().disableProperty());
+
+        controller.getSuppressCatalystEdgesMenuItem().selectedProperty().addListener((c, o, n) -> graphView.setSuppressCatalystEdges(n));
+        controller.getSuppressCatalystEdgesMenuItem().disableProperty().bind(disableFullGraphItems);
+
+        controller.getUseMultiCopyFoodNodesMenuItem().selectedProperty().addListener((c, o, n) -> graphView.setUseMultiCopyFoodNodes(n));
+        controller.getUseMultiCopyFoodNodesMenuItem().disableProperty().bind(disableFullGraphItems);
+
+        controller.getGraphEmbedderIterationsMenuItem().setOnAction(e -> {
+            TextInputDialog dialog = new TextInputDialog("" + graphView.getEmbeddingIterations());
+            dialog.setTitle("Graph Embedder Iterations Input");
+            dialog.setHeaderText("Graph Embedder Iterations Input");
+            dialog.setContentText("Please enter number of iterations:");
+            dialog.getEditor().textProperty().addListener((c, o, n) -> {
+                if (!n.matches("\\d*"))
+                    ((StringProperty) c).set(o);
+            });
+
+            final Optional<String> result = dialog.showAndWait();
+            if (result.isPresent() && Basic.isInteger(result.get())) {
+                graphView.setEmbeddingIterations(Math.max(10, Basic.parseInt(result.get())));
+            }
         });
-        controller.getUseMultiCopyFoodNodesMenuItem().disableProperty().bind(controller.getVisualizationTab().disableProperty());
 
         SetupFind.apply(window);
 

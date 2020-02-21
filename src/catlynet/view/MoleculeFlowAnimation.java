@@ -59,13 +59,13 @@ public class MoleculeFlowAnimation {
     /**
      * setup molecule flow simulation
      *
-     * @param reactionGraph
+     * @param graph
      * @param foodNodes
      * @param edge2Group
      * @param world
      */
-    public MoleculeFlowAnimation(Graph reactionGraph, NodeSet foodNodes, EdgeArray<Group> edge2Group, Group world) {
-        final EdgeIntegerArray edge2count = new EdgeIntegerArray(reactionGraph);
+    public MoleculeFlowAnimation(Graph graph, NodeSet foodNodes, EdgeArray<EdgeView> edge2Group, Group world) {
+        final EdgeIntegerArray edge2count = new EdgeIntegerArray(graph);
 
         final Color color = Color.DARKRED.brighter().brighter().brighter().brighter();
 
@@ -97,7 +97,7 @@ public class MoleculeFlowAnimation {
                                 count = 0;
 
                                 loop:
-                                for (Node v : Basic.randomize(reactionGraph.nodes(), random)) {
+                                for (Node v : Basic.randomize(graph.nodes(), random)) {
                                     if (!foodNodes.contains(v) && v.getInfo() instanceof MoleculeType) {
                                         for (Edge e : Basic.randomize(v.adjacentEdges(), random)) {
                                             if (e.getInfo() == EdgeType.Reactant || e.getInfo() == EdgeType.ReactantReversible || e.getInfo() == EdgeType.Catalyst) {
@@ -175,11 +175,11 @@ public class MoleculeFlowAnimation {
      *
      * @param edge
      * @param edge2count
-     * @param edge2Group
+     * @param edge2view
      * @param world
      */
-    private void animateEdge(Edge edge, boolean reverse, String label, EdgeIntegerArray edge2count, EdgeArray<Group> edge2Group, Color color, Group world) {
-        final Path path = ReactionGraphView.getPath(edge2Group.get(edge));
+    private void animateEdge(Edge edge, boolean reverse, String label, EdgeIntegerArray edge2count, EdgeArray<EdgeView> edge2view, Color color, Group world) {
+        final Path path = ReactionGraphView.getPath(edge2view.get(edge));
 
         if (path != null) {
             final Text text = new Text(label);
@@ -197,7 +197,7 @@ public class MoleculeFlowAnimation {
                     path.setEffect(SelectionEffectRed.getInstance());
 
                     for (Triplet<Edge, Boolean, String> triplet : computeEdgesReadyToFire(edge, reverse ? edge.getSource() : edge.getTarget(), edge2count)) {
-                        animateEdge(triplet.getFirst(), triplet.getSecond(), triplet.getThird(), edge2count, edge2Group, color.darker(), world);
+                        animateEdge(triplet.getFirst(), triplet.getSecond(), triplet.getThird(), edge2count, edge2view, color.darker(), world);
                     }
                 } else
                     path.setEffect(null);

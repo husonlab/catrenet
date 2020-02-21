@@ -164,6 +164,10 @@ public class MainWindowController {
     private CheckMenuItem computeImportanceCheckMenuItem;
 
     @FXML
+    private MenuItem graphEmbedderIterationsMenuItem;
+
+
+    @FXML
     private CheckMenuItem animateCAFCheckMenuItem;
 
     @FXML
@@ -202,6 +206,15 @@ public class MainWindowController {
 
     @FXML
     private MenuItem showNodeLabels;
+
+    @FXML
+    private RadioMenuItem fullGraphRadioMenuItem;
+
+    @FXML
+    private RadioMenuItem dependencyGraphRadioMenuItem;
+
+    @FXML
+    private RadioMenuItem reactantDependencyRadioMenuItem;
 
     @FXML
     private CheckMenuItem suppressCatalystEdgesMenuItem;
@@ -268,6 +281,9 @@ public class MainWindowController {
 
     @FXML
     private Tab visualizationTab;
+
+    @FXML
+    private Label graphTypeLabel;
 
     @FXML
     private BorderPane visualizationBorderPane;
@@ -618,6 +634,10 @@ public class MainWindowController {
         return computeImportanceCheckMenuItem;
     }
 
+    public MenuItem getGraphEmbedderIterationsMenuItem() {
+        return graphEmbedderIterationsMenuItem;
+    }
+
     public CheckMenuItem getAnimateCAFCheckMenuItem() {
         return animateCAFCheckMenuItem;
     }
@@ -672,6 +692,18 @@ public class MainWindowController {
 
     public MenuItem getShowNodeLabels() {
         return showNodeLabels;
+    }
+
+    public RadioMenuItem getFullGraphRadioMenuItem() {
+        return fullGraphRadioMenuItem;
+    }
+
+    public RadioMenuItem getDependencyGraphRadioMenuItem() {
+        return dependencyGraphRadioMenuItem;
+    }
+
+    public RadioMenuItem getReactantDependencyGraphRadioMenuItem() {
+        return reactantDependencyRadioMenuItem;
     }
 
     public CheckMenuItem getSuppressCatalystEdgesMenuItem() {
@@ -756,6 +788,10 @@ public class MainWindowController {
 
     public Tab getVisualizationTab() {
         return visualizationTab;
+    }
+
+    public Label getGraphTypeLabel() {
+        return graphTypeLabel;
     }
 
     public BorderPane getVisualizationBorderPane() {
