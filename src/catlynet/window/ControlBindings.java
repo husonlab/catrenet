@@ -76,7 +76,6 @@ public class ControlBindings {
         final BooleanProperty disableFullGraphItems = new SimpleBooleanProperty(true);
         disableFullGraphItems.bind(disableGraphItems.or(graphView.graphTypeProperty().isNotEqualTo(ReactionGraphView.Type.fullGraph)));
 
-        final RadioMenuItem noGraphTypeSet = new RadioMenuItem();
 
         final IntegerProperty algorithmsRunning = new SimpleIntegerProperty(0);
         final ChangeListener<Boolean> runningListener = new ChangeListener<Boolean>() {
@@ -203,9 +202,6 @@ public class ControlBindings {
 
         controller.getComputeVisualizationMenuItem().setOnAction(c -> {
             disableGraphItems.set(false);
-            if (noGraphTypeSet.isSelected())
-                controller.getFullGraphRadioMenuItem().setSelected(true);
-
             controller.getVisualizationTab().getTabPane().getSelectionModel().select(controller.getVisualizationTab());
             ComputeGraph.apply(window, controller);
         });
@@ -286,7 +282,7 @@ public class ControlBindings {
         controller.getRunMuCAFMultipleTimesMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()).or(window.getInputReactionSystem().inhibitorsPresentProperty().not()));
 
         controller.getRunMenuItem().setOnAction((e) -> {
-            RunAll.apply(window, controller, runningListener);
+             RunAll.apply(window, controller, runningListener);
             ComputeGraph.apply(window, controller);
         });
 
@@ -479,11 +475,11 @@ public class ControlBindings {
         controller.getShowNodeLabels().setOnAction(e -> ShowHideNodeLabels.apply(graphView));
         BasicFX.setupFullScreenMenuSupport(window.getStage(), controller.getFullScreenMenuItem());
 
+        final RadioMenuItem noGraphTypeSet = new RadioMenuItem();
         final ToggleGroup graphTypeButtonGroup = new ToggleGroup();
-        graphTypeButtonGroup.getToggles().addAll(controller.getFullGraphRadioMenuItem(), controller.getDependencyGraphRadioMenuItem(), controller.getReactantDependencyGraphRadioMenuItem());
+        graphTypeButtonGroup.getToggles().addAll(controller.getFullGraphRadioMenuItem(), controller.getDependencyGraphRadioMenuItem(), controller.getReactantDependencyGraphRadioMenuItem(), noGraphTypeSet);
 
-
-        graphTypeButtonGroup.selectToggle(noGraphTypeSet);
+        graphTypeButtonGroup.selectToggle(new RadioMenuItem());
         controller.getGraphTypeLabel().setText("");
         graphView.graphTypeProperty().addListener((c, o, n) -> controller.getGraphTypeLabel().setText(Basic.capitalizeFirstLetter(Basic.fromCamelCase(n.name()))));
 

@@ -33,10 +33,20 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * updates up the full graph
- * Daniel HUson, 2.2020
+ * setup up the full graph
+ * Daniel Huson, 2.2020
  */
 public class SetupFullGraph {
+    /**
+     * setup
+     *
+     * @param reactionGraph
+     * @param reactionSystem
+     * @param foodNodes
+     * @param molecule2node
+     * @param suppressCatalystEdges
+     * @param useMultiCopyFoodNodes
+     */
     public static void apply(Graph reactionGraph, ReactionSystem reactionSystem, NodeSet foodNodes, final Map<MoleculeType, Node> molecule2node, boolean suppressCatalystEdges, boolean useMultiCopyFoodNodes) {
         for (Reaction reaction : reactionSystem.getReactions()) {
             final Node reactionNode = reactionGraph.newNode(reaction);
@@ -45,7 +55,7 @@ public class SetupFullGraph {
             molecules.addAll(reaction.getReactants());
             molecules.addAll(reaction.getProducts());
             if (!suppressCatalystEdges) {
-                molecules.addAll(reaction.getCatalysts());
+                molecules.addAll(reaction.getCatalystConjunctions());
                 molecules.addAll(reaction.getInhibitions());
             }
             for (MoleculeType molecule : molecules) {
@@ -76,7 +86,7 @@ public class SetupFullGraph {
                 for (MoleculeType molecule : reaction.getCatalystConjunctions()) {
                     if (molecule.getName().contains("&")) {
                         for (MoleculeType catalyst : MoleculeType.valueOf(Basic.trimAll(Basic.split(molecule.getName(), '&')))) {
-                            reactionGraph.newEdge(getNode(reactionGraph, reactionSystem, catalyst, molecule2node, useMultiCopyFoodNodes), molecule2node.get(molecule), EdgeType.Catalyst);
+                            reactionGraph.newEdge(getNode(reactionGraph, reactionSystem, catalyst, molecule2node, useMultiCopyFoodNodes), getNode(reactionGraph, reactionSystem, molecule, molecule2node, useMultiCopyFoodNodes), EdgeType.Catalyst);
                         }
                     }
                     reactionGraph.newEdge(getNode(reactionGraph, reactionSystem, molecule, molecule2node, useMultiCopyFoodNodes), reactionNode, EdgeType.Catalyst);
@@ -107,6 +117,8 @@ public class SetupFullGraph {
      * @return node
      */
     private static Node getNode(Graph reactionGraph, ReactionSystem reactionSystem, MoleculeType molecule, Map<MoleculeType, Node> molecule2node, boolean multiCopyFoodNodes) {
+        if (molecule2node.get(molecule) == null)
+            System.err.println("null");
         if (!multiCopyFoodNodes)
             return molecule2node.get(molecule);
         else {

@@ -170,26 +170,17 @@ public class ReactionGraphView {
      * apply the visualization
      */
     public void update() {
-        //System.err.println("Updating graph");
         clear();
 
+        //System.err.println("Updating graph");
         final Map<MoleculeType, Node> molecule2node = new HashMap<>();
 
-        switch (getGraphType()) {
-            default:
-            case fullGraph: {
-                SetupFullGraph.apply(reactionGraph, reactionSystem, foodNodes, molecule2node, isSuppressCatalystEdges(), isUseMultiCopyFoodNodes());
-                break;
-            }
-            case dependencyGraph: {
-                SetupDependencyGraph.apply(reactionGraph, reactionSystem, true);
-                break;
-            }
-            case reactantDependencyGraph: {
-                SetupDependencyGraph.apply(reactionGraph, reactionSystem, false);
-                break;
-            }
-        }
+        if (getGraphType() == Type.dependencyGraph)
+            SetupDependencyGraph.apply(reactionGraph, reactionSystem, true);
+        else if (getGraphType() == Type.reactantDependencyGraph)
+            SetupDependencyGraph.apply(reactionGraph, reactionSystem, false);
+        else
+            SetupFullGraph.apply(reactionGraph, reactionSystem, foodNodes, molecule2node, isSuppressCatalystEdges(), isUseMultiCopyFoodNodes());
 
         final int numberOfConnectedComponts = reactionGraph.getNumberConnectedComponents();
         if (numberOfConnectedComponts > 1)

@@ -32,7 +32,6 @@ public class ComputeGraph {
         controller.getAnimateCAFCheckMenuItem().setSelected(false);
         controller.getAnimateRAFCheckMenuItem().setSelected(false);
         controller.getAnimateMaxRAFCheckMenuItem().setSelected(false);
-        window.getReactionGraphView().clear();
         window.getReactionGraphView().update();
     }
 }
