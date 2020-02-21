@@ -476,8 +476,8 @@
                                                                     prefWidth="200.0" BorderPane.alignment="CENTER"/>
                                                     </center>
                                                 </BorderPane>
-                                                <Label fx:id="graphTypeLabel" text="Label" AnchorPane.leftAnchor="10.0"
-                                                       AnchorPane.topAnchor="10.0"/>
+                                                <Label fx:id="graphTypeLabel" text="Label" textAlignment="RIGHT"
+                                                       AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="10.0"/>
                                             </children>
                                         </AnchorPane>
                                     </content>
