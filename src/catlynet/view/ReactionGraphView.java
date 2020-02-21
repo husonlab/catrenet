@@ -22,7 +22,6 @@ package catlynet.view;
 import catlynet.model.MoleculeType;
 import catlynet.model.ReactionSystem;
 import catlynet.window.MainWindowController;
-import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Rectangle2D;
@@ -44,7 +43,10 @@ import jloda.util.APoint2D;
 import jloda.util.Basic;
 
 import java.io.PrintStream;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -77,6 +79,8 @@ public class ReactionGraphView {
 
     private final BooleanProperty empty = new SimpleBooleanProperty(true);
 
+    private StringProperty nodeLabelStyle = new SimpleStringProperty("");
+
     static class AndNode {
     }
 
@@ -100,7 +104,6 @@ public class ReactionGraphView {
         this.logStream = logStream;
 
         nodeSelection.getSelectedItemsUnmodifiable().addListener((ListChangeListener<Node>) (e) -> {
-            final Set<MoleculeType> molecules = new HashSet<>();
             while (e.next()) {
                 for (Node v : e.getAddedSubList()) {
                     final NodeView nv = node2view.get(v);
@@ -108,8 +111,6 @@ public class ReactionGraphView {
                         nv.getLabel().setEffect(SelectionEffectBlue.getInstance());
                         nv.getShape().setEffect(SelectionEffectBlue.getInstance());
                     }
-                    if (isUseMultiCopyFoodNodes() && v.getInfo() instanceof MoleculeType)
-                        molecules.add((MoleculeType) v.getInfo());
                 }
                 for (Node v : e.getRemoved()) {
                     final NodeView nv = node2view.get(v);
@@ -117,12 +118,6 @@ public class ReactionGraphView {
                         nv.getLabel().setEffect(null);
                         nv.getShape().setEffect(null);
                     }
-                }
-                if (molecules.size() > 0) {
-                    Platform.runLater(() -> {
-                        nodeSelection.selectAll(reactionGraph.nodeStream()
-                                .filter(v -> !nodeSelection.isSelected(v) && v.getInfo() instanceof MoleculeType && molecules.contains((MoleculeType) v.getInfo())).collect(Collectors.toList()));
-                    });
                 }
             }
         });
@@ -154,6 +149,13 @@ public class ReactionGraphView {
                             ((Shape) node).setStroke(n);
                     }
                 }
+            }
+        });
+
+        nodeLabelStyle.addListener((c, o, n) -> {
+
+            for (Node v : reactionGraph.nodes()) {
+                node2view.get(v).getLabel().setStyle(n);
             }
         });
 
@@ -213,6 +215,7 @@ public class ReactionGraphView {
     }
 
     public void clear() {
+        moleculeFlowAnimation.setPlaying(false);
         empty.set(true);
         foodNodes.clear();
         nodeSelection.clearSelection();
@@ -252,6 +255,7 @@ public class ReactionGraphView {
 
         graph.nodeStream().forEach(v -> {
             final NodeView nv = new NodeView(this, reactionSystem.getFoods(), v, coordinates.get(v).getX(), coordinates.get(v).getY());
+            nv.getLabel().setStyle(getNodeLabelStyle());
             node2view.put(v, nv);
             spacers.getChildren().add(nv.getSpacer());
             nodes.getChildren().add(nv.getShape());
@@ -325,8 +329,15 @@ public class ReactionGraphView {
                 if (!c.isShiftDown()) {
                     nodeSelection.clearSelection();
                     edgeSelection.clearSelection();
-                    if (v != null)
+                    if (v != null) {
                         nodeSelection.select(v);
+                        if (isUseMultiCopyFoodNodes() && foodNodes.contains(v)) {
+                            for (Node w : foodNodes) {
+                                if (v.getInfo() == w.getInfo())
+                                    nodeSelection.select(w);
+                            }
+                        }
+                    }
                     if (e != null)
                         edgeSelection.select(e);
                 } else {
@@ -419,10 +430,16 @@ public class ReactionGraphView {
         return node2view.get(v).getLabel();
     }
 
-    public void setNodeStyle(String style) {
-        for (Node v : reactionGraph.nodes()) {
-            node2view.get(v).getShape().setStyle(style);
-        }
+    public String getNodeLabelStyle() {
+        return nodeLabelStyle.get();
+    }
+
+    public StringProperty nodeLabelStyleProperty() {
+        return nodeLabelStyle;
+    }
+
+    public void setNodeLabelStyle(String nodeLabelStyle) {
+        this.nodeLabelStyle.set(nodeLabelStyle);
     }
 
     public Rectangle2D getBBox() {

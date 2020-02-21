@@ -33,7 +33,6 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.TextArea;
@@ -74,18 +73,15 @@ public class ControlBindings {
 
         final BooleanProperty disableGraphItems = new SimpleBooleanProperty(true);
         final BooleanProperty disableFullGraphItems = new SimpleBooleanProperty(true);
-        disableFullGraphItems.bind(disableGraphItems.or(graphView.graphTypeProperty().isNotEqualTo(ReactionGraphView.Type.fullGraph)));
+        disableFullGraphItems.bind(disableGraphItems.or(graphView.graphTypeProperty().isEqualTo(ReactionGraphView.Type.dependencyGraph).or(graphView.graphTypeProperty().isEqualTo(ReactionGraphView.Type.reactantDependencyGraph))));
 
 
         final IntegerProperty algorithmsRunning = new SimpleIntegerProperty(0);
-        final ChangeListener<Boolean> runningListener = new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> c, Boolean o, Boolean n) {
-                if (n)
-                    algorithmsRunning.set(algorithmsRunning.get() + 1);
-                else
-                    algorithmsRunning.set(algorithmsRunning.get() - 1);
-            }
+        final ChangeListener<Boolean> runningListener = (c, o, n) -> {
+            if (n)
+                algorithmsRunning.set(algorithmsRunning.get() + 1);
+            else
+                algorithmsRunning.set(algorithmsRunning.get() - 1);
         };
 
         controller.getInputTextArea().undoableProperty().addListener((c, o, n) -> {
@@ -480,6 +476,7 @@ public class ControlBindings {
         graphTypeButtonGroup.getToggles().addAll(controller.getFullGraphRadioMenuItem(), controller.getDependencyGraphRadioMenuItem(), controller.getReactantDependencyGraphRadioMenuItem(), noGraphTypeSet);
 
         graphTypeButtonGroup.selectToggle(new RadioMenuItem());
+
         controller.getGraphTypeLabel().setText("");
         graphView.graphTypeProperty().addListener((c, o, n) -> controller.getGraphTypeLabel().setText(Basic.capitalizeFirstLetter(Basic.fromCamelCase(n.name()))));
 
@@ -523,18 +520,16 @@ public class ControlBindings {
         fontSize.addListener((c, o, n) -> {
             final String style = String.format("-fx-font-size: %.1f", n.doubleValue());
 
-            if (controller.getOutputSplittableTabPane().getSelectionModel().getSelectedItem().equals(controller.getVisualizationTab())) {
-                graphView.setNodeStyle(style);
-            } else {
-                controller.getInputTextArea().setStyle(style);
-                controller.getInputFoodTextArea().setStyle(style);
-                controller.getExpandedReactionsTextArea().setStyle(style);
-                controller.getLogTextArea().setStyle(style);
-                controller.getCafTextArea().setStyle(style);
-                controller.getRafTextArea().setStyle(style);
-                controller.getPseudoRAFTextArea().setStyle(style);
-                controller.getMuCafTextArea().setStyle(style);
-            }
+            graphView.setNodeLabelStyle(style);
+
+            controller.getInputTextArea().setStyle(style);
+            controller.getInputFoodTextArea().setStyle(style);
+            controller.getExpandedReactionsTextArea().setStyle(style);
+            controller.getLogTextArea().setStyle(style);
+            controller.getCafTextArea().setStyle(style);
+            controller.getRafTextArea().setStyle(style);
+            controller.getPseudoRAFTextArea().setStyle(style);
+            controller.getMuCafTextArea().setStyle(style);
         });
     }
 
