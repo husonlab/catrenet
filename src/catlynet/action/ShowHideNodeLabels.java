@@ -33,7 +33,7 @@ public class ShowHideNodeLabels {
         boolean show = false;
         final Iterable<Node> nodes;
         if (reactionGraphView.getNodeSelection().size() > 0)
-            nodes = reactionGraphView.getNodeSelection().getSelectedItemsUnmodifiable();
+            nodes = reactionGraphView.getNodeSelection().getSelectedItems();
         else
             nodes = reactionGraphView.getReactionGraph().nodes();
 

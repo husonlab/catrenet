@@ -129,7 +129,7 @@ public class ExportManager {
         final Set<MoleculeType> food = new HashSet<>();
 
         final ReactionSystem output = new ReactionSystem();
-        graphView.getNodeSelection().getSelectedItemsUnmodifiable().forEach(v -> {
+        graphView.getNodeSelection().getSelectedItems().forEach(v -> {
             if (v.getInfo() instanceof Reaction) {
                 final Reaction r = (Reaction) v.getInfo();
                 food.addAll(r.getReactants());

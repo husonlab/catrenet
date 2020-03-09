@@ -103,7 +103,7 @@ public class ReactionGraphView {
         this.world = new Group();
         this.logStream = logStream;
 
-        nodeSelection.getSelectedItemsUnmodifiable().addListener((ListChangeListener<Node>) (e) -> {
+        nodeSelection.getSelectedItems().addListener((ListChangeListener<Node>) (e) -> {
             while (e.next()) {
                 for (Node v : e.getAddedSubList()) {
                     final NodeView nv = node2view.get(v);
@@ -122,7 +122,7 @@ public class ReactionGraphView {
             }
         });
 
-        edgeSelection.getSelectedItemsUnmodifiable().addListener((ListChangeListener<Edge>) c -> {
+        edgeSelection.getSelectedItems().addListener((ListChangeListener<Edge>) c -> {
             while (c.next()) {
                 for (Edge e : c.getAddedSubList()) {
                     final Group group = edge2view.get(e);
@@ -301,7 +301,7 @@ public class ReactionGraphView {
             final double mouseY = c.getSceneY();
 
             if (v != null && !nodeToMove.translateXProperty().isBound()) {
-                for (Node w : nodeSelection.getSelectedItemsUnmodifiable()) {
+                for (Node w : nodeSelection.getSelectedItems()) {
                     node2view.get(w).translate(mouseX - mouseDown[0], mouseY - mouseDown[1]);
                 }
             } else {
@@ -361,13 +361,13 @@ public class ReactionGraphView {
         mouseTarget.setOnMouseClicked(c -> {
             if (c.getClickCount() == 2) {
                 if (v != null) {
-                    nodeSelection.selectAll(Basic.asList(v.adjacentNodes()));
-                    edgeSelection.selectAll(Basic.asList(v.adjacentEdges()));
+                    nodeSelection.selectItems(Basic.asList(v.adjacentNodes()));
+                    edgeSelection.selectItems(Basic.asList(v.adjacentEdges()));
                 }
             } else if (c.getClickCount() == 3) {
                 final NodeSet nodes = new NodeSet(reactionGraph);
                 reactionGraph.visitConnectedComponent(v, nodes);
-                nodeSelection.selectAll(nodes);
+                nodeSelection.selectItems(nodes);
                 final EdgeSet edges = new EdgeSet(reactionGraph);
                 for (Node p : nodes) {
                     for (Edge f : p.adjacentEdges()) {
@@ -375,7 +375,7 @@ public class ReactionGraphView {
                             edges.add(f);
                     }
                 }
-                edgeSelection.selectAll(edges);
+                edgeSelection.selectItems(edges);
             }
         });
     }
@@ -491,7 +491,7 @@ public class ReactionGraphView {
     }
 
     public Collection<String> getSelectedLabels() {
-        return getNodeSelection().getSelectedItemsUnmodifiable().stream().map(v -> getLabel(v).getText()).filter(s -> s.length() > 0).collect(Collectors.toList());
+        return getNodeSelection().getSelectedItems().stream().map(v -> getLabel(v).getText()).filter(s -> s.length() > 0).collect(Collectors.toList());
     }
 
     public int getEmbeddingIterations() {

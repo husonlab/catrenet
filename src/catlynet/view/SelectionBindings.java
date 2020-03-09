@@ -100,8 +100,8 @@ public class SelectionBindings {
         controller.getSelectConnectedComponentMenuItem().setOnAction(c -> {
             final Graph reactionGraph = view.getReactionGraph();
             final NodeSet nodes = new NodeSet(reactionGraph);
-            new ArrayList<>(view.getNodeSelection().getSelectedItemsUnmodifiable()).forEach(v -> reactionGraph.visitConnectedComponent(v, nodes));
-            view.getNodeSelection().selectAll(nodes);
+            new ArrayList<>(view.getNodeSelection().getSelectedItems()).forEach(v -> reactionGraph.visitConnectedComponent(v, nodes));
+            view.getNodeSelection().selectItems(nodes);
             final EdgeSet edges = new EdgeSet(reactionGraph);
             for (Node p : nodes) {
                 for (Edge f : p.adjacentEdges()) {
@@ -109,7 +109,7 @@ public class SelectionBindings {
                         edges.add(f);
                 }
             }
-            view.getEdgeSelection().selectAll(edges);
+            view.getEdgeSelection().selectItems(edges);
         });
         controller.getSelectConnectedComponentMenuItem().disableProperty().bind(visualizationHasFocus.not().or(view.getNodeSelection().emptyProperty()));
 
@@ -170,7 +170,7 @@ public class SelectionBindings {
                 view.getNodeSelection().clearSelection(v);
         }
         if (edges) {
-            view.getEdgeSelection().selectAll(view.getReactionGraph().getEdgesAsSet());
+            view.getEdgeSelection().selectItems(view.getReactionGraph().getEdgesAsSet());
         } else if (deselectNonMatched)
             view.getEdgeSelection().clearSelection();
     }
