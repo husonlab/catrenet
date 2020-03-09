@@ -21,10 +21,14 @@ package catlynet.action;
 
 import catlynet.io.CRSFileFilter;
 import catlynet.io.Save;
+import catlynet.model.MoleculeType;
+import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
+import catlynet.view.ReactionGraphView;
 import catlynet.window.MainWindow;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.stage.FileChooser;
 import jloda.fx.util.RecentFilesManager;
 import jloda.fx.util.TextFileFilter;
@@ -34,9 +38,9 @@ import jloda.util.ProgramProperties;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 /**
  * The export menu manager
@@ -52,9 +56,10 @@ public class ExportManager {
         this.window = window;
     }
 
-
     public void clear() {
-        window.getController().getExportMenu().getItems().forEach(m -> m.setDisable(true));
+        window.getController().getExportMenu().getItems().stream()
+                .filter(m -> m != window.getController().getExportSelectedNodesMenuItem() && !(m instanceof SeparatorMenuItem))
+                .forEach(m -> m.setDisable(true));
     }
 
     /**
@@ -63,19 +68,19 @@ public class ExportManager {
      * @param reactions
      */
     public void addOrReplace(ReactionSystem reactions) {
-        final String reactionName = Basic.toCamelCase(reactions.getName());
+        final String reactionName = reactions.getName();
         final Menu exportMenu = window.getController().getExportMenu();
         final MenuItem exportMenuItem;
 
-        final Optional<MenuItem> existing = exportMenu.getItems().stream().filter(m -> m.getText().equals(reactionName)).findAny();
+        final Optional<MenuItem> existing = exportMenu.getItems().stream().filter(m -> !(m instanceof SeparatorMenuItem) && m.getText().equals(reactionName)).findAny();
         if (existing.isPresent())
             exportMenuItem = existing.get();
         else {
-            exportMenuItem = new MenuItem(reactionName);
+            exportMenuItem = new MenuItem(reactionName + "...");
             exportMenu.getItems().add(exportMenuItem);
-            exportMenu.getItems().setAll(exportMenu.getItems().stream().sorted(Comparator.comparing(MenuItem::getText)).collect(Collectors.toList()));
+            //exportMenu.getItems().setAll(exportMenu.getItems().stream().sorted(Comparator.comparing(MenuItem::getText)).collect(Collectors.toList()));
         }
-        exportMenuItem.setOnAction(c -> exportDialog(window, reactionName, reactions));
+        exportMenuItem.setOnAction(c -> exportDialog(window, Basic.toCamelCase(reactionName), reactions));
         exportMenuItem.setDisable(reactions.size() == 0);
     }
 
@@ -115,6 +120,32 @@ public class ExportManager {
             } catch (IOException ex) {
                 NotificationManager.showError("Export failed: " + ex);
             }
+        }
+    }
+
+    public static void exportNodes(MainWindow window) {
+        final ReactionGraphView graphView = window.getReactionGraphView();
+
+        final Set<MoleculeType> food = new HashSet<>();
+
+        final ReactionSystem output = new ReactionSystem();
+        graphView.getNodeSelection().getSelectedItemsUnmodifiable().forEach(v -> {
+            if (v.getInfo() instanceof Reaction) {
+                final Reaction r = (Reaction) v.getInfo();
+                food.addAll(r.getReactants());
+                food.addAll(r.getProducts());
+                r.getCatalystConjunctions().forEach(c -> food.addAll(MoleculeType.valueOf(Basic.split(c.getName(), '&'))));
+                food.addAll(r.getInhibitions());
+                output.getReactions().add(r);
+            } else if (v.getInfo() instanceof MoleculeType) {
+                food.add((MoleculeType) v.getInfo());
+            }
+        });
+
+        output.getFoods().addAll(Basic.intersection(window.getInputReactionSystem().getFoods(), food));
+
+        if (output.getReactions().size() > 0) {
+            (new ExportManager(window)).exportDialog(window, "selected", output);
         }
     }
 }

@@ -27,9 +27,9 @@ import catlynet.window.MainWindowController;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import jloda.fx.control.ItemSelectionModel;
-import jloda.graph.Edge;
-import jloda.graph.Node;
+import jloda.graph.*;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 /**
@@ -97,6 +97,24 @@ public class SelectionBindings {
         controller.getSelectReactionsMenuItem().setOnAction(e -> select(window.getInputReactionSystem(), view, false, false, false, true, false, false));
         controller.getSelectReactionsMenuItem().disableProperty().bind(visualizationHasFocus.not());
 
+        controller.getSelectConnectedComponentMenuItem().setOnAction(c -> {
+            final Graph reactionGraph = view.getReactionGraph();
+            final NodeSet nodes = new NodeSet(reactionGraph);
+            new ArrayList<>(view.getNodeSelection().getSelectedItemsUnmodifiable()).forEach(v -> reactionGraph.visitConnectedComponent(v, nodes));
+            view.getNodeSelection().selectAll(nodes);
+            final EdgeSet edges = new EdgeSet(reactionGraph);
+            for (Node p : nodes) {
+                for (Edge f : p.adjacentEdges()) {
+                    if (nodes.contains(f.getOpposite(p)))
+                        edges.add(f);
+                }
+            }
+            view.getEdgeSelection().selectAll(edges);
+        });
+        controller.getSelectConnectedComponentMenuItem().disableProperty().bind(visualizationHasFocus.not().or(view.getNodeSelection().emptyProperty()));
+
+        controller.getSelectConnectedComponentContextMenuItem().setOnAction(controller.getSelectConnectedComponentMenuItem().getOnAction());
+        controller.getSelectConnectedComponentContextMenuItem().disableProperty().bind(controller.getSelectConnectedComponentMenuItem().disableProperty());
 
         controller.getSelectMaxCAFMenuItem().setOnAction(e -> selectForAlgorithm(view, window.getReactionSystem(ReactionSystem.Type.maxCAF)));
         controller.getSelectMaxCAFMenuItem().disableProperty().bind(visualizationHasFocus.not().or(window.getReactionSystem(ReactionSystem.Type.maxCAF).sizeProperty().isEqualTo(0)));

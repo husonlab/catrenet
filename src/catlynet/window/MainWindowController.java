@@ -47,6 +47,9 @@ public class MainWindowController {
     private Menu exportMenu;
 
     @FXML
+    private MenuItem exportSelectedNodesMenuItem;
+
+    @FXML
     private Menu recentFilesMenu;
 
     @FXML
@@ -131,6 +134,9 @@ public class MainWindowController {
     private MenuItem selectReactionsMenuItem;
 
     @FXML
+    private MenuItem selectConnectedComponentMenuItem;
+
+    @FXML
     private Menu algorithmMenu;
 
     @FXML
@@ -159,6 +165,9 @@ public class MainWindowController {
 
     @FXML
     private MenuItem runMuCAFMultipleTimesMenuItem;
+
+    @FXML
+    private MenuItem spontaneousInRafMenuItem;
 
     @FXML
     private CheckMenuItem computeImportanceCheckMenuItem;
@@ -316,19 +325,7 @@ public class MainWindowController {
     private MenuItem selectNoneContextMenuItem;
 
     @FXML
-    private CheckMenuItem animateCAFContextMenuItem;
-
-    @FXML
-    private CheckMenuItem animateRAFContextMenuItem;
-
-    @FXML
-    private CheckMenuItem animatePseudoRAFContextMenuItem;
-
-    @FXML
-    private CheckMenuItem animateInhibitionsContextMenuItem;
-
-    @FXML
-    private MenuItem stopAnimationContextMenuItem;
+    private MenuItem selectConnectedComponentContextMenuItem;
 
     @FXML
     private Tab cafTab;
@@ -478,6 +475,10 @@ public class MainWindowController {
         return exportMenu;
     }
 
+    public MenuItem getExportSelectedNodesMenuItem() {
+        return exportSelectedNodesMenuItem;
+    }
+
     public Menu getRecentFilesMenu() {
         return recentFilesMenu;
     }
@@ -590,6 +591,10 @@ public class MainWindowController {
         return selectReactionsMenuItem;
     }
 
+    public MenuItem getSelectConnectedComponentMenuItem() {
+        return selectConnectedComponentMenuItem;
+    }
+
     public Menu getAlgorithmMenu() {
         return algorithmMenu;
     }
@@ -628,6 +633,10 @@ public class MainWindowController {
 
     public MenuItem getRunMuCAFMultipleTimesMenuItem() {
         return runMuCAFMultipleTimesMenuItem;
+    }
+
+    public MenuItem getSpontaneousInRafMenuItem() {
+        return spontaneousInRafMenuItem;
     }
 
     public CheckMenuItem getComputeImportanceCheckMenuItem() {
@@ -830,24 +839,8 @@ public class MainWindowController {
         return selectNoneContextMenuItem;
     }
 
-    public CheckMenuItem getAnimateCAFContextMenuItem() {
-        return animateCAFContextMenuItem;
-    }
-
-    public CheckMenuItem getAnimateRAFContextMenuItem() {
-        return animateRAFContextMenuItem;
-    }
-
-    public CheckMenuItem getAnimatePseudoRAFContextMenuItem() {
-        return animatePseudoRAFContextMenuItem;
-    }
-
-    public CheckMenuItem getAnimateInhibitionsContextMenuItem() {
-        return animateInhibitionsContextMenuItem;
-    }
-
-    public MenuItem getStopAnimationContextMenuItem() {
-        return stopAnimationContextMenuItem;
+    public MenuItem getSelectConnectedComponentContextMenuItem() {
+        return selectConnectedComponentContextMenuItem;
     }
 
     public Tab getCafTab() {

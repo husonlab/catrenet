@@ -207,7 +207,7 @@ public class Reaction implements Comparable<Reaction> {
 
             if (!catalystsString.contains("(") && !catalystsString.contains("&"))
                 catalystsString = catalystsString.replaceAll(",", " ");
-            catalysts = Basic.trimAll(catalystsString.split("\\s+"));
+            catalysts = Arrays.stream(Basic.trimAll(catalystsString.split("\\s+"))).map(String::trim).filter(s -> s.length() > 0).toArray(String[]::new);
         }
 
         final String[] inhibitors;

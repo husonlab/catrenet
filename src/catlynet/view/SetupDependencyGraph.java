@@ -46,20 +46,47 @@ public class SetupDependencyGraph {
     public static void apply(Graph reactionGraph, ReactionSystem reactionSystem, boolean useCatalysts) {
         final Map<Reaction, Node> reactionNodeMap = new HashMap<>();
 
-        for (Reaction reaction1 : reactionSystem.getReactions()) {
-            final Node v = reactionGraph.newNode(reaction1);
-            reactionNodeMap.put(reaction1, v);
-            final Set<MoleculeType> nonFoodProducts = new HashSet<>(reaction1.getProducts());
-            nonFoodProducts.removeAll(reactionSystem.getFoods());
-            for (Reaction reaction2 : reactionSystem.getReactions()) {
-                if (reaction2 == reaction1)
-                    break;
-                final Node w = reactionNodeMap.get(reaction2);
+        reactionSystem.getReactions().forEach(r -> reactionNodeMap.put(r, reactionGraph.newNode(r)));
 
-                if (Basic.intersects(nonFoodProducts, reaction2.getReactants()) || (useCatalysts && (Basic.intersects(nonFoodProducts, reaction2.getCatalysts())) || Basic.intersects(nonFoodProducts, reaction2.getInhibitions()))) {
-                    reactionGraph.newEdge(v, w, EdgeType.Dependency);
+        reactionSystem.getReactions().forEach(r1 -> {
+            final Node v = reactionNodeMap.get(r1);
+
+            reactionSystem.getReactions().stream().filter(r2 -> r2 != r1).forEach(r2 -> {
+                final Node w = reactionNodeMap.get(r2);
+
+                for (int z = 0; z <= 1; z++) { // try forward, then reverse
+                    final Set<MoleculeType> nonFoodProducts = new HashSet<>();
+                    if (z == 0) {
+                        if (r1.getDirection() == Reaction.Direction.forward || r1.getDirection() == Reaction.Direction.both) {
+                            nonFoodProducts.addAll(r1.getProducts());
+                            nonFoodProducts.removeAll(reactionSystem.getFoods());
+                        } else
+                            continue;
+                    } else // z==1
+                    {
+                        if (r1.getDirection() == Reaction.Direction.reverse || r1.getDirection() == Reaction.Direction.both) {
+                            nonFoodProducts.addAll(r1.getReactants());
+                            nonFoodProducts.removeAll(reactionSystem.getFoods());
+                        } else
+                            continue;
+                    }
+
+                    if (nonFoodProducts.size() > 0) {
+                        final Set<MoleculeType> catalysts = new HashSet<>();
+                        r2.getCatalystConjunctions().forEach(c -> catalysts.addAll(MoleculeType.valueOf(Basic.split(c.getName(), '&'))));
+
+                        if ((r2.getDirection() == Reaction.Direction.forward || r2.getDirection() == Reaction.Direction.both) &&
+                                (Basic.intersects(nonFoodProducts, r2.getReactants()) || (useCatalysts && (Basic.intersects(nonFoodProducts, catalysts)) || Basic.intersects(nonFoodProducts, r2.getInhibitions())))
+                                && v.getEdgeTo(w) == null) {
+                            reactionGraph.newEdge(v, w, EdgeType.Dependency);
+                        } else if ((r2.getDirection() == Reaction.Direction.reverse || r2.getDirection() == Reaction.Direction.both) &&
+                                (Basic.intersects(nonFoodProducts, r2.getProducts()) || (useCatalysts && (Basic.intersects(nonFoodProducts, catalysts)) || Basic.intersects(nonFoodProducts, r2.getInhibitions())))
+                                && v.getEdgeTo(w) == null) {
+                            reactionGraph.newEdge(v, w, EdgeType.Dependency);
+                        }
+                    }
                 }
-            }
-        }
+            });
+        });
     }
 }

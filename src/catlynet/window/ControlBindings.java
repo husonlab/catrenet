@@ -107,6 +107,9 @@ public class ControlBindings {
 
         controller.getImportMenuItem().setOnAction(c -> ImportWimsFormat.apply(window.getStage()));
 
+        controller.getExportSelectedNodesMenuItem().setOnAction(c -> ExportManager.exportNodes(window));
+        controller.getExportSelectedNodesMenuItem().disableProperty().bind(graphView.emptyProperty().or(graphView.getNodeSelection().emptyProperty()));
+
         controller.getSaveMenItem().setOnAction(e -> Save.showSaveDialog(window));
 
         controller.getCloseMenuItem().setOnAction(e -> {
@@ -150,7 +153,7 @@ public class ControlBindings {
         controller.getCutMenuItem().disableProperty().bind((controller.getInputTextArea().focusedProperty().or(controller.getInputFoodTextArea().focusedProperty())).not());
 
         controller.getCopyMenuItem().setOnAction((e) -> {
-            if (controller.getVisualizationTab().isSelected()) {
+            if (controller.getVisualizationTab().getTabPane().isFocused() && controller.getVisualizationTab().isSelected()) {
                 final ClipboardContent content = new ClipboardContent();
                 if (graphView.getNodeSelection().size() > 0)
                     content.putString(Basic.toString(graphView.getSelectedLabels(), "\n"));
@@ -277,8 +280,12 @@ public class ControlBindings {
         controller.getRunMuCAFMultipleTimesMenuItem().setOnAction((e) -> RunMuCAFMultipleTimes.apply(window, controller, runningListener));
         controller.getRunMuCAFMultipleTimesMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()).or(window.getInputReactionSystem().inhibitorsPresentProperty().not()));
 
+
+        controller.getSpontaneousInRafMenuItem().setOnAction((e) -> ComputeNecessarilySpontaneousInRAF.apply(window, window.getInputReactionSystem(), controller, runningListener));
+        controller.getSpontaneousInRafMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()));
+
         controller.getRunMenuItem().setOnAction((e) -> {
-             RunAll.apply(window, controller, runningListener);
+            RunAll.apply(window, controller, runningListener);
             ComputeGraph.apply(window, controller);
         });
 
@@ -410,9 +417,6 @@ public class ControlBindings {
             });
             controller.getAnimateCAFCheckMenuItem().disableProperty().bind(disableFullGraphItems.or(graphView.getMoleculeFlowAnimation().playingProperty()));
 
-            controller.getAnimateCAFContextMenuItem().selectedProperty().bindBidirectional(controller.getAnimateCAFCheckMenuItem().selectedProperty());
-            controller.getAnimateCAFContextMenuItem().disableProperty().bind(controller.getAnimateCAFCheckMenuItem().disableProperty());
-
             controller.getAnimateRAFCheckMenuItem().selectedProperty().addListener((c, o, n) -> {
                 if (n) {
                     controller.getAnimateCAFCheckMenuItem().setSelected(false);
@@ -424,9 +428,6 @@ public class ControlBindings {
                 }
             });
             controller.getAnimateRAFCheckMenuItem().disableProperty().bind(disableFullGraphItems.or(graphView.getMoleculeFlowAnimation().playingProperty()));
-
-            controller.getAnimateRAFContextMenuItem().selectedProperty().bindBidirectional(controller.getAnimateRAFCheckMenuItem().selectedProperty());
-            controller.getAnimateRAFContextMenuItem().disableProperty().bind(controller.getAnimateRAFCheckMenuItem().disableProperty());
 
             controller.getAnimateMaxRAFCheckMenuItem().selectedProperty().addListener((c, o, n) -> {
                 if (n) {
@@ -440,9 +441,6 @@ public class ControlBindings {
             });
             controller.getAnimateMaxRAFCheckMenuItem().disableProperty().bind(disableFullGraphItems.or(graphView.getMoleculeFlowAnimation().playingProperty()));
 
-            controller.getAnimatePseudoRAFContextMenuItem().selectedProperty().bindBidirectional(controller.getAnimateMaxRAFCheckMenuItem().selectedProperty());
-            controller.getAnimatePseudoRAFContextMenuItem().disableProperty().bind(controller.getAnimateMaxRAFCheckMenuItem().disableProperty());
-
             controller.getStopAnimationMenuItem().setOnAction(e -> {
                 graphView.getMoleculeFlowAnimation().setPlaying(false);
                 controller.getSelectAllMenuItem().getOnAction().handle(null);
@@ -453,18 +451,13 @@ public class ControlBindings {
             });
             controller.getStopAnimationMenuItem().disableProperty().bind(graphView.getMoleculeFlowAnimation().playingProperty().not());
 
-            controller.getStopAnimationContextMenuItem().setOnAction(controller.getStopAnimationMenuItem().getOnAction());
-            controller.getStopAnimationContextMenuItem().disableProperty().bind(controller.getStopAnimationMenuItem().disableProperty());
-
             controller.getStopAnimationButton().setVisible(false);
             controller.getStopAnimationButton().setOnAction(controller.getStopAnimationMenuItem().getOnAction());
             graphView.getMoleculeFlowAnimation().playingProperty().addListener((c, o, n) -> controller.getStopAnimationButton().setVisible(n));
             controller.getStopAnimationButton().textProperty().bind(graphView.getMoleculeFlowAnimation().modelProperty().asString().concat(" animation"));
 
             graphView.getMoleculeFlowAnimation().animateInhibitionsProperty().bind(controller.getAnimateInhibitionsMenuItem().selectedProperty());
-            controller.getAnimateInhibitionsContextMenuItem().selectedProperty().bindBidirectional(controller.getAnimateInhibitionsMenuItem().selectedProperty());
             controller.getAnimateInhibitionsMenuItem().disableProperty().bind(window.getInputReactionSystem().inhibitorsPresentProperty().not());
-            controller.getAnimateInhibitionsContextMenuItem().disableProperty().bind(controller.getAnimateInhibitionsMenuItem().disableProperty());
         }
         SelectionBindings.setup(window, controller);
 

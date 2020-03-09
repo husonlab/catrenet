@@ -29,6 +29,7 @@ import jloda.util.ProgressListener;
 import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /**
  * computes a new reaction model from an old one
@@ -92,11 +93,6 @@ public abstract class AlgorithmBase {
      * @return filtered reactions
      */
     protected Set<Reaction> filterReactions(Collection<MoleculeType> food, Collection<Reaction> reactions) {
-        final Set<Reaction> filteredReactions = new TreeSet<>();
-        for (Reaction reaction : reactions) {
-            if (food.containsAll(reaction.getReactants()) && Basic.intersects(food, reaction.getCatalysts()))
-                filteredReactions.add(reaction);
-        }
-        return filteredReactions;
+        return reactions.stream().filter(r -> food.containsAll(r.getReactants()) && (r.getCatalysts().size() == 0 || Basic.intersects(food, r.getCatalysts()))).collect(Collectors.toSet());
     }
 }

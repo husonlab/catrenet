@@ -55,7 +55,13 @@
                                                             shortcut="UP"/>
                                     </accelerator>
                                 </MenuItem>
-                                <Menu fx:id="exportMenu" mnemonicParsing="false" text="Export"/>
+                                <Menu fx:id="exportMenu" mnemonicParsing="false" text="Export">
+                                    <items>
+                                        <MenuItem fx:id="exportSelectedNodesMenuItem" mnemonicParsing="false"
+                                                  text="Selected Nodes..."/>
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                    </items>
+                                </Menu>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="saveMenItem" mnemonicParsing="false" text="Save...">
                                     <accelerator>
@@ -200,6 +206,14 @@
                                                             shortcut="DOWN"/>
                                     </accelerator>
                                 </MenuItem>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem fx:id="selectConnectedComponentMenuItem" mnemonicParsing="false"
+                                          text="Connected Component">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="R" control="UP" meta="UP" shift="DOWN"
+                                                            shortcut="DOWN"/>
+                                    </accelerator>
+                                </MenuItem>
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="View">
@@ -305,11 +319,13 @@
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="runMuCAFMultipleTimesMenuItem" mnemonicParsing="false"
                                           text="Run MU CAF Multiple Times..."/>
+                                <MenuItem fx:id="spontaneousInRafMenuItem" mnemonicParsing="false"
+                                          text="Determine Necessarily Spontaneous in RAF"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <Menu mnemonicParsing="false" text="Options">
                                     <items>
                                         <CheckMenuItem fx:id="computeImportanceCheckMenuItem" mnemonicParsing="false"
-                                                       selected="true" text="Compute  Importance"/>
+                                                       text="Compute  Importance"/>
                                         <MenuItem fx:id="graphEmbedderIterationsMenuItem" mnemonicParsing="false"
                                                   text="Graph Embedder Interations..."/>
                                     </items>
@@ -477,7 +493,7 @@
                                                     </center>
                                                 </BorderPane>
                                                 <Label fx:id="graphTypeLabel" text="Label" textAlignment="RIGHT"
-                                                       AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="10.0"/>
+                                                       AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0"/>
                                             </children>
                                         </AnchorPane>
                                     </content>
@@ -499,18 +515,8 @@
                                                 <MenuItem fx:id="selectNoneContextMenuItem" mnemonicParsing="false"
                                                           text="Select None"/>
                                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                                <CheckMenuItem fx:id="animateCAFContextMenuItem" mnemonicParsing="false"
-                                                               text="Animate CAF"/>
-                                                <CheckMenuItem fx:id="animateRAFContextMenuItem" mnemonicParsing="false"
-                                                               text="Animate RAF"/>
-                                                <CheckMenuItem fx:id="animatePseudoRAFContextMenuItem"
-                                                               mnemonicParsing="false" text="Animate Pseudo-RAF"/>
-                                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                                <CheckMenuItem fx:id="animateInhibitionsContextMenuItem"
-                                                               mnemonicParsing="false" text="Animate Inhibitions"/>
-                                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                                <MenuItem fx:id="stopAnimationContextMenuItem" mnemonicParsing="false"
-                                                          text="Stop Animation"/>
+                                                <MenuItem fx:id="selectConnectedComponentContextMenuItem"
+                                                          mnemonicParsing="false" text="Select Connected Component"/>
                                             </items>
                                         </ContextMenu>
                                     </contextMenu>
