@@ -304,7 +304,7 @@ public class ControlBindings {
 
         controller.getAboutMenuItem().setOnAction(e -> SplashScreen.showSplash(Duration.ofMinutes(2)));
 
-        controller.getCheckForUpdatesMenuItem().setOnAction(e -> CheckForUpdate.apply(ProgramProperties.getProgramURL()));
+        controller.getCheckForUpdatesMenuItem().setOnAction(e -> CheckForUpdate.apply());
 
         MainWindowManager.getInstance().changedProperty().addListener((c, o, n) -> controller.getCheckForUpdatesMenuItem().disableProperty().set(MainWindowManager.getInstance().size() > 1
                 || (MainWindowManager.getInstance().size() == 1 && !MainWindowManager.getInstance().getMainWindow(0).isEmpty())));

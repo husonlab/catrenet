@@ -70,12 +70,10 @@ public class CatlyNet extends Application {
         ProgramProperties.getProgramIconsFX().addAll(ResourceManagerFX.getIcons("CatlyNet-16.png", "CatlyNet-32.png", "CatlyNet-48.png", "CatlyNet-64.png", "CatlyNet-128.png"));
 
         ProgramProperties.setProgramName(Version.NAME);
-        ProgramProperties.setProgramURL("http://software-ab.informatik.uni-tuebingen.de/download/catlynet/");
         ProgramProperties.setProgramVersion(Version.SHORT_DESCRIPTION);
         ProgramProperties.setProgramLicence("Copyright (C) 2020 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.\n" +
                 "This is free software, licensed under the terms of the GNU General Public License, Version 3.\n" +
-                "Sources available at: https://github.com/husonlab/catlynet\n" +
-                "Installers available at: " + ProgramProperties.getProgramURL() + "\n");
+                "Sources available at: https://github.com/husonlab/catlynet\n");
         SplashScreen.setVersionString(ProgramProperties.getProgramVersion());
         SplashScreen.setImageResourceName("splash.png");
 
