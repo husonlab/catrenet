@@ -25,6 +25,7 @@ import catlynet.format.FormatWindow;
 import catlynet.io.ModelIO;
 import catlynet.io.Save;
 import catlynet.io.SaveBeforeClosingDialog;
+import catlynet.main.CheckForUpdate;
 import catlynet.model.ReactionSystem;
 import catlynet.view.MoleculeFlowAnimation;
 import catlynet.view.ReactionGraphView;
@@ -96,19 +97,19 @@ public class ControlBindings {
         RecentFilesManager.getInstance().setFileOpener(FileOpenManager.getFileOpener());
         RecentFilesManager.getInstance().setupMenu(controller.getRecentFilesMenu());
 
-        window.getStage().setOnCloseRequest((e) -> {
+        window.getStage().setOnCloseRequest(e -> {
             controller.getCloseMenuItem().getOnAction().handle(null);
             e.consume();
         });
 
-        controller.getNewMenuItem().setOnAction((e) -> NewWindow.apply());
+        controller.getNewMenuItem().setOnAction(e -> NewWindow.apply());
 
         controller.getOpenMenuItem().setOnAction(FileOpenManager.createOpenFileEventHandler(window.getStage()));
 
         controller.getImportMenuItem().setOnAction(c -> ImportWimsFormat.apply(window.getStage()));
 
         controller.getExportSelectedNodesMenuItem().setOnAction(c -> ExportManager.exportNodes(window));
-        controller.getExportSelectedNodesMenuItem().disableProperty().bind(graphView.emptyProperty().or(graphView.getNodeSelection().emptyProperty()));
+        controller.getExportSelectedNodesMenuItem().disableProperty().bind(graphView.getNodeSelection().emptyProperty());
 
         controller.getSaveMenItem().setOnAction(e -> Save.showSaveDialog(window));
 
@@ -126,9 +127,9 @@ public class ControlBindings {
         controller.getCloseMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0));
 
 
-        controller.getPageSetupMenuItem().setOnAction((e) -> Print.showPageLayout(window.getStage()));
+        controller.getPageSetupMenuItem().setOnAction(e -> Print.showPageLayout(window.getStage()));
 
-        controller.getPrintMenuItem().setOnAction((e) -> {
+        controller.getPrintMenuItem().setOnAction(e -> {
             javafx.scene.Node node = printableNode.get();
 
             Print.print(window.getStage(), node);
@@ -136,7 +137,7 @@ public class ControlBindings {
         });
         controller.getPrintMenuItem().disableProperty().bind(printableNode.isNull());
 
-        controller.getQuitMenuItem().setOnAction((e) -> {
+        controller.getQuitMenuItem().setOnAction(e -> {
             while (MainWindowManager.getInstance().size() > 0) {
                 final MainWindow aWindow = (MainWindow) MainWindowManager.getInstance().getMainWindow(MainWindowManager.getInstance().size() - 1);
                 if (SaveBeforeClosingDialog.apply(aWindow) == SaveBeforeClosingDialog.Result.cancel)
@@ -148,11 +149,11 @@ public class ControlBindings {
 
         // cut, copy, paste and undo/redo all implemented by TextArea controls
 
-        controller.getCutMenuItem().setOnAction((e) -> {
+        controller.getCutMenuItem().setOnAction(e -> {
         });
         controller.getCutMenuItem().disableProperty().bind((controller.getInputTextArea().focusedProperty().or(controller.getInputFoodTextArea().focusedProperty())).not());
 
-        controller.getCopyMenuItem().setOnAction((e) -> {
+        controller.getCopyMenuItem().setOnAction(e -> {
             if (controller.getVisualizationTab().getTabPane().isFocused() && controller.getVisualizationTab().isSelected()) {
                 final ClipboardContent content = new ClipboardContent();
                 if (graphView.getNodeSelection().size() > 0)
@@ -164,18 +165,18 @@ public class ControlBindings {
         controller.getCopyMenuItem().disableProperty().bind((controller.getInputTextArea().focusedProperty().or(controller.getInputFoodTextArea().focusedProperty())
                 .or(disableGraphItems.not()).not()));
 
-        controller.getPasteMenuItem().setOnAction((e) -> {
+        controller.getPasteMenuItem().setOnAction(e -> {
         });
         controller.getPasteMenuItem().disableProperty().bind((controller.getInputTextArea().focusedProperty().or(controller.getInputFoodTextArea().focusedProperty())).not());
 
 
-        controller.getUndoMenuItem().setOnAction((e) -> {
+        controller.getUndoMenuItem().setOnAction(e -> {
         });
         controller.getUndoMenuItem().disableProperty().bind(
                 ((controller.getInputTextArea().focusedProperty().and(controller.getInputTextArea().undoableProperty()))
                         .or(controller.getInputFoodTextArea().undoableProperty())).not());
 
-        controller.getRedoMenuItem().setOnAction((e) -> {
+        controller.getRedoMenuItem().setOnAction(e -> {
             if (false) {
                 controller.getInputTextArea().requestFocus();
                 controller.getInputTextArea().redo();
@@ -188,7 +189,7 @@ public class ControlBindings {
         controller.getClearLogMenuItem().setOnAction(e -> controller.getLogTextArea().clear());
         controller.getClearLogMenuItem().disableProperty().bind(controller.getLogTextArea().textProperty().isEmpty());
 
-        controller.getExpandInputMenuItem().setOnAction((e) -> {
+        controller.getExpandInputMenuItem().setOnAction(e -> {
             if (VerifyInput.verify(window)) {
                 controller.getExpandedReactionsTab().getTabPane().getSelectionModel().select(controller.getExpandedReactionsTab());
                 controller.getExpandedReactionsTextArea().setText(ModelIO.toString(window.getInputReactionSystem().computeExpandedSystem(), true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
@@ -213,7 +214,7 @@ public class ControlBindings {
         graphView.emptyProperty().addListener((c, o, n) -> disableGraphItems.set(n));
         controller.getVisualizationTab().disableProperty().bind(disableGraphItems);
 
-        controller.getFormatMenuItem().setOnAction((e) -> {
+        controller.getFormatMenuItem().setOnAction(e -> {
             Stage stage = null;
             for (Stage auxStage : MainWindowManager.getInstance().getAuxiliaryWindows(window)) {
                 if (auxStage.getTitle().contains("ReactionNotation")) {
@@ -229,7 +230,7 @@ public class ControlBindings {
             stage.toFront();
         });
 
-        controller.getRunRAFMenuItem().setOnAction((e) -> {
+        controller.getRunRAFMenuItem().setOnAction(e -> {
             if (VerifyInput.verify(window)) {
                 controller.getOutputTabPane().getSelectionModel().select(controller.getRafTab());
                 RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxRAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.maxRAF), controller.getRafTextArea(), runningListener);
@@ -237,7 +238,7 @@ public class ControlBindings {
         });
         controller.getRunRAFMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()));
 
-        controller.getRunCAFMenuItem().setOnAction((e) -> {
+        controller.getRunCAFMenuItem().setOnAction(e -> {
             if (VerifyInput.verify(window)) {
                 controller.getOutputTabPane().getSelectionModel().select(controller.getCafTab());
                 RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxCAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.maxCAF), controller.getCafTextArea(), runningListener);
@@ -245,7 +246,7 @@ public class ControlBindings {
         });
         controller.getRunCAFMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()));
 
-        controller.getRunPseudoRAFMenuItem().setOnAction((e) -> {
+        controller.getRunPseudoRAFMenuItem().setOnAction(e -> {
             if (VerifyInput.verify(window)) {
                 controller.getOutputTabPane().getSelectionModel().select(controller.getPseudoRafTab());
                 RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxPseudoRAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.maxPseudoRAF), controller.getPseudoRAFTextArea(), runningListener);
@@ -254,7 +255,7 @@ public class ControlBindings {
         controller.getRunPseudoRAFMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()));
 
 
-        controller.getRunMuCAFMenuItem().setOnAction((e) -> {
+        controller.getRunMuCAFMenuItem().setOnAction(e -> {
             if (VerifyInput.verify(window)) {
                 if (window.getInputReactionSystem().isInhibitorsPresent()) {
                     controller.getOutputTabPane().getSelectionModel().select(controller.getMuCafTab());
@@ -266,7 +267,7 @@ public class ControlBindings {
 
         controller.getRunMuCAFMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()).or(window.getInputReactionSystem().inhibitorsPresentProperty().not()));
 
-        controller.getRunURAFMenuItem().setOnAction((e) -> {
+        controller.getRunURAFMenuItem().setOnAction(e -> {
             if (VerifyInput.verify(window)) {
                 if (window.getInputReactionSystem().isInhibitorsPresent()) {
                     controller.getOutputTabPane().getSelectionModel().select(controller.getuRAFTab());
@@ -277,14 +278,14 @@ public class ControlBindings {
         });
         controller.getRunURAFMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()).or(window.getInputReactionSystem().inhibitorsPresentProperty().not()));
 
-        controller.getRunMuCAFMultipleTimesMenuItem().setOnAction((e) -> RunMuCAFMultipleTimes.apply(window, controller, runningListener));
+        controller.getRunMuCAFMultipleTimesMenuItem().setOnAction(e -> RunMuCAFMultipleTimes.apply(window, controller, runningListener));
         controller.getRunMuCAFMultipleTimesMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()).or(window.getInputReactionSystem().inhibitorsPresentProperty().not()));
 
 
-        controller.getSpontaneousInRafMenuItem().setOnAction((e) -> ComputeNecessarilySpontaneousInRAF.apply(window, window.getInputReactionSystem(), controller, runningListener));
+        controller.getSpontaneousInRafMenuItem().setOnAction(e -> ComputeNecessarilySpontaneousInRAF.apply(window, window.getInputReactionSystem(), controller, runningListener));
         controller.getSpontaneousInRafMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()));
 
-        controller.getRunMenuItem().setOnAction((e) -> {
+        controller.getRunMenuItem().setOnAction(e -> {
             RunAll.apply(window, controller, runningListener);
             ComputeGraph.apply(window, controller);
         });
@@ -301,9 +302,10 @@ public class ControlBindings {
         controller.getuRAFTab().disableProperty().bind(controller.getuRAFTextArea().textProperty().isEmpty().or(window.getInputReactionSystem().inhibitorsPresentProperty().not()));
         controller.getPseudoRafTab().disableProperty().bind(controller.getPseudoRAFTextArea().textProperty().isEmpty());
 
-        controller.getAboutMenuItem().setOnAction((e) -> SplashScreen.showSplash(Duration.ofMinutes(2)));
+        controller.getAboutMenuItem().setOnAction(e -> SplashScreen.showSplash(Duration.ofMinutes(2)));
 
-        controller.getCheckForUpdatesMenuItem().setOnAction((e) -> CheckForUpdate.apply());
+        controller.getCheckForUpdatesMenuItem().setOnAction(e -> CheckForUpdate.apply(ProgramProperties.getProgramURL()));
+
         MainWindowManager.getInstance().changedProperty().addListener((c, o, n) -> controller.getCheckForUpdatesMenuItem().disableProperty().set(MainWindowManager.getInstance().size() > 1
                 || (MainWindowManager.getInstance().size() == 1 && !MainWindowManager.getInstance().getMainWindow(0).isEmpty())));
 
@@ -359,7 +361,7 @@ public class ControlBindings {
             visualizationContentPane.setStyle("-fx-background-color: white;");
             scrollPane.setContent(visualizationContentPane);
 
-            visualizationContentPane.setOnContextMenuRequested((e) -> controller.getVisualizationTabContextMenu().show(visualizationContentPane, e.getScreenX(), e.getScreenY()));
+            visualizationContentPane.setOnContextMenuRequested(e -> controller.getVisualizationTabContextMenu().show(visualizationContentPane, e.getScreenX(), e.getScreenY()));
 
             visualizationContentPane.minWidthProperty().bind(Bindings.createDoubleBinding(() ->
                     scrollPane.getViewportBounds().getWidth(), scrollPane.viewportBoundsProperty()).subtract(20));
@@ -398,7 +400,7 @@ public class ControlBindings {
                     printableNode.set(scrollPane.getContent());
             });
 
-            visualizationContentPane.setOnMousePressed((e) -> {
+            visualizationContentPane.setOnMousePressed(e -> {
                 if (e.getClickCount() == 2) {
                     graphView.getNodeSelection().clearSelection();
                     graphView.getEdgeSelection().clearSelection();

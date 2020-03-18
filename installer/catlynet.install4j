@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="8.0.4" transformSequenceNumber="8">
   <directoryPresets config="../../../../catlynet.pfx" />
-  <application name="CatlyNet" applicationId="3801-6361-6203-7564" mediaDir="../../../builds" shortName="CatlyNet" publisher="Daniel Huson and Mike Steel" publisherWeb="http://www.husonlab.org/catlynet" version="0.0.0" allPathsRelative="true" macVolumeId="b8c0a1154e563a9a" javaMinVersion="11">
+  <application name="CatlyNet" applicationId="3801-6361-6203-7564" mediaDir="../../../builds" shortName="CatlyNet" publisher="Daniel Huson and Mike Steel" publisherWeb="http://www.husonlab.org/catlynet" version="0.0.0_beta" allPathsRelative="true" macVolumeId="b8c0a1154e563a9a" javaMinVersion="11">
     <codeSigning macEnabled="true" macPkcs12File="../../../../etc/application.p12" windowsEnabled="true" windowsPkcs12File="../../../../etc/windows.pfx" />
     <jreBundles jdkProviderId="AdoptOpenJDK" release="openjdk12/jdk-12.0.2+10_openj9-0.15.1" />
   </application>
@@ -1125,5 +1125,5 @@ return true;</property>
   <buildIds buildAll="false">
     <mediaSet refId="1691242165" />
   </buildIds>
-  <buildOptions disableSigning="true" disableNotarization="true" />
+  <buildOptions disableSigning="true" />
 </install4j>
