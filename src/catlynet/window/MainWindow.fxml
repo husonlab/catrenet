@@ -321,6 +321,8 @@
                                           text="Run MU CAF Multiple Times..."/>
                                 <MenuItem fx:id="spontaneousInRafMenuItem" mnemonicParsing="false"
                                           text="Determine Necessarily Spontaneous in RAF"/>
+                                <MenuItem fx:id="greedyGrowMenuItem" mnemonicParsing="false"
+                                          text="Greedily Grow MaxCAF to MaxRAF"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <Menu mnemonicParsing="false" text="Options">
                                     <items>

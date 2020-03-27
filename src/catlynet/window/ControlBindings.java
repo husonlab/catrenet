@@ -285,6 +285,9 @@ public class ControlBindings {
         controller.getSpontaneousInRafMenuItem().setOnAction(e -> ComputeNecessarilySpontaneousInRAF.apply(window, window.getInputReactionSystem(), controller, runningListener));
         controller.getSpontaneousInRafMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()));
 
+        controller.getGreedyGrowMenuItem().setOnAction(e -> GreedilyGrowMaxCAF2MaxRAF.apply(window, window.getInputReactionSystem(), runningListener));
+        controller.getGreedyGrowMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()));
+
         controller.getRunMenuItem().setOnAction(e -> {
             RunAll.apply(window, controller, runningListener);
             ComputeGraph.apply(window, controller);

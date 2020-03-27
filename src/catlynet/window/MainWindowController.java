@@ -170,6 +170,9 @@ public class MainWindowController {
     private MenuItem spontaneousInRafMenuItem;
 
     @FXML
+    private MenuItem greedyGrowMenuItem;
+
+    @FXML
     private CheckMenuItem computeImportanceCheckMenuItem;
 
     @FXML
@@ -637,6 +640,10 @@ public class MainWindowController {
 
     public MenuItem getSpontaneousInRafMenuItem() {
         return spontaneousInRafMenuItem;
+    }
+
+    public MenuItem getGreedyGrowMenuItem() {
+        return greedyGrowMenuItem;
     }
 
     public CheckMenuItem getComputeImportanceCheckMenuItem() {

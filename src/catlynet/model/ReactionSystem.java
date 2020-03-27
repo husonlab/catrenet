@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  * Daniel Huson, 6.2019
  */
 public class ReactionSystem {
-    public enum Type {Input, maxCAF, maxRAF, maxPseudoRAF, Reactions, muCAF, uRAF}
+     public enum Type {Input, maxCAF, maxRAF, maxPseudoRAF, Reactions, muCAF, uRAF}
 
     private final ObservableList<Reaction> reactions = FXCollections.observableArrayList();
     private final ObservableList<MoleculeType> foods = FXCollections.observableArrayList();
@@ -304,5 +304,18 @@ public class ReactionSystem {
             set.addAll(r.getProducts());
         });
         return foods.stream().filter(set::contains).collect(Collectors.toList());
+    }
+
+    public Reaction getReaction(String name) {
+        final Optional<Reaction> result = getReactions().stream().filter(r -> r.getName().equals(name)).findAny();
+        return result.orElse(null);
+    }
+
+    public void replaceNamedReaction(String name, Reaction reaction) {
+        final Reaction old = getReaction(name);
+        if (old == null)
+            throw new IllegalArgumentException("no such reaction: " + name);
+        getReactions().remove(old);
+        getReactions().add(reaction);
     }
 }
