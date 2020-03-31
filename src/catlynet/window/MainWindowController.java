@@ -125,6 +125,9 @@ public class MainWindowController {
     private MenuItem selectURAFMenuItem;
 
     @FXML
+    private MenuItem selectMinIrrRAFMenuItem;
+
+    @FXML
     private MenuItem selectFoodMenuItem;
 
     @FXML
@@ -164,7 +167,11 @@ public class MainWindowController {
     private MenuItem runURAFMenuItem;
 
     @FXML
+    private MenuItem runMinIrrRAFMenuItem;
+
+    @FXML
     private MenuItem runMuCAFMultipleTimesMenuItem;
+
 
     @FXML
     private MenuItem spontaneousInRafMenuItem;
@@ -177,7 +184,6 @@ public class MainWindowController {
 
     @FXML
     private MenuItem graphEmbedderIterationsMenuItem;
-
 
     @FXML
     private CheckMenuItem animateCAFCheckMenuItem;
@@ -316,6 +322,9 @@ public class MainWindowController {
     private MenuItem selectPseudoRAFContextMenuItem;
 
     @FXML
+    private MenuItem selectMinIrrRAFContextMenuItem;
+
+    @FXML
     private ContextMenu visualizationContextMenu;
 
     @FXML
@@ -370,10 +379,20 @@ public class MainWindowController {
     private Tab uRAFTab;
 
     @FXML
+    private VBox uRAFVBox;
+
+    @FXML
     private TextArea uRAFTextArea;
 
     @FXML
-    private VBox uRAFVBox;
+    private Tab irrRAFTab;
+
+    @FXML
+    private TextArea irrRAFTextArea;
+
+
+    @FXML
+    private VBox irrRAFVBox;
 
     @FXML
     private Tab logTab;
@@ -582,6 +601,10 @@ public class MainWindowController {
         return selectURAFMenuItem;
     }
 
+    public MenuItem getSelectMinIrrRAFMenuItem() {
+        return selectMinIrrRAFMenuItem;
+    }
+
     public MenuItem getSelectFoodMenuItem() {
         return selectFoodMenuItem;
     }
@@ -632,6 +655,10 @@ public class MainWindowController {
 
     public MenuItem getRunURAFMenuItem() {
         return runURAFMenuItem;
+    }
+
+    public MenuItem getRunMinIrrRAFMenuItem() {
+        return runMinIrrRAFMenuItem;
     }
 
     public MenuItem getRunMuCAFMultipleTimesMenuItem() {
@@ -842,6 +869,10 @@ public class MainWindowController {
         return selectPseudoRAFContextMenuItem;
     }
 
+    public MenuItem getSelectMinIrrRAFContextMenuItem() {
+        return selectMinIrrRAFContextMenuItem;
+    }
+
     public MenuItem getSelectNoneContextMenuItem() {
         return selectNoneContextMenuItem;
     }
@@ -908,6 +939,18 @@ public class MainWindowController {
 
     public VBox getuRAFVBox() {
         return uRAFVBox;
+    }
+
+    public Tab getIrrRAFTab() {
+        return irrRAFTab;
+    }
+
+    public TextArea getIrrRAFTextArea() {
+        return irrRAFTextArea;
+    }
+
+    public VBox getIrrRAFVBox() {
+        return irrRAFVBox;
     }
 
     public Tab getLogTab() {

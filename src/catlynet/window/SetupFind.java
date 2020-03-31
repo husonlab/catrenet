@@ -55,6 +55,9 @@ public class SetupFind {
         final FindToolBar pseudoRafFindToolBar = new FindToolBar(new TextAreaSearcher("Pseudo-RAF", controller.getPseudoRAFTextArea()));
         controller.getPseudoRafVBox().getChildren().add(pseudoRafFindToolBar);
 
+        final FindToolBar minIrrRafFindToolBar = new FindToolBar(new TextAreaSearcher("irr-RAF", controller.getIrrRAFTextArea()));
+        controller.getIrrRAFVBox().getChildren().add(minIrrRafFindToolBar);
+
         final FindToolBar muCAFFindToolBar = new FindToolBar(new TextAreaSearcher("Mu-CAF", controller.getPseudoRAFTextArea()));
         controller.getMuCafVBox().getChildren().add(muCAFFindToolBar);
 
@@ -75,6 +78,8 @@ public class SetupFind {
                 rafFindToolBar.setShowFindToolBar(true);
             else if (controller.getPseudoRafTab().isSelected() || controller.getPseudoRAFTextArea().isFocused())
                 pseudoRafFindToolBar.setShowFindToolBar(true);
+            else if (controller.getIrrRAFTab().isSelected() || controller.getIrrRAFTextArea().isFocused())
+                minIrrRafFindToolBar.setShowFindToolBar(true);
             else if (controller.getMuCafTab().isSelected() || controller.getMuCafTextArea().isFocused())
                 muCAFFindToolBar.setShowFindToolBar(true);
             else if (controller.getVisualizationTab().isSelected() || controller.getVisualizationBorderPane().isFocused())
@@ -94,6 +99,8 @@ public class SetupFind {
                 rafFindToolBar.findAgain();
             else if (controller.getPseudoRafTab().isSelected() || controller.getPseudoRAFTextArea().isFocused())
                 pseudoRafFindToolBar.findAgain();
+            else if (controller.getIrrRAFTab().isSelected() || controller.getIrrRAFTextArea().isFocused())
+                minIrrRafFindToolBar.findAgain();
             else if (controller.getMuCafTab().isSelected() || controller.getMuCafTextArea().isFocused())
                 muCAFFindToolBar.findAgain();
             else if (controller.getVisualizationTab().isSelected() || controller.getVisualizationBorderPane().isFocused())

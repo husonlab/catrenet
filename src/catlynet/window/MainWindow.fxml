@@ -25,7 +25,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.input.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.111"
+<BorderPane prefHeight="500.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.111"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="catlynet.window.MainWindowController">
     <top>
         <VBox BorderPane.alignment="CENTER">
@@ -184,6 +184,7 @@
                                 <MenuItem fx:id="selectMaxPseudoRAFMenuItem" mnemonicParsing="false"
                                           text="Max Pseudo RAF">
                                 </MenuItem>
+                                <MenuItem fx:id="selectMinIrrRAFMenuItem" mnemonicParsing="false" text="Min Irr RAF"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="selectMuCAFMenuItem" mnemonicParsing="false" text="MU CAF"/>
                                 <MenuItem fx:id="selectURAFMenuItem" mnemonicParsing="false" text="U RAF"/>
@@ -306,6 +307,8 @@
                                 <MenuItem fx:id="runRAFMenuItem" mnemonicParsing="false" text="Max RAF Algorithm"/>
                                 <MenuItem fx:id="runPseudoRAFMenuItem" mnemonicParsing="false"
                                           text="Max Pseudo RAF Algorithm"/>
+                                <MenuItem fx:id="runMinIrrRAFMenuItem" mnemonicParsing="false"
+                                          text="Min Irr RAF Heuristic"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="runMenuItem" mnemonicParsing="false" text="Run All">
                                     <accelerator>
@@ -329,7 +332,7 @@
                                         <CheckMenuItem fx:id="computeImportanceCheckMenuItem" mnemonicParsing="false"
                                                        text="Compute  Importance"/>
                                         <MenuItem fx:id="graphEmbedderIterationsMenuItem" mnemonicParsing="false"
-                                                  text="Graph Embedder Interations..."/>
+                                                  text="Graph Embedder Iterations..."/>
                                     </items>
                                 </Menu>
                             </items>
@@ -508,6 +511,8 @@
                                                           text="Select Max RAF"/>
                                                 <MenuItem fx:id="selectPseudoRAFContextMenuItem" mnemonicParsing="false"
                                                           text="Select Max Pseudo-RAF"/>
+                                                <MenuItem fx:id="selectMinIrrRAFContextMenuItem" mnemonicParsing="false"
+                                                          text="Select Min Irr RAF"/>
                                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                                 <MenuItem fx:id="selectMuCAFContextMenuItem" mnemonicParsing="false"
                                                           text="Select MU CAF"/>
@@ -604,6 +609,22 @@
                                     </content>
                                     <tooltip>
                                         <Tooltip text="Canonical uninhibited RAF"/>
+                                    </tooltip>
+                                </Tab>
+                                <Tab fx:id="irrRAFTab" closable="false" disable="true" text="irr RAF">
+                                    <content>
+                                        <BorderPane>
+                                            <center>
+                                                <TextArea fx:id="irrRAFTextArea" editable="false" prefHeight="200.0"
+                                                          prefWidth="200.0" wrapText="true"/>
+                                            </center>
+                                            <top>
+                                                <VBox fx:id="irrRAFVBox" minHeight="4.0" BorderPane.alignment="CENTER"/>
+                                            </top>
+                                        </BorderPane>
+                                    </content>
+                                    <tooltip>
+                                        <Tooltip text="Heuristically computed smallest irriduclible RAF"/>
                                     </tooltip>
                                 </Tab>
                                 <Tab fx:id="logTab" closable="false" text="Log">

@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  * Daniel Huson, 6.2019
  */
 public class ReactionSystem {
-     public enum Type {Input, maxCAF, maxRAF, maxPseudoRAF, Reactions, muCAF, uRAF}
+     public enum Type {Input, maxCAF, maxRAF, maxPseudoRAF, Reactions, muCAF, uRAF, minIrrRAF}
 
     private final ObservableList<Reaction> reactions = FXCollections.observableArrayList();
     private final ObservableList<MoleculeType> foods = FXCollections.observableArrayList();

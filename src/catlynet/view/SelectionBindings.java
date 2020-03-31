@@ -122,7 +122,6 @@ public class SelectionBindings {
         controller.getSelectCAFContextMenuItem().setOnAction(controller.getSelectMaxCAFMenuItem().getOnAction());
         controller.getSelectCAFContextMenuItem().disableProperty().bind(controller.getSelectMaxCAFMenuItem().disableProperty());
 
-
         controller.getSelectMaxRAFMenuItem().setOnAction(e -> selectForAlgorithm(view, window.getReactionSystem(ReactionSystem.Type.maxRAF)));
         controller.getSelectMaxRAFMenuItem().disableProperty().bind(visualizationHasFocus.not().or(window.getReactionSystem(ReactionSystem.Type.maxRAF).sizeProperty().isEqualTo(0)));
 
@@ -134,6 +133,12 @@ public class SelectionBindings {
 
         controller.getSelectPseudoRAFContextMenuItem().setOnAction(controller.getSelectMaxPseudoRAFMenuItem().getOnAction());
         controller.getSelectPseudoRAFContextMenuItem().disableProperty().bind(controller.getSelectMaxPseudoRAFMenuItem().disableProperty());
+
+        controller.getSelectMinIrrRAFMenuItem().setOnAction(e -> selectForAlgorithm(view, window.getReactionSystem(ReactionSystem.Type.minIrrRAF)));
+        controller.getSelectMinIrrRAFMenuItem().disableProperty().bind(visualizationHasFocus.not().or(window.getReactionSystem(ReactionSystem.Type.minIrrRAF).sizeProperty().isEqualTo(0)));
+
+        controller.getSelectMinIrrRAFContextMenuItem().setOnAction(controller.getSelectMinIrrRAFMenuItem().getOnAction());
+        controller.getSelectMinIrrRAFContextMenuItem().disableProperty().bind(controller.getSelectMinIrrRAFMenuItem().disableProperty());
 
         controller.getSelectMuCAFMenuItem().setOnAction(e -> selectForAlgorithm(view, window.getReactionSystem(ReactionSystem.Type.muCAF)));
         controller.getSelectMuCAFMenuItem().disableProperty().bind(visualizationHasFocus.not().or(window.getReactionSystem(ReactionSystem.Type.muCAF).sizeProperty().isEqualTo(0)));

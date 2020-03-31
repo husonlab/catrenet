@@ -244,7 +244,7 @@ public class ControlBindings {
                 RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxCAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.maxCAF), controller.getCafTextArea(), runningListener);
             }
         });
-        controller.getRunCAFMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()));
+        controller.getRunCAFMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
         controller.getRunPseudoRAFMenuItem().setOnAction(e -> {
             if (VerifyInput.verify(window)) {
@@ -252,7 +252,7 @@ public class ControlBindings {
                 RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxPseudoRAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.maxPseudoRAF), controller.getPseudoRAFTextArea(), runningListener);
             }
         });
-        controller.getRunPseudoRAFMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()));
+        controller.getRunPseudoRAFMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
 
         controller.getRunMuCAFMenuItem().setOnAction(e -> {
@@ -271,12 +271,20 @@ public class ControlBindings {
             if (VerifyInput.verify(window)) {
                 if (window.getInputReactionSystem().isInhibitorsPresent()) {
                     controller.getOutputTabPane().getSelectionModel().select(controller.getuRAFTab());
-                    RunAlgorithm.apply(window, window.getInputReactionSystem(), new URAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.uRAF), controller.getMuCafTextArea(), runningListener);
+                    RunAlgorithm.apply(window, window.getInputReactionSystem(), new URAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.uRAF), controller.getuRAFTextArea(), runningListener);
                 } else
                     NotificationManager.showWarning("Won't run U RAF algorithm, no inhibitions present");
             }
         });
         controller.getRunURAFMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()).or(window.getInputReactionSystem().inhibitorsPresentProperty().not()));
+
+        controller.getRunMinIrrRAFMenuItem().setOnAction(e -> {
+            if (VerifyInput.verify(window)) {
+                controller.getOutputTabPane().getSelectionModel().select(controller.getIrrRAFTab());
+                RunAlgorithm.apply(window, window.getInputReactionSystem(), new MinIrrRAFHeuristic(), window.getReactionSystem(ReactionSystem.Type.minIrrRAF), controller.getIrrRAFTextArea(), runningListener);
+            }
+        });
+        controller.getRunMinIrrRAFMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
         controller.getRunMuCAFMultipleTimesMenuItem().setOnAction(e -> RunMuCAFMultipleTimes.apply(window, controller, runningListener));
         controller.getRunMuCAFMultipleTimesMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()).or(window.getInputReactionSystem().inhibitorsPresentProperty().not()));
@@ -303,6 +311,7 @@ public class ControlBindings {
         controller.getCafTab().disableProperty().bind(controller.getCafTextArea().textProperty().isEmpty());
         controller.getMuCafTab().disableProperty().bind(controller.getMuCafTextArea().textProperty().isEmpty().or(window.getInputReactionSystem().inhibitorsPresentProperty().not()));
         controller.getuRAFTab().disableProperty().bind(controller.getuRAFTextArea().textProperty().isEmpty().or(window.getInputReactionSystem().inhibitorsPresentProperty().not()));
+        controller.getIrrRAFTab().disableProperty().bind(controller.getIrrRAFTextArea().textProperty().isEmpty());
         controller.getPseudoRafTab().disableProperty().bind(controller.getPseudoRAFTextArea().textProperty().isEmpty());
 
         controller.getAboutMenuItem().setOnAction(e -> SplashScreen.showSplash(Duration.ofMinutes(2)));
@@ -328,7 +337,8 @@ public class ControlBindings {
 
         controller.getLogTextArea().appendText(Basic.stopCollectingStdErr());
 
-        for (TextArea textArea : Arrays.asList(controller.getInputTextArea(), controller.getExpandedReactionsTextArea(), controller.getLogTextArea(), controller.getCafTextArea(), controller.getRafTextArea(), controller.getPseudoRAFTextArea(), controller.getMuCafTextArea(), controller.getuRAFTextArea())) {
+        for (TextArea textArea : Arrays.asList(controller.getInputTextArea(), controller.getExpandedReactionsTextArea(), controller.getLogTextArea(), controller.getCafTextArea(),
+                controller.getRafTextArea(), controller.getPseudoRAFTextArea(), controller.getMuCafTextArea(), controller.getuRAFTextArea(), controller.getIrrRAFTextArea())) {
             textArea.focusedProperty().addListener((c, o, n) -> {
                 if (n) {
                     controller.getWrapTextMenuItem().setDisable(false);
