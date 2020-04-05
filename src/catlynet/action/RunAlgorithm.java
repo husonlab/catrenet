@@ -84,7 +84,8 @@ public class RunAlgorithm {
 
             if (result.size() > 0) {
                 final String headLine = result.getName() + " has " + result.size() + " reactions"
-                        + (result.getNumberOfTwoWayReactions() > 0 ? " (" + result.getNumberOfTwoWayReactions() + " two-way and " + result.getNumberOfOneWayReactions() + " one-way)" : "");
+                        + (result.getNumberOfTwoWayReactions() > 0 ? " (" + result.getNumberOfTwoWayReactions() + " two-way and " + result.getNumberOfOneWayReactions() + " one-way)" : "")
+                        + " on " + result.getFoods().size() + " food items";
 
                 final String infoLine1 = triplet.getSecond();
                 final String infoLine2 = triplet.getThird();

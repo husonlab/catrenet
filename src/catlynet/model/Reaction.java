@@ -355,4 +355,24 @@ public class Reaction implements Comparable<Reaction> {
     public void setProductCoefficient(MoleculeType product, int coefficient) {
         productCoefficient.put(product, coefficient);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Reaction)) return false;
+        Reaction reaction = (Reaction) o;
+        return name.equals(reaction.name) &&
+                reactants.equals(reaction.reactants) &&
+                products.equals(reaction.products) &&
+                catalysts.equals(reaction.catalysts) &&
+                inhibitions.equals(reaction.inhibitions) &&
+                reactantCoefficient.equals(reaction.reactantCoefficient) &&
+                productCoefficient.equals(reaction.productCoefficient) &&
+                direction == reaction.direction;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, reactants, products, catalysts, inhibitions, reactantCoefficient, productCoefficient, direction);
+    }
 }

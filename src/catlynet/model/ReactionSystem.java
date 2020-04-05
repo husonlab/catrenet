@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  * Daniel Huson, 6.2019
  */
 public class ReactionSystem {
-     public enum Type {Input, maxCAF, maxRAF, maxPseudoRAF, Reactions, muCAF, uRAF, minIrrRAF}
+     public enum Type {Input, maxCAF, maxRAF, maxPseudoRAF, Reactions, muCAF, uRAF, minIrrRAF, QuotientRAF}
 
     private final ObservableList<Reaction> reactions = FXCollections.observableArrayList();
     private final ObservableList<MoleculeType> foods = FXCollections.observableArrayList();
@@ -299,12 +299,13 @@ public class ReactionSystem {
         final Set<MoleculeType> set = new HashSet<>();
         reactions.forEach(r -> {
             set.addAll(r.getReactants());
-            set.addAll(r.getCatalysts());
             set.addAll(r.getInhibitions());
             set.addAll(r.getProducts());
+            set.addAll(r.getCatalysts().stream().map(s -> s.getName().split("\\s*[,&]\\s*")).map(Arrays::asList).flatMap(Collection::stream).map(MoleculeType::valueOf).collect(Collectors.toSet()));
         });
         return foods.stream().filter(set::contains).collect(Collectors.toList());
     }
+
 
     public Reaction getReaction(String name) {
         final Optional<Reaction> result = getReactions().stream().filter(r -> r.getName().equals(name)).findAny();

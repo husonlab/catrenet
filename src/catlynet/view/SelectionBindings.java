@@ -140,6 +140,13 @@ public class SelectionBindings {
         controller.getSelectMinIrrRAFContextMenuItem().setOnAction(controller.getSelectMinIrrRAFMenuItem().getOnAction());
         controller.getSelectMinIrrRAFContextMenuItem().disableProperty().bind(controller.getSelectMinIrrRAFMenuItem().disableProperty());
 
+        controller.getSelectQuotientRAFMenuItem().setOnAction(e -> selectForAlgorithm(view, window.getReactionSystem(ReactionSystem.Type.QuotientRAF)));
+        controller.getSelectQuotientRAFMenuItem().disableProperty().bind(visualizationHasFocus.not().or(window.getReactionSystem(ReactionSystem.Type.QuotientRAF).sizeProperty().isEqualTo(0)));
+
+        controller.getSelectQuotientRAFContextMenuItem().setOnAction(controller.getSelectQuotientRAFMenuItem().getOnAction());
+        controller.getSelectQuotientRAFContextMenuItem().disableProperty().bind(controller.getSelectQuotientRAFMenuItem().disableProperty());
+
+
         controller.getSelectMuCAFMenuItem().setOnAction(e -> selectForAlgorithm(view, window.getReactionSystem(ReactionSystem.Type.muCAF)));
         controller.getSelectMuCAFMenuItem().disableProperty().bind(visualizationHasFocus.not().or(window.getReactionSystem(ReactionSystem.Type.muCAF).sizeProperty().isEqualTo(0)));
 

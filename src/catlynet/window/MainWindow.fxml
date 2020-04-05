@@ -185,6 +185,8 @@
                                           text="Max Pseudo RAF">
                                 </MenuItem>
                                 <MenuItem fx:id="selectMinIrrRAFMenuItem" mnemonicParsing="false" text="Min Irr RAF"/>
+                                <MenuItem fx:id="selectQuotientRAFMenuItem" mnemonicParsing="false"
+                                          text="Quotient RAF"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="selectMuCAFMenuItem" mnemonicParsing="false" text="MU CAF"/>
                                 <MenuItem fx:id="selectURAFMenuItem" mnemonicParsing="false" text="U RAF"/>
@@ -309,6 +311,8 @@
                                           text="Max Pseudo RAF Algorithm"/>
                                 <MenuItem fx:id="runMinIrrRAFMenuItem" mnemonicParsing="false"
                                           text="Min Irr RAF Heuristic"/>
+                                <MenuItem fx:id="runQuotientRAFMenuItem" mnemonicParsing="false"
+                                          text="Quotient RAF Algorithm"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="runMenuItem" mnemonicParsing="false" text="Run All">
                                     <accelerator>
@@ -513,6 +517,8 @@
                                                           text="Select Max Pseudo-RAF"/>
                                                 <MenuItem fx:id="selectMinIrrRAFContextMenuItem" mnemonicParsing="false"
                                                           text="Select Min Irr RAF"/>
+                                                <MenuItem fx:id="selectQuotientRAFContextMenuItem"
+                                                          mnemonicParsing="false" text="Select Quotient RAF"/>
                                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                                 <MenuItem fx:id="selectMuCAFContextMenuItem" mnemonicParsing="false"
                                                           text="Select MU CAF"/>
@@ -625,6 +631,23 @@
                                     </content>
                                     <tooltip>
                                         <Tooltip text="Heuristically computed smallest irriduclible RAF"/>
+                                    </tooltip>
+                                </Tab>
+                                <Tab fx:id="quotientRAFTab" closable="false" disable="true" text="Quotient RAF">
+                                    <content>
+                                        <BorderPane>
+                                            <center>
+                                                <TextArea fx:id="quotientRAFTextArea" editable="false"
+                                                          prefHeight="200.0" prefWidth="200.0" wrapText="true"/>
+                                            </center>
+                                            <top>
+                                                <VBox fx:id="quotientRAFVBox" minHeight="4.0"
+                                                      BorderPane.alignment="CENTER"/>
+                                            </top>
+                                        </BorderPane>
+                                    </content>
+                                    <tooltip>
+                                        <Tooltip text="Computes the Max RAF modulo the Max CAF"/>
                                     </tooltip>
                                 </Tab>
                                 <Tab fx:id="logTab" closable="false" text="Log">
