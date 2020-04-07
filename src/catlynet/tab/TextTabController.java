@@ -1,5 +1,5 @@
 /*
- * Version.java Copyright (C) 2019. Daniel H. Huson
+ * TabController.java Copyright (C) 2020. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -17,9 +17,43 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package catlynet.main;
+package catlynet.tab;
 
-public class Version {
-    static public String NAME = "CatlyNet";
-    static public String SHORT_DESCRIPTION = "CatlyNet (version 0.1.7_beta, built 5 Apr 2020)";
+
+import javafx.fxml.FXML;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.VBox;
+
+public class TextTabController {
+
+    @FXML
+    private TabPane tabPane;
+
+    @FXML
+    private Tab tab;
+
+    @FXML
+    private TextArea textArea;
+
+    @FXML
+    private VBox vbox;
+
+    @FXML
+    void initialize() {
+        tabPane.getTabs().remove(tab);
+    }
+
+    public Tab getTab() {
+        return tab;
+    }
+
+    public TextArea getTextArea() {
+        return textArea;
+    }
+
+    public VBox getVbox() {
+        return vbox;
+    }
 }

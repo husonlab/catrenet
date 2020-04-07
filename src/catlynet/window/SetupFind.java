@@ -19,7 +19,10 @@
 
 package catlynet.window;
 
+import catlynet.tab.TextTab;
 import catlynet.view.ReactionGraphView;
+import javafx.collections.ListChangeListener;
+import javafx.scene.control.Tab;
 import jloda.fx.find.FindToolBar;
 import jloda.fx.find.GraphSearcher;
 import jloda.fx.find.TextAreaSearcher;
@@ -46,20 +49,17 @@ public class SetupFind {
         final FindToolBar logFindToolBar = new FindToolBar(new TextAreaSearcher("Log", controller.getLogTextArea()));
         controller.getLogVBox().getChildren().add(logFindToolBar);
 
-        final FindToolBar cafFindToolBar = new FindToolBar(new TextAreaSearcher("CAF", controller.getCafTextArea()));
-        controller.getCafVBox().getChildren().add(cafFindToolBar);
-
-        final FindToolBar rafFindToolBar = new FindToolBar(new TextAreaSearcher("RAF", controller.getRafTextArea()));
-        controller.getRafVBox().getChildren().add(rafFindToolBar);
-
-        final FindToolBar pseudoRafFindToolBar = new FindToolBar(new TextAreaSearcher("Pseudo-RAF", controller.getPseudoRAFTextArea()));
-        controller.getPseudoRafVBox().getChildren().add(pseudoRafFindToolBar);
-
-        final FindToolBar minIrrRafFindToolBar = new FindToolBar(new TextAreaSearcher("irr-RAF", controller.getIrrRAFTextArea()));
-        controller.getIrrRAFVBox().getChildren().add(minIrrRafFindToolBar);
-
-        final FindToolBar muCAFFindToolBar = new FindToolBar(new TextAreaSearcher("Mu-CAF", controller.getPseudoRAFTextArea()));
-        controller.getMuCafVBox().getChildren().add(muCAFFindToolBar);
+        controller.getOutputTabPane().getTabs().addListener((ListChangeListener<Tab>) z -> {
+            while (z.next()) {
+                for (Tab tab : z.getAddedSubList()) {
+                    final TextTab textTab = window.getTabManager().getTextTab(tab.getText());
+                    if (textTab != null) {
+                        final FindToolBar findToolBar = new FindToolBar(new TextAreaSearcher(tab.getText(), controller.getLogTextArea()));
+                        textTab.setFindToolBar(findToolBar);
+                    }
+                }
+            }
+        });
 
         final ReactionGraphView gv = window.getReactionGraphView();
         final FindToolBar graphFindToolBar = new FindToolBar(new GraphSearcher(window.getController().getVisualizationScrollPane(), gv.getReactionGraph(), gv.getNodeSelection(), gv::getLabel, null));
@@ -72,18 +72,16 @@ public class SetupFind {
                 inputReactionsFindToolBar.setShowFindToolBar(true);
             else if (controller.getLogTab().isSelected() || controller.getLogTextArea().isFocused())
                 logFindToolBar.setShowFindToolBar(true);
-            else if (controller.getCafTab().isSelected() || controller.getCafTextArea().isFocused())
-                cafFindToolBar.setShowFindToolBar(true);
-            else if (controller.getRafTab().isSelected() || controller.getRafTextArea().isFocused())
-                rafFindToolBar.setShowFindToolBar(true);
-            else if (controller.getPseudoRafTab().isSelected() || controller.getPseudoRAFTextArea().isFocused())
-                pseudoRafFindToolBar.setShowFindToolBar(true);
-            else if (controller.getIrrRAFTab().isSelected() || controller.getIrrRAFTextArea().isFocused())
-                minIrrRafFindToolBar.setShowFindToolBar(true);
-            else if (controller.getMuCafTab().isSelected() || controller.getMuCafTextArea().isFocused())
-                muCAFFindToolBar.setShowFindToolBar(true);
             else if (controller.getVisualizationTab().isSelected() || controller.getVisualizationBorderPane().isFocused())
                 graphFindToolBar.setShowFindToolBar(true);
+            else {
+                for (TextTab textTab : window.getTabManager().textTabs()) {
+                    if (textTab.getTab().isSelected() || textTab.getTextArea().isFocused()) {
+                        textTab.getFindToolBar().setShowFindToolBar(true);
+                        break;
+                    }
+                }
+            }
         });
 
         controller.getFindAgainMenuItem().setOnAction((e) -> {
@@ -93,18 +91,16 @@ public class SetupFind {
                 inputReactionsFindToolBar.findAgain();
             else if (controller.getLogTab().isSelected() || controller.getLogTextArea().isFocused())
                 logFindToolBar.findAgain();
-            else if (controller.getCafTab().isSelected() || controller.getCafTextArea().isFocused())
-                cafFindToolBar.findAgain();
-            else if (controller.getRafTab().isSelected() || controller.getRafTextArea().isFocused())
-                rafFindToolBar.findAgain();
-            else if (controller.getPseudoRafTab().isSelected() || controller.getPseudoRAFTextArea().isFocused())
-                pseudoRafFindToolBar.findAgain();
-            else if (controller.getIrrRAFTab().isSelected() || controller.getIrrRAFTextArea().isFocused())
-                minIrrRafFindToolBar.findAgain();
-            else if (controller.getMuCafTab().isSelected() || controller.getMuCafTextArea().isFocused())
-                muCAFFindToolBar.findAgain();
             else if (controller.getVisualizationTab().isSelected() || controller.getVisualizationBorderPane().isFocused())
                 graphFindToolBar.findAgain();
+            else {
+                for (TextTab textTab : window.getTabManager().textTabs()) {
+                    if (textTab.getTab().isSelected() || textTab.getTextArea().isFocused()) {
+                        textTab.getFindToolBar().findAgain();
+                        break;
+                    }
+                }
+            }
         });
     }
 }

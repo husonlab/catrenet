@@ -117,9 +117,7 @@ public class FormatWindow {
 
                 mainWindow.getController().getInputFoodTextArea().setText(foodString);
 
-                mainWindow.getController().getCafTextArea().clear();
-                mainWindow.getController().getRafTextArea().clear();
-                mainWindow.getController().getPseudoRAFTextArea().clear();
+                mainWindow.getTabManager().clearAll();
             }
             stage.hide();
             MainWindowManager.getInstance().removeAuxiliaryWindow(mainWindow, stage);

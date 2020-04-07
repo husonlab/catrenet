@@ -5,13 +5,15 @@ module catlynet {
     requires fx.platform.utils;
     requires com.install4j.runtime;
 
+    exports catlynet.algorithm;
     exports catlynet.main;
+    exports catlynet.tab;
     exports catlynet.window;
     exports catlynet.model;
     exports catlynet.view;
     exports catlynet.action;
 
-
+    opens catlynet.tab;
     opens catlynet.window;
     opens catlynet.format;
 

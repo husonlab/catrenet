@@ -35,6 +35,13 @@ import java.util.TreeSet;
  * Based on notes by Mike Steel
  */
 public class MaxRAFAlgorithm extends AlgorithmBase {
+    public static final String Name = "Max RAF";
+
+    @Override
+    public String getName() {
+        return Name;
+    }
+
     /**
      * computes the RAF.
      * Ignore all inhibitions.
@@ -44,7 +51,7 @@ public class MaxRAFAlgorithm extends AlgorithmBase {
      */
     public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException {
         final ReactionSystem result = new ReactionSystem();
-        result.setName("Max RAF");
+        result.setName(Name);
 
         final ReactionSystem expanded = input.computeExpandedSystem();
         final Set<Reaction> inputReactions = new TreeSet<>(expanded.getReactions());

@@ -32,10 +32,17 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 /**
- * computes a new reaction model from an old one
+ * computes a new reaction system
  * Daniel Huson, 7.2019
  */
 public abstract class AlgorithmBase {
+    /**
+     * get the name of the reaction system computed by this algorithm
+     *
+     * @return name
+     */
+    abstract public String getName();
+
     /**
      * run the algorithm
      *

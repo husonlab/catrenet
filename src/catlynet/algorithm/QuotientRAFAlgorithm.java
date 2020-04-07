@@ -36,6 +36,13 @@ import java.util.stream.Collectors;
  * Daniel Huson, 4.2020
  */
 public class QuotientRAFAlgorithm extends AlgorithmBase {
+        public static final String Name = "Quotient RAF";
+
+        @Override
+        public String getName() {
+                return Name;
+        }
+
         /**
          * compute the quotient max RAF
          *
@@ -55,7 +62,7 @@ public class QuotientRAFAlgorithm extends AlgorithmBase {
                 progress.setProgress(2);
 
                 final ReactionSystem result = maxRAF.shallowCopy();
-                result.setName("Quotient RAF");
+                result.setName(Name);
 
                 result.getReactions().removeAll(maxCAF.getReactions());
 

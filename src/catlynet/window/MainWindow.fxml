@@ -177,19 +177,7 @@
                                     </accelerator>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="selectMaxCAFMenuItem" mnemonicParsing="false" text="Max CAF">
-                                </MenuItem>
-                                <MenuItem fx:id="selectMaxRAFMenuItem" mnemonicParsing="false" text="Max RAF">
-                                </MenuItem>
-                                <MenuItem fx:id="selectMaxPseudoRAFMenuItem" mnemonicParsing="false"
-                                          text="Max Pseudo RAF">
-                                </MenuItem>
-                                <MenuItem fx:id="selectMinIrrRAFMenuItem" mnemonicParsing="false" text="Min Irr RAF"/>
-                                <MenuItem fx:id="selectQuotientRAFMenuItem" mnemonicParsing="false"
-                                          text="Quotient RAF"/>
-                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="selectMuCAFMenuItem" mnemonicParsing="false" text="MU CAF"/>
-                                <MenuItem fx:id="selectURAFMenuItem" mnemonicParsing="false" text="U RAF"/>
+                                <Menu fx:id="selectReactionSystemMenu" mnemonicParsing="false" text="Reaction System"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="selectFoodMenuItem" mnemonicParsing="false" text="Food">
                                     <accelerator>
@@ -330,6 +318,9 @@
                                           text="Determine Necessarily Spontaneous in RAF"/>
                                 <MenuItem fx:id="greedyGrowMenuItem" mnemonicParsing="false"
                                           text="Greedily Grow MaxCAF to MaxRAF"/>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem fx:id="quotientMaxRAFMenuItem" mnemonicParsing="false"
+                                          text="Quotient Max RAF..."/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <Menu mnemonicParsing="false" text="Options">
                                     <items>
@@ -509,21 +500,6 @@
                                     <contextMenu>
                                         <ContextMenu fx:id="visualizationContextMenu">
                                             <items>
-                                                <MenuItem fx:id="selectCAFContextMenuItem" mnemonicParsing="false"
-                                                          text="Select Max CAF"/>
-                                                <MenuItem fx:id="selectRAFContextMenuItem" mnemonicParsing="false"
-                                                          text="Select Max RAF"/>
-                                                <MenuItem fx:id="selectPseudoRAFContextMenuItem" mnemonicParsing="false"
-                                                          text="Select Max Pseudo-RAF"/>
-                                                <MenuItem fx:id="selectMinIrrRAFContextMenuItem" mnemonicParsing="false"
-                                                          text="Select Min Irr RAF"/>
-                                                <MenuItem fx:id="selectQuotientRAFContextMenuItem"
-                                                          mnemonicParsing="false" text="Select Quotient RAF"/>
-                                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                                <MenuItem fx:id="selectMuCAFContextMenuItem" mnemonicParsing="false"
-                                                          text="Select MU CAF"/>
-                                                <MenuItem fx:id="selectURAFContextMenuItem" mnemonicParsing="false"
-                                                          text="Select U RAF"/>
                                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                                 <MenuItem fx:id="selectNoneContextMenuItem" mnemonicParsing="false"
                                                           text="Select None"/>
@@ -533,122 +509,6 @@
                                             </items>
                                         </ContextMenu>
                                     </contextMenu>
-                                </Tab>
-                                <Tab fx:id="cafTab" closable="false" disable="true" text="Max CAF">
-                                    <content>
-                                        <BorderPane>
-                                            <center>
-                                                <TextArea fx:id="cafTextArea" editable="false" prefHeight="200.0"
-                                                          prefWidth="200.0" wrapText="true"/>
-                                            </center>
-                                            <top>
-                                                <VBox fx:id="cafVBox" minHeight="4.0" BorderPane.alignment="CENTER"/>
-                                            </top>
-                                        </BorderPane>
-                                    </content>
-                                    <tooltip>
-                                        <Tooltip
-                                                text="Constructively autocatalytic F-generated reaction network (CAF)"/>
-                                    </tooltip>
-                                </Tab>
-                                <Tab fx:id="rafTab" closable="false" disable="true" text="Max RAF">
-                                    <content>
-                                        <BorderPane>
-                                            <center>
-                                                <TextArea fx:id="rafTextArea" editable="false" prefHeight="200.0"
-                                                          prefWidth="200.0" wrapText="true"/>
-                                            </center>
-                                            <top>
-                                                <VBox fx:id="rafVBox" minHeight="4.0" BorderPane.alignment="CENTER"/>
-                                            </top>
-                                        </BorderPane>
-                                    </content>
-                                    <tooltip>
-                                        <Tooltip text="Reflexively autocatalytic F-generated reaction network (RAF)"/>
-                                    </tooltip>
-                                </Tab>
-                                <Tab fx:id="pseudoRafTab" closable="false" disable="true" text="Max p-RAF">
-                                    <content>
-                                        <BorderPane>
-                                            <center>
-                                                <TextArea fx:id="pseudoRAFTextArea" editable="false" prefHeight="200.0"
-                                                          prefWidth="200.0" wrapText="true"/>
-                                            </center>
-                                            <top>
-                                                <VBox fx:id="pseudoRafVBox" minHeight="4.0"
-                                                      BorderPane.alignment="CENTER"/>
-                                            </top>
-                                        </BorderPane>
-                                    </content>
-                                    <tooltip>
-                                        <Tooltip text="Pseudo RAF"/>
-                                    </tooltip>
-                                </Tab>
-
-                                <Tab fx:id="muCafTab" closable="false" disable="true" text="MU CAF">
-                                    <content>
-                                        <BorderPane>
-                                            <center>
-                                                <TextArea fx:id="muCafTextArea" editable="false" prefHeight="200.0"
-                                                          prefWidth="200.0" wrapText="true"/>
-                                            </center>
-                                            <top>
-                                                <VBox fx:id="muCafVBox" minHeight="4.0" BorderPane.alignment="CENTER"/>
-                                            </top>
-                                        </BorderPane>
-                                    </content>
-                                    <tooltip>
-                                        <Tooltip text="A maximal uninhibited CAF"/>
-                                    </tooltip>
-                                </Tab>
-                                <Tab fx:id="uRAFTab" closable="false" disable="true" text="U RAF">
-                                    <content>
-                                        <BorderPane>
-                                            <center>
-                                                <TextArea fx:id="uRAFTextArea" editable="false" prefHeight="200.0"
-                                                          prefWidth="200.0" wrapText="true"/>
-                                            </center>
-                                            <top>
-                                                <VBox fx:id="uRAFVBox" minHeight="4.0" BorderPane.alignment="CENTER"/>
-                                            </top>
-                                        </BorderPane>
-                                    </content>
-                                    <tooltip>
-                                        <Tooltip text="Canonical uninhibited RAF"/>
-                                    </tooltip>
-                                </Tab>
-                                <Tab fx:id="irrRAFTab" closable="false" disable="true" text="irr RAF">
-                                    <content>
-                                        <BorderPane>
-                                            <center>
-                                                <TextArea fx:id="irrRAFTextArea" editable="false" prefHeight="200.0"
-                                                          prefWidth="200.0" wrapText="true"/>
-                                            </center>
-                                            <top>
-                                                <VBox fx:id="irrRAFVBox" minHeight="4.0" BorderPane.alignment="CENTER"/>
-                                            </top>
-                                        </BorderPane>
-                                    </content>
-                                    <tooltip>
-                                        <Tooltip text="Heuristically computed smallest irriduclible RAF"/>
-                                    </tooltip>
-                                </Tab>
-                                <Tab fx:id="quotientRAFTab" closable="false" disable="true" text="Quotient RAF">
-                                    <content>
-                                        <BorderPane>
-                                            <center>
-                                                <TextArea fx:id="quotientRAFTextArea" editable="false"
-                                                          prefHeight="200.0" prefWidth="200.0" wrapText="true"/>
-                                            </center>
-                                            <top>
-                                                <VBox fx:id="quotientRAFVBox" minHeight="4.0"
-                                                      BorderPane.alignment="CENTER"/>
-                                            </top>
-                                        </BorderPane>
-                                    </content>
-                                    <tooltip>
-                                        <Tooltip text="Computes the Max RAF modulo the Max CAF"/>
-                                    </tooltip>
                                 </Tab>
                                 <Tab fx:id="logTab" closable="false" text="Log">
                                     <content>

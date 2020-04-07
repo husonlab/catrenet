@@ -26,6 +26,8 @@ import catlynet.window.MainWindow;
 import catlynet.window.MainWindowController;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.WeakChangeListener;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TextArea;
 import jloda.fx.util.AService;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
@@ -62,9 +64,12 @@ public class ComputeNecessarilySpontaneousInRAF {
         service.setOnSucceeded(c -> {
             final String output = String.format("Necessarily spontaneous reactions (%d): %s\n",
                     service.getValue().size(), Basic.toString(service.getValue(), ", "));
-            controller.getRafTextArea().setText(controller.getRafTextArea().getText() + "\n\n" + output);
+            final TextArea maxRAFTextArea = window.getTabManager().getTextArea(MaxRAFAlgorithm.Name);
+            maxRAFTextArea.setText(maxRAFTextArea.getText() + "\n\n" + output);
             controller.getLogTextArea().setText(controller.getLogTextArea().getText() + "\nMaxRAF: " + output);
-            controller.getRafTab().getTabPane().getSelectionModel().select(controller.getRafTab());
+
+            final Tab maxRAFTab = window.getTabManager().getTab(MaxRAFAlgorithm.Name);
+            maxRAFTab.getTabPane().getSelectionModel().select(maxRAFTab);
         });
         service.start();
     }

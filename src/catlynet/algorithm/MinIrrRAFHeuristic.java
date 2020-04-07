@@ -35,7 +35,14 @@ import java.util.Optional;
  * Based on notes by Mike Steel
  */
 public class MinIrrRAFHeuristic extends AlgorithmBase {
+    public static final String Name = "irr RAF";
+
     private final IntegerProperty numberOfRandomInsertionOrders = new SimpleIntegerProperty(100);
+
+    @Override
+    public String getName() {
+        return Name;
+    }
 
     /**
      * heuristically tries to compute a minimum irreducible RAD
@@ -89,7 +96,7 @@ public class MinIrrRAFHeuristic extends AlgorithmBase {
         final ReactionSystem result = smallestRAF.orElseGet(maxRAF::shallowCopy);
         result.getFoods().setAll(result.computeMentionedFoods(input.getFoods()));
 
-        result.setName("irr RAF");
+        result.setName(Name);
         return result;
     }
 

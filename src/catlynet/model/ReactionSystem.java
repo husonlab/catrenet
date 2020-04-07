@@ -34,8 +34,6 @@ import java.util.stream.Collectors;
  * Daniel Huson, 6.2019
  */
 public class ReactionSystem {
-     public enum Type {Input, maxCAF, maxRAF, maxPseudoRAF, Reactions, muCAF, uRAF, minIrrRAF, QuotientRAF}
-
     private final ObservableList<Reaction> reactions = FXCollections.observableArrayList();
     private final ObservableList<MoleculeType> foods = FXCollections.observableArrayList();
 
@@ -45,7 +43,7 @@ public class ReactionSystem {
 
     private int numberOfTwoWayReactions = 0;
 
-    private final StringProperty name = new SimpleStringProperty(Type.Reactions.toString());
+    private final StringProperty name = new SimpleStringProperty("Reactions");
 
     /**
      * construct a reactions systems
@@ -110,7 +108,6 @@ public class ReactionSystem {
     public void clear() {
         reactions.clear();
         foods.clear();
-        name.set(Type.Reactions.toString());
     }
 
     /**

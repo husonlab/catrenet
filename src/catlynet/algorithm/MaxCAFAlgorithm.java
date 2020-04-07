@@ -35,6 +35,13 @@ import java.util.TreeSet;
  * Based on notes by Mike Steel
  */
 public class MaxCAFAlgorithm extends AlgorithmBase {
+    public static final String Name = "Max CAF";
+
+    @Override
+    public String getName() {
+        return Name;
+    }
+
     /**
      * computes a CAF
      *
@@ -43,7 +50,7 @@ public class MaxCAFAlgorithm extends AlgorithmBase {
      */
     public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException {
         final ReactionSystem result = new ReactionSystem();
-        result.setName("Max CAF");
+        result.setName(Name);
 
         final ReactionSystem expanded = input.computeExpandedSystem();
         final Set<Reaction> inputReactions = new TreeSet<>(expanded.getReactions());

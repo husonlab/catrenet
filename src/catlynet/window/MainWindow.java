@@ -23,6 +23,7 @@ import catlynet.action.ExportManager;
 import catlynet.io.CRSFileFilter;
 import catlynet.io.FileOpener;
 import catlynet.model.ReactionSystem;
+import catlynet.tab.TabManager;
 import catlynet.view.ReactionGraphView;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -64,6 +65,8 @@ public class MainWindow implements IMainWindow {
 
     private final ExportManager exportManager;
 
+    private final TabManager tabManager;
+
     private final Document document = new Document();
 
     private final BooleanProperty hasFoodInput = new SimpleBooleanProperty(false);
@@ -89,6 +92,8 @@ public class MainWindow implements IMainWindow {
         }
 
         exportManager = new ExportManager(this);
+
+        tabManager = new TabManager(controller.getOutputSplittableTabPane().getTabs());
 
         FileOpenManager.setExtensions(Collections.singletonList(CRSFileFilter.getInstance()));
         FileOpenManager.setFileOpener(new FileOpener());
@@ -173,7 +178,7 @@ public class MainWindow implements IMainWindow {
         return document.getInputReactionSystem();
     }
 
-    public ReactionSystem getReactionSystem(ReactionSystem.Type name) {
+    public ReactionSystem getReactionSystem(String name) {
         return document.getReactionSystem(name);
     }
 
@@ -188,5 +193,9 @@ public class MainWindow implements IMainWindow {
 
     public ExportManager getExportManager() {
         return exportManager;
+    }
+
+    public TabManager getTabManager() {
+        return tabManager;
     }
 }

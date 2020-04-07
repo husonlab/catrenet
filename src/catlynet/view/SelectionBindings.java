@@ -24,13 +24,17 @@ import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
 import catlynet.window.MainWindow;
 import catlynet.window.MainWindowController;
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.scene.control.MenuItem;
 import jloda.fx.control.ItemSelectionModel;
 import jloda.graph.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * setup bindings for selection menu items
@@ -116,48 +120,27 @@ public class SelectionBindings {
         controller.getSelectConnectedComponentContextMenuItem().setOnAction(controller.getSelectConnectedComponentMenuItem().getOnAction());
         controller.getSelectConnectedComponentContextMenuItem().disableProperty().bind(controller.getSelectConnectedComponentMenuItem().disableProperty());
 
-        controller.getSelectMaxCAFMenuItem().setOnAction(e -> selectForAlgorithm(view, window.getReactionSystem(ReactionSystem.Type.maxCAF)));
-        controller.getSelectMaxCAFMenuItem().disableProperty().bind(visualizationHasFocus.not().or(window.getReactionSystem(ReactionSystem.Type.maxCAF).sizeProperty().isEqualTo(0)));
+        window.getDocument().getDefinedSystems().addListener((InvalidationListener) c -> controller.getSelectReactionSystemMenu().getItems()
+                .setAll(window.getDocument().getDefinedSystems().stream().map(window::getReactionSystem).map(r -> {
+                    final MenuItem menuItem = new MenuItem(r.getName());
+                    menuItem.setOnAction(z -> selectForAlgorithm(view, window.getReactionSystem(r.getName())));
+                    menuItem.disableProperty().bind(window.getReactionSystem(r.getName()).sizeProperty().isEqualTo(0));
+                    return menuItem;
+                }).collect(Collectors.toList())));
 
-        controller.getSelectCAFContextMenuItem().setOnAction(controller.getSelectMaxCAFMenuItem().getOnAction());
-        controller.getSelectCAFContextMenuItem().disableProperty().bind(controller.getSelectMaxCAFMenuItem().disableProperty());
+        final List<MenuItem> additionalContextMenuItems = new ArrayList<>(controller.getVisualizationContextMenu().getItems());
 
-        controller.getSelectMaxRAFMenuItem().setOnAction(e -> selectForAlgorithm(view, window.getReactionSystem(ReactionSystem.Type.maxRAF)));
-        controller.getSelectMaxRAFMenuItem().disableProperty().bind(visualizationHasFocus.not().or(window.getReactionSystem(ReactionSystem.Type.maxRAF).sizeProperty().isEqualTo(0)));
-
-        controller.getSelectRAFContextMenuItem().setOnAction(controller.getSelectMaxRAFMenuItem().getOnAction());
-        controller.getSelectRAFContextMenuItem().disableProperty().bind(controller.getSelectMaxRAFMenuItem().disableProperty());
-
-        controller.getSelectMaxPseudoRAFMenuItem().setOnAction(e -> selectForAlgorithm(view, window.getReactionSystem(ReactionSystem.Type.maxPseudoRAF)));
-        controller.getSelectMaxPseudoRAFMenuItem().disableProperty().bind(visualizationHasFocus.not().or(window.getReactionSystem(ReactionSystem.Type.maxPseudoRAF).sizeProperty().isEqualTo(0)));
-
-        controller.getSelectPseudoRAFContextMenuItem().setOnAction(controller.getSelectMaxPseudoRAFMenuItem().getOnAction());
-        controller.getSelectPseudoRAFContextMenuItem().disableProperty().bind(controller.getSelectMaxPseudoRAFMenuItem().disableProperty());
-
-        controller.getSelectMinIrrRAFMenuItem().setOnAction(e -> selectForAlgorithm(view, window.getReactionSystem(ReactionSystem.Type.minIrrRAF)));
-        controller.getSelectMinIrrRAFMenuItem().disableProperty().bind(visualizationHasFocus.not().or(window.getReactionSystem(ReactionSystem.Type.minIrrRAF).sizeProperty().isEqualTo(0)));
-
-        controller.getSelectMinIrrRAFContextMenuItem().setOnAction(controller.getSelectMinIrrRAFMenuItem().getOnAction());
-        controller.getSelectMinIrrRAFContextMenuItem().disableProperty().bind(controller.getSelectMinIrrRAFMenuItem().disableProperty());
-
-        controller.getSelectQuotientRAFMenuItem().setOnAction(e -> selectForAlgorithm(view, window.getReactionSystem(ReactionSystem.Type.QuotientRAF)));
-        controller.getSelectQuotientRAFMenuItem().disableProperty().bind(visualizationHasFocus.not().or(window.getReactionSystem(ReactionSystem.Type.QuotientRAF).sizeProperty().isEqualTo(0)));
-
-        controller.getSelectQuotientRAFContextMenuItem().setOnAction(controller.getSelectQuotientRAFMenuItem().getOnAction());
-        controller.getSelectQuotientRAFContextMenuItem().disableProperty().bind(controller.getSelectQuotientRAFMenuItem().disableProperty());
-
-
-        controller.getSelectMuCAFMenuItem().setOnAction(e -> selectForAlgorithm(view, window.getReactionSystem(ReactionSystem.Type.muCAF)));
-        controller.getSelectMuCAFMenuItem().disableProperty().bind(visualizationHasFocus.not().or(window.getReactionSystem(ReactionSystem.Type.muCAF).sizeProperty().isEqualTo(0)));
-
-        controller.getSelectMuCAFContextMenuItem().setOnAction(controller.getSelectMuCAFMenuItem().getOnAction());
-        controller.getSelectMuCAFContextMenuItem().disableProperty().bind(controller.getSelectMuCAFMenuItem().disableProperty());
-
-        controller.getSelectURAFMenuItem().setOnAction(e -> selectForAlgorithm(view, window.getReactionSystem(ReactionSystem.Type.uRAF)));
-        controller.getSelectURAFMenuItem().disableProperty().bind(visualizationHasFocus.not().or(window.getReactionSystem(ReactionSystem.Type.uRAF).sizeProperty().isEqualTo(0)));
-
-        controller.getSelectURAFContextMenuItem().setOnAction(controller.getSelectURAFMenuItem().getOnAction());
-        controller.getSelectURAFContextMenuItem().disableProperty().bind(controller.getSelectURAFMenuItem().disableProperty());
+        window.getDocument().getDefinedSystems().addListener((InvalidationListener) c -> {
+                    controller.getVisualizationContextMenu().getItems()
+                            .setAll(window.getDocument().getDefinedSystems().stream().map(window::getReactionSystem).map(r -> {
+                                final MenuItem menuItem = new MenuItem("Select " + r.getName());
+                                menuItem.setOnAction(z -> selectForAlgorithm(view, window.getReactionSystem(r.getName())));
+                                menuItem.disableProperty().bind(window.getReactionSystem(r.getName()).sizeProperty().isEqualTo(0));
+                                return menuItem;
+                            }).collect(Collectors.toList()));
+                    controller.getVisualizationContextMenu().getItems().addAll(additionalContextMenuItems);
+                }
+        );
     }
 
     /**

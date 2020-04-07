@@ -34,6 +34,13 @@ import java.util.*;
  * Based on notes by Mike Steel
  */
 public class MuCAFAlgorithm extends AlgorithmBase {
+    public static final String Name = "MU CAF";
+
+    @Override
+    public String getName() {
+        return Name;
+    }
+
     /**
      * computes a MU CAF
      *
@@ -42,7 +49,7 @@ public class MuCAFAlgorithm extends AlgorithmBase {
      */
     public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException {
         final ReactionSystem result = new ReactionSystem();
-        result.setName("MU CAF");
+        result.setName(Name);
 
         final ReactionSystem expanded = input.computeExpandedSystem();
         final ArrayList<Reaction> inputReactions = Basic.randomize(expanded.getReactions(), new Random());

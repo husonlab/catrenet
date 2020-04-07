@@ -22,18 +22,22 @@ package catlynet.window;
 import catlynet.format.ArrowNotation;
 import catlynet.format.ReactionNotation;
 import catlynet.model.ReactionSystem;
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableMap;
+import javafx.collections.ObservableSet;
 import jloda.util.ProgramProperties;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.TreeSet;
 
 public class Document {
     private final StringProperty fileName = new SimpleStringProperty("Untitled");
     private final BooleanProperty dirty = new SimpleBooleanProperty(false);
     private final BooleanProperty warnedAboutInhibitions = new SimpleBooleanProperty(false);
 
-    private final Map<String, ReactionSystem> reactionSystems = new HashMap<>();
+    private final ObservableMap<String, ReactionSystem> reactionSystems = FXCollections.observableHashMap();
+    private final ObservableSet<String> definedSystems = FXCollections.observableSet(new TreeSet<>());
 
     private final ObjectProperty<ReactionNotation> reactionNotation = new SimpleObjectProperty<>(ReactionNotation.valueOfIgnoreCase(ProgramProperties.get("ReactionNotation", "Sparse")));
     private final ObjectProperty<ArrowNotation> arrowNotation = new SimpleObjectProperty<>(ArrowNotation.valueOfLabel(ProgramProperties.get("ArrowNotation", "=>")));
@@ -42,10 +46,14 @@ public class Document {
      * constructor
      */
     public Document() {
+        reactionSystems.addListener((InvalidationListener) c -> {
+            definedSystems.clear();
+            definedSystems.addAll(reactionSystems.keySet());
+        });
     }
 
     public ReactionSystem getInputReactionSystem() {
-        return getReactionSystem(ReactionSystem.Type.Input);
+        return getReactionSystem("Input");
     }
 
     public ReactionSystem getReactionSystem(String name) {
@@ -53,15 +61,6 @@ public class Document {
         if (inputReactionSystem == null) {
             inputReactionSystem = new ReactionSystem(name);
             reactionSystems.put(name, inputReactionSystem);
-        }
-        return inputReactionSystem;
-    }
-
-    public ReactionSystem getReactionSystem(ReactionSystem.Type name) {
-        ReactionSystem inputReactionSystem = reactionSystems.get(name.toString());
-        if (inputReactionSystem == null) {
-            inputReactionSystem = new ReactionSystem(name.toString());
-            reactionSystems.put(name.toString(), inputReactionSystem);
         }
         return inputReactionSystem;
     }
@@ -124,5 +123,9 @@ public class Document {
 
     public void setWarnedAboutInhibitions(boolean warnedAboutInhibitions) {
         this.warnedAboutInhibitions.set(warnedAboutInhibitions);
+    }
+
+    public ObservableSet<String> getDefinedSystems() {
+        return new ReadOnlySetWrapper<>(definedSystems);
     }
 }

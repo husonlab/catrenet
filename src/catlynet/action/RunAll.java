@@ -22,6 +22,7 @@ package catlynet.action;
 import catlynet.algorithm.*;
 import catlynet.io.ModelIO;
 import catlynet.model.ReactionSystem;
+import catlynet.tab.TabManager;
 import catlynet.window.MainWindow;
 import catlynet.window.MainWindowController;
 import javafx.beans.value.ChangeListener;
@@ -33,18 +34,16 @@ import java.text.SimpleDateFormat;
  * Daniel Huson, 2.2020
  */
 public class RunAll {
-    public static void apply(MainWindow window, MainWindowController controller, ChangeListener<Boolean> runningListener) {
+    public static void apply(MainWindow window, ChangeListener<Boolean> runningListener) {
         final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
         window.getLogStream().println("\nRun +++++ " + simpleDateFormat.format(System.currentTimeMillis()) + " +++++:");
 
-        controller.getExpandedReactionsTextArea().clear();
-        controller.getCafTextArea().clear();
-        controller.getRafTextArea().clear();
-        controller.getPseudoRAFTextArea().clear();
+        final MainWindowController controller = window.getController();
+        final TabManager tabManager = window.getTabManager();
 
-        controller.getMuCafTextArea().clear();
-        controller.getuRAFTextArea().clear();
+        controller.getExpandedReactionsTextArea().clear();
+        tabManager.clearAll();
 
         window.getExportManager().clear();
 
@@ -55,14 +54,15 @@ public class RunAll {
             if (expandedReactionSystem.getFoods().size() < window.getInputReactionSystem().getFoods().size())
                 window.getLogStream().println(String.format("Removed %d unused food items", (window.getInputReactionSystem().getFoods().size() - expandedReactionSystem.getFoods().size())));
 
-            RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxCAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.maxCAF), controller.getCafTextArea(), runningListener);
-            RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxRAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.maxRAF), controller.getRafTextArea(), runningListener);
-            RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxPseudoRAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.maxPseudoRAF), controller.getPseudoRAFTextArea(), runningListener);
-            RunAlgorithm.apply(window, window.getInputReactionSystem(), new MinIrrRAFHeuristic(), window.getReactionSystem(ReactionSystem.Type.minIrrRAF), controller.getIrrRAFTextArea(), runningListener);
+            RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxCAFAlgorithm(), runningListener);
+            RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxRAFAlgorithm(), runningListener);
+            RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxPseudoRAFAlgorithm(), runningListener);
+            RunAlgorithm.apply(window, window.getInputReactionSystem(), new MinIrrRAFHeuristic(), runningListener);
+            RunAlgorithm.apply(window, window.getInputReactionSystem(), new QuotientRAFAlgorithm(), runningListener);
 
             if (window.getInputReactionSystem().isInhibitorsPresent()) {
-                RunAlgorithm.apply(window, window.getInputReactionSystem(), new MuCAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.muCAF), controller.getMuCafTextArea(), runningListener);
-                RunAlgorithm.apply(window, window.getInputReactionSystem(), new URAFAlgorithm(), window.getReactionSystem(ReactionSystem.Type.uRAF), controller.getuRAFTextArea(), runningListener);
+                RunAlgorithm.apply(window, window.getInputReactionSystem(), new MuCAFAlgorithm(), runningListener);
+                RunAlgorithm.apply(window, window.getInputReactionSystem(), new URAFAlgorithm(), runningListener);
             }
         }
     }

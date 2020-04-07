@@ -34,6 +34,13 @@ import java.util.Set;
  * Based on notes by Mike Steel
  */
 public class URAFAlgorithm extends AlgorithmBase {
+    public static final String Name = "U RAF";
+
+    @Override
+    public String getName() {
+        return Name;
+    }
+
     /**
      * computes a canonical uninhibited RAF (U RAF)
      *
@@ -42,7 +49,7 @@ public class URAFAlgorithm extends AlgorithmBase {
      */
     public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException {
         ReactionSystem result = new ReactionSystem();
-        result.setName("U RAF");
+        result.setName(Name);
 
         // 1. Compute R'= maxRAF(X, R, C, \emptyset, F) for input Q
 
@@ -77,7 +84,7 @@ public class URAFAlgorithm extends AlgorithmBase {
 
         progress.setSubtask("MaxRAF R2");
         result = new MaxRAFAlgorithm().apply(R2, progress);
-        result.setName("U RAF");
+        result.setName(Name);
         return result;
     }
 }

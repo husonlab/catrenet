@@ -35,6 +35,13 @@ import java.util.TreeSet;
  * Based on notes by Mike Steel
  */
 public class MaxPseudoRAFAlgorithm extends AlgorithmBase {
+    public static final String Name = "Max Pseudo RAF";
+
+    @Override
+    public String getName() {
+        return Name;
+    }
+
     /**
      * computes a pseudo-RAF
      *
@@ -43,7 +50,7 @@ public class MaxPseudoRAFAlgorithm extends AlgorithmBase {
      */
     public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException {
         final ReactionSystem result = new ReactionSystem();
-        result.setName("Max Pseudo RAF");
+        result.setName(Name);
 
         final ReactionSystem expanded = input.computeExpandedSystem();
         final Set<Reaction> inputReactions = new TreeSet<>(expanded.getReactions());
