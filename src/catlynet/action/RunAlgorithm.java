@@ -51,6 +51,7 @@ public class RunAlgorithm {
         final TextArea textArea = window.getTabManager().getTextArea(algorithm.getName());
         final ReactionSystem result = window.getReactionSystem(algorithm.getName());
         window.getTabManager().getTab(algorithm.getName()).disableProperty().bind(result.sizeProperty().isEqualTo(0));
+        controller.getOutputTabPane().getSelectionModel().select(window.getTabManager().getTab(algorithm.getName()));
 
         if (controller.getExpandedReactionsTextArea().getText().length() == 0) {
             final ReactionSystem expandedReactionSystem = window.getInputReactionSystem().computeExpandedSystem();

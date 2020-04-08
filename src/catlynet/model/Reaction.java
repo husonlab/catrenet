@@ -91,30 +91,15 @@ public class Reaction implements Comparable<Reaction> {
     }
 
     public Set<MoleculeType> getCatalystConjunctions() {
-        boolean hasDisjunction = false;
-        for (MoleculeType catalyst : getCatalysts()) {
-            final String string = catalyst.getName();
-            if (string.contains("&") && string.contains("(")) {
-                hasDisjunction = true;
-                break;
-            }
-        }
-        if (!hasDisjunction)
-            return getCatalysts();
-        else {
-            final Set<MoleculeType> set = new TreeSet<>();
+           final Set<MoleculeType> set = new TreeSet<>();
             for (MoleculeType catalyst : getCatalysts()) {
                 final String string = catalyst.getName();
-                if (string.contains("&") && string.contains("(")) {
                     final String dnf = DisjunctiveNormalForm.compute(string);
                     for (String part : dnf.split(",")) {
                         set.add(MoleculeType.valueOf(part));
                     }
-                } else
-                    set.add(catalyst);
             }
             return set;
-        }
     }
 
     public Set<MoleculeType> getInhibitions() {

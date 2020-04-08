@@ -93,7 +93,7 @@ public class MainWindow implements IMainWindow {
 
         exportManager = new ExportManager(this);
 
-        tabManager = new TabManager(controller.getOutputSplittableTabPane().getTabs());
+        tabManager = new TabManager(controller.getOutputTabPane().getTabs());
 
         FileOpenManager.setExtensions(Collections.singletonList(CRSFileFilter.getInstance()));
         FileOpenManager.setFileOpener(new FileOpener());

@@ -27,6 +27,8 @@ import jloda.fx.find.FindToolBar;
 import jloda.fx.find.GraphSearcher;
 import jloda.fx.find.TextAreaSearcher;
 
+import java.util.stream.Collectors;
+
 /**
  * setup find
  * Daniel Huson, 2.2020
@@ -51,12 +53,9 @@ public class SetupFind {
 
         controller.getOutputTabPane().getTabs().addListener((ListChangeListener<Tab>) z -> {
             while (z.next()) {
-                for (Tab tab : z.getAddedSubList()) {
-                    final TextTab textTab = window.getTabManager().getTextTab(tab.getText());
-                    if (textTab != null) {
-                        final FindToolBar findToolBar = new FindToolBar(new TextAreaSearcher(tab.getText(), controller.getLogTextArea()));
-                        textTab.setFindToolBar(findToolBar);
-                    }
+                for (TextTab textTab : z.getAddedSubList().stream().filter(t -> t.getUserData() instanceof TextTab).map(t -> (TextTab) t.getUserData()).collect(Collectors.toList())) {
+                    final FindToolBar findToolBar = new FindToolBar(new TextAreaSearcher(textTab.getReactionSystemName(), controller.getLogTextArea()));
+                    textTab.setFindToolBar(findToolBar);
                 }
             }
         });

@@ -344,6 +344,7 @@ public class MainWindowController {
 
         final ArrayList<Tab> tabs = new ArrayList<>(outputTabPane.getTabs());
         outputTabPane.getTabs().clear();
+
         outputSplittableTabPane = new SplittableTabPane();
         outputSplittableTabPane.getTabs().addAll(tabs);
         outputPane.getChildren().setAll(outputSplittableTabPane);
@@ -708,14 +709,6 @@ public class MainWindowController {
         return inputTextArea;
     }
 
-    public StackPane getOutputPane() {
-        return outputPane;
-    }
-
-    public TabPane getOutputTabPane() {
-        return outputTabPane;
-    }
-
     public Tab getExpandedReactionsTab() {
         return expandedReactionsTab;
     }
@@ -772,7 +765,8 @@ public class MainWindowController {
         return logVBox;
     }
 
-    public SplittableTabPane getOutputSplittableTabPane() {
+
+    public SplittableTabPane getOutputTabPane() {
         return outputSplittableTabPane;
     }
 

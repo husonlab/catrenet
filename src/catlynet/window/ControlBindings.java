@@ -111,7 +111,6 @@ public class ControlBindings {
                         final TextArea textArea = ((TextTab) tab.getUserData()).getTextArea();
                         textArea.focusedProperty().addListener(textAreaFocusChangeListener(controller, printableNode, textArea));
                     }
-
                 }
             }
         });
@@ -246,7 +245,6 @@ public class ControlBindings {
 
         controller.getRunRAFMenuItem().setOnAction(e -> {
             if (VerifyInput.verify(window)) {
-                controller.getOutputTabPane().getSelectionModel().select(tabManager.getTab(MaxRAFAlgorithm.Name));
                 RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxRAFAlgorithm(), runningListener);
             }
         });
@@ -254,7 +252,6 @@ public class ControlBindings {
 
         controller.getRunCAFMenuItem().setOnAction(e -> {
             if (VerifyInput.verify(window)) {
-                controller.getOutputTabPane().getSelectionModel().select(tabManager.getTab(MaxCAFAlgorithm.Name));
                 RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxCAFAlgorithm(), runningListener);
             }
         });
@@ -262,7 +259,6 @@ public class ControlBindings {
 
         controller.getRunPseudoRAFMenuItem().setOnAction(e -> {
             if (VerifyInput.verify(window)) {
-                controller.getOutputTabPane().getSelectionModel().select(tabManager.getTab(MaxPseudoRAFAlgorithm.Name));
                 RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxPseudoRAFAlgorithm(), runningListener);
             }
         });
@@ -270,7 +266,6 @@ public class ControlBindings {
 
         controller.getRunMinIrrRAFMenuItem().setOnAction(e -> {
             if (VerifyInput.verify(window)) {
-                controller.getOutputTabPane().getSelectionModel().select(tabManager.getTab(MinIrrRAFHeuristic.Name));
                 RunAlgorithm.apply(window, window.getInputReactionSystem(), new MinIrrRAFHeuristic(), runningListener);
             }
         });
@@ -278,7 +273,6 @@ public class ControlBindings {
 
         controller.getRunQuotientRAFMenuItem().setOnAction(e -> {
             if (VerifyInput.verify(window)) {
-                controller.getOutputTabPane().getSelectionModel().select(tabManager.getTab(QuotientRAFAlgorithm.Name));
                 RunAlgorithm.apply(window, window.getInputReactionSystem(), new QuotientRAFAlgorithm(), runningListener);
             }
         });
@@ -287,7 +281,6 @@ public class ControlBindings {
         controller.getRunMuCAFMenuItem().setOnAction(e -> {
             if (VerifyInput.verify(window)) {
                 if (window.getInputReactionSystem().isInhibitorsPresent()) {
-                    controller.getOutputTabPane().getSelectionModel().select(tabManager.getTab(MuCAFAlgorithm.Name));
                     RunAlgorithm.apply(window, window.getInputReactionSystem(), new MuCAFAlgorithm(), runningListener);
                 } else
                     NotificationManager.showWarning("Won't run MU CAF algorithm, no inhibitions present");
@@ -299,7 +292,6 @@ public class ControlBindings {
         controller.getRunURAFMenuItem().setOnAction(e -> {
             if (VerifyInput.verify(window)) {
                 if (window.getInputReactionSystem().isInhibitorsPresent()) {
-                    controller.getOutputTabPane().getSelectionModel().select(tabManager.getTab(URAFAlgorithm.Name));
                     RunAlgorithm.apply(window, window.getInputReactionSystem(), new URAFAlgorithm(), runningListener);
                 } else
                     NotificationManager.showWarning("Won't run U RAF algorithm, no inhibitions present");
@@ -384,7 +376,7 @@ public class ControlBindings {
                     scrollPane.getViewportBounds().getHeight(), scrollPane.viewportBoundsProperty()).subtract(20));
 
             controller.getZoomInMenuItem().setOnAction(c -> scrollPane.zoomBy(1.1, 1.1));
-            controller.getZoomInMenuItem().disableProperty().bind(controller.getOutputSplittableTabPane().getSelectionModel().selectedItemProperty().isNotEqualTo(controller.getVisualizationTab()));
+            controller.getZoomInMenuItem().disableProperty().bind(controller.getOutputTabPane().getSelectionModel().selectedItemProperty().isNotEqualTo(controller.getVisualizationTab()));
             controller.getZoomOutMenuItem().setOnAction(c -> scrollPane.zoomBy(1 / 1.1, 1 / 1.1));
             controller.getZoomOutMenuItem().disableProperty().bind(controller.getZoomInMenuItem().disableProperty());
 

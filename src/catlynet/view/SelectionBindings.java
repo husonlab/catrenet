@@ -33,6 +33,7 @@ import jloda.graph.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -209,6 +210,17 @@ public class SelectionBindings {
                     nodeSelection.select(v);
             }
         }
+        // don't select inactive copies:
+        if (view.isUseMultiCopyFoodNodes()) {
+            for (Node v : view.getReactionGraph().nodes()) {
+                if (v.getInfo() instanceof MoleculeType) {
+                    final Optional<Boolean> hasSelectedNeighbor = v.adjacentNodeStream(true).map(nodeSelection::isSelected).findAny();
+                    if (hasSelectedNeighbor.isEmpty() || !hasSelectedNeighbor.get())
+                        nodeSelection.clearSelection(v);
+                }
+            }
+        }
+
 
         view.getReactionGraph().edgeStream().filter(e -> nodeSelection.isSelected(e.getSource()) && nodeSelection.isSelected(e.getTarget())).forEach(edgeSelection::select);
     }
