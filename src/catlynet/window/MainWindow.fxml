@@ -318,9 +318,8 @@
                                           text="Determine Necessarily Spontaneous in RAF"/>
                                 <MenuItem fx:id="greedyGrowMenuItem" mnemonicParsing="false"
                                           text="Greedily Grow MaxCAF to MaxRAF"/>
-                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="quotientMaxRAFMenuItem" mnemonicParsing="false"
-                                          text="Quotient Max RAF..."/>
+                                <MenuItem fx:id="removeTrivialRAFsHeuristicMenuItem" mnemonicParsing="false"
+                                          text="Remove Trivial RAFs Heuristic"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <Menu mnemonicParsing="false" text="Options">
                                     <items>
