@@ -58,8 +58,8 @@ public class RemoveTrivialRAFsAlgorithm extends AlgorithmBase {
         progress.setMaximum(input.size());
         progress.setProgress(0);
 
-        // look at all reactions in the maxRAF (in parallel) and keep any that is not a trivial RAF
-        result.getReactions().setAll(input.getReactions().parallelStream().filter(r -> {
+        // look at all reactions in the input (in parallel) and keep any that is not a trivial RAF
+        result.getReactions().addAll(input.getReactions().parallelStream().filter(r -> {
             try {
                 progress.incrementProgress();
 
