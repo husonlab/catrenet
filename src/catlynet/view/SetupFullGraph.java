@@ -65,7 +65,7 @@ public class SetupFullGraph {
                 if (molecule2node.get(molecule) == null) {
                     if (molecule.getName().contains("&")) {
                         molecule2node.put(molecule, reactionGraph.newNode(new ReactionGraphView.AndNode()));
-                        for (MoleculeType catalyst : MoleculeType.valueOf(Basic.trimAll(Basic.split(molecule.getName(), '&')))) {
+                        for (MoleculeType catalyst : MoleculeType.valuesOf(Basic.trimAll(Basic.split(molecule.getName(), '&')))) {
                             if (molecule2node.get(catalyst) == null) {
                                 molecule2node.put(catalyst, reactionGraph.newNode(catalyst));
                             }
@@ -88,7 +88,7 @@ public class SetupFullGraph {
             if (!suppressCatalystEdges) {
                 for (MoleculeType molecule : reaction.getCatalystConjunctions()) {
                     if (molecule.getName().contains("&")) {
-                        for (MoleculeType catalyst : MoleculeType.valueOf(Basic.trimAll(Basic.split(molecule.getName(), '&')))) {
+                        for (MoleculeType catalyst : MoleculeType.valuesOf(Basic.trimAll(Basic.split(molecule.getName(), '&')))) {
                             final Node andNode = getNode(reactionGraph, reactionSystem, molecule, molecule2node, useMultiCopyFoodNodes);
                             if (useMultiCopyFoodNodes) {
                                 final Optional<Node> node = StreamSupport.stream(andNode.parents().spliterator(), true).filter(v -> v.getInfo().equals(catalyst)).findAny();

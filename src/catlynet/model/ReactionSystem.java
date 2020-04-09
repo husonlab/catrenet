@@ -216,7 +216,7 @@ public class ReactionSystem {
                     for (String reactantName : molecules) {
                         auxReaction.getReactants().add(MoleculeType.valueOf(reactantName));
                     }
-                    mentionedMolecules.addAll(MoleculeType.valueOf(molecules));
+                    mentionedMolecules.addAll(MoleculeType.valuesOf(molecules));
 
                     auxReaction.getCatalysts().add(catalyst);
                     auxReaction.getProducts().add(catalyst);
@@ -245,11 +245,11 @@ public class ReactionSystem {
     }
 
     /**
-     * gets the compressed system (opposite of expanded)
+     * computes the compressed system (opposite of expanded)
      *
      * @return compressed reaction system
      */
-    public ReactionSystem getCompressedSystem() {
+    public ReactionSystem computeCompressedSystem() {
         final ReactionSystem compressed = new ReactionSystem();
         compressed.setName(getName().replaceAll(" (expanded)", ""));
         compressed.getFoods().setAll(getFoods());
@@ -298,9 +298,9 @@ public class ReactionSystem {
             set.addAll(r.getReactants());
             set.addAll(r.getInhibitions());
             set.addAll(r.getProducts());
-            set.addAll(r.getCatalysts().stream().map(s -> s.getName().split("\\s*[,&]\\s*")).map(Arrays::asList).flatMap(Collection::stream).map(MoleculeType::valueOf).collect(Collectors.toSet()));
+            set.addAll(r.getCatalystConjunctions().stream().map(c -> MoleculeType.valuesOf(c.getName().split("&"))).flatMap(Collection::stream).collect(Collectors.toSet()));
         });
-        return foods.stream().filter(set::contains).collect(Collectors.toList());
+        return foods.parallelStream().filter(set::contains).collect(Collectors.toList());
     }
 
 

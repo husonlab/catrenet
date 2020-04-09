@@ -158,7 +158,7 @@ public class MainWindowController {
     private MenuItem runQuotientRAFMenuItem;
 
     @FXML
-    private MenuItem removeTrivialRAFsHeuristicMenuItem;
+    private MenuItem removeTrivialRAFsAlgorithmMenuItem;
 
     @FXML
     private MenuItem runMuCAFMultipleTimesMenuItem;
@@ -564,8 +564,8 @@ public class MainWindowController {
         return runQuotientRAFMenuItem;
     }
 
-    public MenuItem getRemoveTrivialRAFsHeuristicMenuItem() {
-        return removeTrivialRAFsHeuristicMenuItem;
+    public MenuItem getRemoveTrivialRAFsAlgorithmMenuItem() {
+        return removeTrivialRAFsAlgorithmMenuItem;
     }
 
     public MenuItem getRunMuCAFMultipleTimesMenuItem() {

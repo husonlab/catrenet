@@ -59,6 +59,7 @@ public class RunAll {
             RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxPseudoRAFAlgorithm(), runningListener);
             RunAlgorithm.apply(window, window.getInputReactionSystem(), new MinIrrRAFHeuristic(), runningListener);
             RunAlgorithm.apply(window, window.getInputReactionSystem(), new QuotientRAFAlgorithm(), runningListener);
+            RunAlgorithm.apply(window, window.getInputReactionSystem(), new RemoveTrivialRAFsAlgorithm(), runningListener);
 
             if (window.getInputReactionSystem().isInhibitorsPresent()) {
                 RunAlgorithm.apply(window, window.getInputReactionSystem(), new MuCAFAlgorithm(), runningListener);

@@ -55,10 +55,10 @@ public class QuotientRAFAlgorithm extends AlgorithmBase {
                 progress.setMaximum(3);
                 progress.setProgress(0);
 
-                final ReactionSystem maxRAF = new MaxRAFAlgorithm().apply(input, new ProgressSilent()).getCompressedSystem();
+                final ReactionSystem maxRAF = new MaxRAFAlgorithm().apply(input, new ProgressSilent()).computeCompressedSystem();
                 progress.setProgress(1);
 
-                final ReactionSystem maxCAF = new MaxCAFAlgorithm().apply(maxRAF, new ProgressSilent()).getCompressedSystem();
+            final ReactionSystem maxCAF = new MaxCAFAlgorithm().apply(maxRAF, new ProgressSilent()).computeCompressedSystem();
                 progress.setProgress(2);
 
                 final ReactionSystem result = maxRAF.shallowCopy();

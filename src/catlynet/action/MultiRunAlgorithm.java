@@ -52,7 +52,7 @@ public class MultiRunAlgorithm {
         service.setCallable(() -> {
             final Map<Set<String>, Pair<ReactionSystem, Integer>> names2reactions2counts = new HashMap<>();
             for (int i = 0; i < numberOfRuns; i++) {
-                final ReactionSystem outputReactions = algorithm.apply(inputReactions, service.getProgressListener()).getCompressedSystem();
+                final ReactionSystem outputReactions = algorithm.apply(inputReactions, service.getProgressListener()).computeCompressedSystem();
                 final Set<String> reactionNames = new HashSet<>(outputReactions.getReactionNames());
                 Pair<ReactionSystem, Integer> pair = names2reactions2counts.get(reactionNames);
                 if (pair == null) {

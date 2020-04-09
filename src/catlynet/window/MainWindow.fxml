@@ -301,6 +301,8 @@
                                           text="Min Irr RAF Heuristic"/>
                                 <MenuItem fx:id="runQuotientRAFMenuItem" mnemonicParsing="false"
                                           text="Quotient RAF Algorithm"/>
+                                <MenuItem fx:id="removeTrivialRAFsAlgorithmMenuItem" mnemonicParsing="false"
+                                          text="Remove Trivial RAFs Algorithm"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="runMenuItem" mnemonicParsing="false" text="Run All">
                                     <accelerator>
@@ -318,8 +320,6 @@
                                           text="Determine Necessarily Spontaneous in RAF"/>
                                 <MenuItem fx:id="greedyGrowMenuItem" mnemonicParsing="false"
                                           text="Greedily Grow MaxCAF to MaxRAF"/>
-                                <MenuItem fx:id="removeTrivialRAFsHeuristicMenuItem" mnemonicParsing="false"
-                                          text="Remove Trivial RAFs Heuristic"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <Menu mnemonicParsing="false" text="Options">
                                     <items>

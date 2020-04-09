@@ -278,12 +278,12 @@ public class ControlBindings {
         });
         controller.getRunQuotientRAFMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
-        controller.getRemoveTrivialRAFsHeuristicMenuItem().setOnAction(e -> {
+        controller.getRemoveTrivialRAFsAlgorithmMenuItem().setOnAction(e -> {
             if (VerifyInput.verify(window)) {
-                RunAlgorithm.apply(window, window.getInputReactionSystem(), new RemoveTrivialRAFsHeuristic(), runningListener);
+                RunAlgorithm.apply(window, window.getInputReactionSystem(), new RemoveTrivialRAFsAlgorithm(), runningListener);
             }
         });
-        controller.getRemoveTrivialRAFsHeuristicMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
+        controller.getRemoveTrivialRAFsAlgorithmMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
         controller.getRunMuCAFMenuItem().setOnAction(e -> {
             if (VerifyInput.verify(window)) {

@@ -146,7 +146,7 @@ public class ExportManager {
                 final Reaction r = (Reaction) v.getInfo();
                 food.addAll(r.getReactants());
                 food.addAll(r.getProducts());
-                r.getCatalystConjunctions().forEach(c -> food.addAll(MoleculeType.valueOf(Basic.split(c.getName(), '&'))));
+                r.getCatalystConjunctions().forEach(c -> food.addAll(MoleculeType.valuesOf(Basic.split(c.getName(), '&'))));
                 food.addAll(r.getInhibitions());
                 output.getReactions().add(r);
             } else if (v.getInfo() instanceof MoleculeType) {

@@ -89,7 +89,7 @@ public class ComputeNecessarilySpontaneousInRAF {
                     final Reaction modified = new Reaction(r);
                     modified.getCatalysts().clear();
                     modified.getCatalysts().addAll(catalystConjunctions.stream().filter(c -> c != one).collect(Collectors.toSet()));
-                    modified.getReactants().addAll(MoleculeType.valueOf(Basic.split(one.getName(), '&')));
+                    modified.getReactants().addAll(MoleculeType.valuesOf(Basic.split(one.getName(), '&')));
                     input.getReactions().add(modified);
                 }
             }

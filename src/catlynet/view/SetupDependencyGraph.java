@@ -73,7 +73,7 @@ public class SetupDependencyGraph {
 
                     if (nonFoodProducts.size() > 0) {
                         final Set<MoleculeType> catalysts = new HashSet<>();
-                        r2.getCatalystConjunctions().forEach(c -> catalysts.addAll(MoleculeType.valueOf(Basic.split(c.getName(), '&'))));
+                        r2.getCatalystConjunctions().forEach(c -> catalysts.addAll(MoleculeType.valuesOf(Basic.split(c.getName(), '&'))));
 
                         if ((r2.getDirection() == Reaction.Direction.forward || r2.getDirection() == Reaction.Direction.both) &&
                                 (Basic.intersects(nonFoodProducts, r2.getReactants()) || (useCatalysts && (Basic.intersects(nonFoodProducts, catalysts)) || Basic.intersects(nonFoodProducts, r2.getInhibitions())))

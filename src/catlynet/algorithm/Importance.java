@@ -53,7 +53,7 @@ public class Importance {
             final ReactionSystem replicateExpandedInput = expandedReactionSystem.shallowCopy();
             replicateExpandedInput.setName("Food importance");
             replicateExpandedInput.getFoods().remove(food);
-            final ReactionSystem replicateOutput = algorithm.apply(replicateExpandedInput, new ProgressSilent()).getCompressedSystem();
+            final ReactionSystem replicateOutput = algorithm.apply(replicateExpandedInput, new ProgressSilent()).computeCompressedSystem();
 
             final float importance = 100f * (originalResult.size() - replicateOutput.size()) / (float) originalResult.size();
             if (importance > 0)
@@ -87,7 +87,7 @@ public class Importance {
                 final ReactionSystem replicateExpandedInput = replicateInput.computeExpandedSystem();
                 replicateExpandedInput.setName("Reaction importance");
                 replicateExpandedInput.getReactions().remove(reaction);
-                final ReactionSystem replicateOutput = algorithm.apply(replicateExpandedInput, new ProgressSilent()).getCompressedSystem();
+                final ReactionSystem replicateOutput = algorithm.apply(replicateExpandedInput, new ProgressSilent()).computeCompressedSystem();
 
                 // System.err.println(reaction.getName()+" "+expandedInputModel.size()+" -> "+outputModel.size());
 

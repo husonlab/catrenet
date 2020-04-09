@@ -69,7 +69,7 @@ public class MoleculeType implements Comparable<MoleculeType> {
      * @param names
      * @return types
      */
-    public static Collection<MoleculeType> valueOf(String[] names) {
+    public static Collection<MoleculeType> valuesOf(String[] names) {
         final ArrayList<MoleculeType> list = new ArrayList<>(names.length);
         for (String name : names) {
             list.add(valueOf(name));

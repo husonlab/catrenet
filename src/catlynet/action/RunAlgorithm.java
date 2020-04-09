@@ -60,7 +60,7 @@ public class RunAlgorithm {
 
         final AService<Triplet<ReactionSystem, String, String>> service = new AService<>(controller.getStatusFlowPane());
         service.setCallable(() -> {
-            final ReactionSystem outputReactions = algorithm.apply(inputReactions, service.getProgressListener()).getCompressedSystem();
+            final ReactionSystem outputReactions = algorithm.apply(inputReactions, service.getProgressListener()).computeCompressedSystem();
             Platform.runLater(() -> window.getExportManager().addOrReplace(outputReactions));
             final String infoLine1;
             final String infoLine2;
