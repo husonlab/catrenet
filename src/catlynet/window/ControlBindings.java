@@ -153,7 +153,7 @@ public class ControlBindings {
         controller.getQuitMenuItem().setOnAction(e -> {
             while (MainWindowManager.getInstance().size() > 0) {
                 final MainWindow aWindow = (MainWindow) MainWindowManager.getInstance().getMainWindow(MainWindowManager.getInstance().size() - 1);
-                if (SaveBeforeClosingDialog.apply(aWindow) == SaveBeforeClosingDialog.Result.cancel)
+                if (SaveBeforeClosingDialog.apply(aWindow) == SaveBeforeClosingDialog.Result.cancel || !MainWindowManager.getInstance().closeMainWindow(aWindow))
                     break;
             }
         });

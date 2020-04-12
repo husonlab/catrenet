@@ -54,7 +54,7 @@ public class Save {
      * show save dialog
      *
      * @param window
-     * @return true, if save
+     * @return true, if saved
      */
     public static boolean showSaveDialog(MainWindow window) {
         final FileChooser fileChooser = new FileChooser();
