@@ -42,26 +42,26 @@ public class SetupFind {
     static void apply(MainWindow window) {
         final MainWindowController controller = window.getController();
 
-        final FindToolBar inputFoodFindToolBar = new FindToolBar(new TextAreaSearcher("Input food", controller.getInputFoodTextArea()));
+        final FindToolBar inputFoodFindToolBar = new FindToolBar(window.getStage(), new TextAreaSearcher("Input food", controller.getInputFoodTextArea()));
         controller.getFoodInputVBox().getChildren().add(inputFoodFindToolBar);
 
-        final FindToolBar inputReactionsFindToolBar = new FindToolBar(new TextAreaSearcher("Input reactions", controller.getInputTextArea()));
+        final FindToolBar inputReactionsFindToolBar = new FindToolBar(window.getStage(), new TextAreaSearcher("Input reactions", controller.getInputTextArea()));
         controller.getReactionsInputVBox().getChildren().add(inputReactionsFindToolBar);
 
-        final FindToolBar logFindToolBar = new FindToolBar(new TextAreaSearcher("Log", controller.getLogTextArea()));
+        final FindToolBar logFindToolBar = new FindToolBar(window.getStage(), new TextAreaSearcher("Log", controller.getLogTextArea()));
         controller.getLogVBox().getChildren().add(logFindToolBar);
 
         controller.getOutputTabPane().getTabs().addListener((ListChangeListener<Tab>) z -> {
             while (z.next()) {
                 for (TextTab textTab : z.getAddedSubList().stream().filter(t -> t.getUserData() instanceof TextTab).map(t -> (TextTab) t.getUserData()).collect(Collectors.toList())) {
-                    final FindToolBar findToolBar = new FindToolBar(new TextAreaSearcher(textTab.getReactionSystemName(), controller.getLogTextArea()));
+                    final FindToolBar findToolBar = new FindToolBar(window.getStage(), new TextAreaSearcher(textTab.getReactionSystemName(), controller.getLogTextArea()));
                     textTab.setFindToolBar(findToolBar);
                 }
             }
         });
 
         final ReactionGraphView gv = window.getReactionGraphView();
-        final FindToolBar graphFindToolBar = new FindToolBar(new GraphSearcher(window.getController().getVisualizationScrollPane(), gv.getReactionGraph(), gv.getNodeSelection(), gv::getLabel, null));
+        final FindToolBar graphFindToolBar = new FindToolBar(window.getStage(), new GraphSearcher(window.getController().getVisualizationScrollPane(), gv.getReactionGraph(), gv.getNodeSelection(), gv::getLabel, null));
         controller.getVisualizationVBox().getChildren().add(graphFindToolBar);
 
         controller.getFindMenuItem().setOnAction((e) -> {
