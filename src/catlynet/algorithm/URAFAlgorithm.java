@@ -60,7 +60,7 @@ public class URAFAlgorithm extends AlgorithmBase {
         if (R1.size() == 0)
             return result;
 
-        final Set<MoleculeType> foodSetAndProductions = addAllMentionedProducts(R1.getFoods(), R1.getReactions());
+        final Set<MoleculeType> foodSetAndProductions = Utilities.addAllMentionedProducts(R1.getFoods(), R1.getReactions());
         // final Set<MoleculeType> foodSetAndProductions=computeClosure(R1.getFoods(),R1.getReactions());
 
         progress.setSubtask("Setup R2");

@@ -70,8 +70,9 @@ public class MaxPseudoRAFAlgorithm extends AlgorithmBase {
             do {
                 i++;
 
-                molecules.add(i + 1, addAllMentionedProducts(inputFood, reactions.get(i)));
-                reactions.add(i + 1, filterReactions(molecules.get(i + 1), reactions.get(i)));
+                molecules.add(i + 1, Utilities.addAllMentionedProducts(inputFood, reactions.get(i)));
+                reactions.add(i + 1, Utilities.filterReactions(molecules.get(i + 1), reactions.get(i)));
+
                 progress.setProgress(Math.min(100, reactions.size()));
             }
             while (reactions.get(i + 1).size() < reactions.get(i).size());

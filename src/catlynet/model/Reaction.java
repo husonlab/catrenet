@@ -92,14 +92,19 @@ public class Reaction implements Comparable<Reaction> {
 
     public Set<MoleculeType> getCatalystConjunctions() {
            final Set<MoleculeType> set = new TreeSet<>();
-            for (MoleculeType catalyst : getCatalysts()) {
-                final String string = catalyst.getName();
-                    final String dnf = DisjunctiveNormalForm.compute(string);
-                    for (String part : dnf.split(",")) {
-                        set.add(MoleculeType.valueOf(part));
-                    }
+        for (MoleculeType catalyst : getCatalysts()) {
+            final String string = catalyst.getName();
+            final String dnf = DisjunctiveNormalForm.compute(string);
+            for (String part : dnf.split(",")) {
+                set.add(MoleculeType.valueOf(part));
             }
-            return set;
+        }
+        return set;
+    }
+
+    public boolean isCatalyzedAndUninhibitedAndHasAllReactants(Collection<MoleculeType> food) {
+        return food.containsAll(getReactants()) && getCatalystConjunctions().stream().map(m -> MoleculeType.valuesOf(m.getName().split("&"))).anyMatch(food::containsAll)
+                && getInhibitions().stream().noneMatch(food::contains);
     }
 
     public Set<MoleculeType> getInhibitions() {

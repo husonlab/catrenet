@@ -60,7 +60,7 @@ public class MaxCAFAlgorithm extends AlgorithmBase {
         final ArrayList<Set<MoleculeType>> molecules = new ArrayList<>();
 
         molecules.add(0, inputFood);
-        reactions.add(0, filterReactions(inputFood, inputReactions));
+        reactions.add(0, Utilities.filterReactions(inputFood, inputReactions));
 
         progress.setMaximum(100);
         progress.setProgress(0);
@@ -68,8 +68,8 @@ public class MaxCAFAlgorithm extends AlgorithmBase {
         int i = 0;
         do {
             i++;
-            molecules.add(i, addAllMentionedProducts(molecules.get(i - 1), reactions.get(i - 1)));
-            reactions.add(i, filterReactions(molecules.get(i), inputReactions));
+            molecules.add(i, Utilities.addAllMentionedProducts(molecules.get(i - 1), reactions.get(i - 1)));
+            reactions.add(i, Utilities.filterReactions(molecules.get(i), inputReactions));
             progress.setProgress(Math.min(100, reactions.size()));
         } while (reactions.get(i).size() > reactions.get(i - 1).size());
 

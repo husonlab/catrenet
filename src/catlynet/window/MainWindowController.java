@@ -125,6 +125,9 @@ public class MainWindowController {
     private MenuItem selectConnectedComponentMenuItem;
 
     @FXML
+    private MenuItem selectFromPreviousWindowMenuItem;
+
+    @FXML
     private Menu algorithmMenu;
 
     @FXML
@@ -153,6 +156,12 @@ public class MainWindowController {
 
     @FXML
     private MenuItem runMinIrrRAFMenuItem;
+
+    @FXML
+    private MenuItem runTrivialCAFsAlgorithmMenuItem;
+
+    @FXML
+    private MenuItem runTrivialRAFsAlgorithmMenuItem;
 
     @FXML
     private MenuItem runQuotientRAFMenuItem;
@@ -323,6 +332,12 @@ public class MainWindowController {
 
     @FXML
     private VBox logVBox;
+
+    @FXML
+    private Label inputFoodSizeLabel;
+
+    @FXML
+    private Label inputReactionsSizeLabel;
 
     private ZoomableScrollPane zoomableScrollPane;
 
@@ -520,6 +535,10 @@ public class MainWindowController {
         return selectConnectedComponentMenuItem;
     }
 
+    public MenuItem getSelectFromPreviousWindowMenuItem() {
+        return selectFromPreviousWindowMenuItem;
+    }
+
     public Menu getAlgorithmMenu() {
         return algorithmMenu;
     }
@@ -558,6 +577,14 @@ public class MainWindowController {
 
     public MenuItem getRunMinIrrRAFMenuItem() {
         return runMinIrrRAFMenuItem;
+    }
+
+    public MenuItem getRunTrivialCAFsAlgorithmMenuItem() {
+        return runTrivialCAFsAlgorithmMenuItem;
+    }
+
+    public MenuItem getRunTrivialRAFsAlgorithmMenuItem() {
+        return runTrivialRAFsAlgorithmMenuItem;
     }
 
     public MenuItem getRunQuotientRAFMenuItem() {
@@ -779,6 +806,14 @@ public class MainWindowController {
 
     public ContextMenu getVisualizationTabContextMenu() {
         return visualizationTabContextMenu;
+    }
+
+    public Label getInputFoodSizeLabel() {
+        return inputFoodSizeLabel;
+    }
+
+    public Label getInputReactionsSizeLabel() {
+        return inputReactionsSizeLabel;
     }
 
     public ZoomableScrollPane getVisualizationScrollPane() {

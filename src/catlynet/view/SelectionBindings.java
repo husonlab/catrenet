@@ -25,16 +25,16 @@ import catlynet.model.ReactionSystem;
 import catlynet.window.MainWindow;
 import catlynet.window.MainWindowController;
 import javafx.beans.InvalidationListener;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableSet;
 import javafx.scene.control.MenuItem;
 import jloda.fx.control.ItemSelectionModel;
 import jloda.graph.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -42,6 +42,7 @@ import java.util.stream.Collectors;
  * Daniel Huson, 7.2019
  */
 public class SelectionBindings {
+    private static final ObservableSet<String> previousSelection = FXCollections.observableSet(new TreeSet<>());
     /**
      * setup
      *
@@ -142,6 +143,26 @@ public class SelectionBindings {
                     controller.getVisualizationContextMenu().getItems().addAll(additionalContextMenuItems);
                 }
         );
+
+        window.getStage().focusedProperty().addListener((c, o, n) -> {
+            if (!n) {
+                previousSelection.clear();
+                previousSelection.addAll(window.getReactionGraphView().getNodeSelection().getSelectedItems().stream().map(v -> window.getReactionGraphView().getLabel(v).getText())
+                        .filter(text -> text.length() > 0 && !text.equals("&")).collect(Collectors.toSet()));
+            }
+        });
+
+        controller.getSelectFromPreviousWindowMenuItem().setOnAction(c -> {
+            if (previousSelection.size() > 0) {
+                for (Node v : view.getReactionGraph().nodes()) {
+                    final String text = view.getLabel(v).getText();
+                    if (previousSelection.contains(text))
+                        view.getNodeSelection().select(v);
+
+                }
+            }
+        });
+        controller.getSelectFromPreviousWindowMenuItem().disableProperty().bind(visualizationHasFocus.not().or(Bindings.isEmpty(previousSelection)));
     }
 
     /**

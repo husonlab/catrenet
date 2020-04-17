@@ -19,7 +19,7 @@
   ~  along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -73,7 +73,7 @@
                                 <MenuItem fx:id="pageSetupMenuItem" mnemonicParsing="false" text="Page Setup..."/>
                                 <MenuItem fx:id="printMenuItem" mnemonicParsing="false" text="Print...">
                                     <accelerator>
-                                        <KeyCodeCombination alt="UP" code="P" control="UP" meta="DOWN" shift="UP"
+                                        <KeyCodeCombination alt="UP" code="P" control="UP" meta="DOWN" shift="DOWN"
                                                             shortcut="UP"/>
                                     </accelerator>
                                 </MenuItem>
@@ -205,6 +205,13 @@
                                                             shortcut="DOWN"/>
                                     </accelerator>
                                 </MenuItem>
+                                <MenuItem fx:id="selectFromPreviousWindowMenuItem" mnemonicParsing="false"
+                                          text="From Previous Window">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="P" control="UP" meta="UP" shift="UP"
+                                                            shortcut="DOWN"/>
+                                    </accelerator>
+                                </MenuItem>
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="View">
@@ -297,6 +304,11 @@
                                 <MenuItem fx:id="runRAFMenuItem" mnemonicParsing="false" text="Max RAF Algorithm"/>
                                 <MenuItem fx:id="runPseudoRAFMenuItem" mnemonicParsing="false"
                                           text="Max Pseudo RAF Algorithm"/>
+                                <MenuItem fx:id="runTrivialCAFsAlgorithmMenuItem" mnemonicParsing="false"
+                                          text="Trivial CAFs Algorithm"/>
+                                <MenuItem fx:id="runTrivialRAFsAlgorithmMenuItem" mnemonicParsing="false"
+                                          text="Trivial RAFs Algorithm"/>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="runMinIrrRAFMenuItem" mnemonicParsing="false"
                                           text="Min Irr RAF Heuristic"/>
                                 <MenuItem fx:id="runQuotientRAFMenuItem" mnemonicParsing="false"
@@ -421,6 +433,12 @@
                                                             <items>
                                                                 <Label maxHeight="-Infinity" minHeight="-Infinity"
                                                                        prefHeight="26.0" text="Input food set:"/>
+                                                                <Label fx:id="inputFoodSizeLabel" text="size"
+                                                                       textFill="LIGHTGRAY">
+                                                                    <padding>
+                                                                        <Insets left="10.0"/>
+                                                                    </padding>
+                                                                </Label>
                                                             </items>
                                                         </ToolBar>
                                                     </children>
@@ -442,6 +460,12 @@
                                                                  prefHeight="26.0">
                                                             <items>
                                                                 <Label text="Input catalyic reactions:"/>
+                                                                <Label fx:id="inputReactionsSizeLabel" text="size"
+                                                                       textFill="LIGHTGRAY">
+                                                                    <padding>
+                                                                        <Insets left="10.0"/>
+                                                                    </padding>
+                                                                </Label>
                                                             </items>
                                                         </ToolBar>
                                                     </children>

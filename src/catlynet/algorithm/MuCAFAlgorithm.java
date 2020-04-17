@@ -84,7 +84,7 @@ public class MuCAFAlgorithm extends AlgorithmBase {
 
             if (anUninhibitedReaction != null) {
                 reactions.add(i, Basic.union(reactions.get(i - 1), Collections.singleton(anUninhibitedReaction)));
-                molecules.add(i, addAllMentionedProducts(molecules.get(i - 1), reactions.get(i)));
+                molecules.add(i, Utilities.addAllMentionedProducts(molecules.get(i - 1), reactions.get(i)));
                 inhibitions.add(i, Basic.union(inhibitions.get(i - 1), anUninhibitedReaction.getInhibitions()));
             } else
                 break;

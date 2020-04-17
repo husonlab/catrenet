@@ -40,6 +40,7 @@ public class ReactionSystem {
     private final BooleanProperty inhibitorsPresent = new SimpleBooleanProperty(false);
 
     private final IntegerProperty size = new SimpleIntegerProperty();
+    private final IntegerProperty foodSize = new SimpleIntegerProperty();
 
     private int numberOfTwoWayReactions = 0;
 
@@ -57,6 +58,8 @@ public class ReactionSystem {
      */
     public ReactionSystem(final String name) {
         size.bind(Bindings.size(reactions));
+        foodSize.bind(Bindings.size(foods));
+
         setName(name);
 
         reactions.addListener((ListChangeListener<Reaction>) e -> {
@@ -128,6 +131,18 @@ public class ReactionSystem {
         return size;
     }
 
+    public int getFoodSize() {
+        return foodSize.get();
+    }
+
+    public IntegerProperty foodSizeProperty() {
+        return foodSize;
+    }
+
+    public void setFoodSize(int foodSize) {
+        this.foodSize.set(foodSize);
+    }
+
     public int getNumberOfTwoWayReactions() {
         return numberOfTwoWayReactions;
     }
@@ -135,6 +150,7 @@ public class ReactionSystem {
     public int getNumberOfOneWayReactions() {
         return size() - numberOfTwoWayReactions;
     }
+
 
     public String getName() {
         return name.get();

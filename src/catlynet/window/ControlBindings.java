@@ -271,6 +271,20 @@ public class ControlBindings {
         });
         controller.getRunMinIrrRAFMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
+        controller.getRunTrivialCAFsAlgorithmMenuItem().setOnAction(e -> {
+            if (VerifyInput.verify(window)) {
+                RunAlgorithm.apply(window, window.getInputReactionSystem(), new TrivialCAFsAlgorithm(), runningListener);
+            }
+        });
+        controller.getRunTrivialCAFsAlgorithmMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
+
+        controller.getRunTrivialRAFsAlgorithmMenuItem().setOnAction(e -> {
+            if (VerifyInput.verify(window)) {
+                RunAlgorithm.apply(window, window.getInputReactionSystem(), new TrivialRAFsAlgorithm(), runningListener);
+            }
+        });
+        controller.getRunTrivialRAFsAlgorithmMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
+
         controller.getRunQuotientRAFMenuItem().setOnAction(e -> {
             if (VerifyInput.verify(window)) {
                 RunAlgorithm.apply(window, window.getInputReactionSystem(), new QuotientRAFAlgorithm(), runningListener);
@@ -519,6 +533,9 @@ public class ControlBindings {
                 graphView.setEmbeddingIterations(Math.max(10, Basic.parseInt(result.get())));
             }
         });
+
+        window.getInputReactionSystem().sizeProperty().addListener((c, o, n) -> controller.getInputReactionsSizeLabel().setText(String.format("%,d", n.intValue())));
+        window.getInputReactionSystem().foodSizeProperty().addListener((c, o, n) -> controller.getInputFoodSizeLabel().setText(String.format("%,d", n.intValue())));
 
         SetupFind.apply(window);
 

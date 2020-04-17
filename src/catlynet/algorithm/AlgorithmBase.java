@@ -19,17 +19,9 @@
 
 package catlynet.algorithm;
 
-import catlynet.model.MoleculeType;
-import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
-import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
-
-import java.util.Collection;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 /**
  * computes a new reaction system
@@ -51,55 +43,4 @@ public abstract class AlgorithmBase {
      * @return output
      */
     abstract public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException;
-
-    /**
-     * add molecules mentioned as products to the given list of existing molecules
-     *
-     * @param molecules existing molecules
-     * @param reactions
-     * @return extended food set
-     */
-    protected Set<MoleculeType> addAllMentionedProducts(Collection<MoleculeType> molecules, Collection<Reaction> reactions) {
-        final Set<MoleculeType> products = new TreeSet<>(molecules);
-        for (Reaction reaction : reactions) {
-            products.addAll(reaction.getProducts());
-            }
-        return products;
-    }
-
-    /**
-     * gets the closure of the set of molecules with respect to the set of reactions, ignoring catalysts and inhibitors
-     *
-     * @param molecules existing molecules
-     * @param reactions
-     * @return extended food set
-     */
-    protected Set<MoleculeType> computeClosure(Collection<MoleculeType> molecules, Collection<Reaction> reactions) {
-        final Set<MoleculeType> allMolecules = new TreeSet<>(molecules);
-        boolean changed;
-        do {
-            changed = false;
-            for (Reaction reaction : reactions) {
-                if (allMolecules.containsAll(reaction.getReactants())) {
-                    if (!allMolecules.containsAll(reaction.getProducts())) {
-                        allMolecules.addAll(reaction.getProducts());
-                        changed = true;
-                    }
-                }
-            }
-        }
-        while (changed);
-        return allMolecules;
-    }
-
-    /**
-     * filter reactions to only keep those that can be run given the current food
-     *
-     * @param food
-     * @param reactions
-     * @return filtered reactions
-     */
-    protected Set<Reaction> filterReactions(Collection<MoleculeType> food, Collection<Reaction> reactions) {
-        return reactions.stream().filter(r -> food.containsAll(r.getReactants()) && (r.getCatalysts().size() == 0 || Basic.intersects(food, r.getCatalysts()))).collect(Collectors.toSet());
-    }
 }

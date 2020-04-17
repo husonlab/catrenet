@@ -34,11 +34,13 @@ import javafx.util.Duration;
 import jloda.fx.util.SelectionEffectRed;
 import jloda.graph.*;
 import jloda.util.Basic;
+import jloda.util.Pair;
 import jloda.util.Triplet;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * run simulation on graph
@@ -56,6 +58,7 @@ public class MoleculeFlowAnimation {
 
     private final BooleanProperty animateInhibitions = new SimpleBooleanProperty(false);
 
+
     /**
      * setup molecule flow simulation
      *
@@ -65,7 +68,8 @@ public class MoleculeFlowAnimation {
      * @param world
      */
     public MoleculeFlowAnimation(Graph graph, NodeSet foodNodes, EdgeArray<EdgeView> edge2Group, Group world) {
-        final EdgeIntegerArray edge2count = new EdgeIntegerArray(graph);
+        final EdgeIntegerArray edge2totalCount = new EdgeIntegerArray(graph);
+        final EdgeIntegerArray edge2currentCount = new EdgeIntegerArray(graph);
 
         final Color color = Color.DARKRED.brighter().brighter().brighter().brighter();
 
@@ -76,6 +80,7 @@ public class MoleculeFlowAnimation {
                     @Override
                     protected Boolean call() throws Exception {
                         int count = 0;
+
                         while (!isCancelled()) {
                             Thread.sleep(Math.round(nextGaussian(random, 100, 10, true)));
                             count++;
@@ -83,11 +88,11 @@ public class MoleculeFlowAnimation {
                                 for (Edge e : Basic.randomize(v.adjacentEdges(), random)) {
                                     if (e.getInfo() == EdgeType.Reactant || e.getInfo() == EdgeType.ReactantReversible || e.getInfo() == EdgeType.Catalyst) {
                                         final String label = ((MoleculeType) e.getSource().getInfo()).getName();
-                                        Platform.runLater(() -> animateEdge(e, false, label, edge2count, edge2Group, color, world));
+                                        Platform.runLater(() -> animateEdge(e, false, label, edge2totalCount, edge2currentCount, edge2Group, color, world));
                                         break;
                                     } else if (e.getInfo() == EdgeType.ProductReversible) {
                                         final String label = ((MoleculeType) e.getTarget().getInfo()).getName();
-                                        Platform.runLater(() -> animateEdge(e, true, label, edge2count, edge2Group, color, world));
+                                        Platform.runLater(() -> animateEdge(e, true, label, edge2totalCount, edge2currentCount, edge2Group, color, world));
                                         break;
                                     }
                                 }
@@ -101,12 +106,13 @@ public class MoleculeFlowAnimation {
                                     if (!foodNodes.contains(v) && v.getInfo() instanceof MoleculeType) {
                                         for (Edge e : Basic.randomize(v.adjacentEdges(), random)) {
                                             if (e.getInfo() == EdgeType.Reactant || e.getInfo() == EdgeType.ReactantReversible || e.getInfo() == EdgeType.Catalyst) {
+                                                final Set<Pair<Edge, Boolean>> history;
                                                 final String label = ((MoleculeType) e.getSource().getInfo()).getName();
-                                                Platform.runLater(() -> animateEdge(e, false, label, edge2count, edge2Group, color, world));
+                                                Platform.runLater(() -> animateEdge(e, false, label, edge2totalCount, edge2currentCount, edge2Group, color, world));
                                                 break loop;
                                             } else if (e.getInfo() == EdgeType.ProductReversible) {
                                                 final String label = ((MoleculeType) e.getTarget().getInfo()).getName();
-                                                Platform.runLater(() -> animateEdge(e, true, label, edge2count, edge2Group, color, world));
+                                                Platform.runLater(() -> animateEdge(e, true, label, edge2totalCount, edge2currentCount, edge2Group, color, world));
                                                 break loop;
                                             }
                                         }
@@ -120,7 +126,7 @@ public class MoleculeFlowAnimation {
             }
         };
 
-        service.setOnFailed((e) ->
+        service.setOnFailed(e ->
                 System.err.println("Failed: " + service.getException()));
 
         playing.addListener((c, o, n) -> {
@@ -128,7 +134,7 @@ public class MoleculeFlowAnimation {
                 service.restart();
             else {
                 service.cancel();
-                edge2count.clear();
+                edge2totalCount.clear();
             }
         });
 
@@ -174,11 +180,15 @@ public class MoleculeFlowAnimation {
      * animate an edge
      *
      * @param edge
-     * @param edge2count
+     * @param edge2totalCount
+     * @param edge2currentCount
      * @param edge2view
      * @param world
      */
-    private void animateEdge(Edge edge, boolean reverse, String label, EdgeIntegerArray edge2count, EdgeArray<EdgeView> edge2view, Color color, Group world) {
+    private void animateEdge(Edge edge, boolean reverse, String label, EdgeIntegerArray edge2totalCount, EdgeIntegerArray edge2currentCount, EdgeArray<EdgeView> edge2view, Color color, Group world) {
+        if (edge2currentCount.get(edge) >= 10)
+            return;
+
         if (edge.getOwner() != null) {
             final Path path = ReactionGraphView.getPath(edge2view.get(edge));
 
@@ -189,16 +199,19 @@ public class MoleculeFlowAnimation {
 
                 final PathTransition pathTransition = new PathTransition(Duration.seconds(2), path, text);
 
-                pathTransition.setOnFinished((e) -> {
+                edge2currentCount.increment(edge);
+
+                pathTransition.setOnFinished(e -> {
                     world.getChildren().remove(text);
                     if (edge.getOwner() != null) {
-                        edge2count.increment(edge);
+                        edge2totalCount.increment(edge);
+                        edge2currentCount.decrement(edge);
                     }
                     if (edge.getOwner() != null && playing.get()) {
                         path.setEffect(SelectionEffectRed.getInstance());
 
-                        for (Triplet<Edge, Boolean, String> triplet : computeEdgesReadyToFire(edge, reverse ? edge.getSource() : edge.getTarget(), edge2count)) {
-                            animateEdge(triplet.getFirst(), triplet.getSecond(), triplet.getThird(), edge2count, edge2view, color.darker(), world);
+                        for (Triplet<Edge, Boolean, String> triplet : computeEdgesReadyToFire(edge, reverse ? edge.getSource() : edge.getTarget(), edge2totalCount)) {
+                            animateEdge(triplet.getFirst(), triplet.getSecond(), triplet.getThird(), edge2totalCount, edge2currentCount, edge2view, color.darker(), world);
                         }
                     } else
                         path.setEffect(null);
