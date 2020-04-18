@@ -57,7 +57,7 @@ public class ExportManager {
 
     public void clear() {
         window.getController().getExportMenu().getItems().stream()
-                .filter(m -> m != window.getController().getExportSelectedNodesMenuItem() && !(m instanceof SeparatorMenuItem))
+                .filter(m -> m != window.getController().getExportSelectedNodesMenuItem() && m != window.getController().getExportListOfReactionsMenuItem() && !(m instanceof SeparatorMenuItem))
                 .forEach(m -> m.setDisable(true));
     }
 

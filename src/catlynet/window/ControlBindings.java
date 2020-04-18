@@ -21,6 +21,7 @@ package catlynet.window;
 
 import catlynet.action.*;
 import catlynet.algorithm.*;
+import catlynet.dialog.exportlist.ExportList;
 import catlynet.format.FormatWindow;
 import catlynet.io.ModelIO;
 import catlynet.io.Save;
@@ -123,6 +124,14 @@ public class ControlBindings {
 
         controller.getExportSelectedNodesMenuItem().setOnAction(c -> ExportManager.exportNodes(window));
         controller.getExportSelectedNodesMenuItem().disableProperty().bind(graphView.getNodeSelection().emptyProperty());
+
+        controller.getExportListOfReactionsMenuItem().setOnAction(c -> {
+            final ExportList exportList = new ExportList(window);
+            MainWindowManager.getInstance().addAuxiliaryWindow(window, exportList.getStage());
+            exportList.getStage().show();
+        });
+        controller.getExportListOfReactionsMenuItem().disableProperty().bind(window.getInputReactionSystem().sizeProperty().isEqualTo(0));
+
 
         controller.getSaveMenItem().setOnAction(e -> Save.showSaveDialog(window));
 

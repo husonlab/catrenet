@@ -50,6 +50,9 @@ public class MainWindowController {
     private MenuItem exportSelectedNodesMenuItem;
 
     @FXML
+    private MenuItem exportListOfReactionsMenuItem;
+
+    @FXML
     private Menu recentFilesMenu;
 
     @FXML
@@ -433,6 +436,10 @@ public class MainWindowController {
 
     public MenuItem getExportSelectedNodesMenuItem() {
         return exportSelectedNodesMenuItem;
+    }
+
+    public MenuItem getExportListOfReactionsMenuItem() {
+        return exportListOfReactionsMenuItem;
     }
 
     public Menu getRecentFilesMenu() {

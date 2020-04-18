@@ -126,7 +126,7 @@ public class SelectionBindings {
                 .setAll(window.getDocument().getDefinedSystems().stream().map(window::getReactionSystem).map(r -> {
                     final MenuItem menuItem = new MenuItem(r.getName());
                     menuItem.setOnAction(z -> selectForAlgorithm(view, window.getReactionSystem(r.getName())));
-                    menuItem.disableProperty().bind(window.getReactionSystem(r.getName()).sizeProperty().isEqualTo(0));
+                    menuItem.disableProperty().bind(visualizationHasFocus.not().or(window.getReactionSystem(r.getName()).sizeProperty().isEqualTo(0)));
                     return menuItem;
                 }).collect(Collectors.toList())));
 

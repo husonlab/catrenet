@@ -59,6 +59,8 @@
                                     <items>
                                         <MenuItem fx:id="exportSelectedNodesMenuItem" mnemonicParsing="false"
                                                   text="Selected Nodes..."/>
+                                        <MenuItem fx:id="exportListOfReactionsMenuItem" mnemonicParsing="false"
+                                                  text="List of Reactions..."/>
                                         <SeparatorMenuItem mnemonicParsing="false"/>
                                     </items>
                                 </Menu>
