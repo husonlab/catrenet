@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="8.0.4" transformSequenceNumber="8">
-  <directoryPresets config="../../../../catlynet.pfx" />
+  <directoryPresets config="../../javafx-jmods" />
   <application name="CatlyNet" applicationId="3801-6361-6203-7564" mediaDir="../../../builds" shortName="CatlyNet" publisher="Daniel Huson and Mike Steel" publisherWeb="http://www.husonlab.org/catlynet" version="0.0.0_beta" allPathsRelative="true" macVolumeId="b8c0a1154e563a9a" javaMinVersion="11">
     <codeSigning macEnabled="true" macPkcs12File="../../../../etc/application.p12" windowsEnabled="true" windowsPkcs12File="../../../../etc/windows.pfx" />
     <jreBundles jdkProviderId="Liberica" release="OpenJDK 13.0.2+9">
@@ -11,10 +11,6 @@
     <mountPoints>
       <mountPoint id="1691242167" location="jars" />
       <mountPoint id="1691243203" location="jars2" />
-      <mountPoint id="1691242685" location="openjfx" />
-      <mountPoint id="1691242866" location="openjfx/macos" />
-      <mountPoint id="1691242867" location="openjfx/unix" />
-      <mountPoint id="1691243038" location="openjfx/windows-x64" />
       <mountPoint id="1691242153" location="Examples" />
       <mountPoint id="675425072" />
     </mountPoints>
@@ -32,9 +28,6 @@
         </exclude>
       </dirEntry>
       <fileEntry mountPoint="1691243203" file="../jars/i4jruntime.jar" />
-      <dirEntry mountPoint="1691242866" file="../../javafx/macos/javafx" subDirectory="javafx-sdk-12.0.1" excludeSuffixes="*.zip" />
-      <dirEntry mountPoint="1691242867" file="../../javafx/unix/javafx" excludeSuffixes="*.zip" />
-      <dirEntry mountPoint="1691243038" file="../../javafx/windows/javafx" excludeSuffixes="*.zip" />
       <dirEntry mountPoint="1691242153" file="../examples" subDirectory="examples" />
       <fileEntry mountPoint="675425072" file="./License.txt" overrideFileMode="true" overrideOverwriteMode="true" overrideUninstallMode="true" />
     </entries>
@@ -1092,7 +1085,11 @@ return true;</property>
       <variables>
         <variable name="jfxlib" value="openjfx/linux/lib" />
       </variables>
-      <jreBundle jreBundleSource="generated" />
+      <jreBundle jreBundleSource="generated">
+        <modules>
+          <jmodDirectory location="../../javafx-jmods/unix" />
+        </modules>
+      </jreBundle>
     </unixInstaller>
     <macosFolder name="Mac OS X Folder" id="1691242165" installDir="CatlyNet" overridePrincipalLanguage="true" compressDmg="true" signLaunchers="true">
       <exclude>
@@ -1102,7 +1099,11 @@ return true;</property>
       <variables>
         <variable name="jfxlib" value="openjfx/osx/lib" />
       </variables>
-      <jreBundle jreBundleSource="generated" includedJre="macosx-amd64-12.0.1" />
+      <jreBundle jreBundleSource="generated" includedJre="macosx-amd64-12.0.1">
+        <modules>
+          <jmodDirectory location="../../javafx-jmods/macos" />
+        </modules>
+      </jreBundle>
     </macosFolder>
     <windows name="Windows64bit" id="1691242288" installDir="CatlyNet" overridePrincipalLanguage="true">
       <overriddenPrincipalLanguage id="409" />
@@ -1114,7 +1115,11 @@ return true;</property>
       <variables>
         <variable name="jfxlib" value="openjfx/windows/lib" />
       </variables>
-      <jreBundle jreBundleSource="generated" includedJre="windows-amd64-12.0.1" installOnlyIfNecessary="true" />
+      <jreBundle jreBundleSource="generated" includedJre="windows-amd64-12.0.1" installOnlyIfNecessary="true">
+        <modules>
+          <jmodDirectory location="../../javafx-jmods/windows" />
+        </modules>
+      </jreBundle>
     </windows>
   </mediaSets>
   <buildIds>
