@@ -70,6 +70,21 @@ public class Reaction implements Comparable<Reaction> {
         direction = src.getDirection();
     }
 
+
+    /**
+     * copy constructor
+     *
+     * @param src
+     */
+    public Reaction(String name, Reaction src) {
+        this(name);
+        reactants.addAll(src.getReactants());
+        products.addAll(src.getProducts());
+        catalysts.addAll(src.getCatalysts());
+        inhibitions.addAll(src.getInhibitions());
+        direction = src.getDirection();
+    }
+
     /**
      * get the name
      *
@@ -112,6 +127,13 @@ public class Reaction implements Comparable<Reaction> {
                 || ((direction == Direction.reverse || direction == Direction.both) && (getDirection() == Direction.reverse || getDirection() == Direction.both) && food.containsAll(getProducts())))
                 && (getCatalysts().size() == 0 || getCatalystConjunctions().stream().map(m -> MoleculeType.valuesOf(m.getName().split("&"))).anyMatch(food::containsAll))
                 && (getInhibitions().size() == 0 || getInhibitions().stream().noneMatch(food::contains));
+    }
+
+    public boolean isCatalyzedAndUninhibitedAndHasAllReactants(Collection<MoleculeType> foodForReactants, Collection<MoleculeType> foodForCatalysts, Collection<MoleculeType> foodForInhibitors, Direction direction) {
+        return (((direction == Direction.forward || direction == Direction.both) && (getDirection() == Direction.forward || getDirection() == Direction.both) && foodForReactants.containsAll(getReactants()))
+                || ((direction == Direction.reverse || direction == Direction.both) && (getDirection() == Direction.reverse || getDirection() == Direction.both) && foodForReactants.containsAll(getProducts())))
+                && (getCatalysts().size() == 0 || getCatalystConjunctions().stream().map(m -> MoleculeType.valuesOf(m.getName().split("&"))).anyMatch(foodForCatalysts::containsAll))
+                && (getInhibitions().size() == 0 || getInhibitions().stream().noneMatch(foodForReactants::contains));
     }
 
     public Set<MoleculeType> getInhibitions() {

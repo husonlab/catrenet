@@ -19,6 +19,9 @@
 
 package catlynet.algorithm;
 
+import catlynet.format.ArrowNotation;
+import catlynet.format.ReactionNotation;
+import catlynet.io.ModelIO;
 import catlynet.model.MoleculeType;
 import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
@@ -26,15 +29,13 @@ import catlynet.window.MainWindow;
 import catlynet.window.MainWindowController;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.WeakChangeListener;
-import javafx.scene.control.Tab;
 import jloda.fx.util.AService;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.ProgressSilent;
+import jloda.util.Single;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
@@ -49,15 +50,8 @@ public class ComputeNecessarilySpontaneousInRAF {
         final AService<Collection<String>> service = new AService<>(controller.getStatusFlowPane());
 
         service.setCallable(() -> {
-            final Set<String> result = new TreeSet<>();
-
             final ReactionSystem maxRAF = (new MaxRAFAlgorithm()).apply(inputReactions, service.getProgressListener());
-
-            maxRAF.getReactions().parallelStream().forEach(r -> {
-                if (computeMaxRAFsForModifiedReactions(maxRAF, r).parallelStream().anyMatch(s -> s.getReactions().size() < maxRAF.getReactions().size()))
-                    result.add(r.getName());
-            });
-            return result;
+            return maxRAF.getReactions().parallelStream().filter(r -> computeMaxRAFsForModifiedReactions(maxRAF, r) < maxRAF.getReactions().size()).map(Reaction::getName).collect(Collectors.toCollection(TreeSet::new));
         });
 
         service.runningProperty().addListener(new WeakChangeListener<>(runningListener));
@@ -66,39 +60,47 @@ public class ComputeNecessarilySpontaneousInRAF {
             final String output = String.format("Necessarily spontaneous reactions (%d): %s\n",
                     service.getValue().size(), Basic.toString(service.getValue(), ", "));
             controller.getLogTextArea().setText(controller.getLogTextArea().getText() + "\nMaxRAF: " + output);
-
-            final Tab logTab = window.getController().getLogTab();
-            logTab.getTabPane().getSelectionModel().select(logTab);
+            window.getController().getLogTab().getTabPane().getSelectionModel().select(window.getController().getLogTab());
         });
         service.start();
     }
 
-    private static Collection<ReactionSystem> computeMaxRAFsForModifiedReactions(ReactionSystem maxRAF, Reaction r) {
-        final ArrayList<ReactionSystem> result = new ArrayList<>();
+    private static int computeMaxRAFsForModifiedReactions(ReactionSystem maxRAF, Reaction r0) {
 
-        final Collection<MoleculeType> catalystConjunctions = r.getCatalystConjunctions();
+        final Collection<MoleculeType> catalystConjunctions = r0.getCatalystConjunctions();
 
-        for (MoleculeType one : catalystConjunctions) {
+        if (r0.getName().endsWith("R00284")) {
+            System.err.println(ModelIO.toString(r0, ReactionNotation.Full, ArrowNotation.UsesEquals));
+        }
+
+        final Single<Integer> maxSize = new Single<>(0);
+        for (MoleculeType and : catalystConjunctions) {
             final ReactionSystem input = new ReactionSystem();
             input.getFoods().addAll(maxRAF.getFoods());
-            for (Reaction s : maxRAF.getReactions()) {
-                if (s != r)
-                    input.getReactions().add(s);
+            for (Reaction r : maxRAF.getReactions()) {
+                if (r != r0)
+                    input.getReactions().add(r);
                 else {
-                    final Reaction modified = new Reaction(r);
-                    modified.getCatalysts().clear();
-                    modified.getCatalysts().addAll(catalystConjunctions.stream().filter(c -> c != one).collect(Collectors.toSet()));
-                    modified.getReactants().addAll(MoleculeType.valuesOf(Basic.split(one.getName(), '&')));
-                    if (r.getName().equals("R04440"))
-                        System.err.println(r);
-                    input.getReactions().add(modified);
+                    if (r.getDirection() == Reaction.Direction.forward || r.getDirection() == Reaction.Direction.both) {
+                        final Reaction modified = new Reaction(r.getName() + (r.getDirection() == Reaction.Direction.both ? "/+" : ""), r);
+                        modified.setDirection(Reaction.Direction.forward);
+                        modified.getReactants().addAll(MoleculeType.valuesOf(Basic.split(and.getName(), '&')));
+                        input.getReactions().add(modified);
+                    }
+                    if (r.getDirection() == Reaction.Direction.reverse || r.getDirection() == Reaction.Direction.both) {
+                        final Reaction modified = new Reaction(r.getName() + (r.getDirection() == Reaction.Direction.both ? "/-" : ""), r);
+                        modified.setDirection(Reaction.Direction.reverse);
+                        modified.getProducts().addAll(MoleculeType.valuesOf(Basic.split(and.getName(), '&')));
+                        input.getReactions().add(modified);
+                    }
                 }
             }
             try {
-                result.add((new MaxRAFAlgorithm()).apply(input, new ProgressSilent()));
+                maxSize.set(Math.max(maxSize.get(), (int) (new MaxRAFAlgorithm()).apply(input, new ProgressSilent()).getReactionNames().stream().filter(n -> !n.endsWith("/-")).count()));
             } catch (CanceledException ignored) {
             }
         }
-        return result;
+        return maxSize.get();
     }
+
 }
