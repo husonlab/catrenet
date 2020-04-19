@@ -41,8 +41,6 @@ public class Importance {
     public static ArrayList<Pair<MoleculeType, Float>> computeFoodImportance(ReactionSystem inputSystem, ReactionSystem originalResult, AlgorithmBase algorithm, ProgressListener progress) throws CanceledException {
         final ArrayList<Pair<MoleculeType, Float>> result = new ArrayList<>();
 
-        final ReactionSystem expandedReactionSystem = inputSystem.computeExpandedSystem();
-
         progress.setTasks(Basic.fromCamelCase(Basic.getShortName(algorithm.getClass())), "importance");
         progress.setMaximum(inputSystem.getFoods().size());
         progress.setMaximum(10000000);
@@ -50,10 +48,10 @@ public class Importance {
         final int increment = 5000000 / inputSystem.getFoods().size();
 
         for (MoleculeType food : inputSystem.getFoods()) {
-            final ReactionSystem replicateExpandedInput = expandedReactionSystem.shallowCopy();
-            replicateExpandedInput.setName("Food importance");
-            replicateExpandedInput.getFoods().remove(food);
-            final ReactionSystem replicateOutput = algorithm.apply(replicateExpandedInput, new ProgressSilent()).computeCompressedSystem();
+            final ReactionSystem replicateInput = inputSystem.shallowCopy();
+            replicateInput.setName("Food importance");
+            replicateInput.getFoods().remove(food);
+            final ReactionSystem replicateOutput = algorithm.apply(replicateInput, new ProgressSilent());
 
             final float importance = 100f * (originalResult.size() - replicateOutput.size()) / (float) originalResult.size();
             if (importance > 0)
@@ -83,13 +81,10 @@ public class Importance {
         for (Reaction reaction : inputSystem.getReactions()) {
             if (originalResult.size() > 1) {
                 final ReactionSystem replicateInput = inputSystem.shallowCopy();
-                replicateInput.getReactions().remove(reaction); // need to first remove reaction, then expand
-                final ReactionSystem replicateExpandedInput = replicateInput.computeExpandedSystem();
-                replicateExpandedInput.setName("Reaction importance");
-                replicateExpandedInput.getReactions().remove(reaction);
-                final ReactionSystem replicateOutput = algorithm.apply(replicateExpandedInput, new ProgressSilent()).computeCompressedSystem();
+                replicateInput.setName("Reaction importance");
+                replicateInput.getReactions().remove(reaction);
+                final ReactionSystem replicateOutput = algorithm.apply(replicateInput, new ProgressSilent());
 
-                // System.err.println(reaction.getName()+" "+expandedInputModel.size()+" -> "+outputModel.size());
 
                 if (originalResult.size() - replicateOutput.size() > 1) {
                     final float importance = 100f * (originalResult.size() - replicateOutput.size()) / (float) originalResult.size();

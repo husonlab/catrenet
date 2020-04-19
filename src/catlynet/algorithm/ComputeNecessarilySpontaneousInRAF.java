@@ -27,7 +27,6 @@ import catlynet.window.MainWindowController;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.WeakChangeListener;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TextArea;
 import jloda.fx.util.AService;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
@@ -41,8 +40,10 @@ import java.util.stream.Collectors;
 
 /**
  * determines which reactions are necessarily spontaneous in a RAF
+ * Daniel Huson, 4.2020
  */
 public class ComputeNecessarilySpontaneousInRAF {
+
     public static void apply(MainWindow window, final ReactionSystem inputReactions, MainWindowController controller, ChangeListener<Boolean> runningListener) {
 
         final AService<Collection<String>> service = new AService<>(controller.getStatusFlowPane());
@@ -50,7 +51,7 @@ public class ComputeNecessarilySpontaneousInRAF {
         service.setCallable(() -> {
             final Set<String> result = new TreeSet<>();
 
-            final ReactionSystem maxRAF = (new MaxRAFAlgorithm()).apply(inputReactions, service.getProgressListener()).computeExpandedSystem();
+            final ReactionSystem maxRAF = (new MaxRAFAlgorithm()).apply(inputReactions, service.getProgressListener());
 
             maxRAF.getReactions().parallelStream().forEach(r -> {
                 if (computeMaxRAFsForModifiedReactions(maxRAF, r).parallelStream().anyMatch(s -> s.getReactions().size() < maxRAF.getReactions().size()))
@@ -64,12 +65,10 @@ public class ComputeNecessarilySpontaneousInRAF {
         service.setOnSucceeded(c -> {
             final String output = String.format("Necessarily spontaneous reactions (%d): %s\n",
                     service.getValue().size(), Basic.toString(service.getValue(), ", "));
-            final TextArea maxRAFTextArea = window.getTabManager().getTextArea(MaxRAFAlgorithm.Name);
-            maxRAFTextArea.setText(maxRAFTextArea.getText() + "\n\n" + output);
             controller.getLogTextArea().setText(controller.getLogTextArea().getText() + "\nMaxRAF: " + output);
 
-            final Tab maxRAFTab = window.getTabManager().getTab(MaxRAFAlgorithm.Name);
-            maxRAFTab.getTabPane().getSelectionModel().select(maxRAFTab);
+            final Tab logTab = window.getController().getLogTab();
+            logTab.getTabPane().getSelectionModel().select(logTab);
         });
         service.start();
     }
@@ -90,11 +89,13 @@ public class ComputeNecessarilySpontaneousInRAF {
                     modified.getCatalysts().clear();
                     modified.getCatalysts().addAll(catalystConjunctions.stream().filter(c -> c != one).collect(Collectors.toSet()));
                     modified.getReactants().addAll(MoleculeType.valuesOf(Basic.split(one.getName(), '&')));
+                    if (r.getName().equals("R04440"))
+                        System.err.println(r);
                     input.getReactions().add(modified);
                 }
             }
             try {
-                result.add((new MaxRAFAlgorithm()).apply(input, new ProgressSilent()).computeExpandedSystem());
+                result.add((new MaxRAFAlgorithm()).apply(input, new ProgressSilent()));
             } catch (CanceledException ignored) {
             }
         }

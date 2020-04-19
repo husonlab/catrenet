@@ -50,11 +50,12 @@ public class TrivialRAFsAlgorithm extends AlgorithmBase {
         final ReactionSystem result = new ReactionSystem(Name);
 
         result.getReactions().addAll(
-                input.getReactions().parallelStream().filter(r ->
-                        ((r.getDirection() == Reaction.Direction.forward || r.getDirection() == Reaction.Direction.both)) &&
-                                r.isCatalyzedAndUninhibitedAndHasAllReactants(Basic.union(input.getFoods(), r.getProducts()))
-                                || ((r.getDirection() == Reaction.Direction.reverse || r.getDirection() == Reaction.Direction.both)) &&
-                                r.createReverse().isCatalyzedAndUninhibitedAndHasAllReactants(Basic.union(input.getFoods(), r.getReactants()))).collect(Collectors.toList()));
+                input.getReactions().parallelStream()
+                        .filter(r -> ((r.getDirection() == Reaction.Direction.forward || r.getDirection() == Reaction.Direction.both) &&
+                                r.isCatalyzedAndUninhibitedAndHasAllReactants(Basic.union(input.getFoods(), r.getProducts()), Reaction.Direction.forward))
+                                || ((r.getDirection() == Reaction.Direction.reverse || r.getDirection() == Reaction.Direction.both) &&
+                                r.isCatalyzedAndUninhibitedAndHasAllReactants(Basic.union(input.getFoods(), r.getReactants()), Reaction.Direction.reverse)))
+                        .collect(Collectors.toList()));
         result.getFoods().setAll(result.computeMentionedFoods(input.getFoods()));
         return result;
     }

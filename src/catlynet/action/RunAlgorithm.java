@@ -44,8 +44,9 @@ public class RunAlgorithm {
      *
      * @param window
      * @param algorithm
+     * @param updateWorkingInputTextArea
      */
-    public static void apply(MainWindow window, final ReactionSystem inputReactions, AlgorithmBase algorithm, ChangeListener<Boolean> runningListener) {
+    public static void apply(MainWindow window, final ReactionSystem inputReactions, AlgorithmBase algorithm, ChangeListener<Boolean> runningListener, boolean updateWorkingInputTextArea) {
         final MainWindowController controller = window.getController();
 
         final TextArea textArea = window.getTabManager().getTextArea(algorithm.getName());
@@ -53,14 +54,13 @@ public class RunAlgorithm {
         window.getTabManager().getTab(algorithm.getName()).disableProperty().bind(result.sizeProperty().isEqualTo(0));
         controller.getOutputTabPane().getSelectionModel().select(window.getTabManager().getTab(algorithm.getName()));
 
-        if (controller.getExpandedReactionsTextArea().getText().length() == 0) {
-            final ReactionSystem expandedReactionSystem = window.getInputReactionSystem().computeExpandedSystem();
-            controller.getExpandedReactionsTextArea().setText("Expanded reactions:\n\n" + ModelIO.toString(expandedReactionSystem, true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
-        }
+        controller.getWorkingReactionsTextArea().setText(String.format("# Input has %,d reactions (%,d two-way and %,d one-way) on %,d food items\n\n%s",
+                inputReactions.size(), inputReactions.getNumberOfTwoWayReactions(), inputReactions.getNumberOfOneWayReactions(), inputReactions.getFoodSize(),
+                ModelIO.toString(window.getInputReactionSystem().sorted(), true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation())));
 
         final AService<Triplet<ReactionSystem, String, String>> service = new AService<>(controller.getStatusFlowPane());
         service.setCallable(() -> {
-            final ReactionSystem outputReactions = algorithm.apply(inputReactions, service.getProgressListener()).computeCompressedSystem();
+            final ReactionSystem outputReactions = algorithm.apply(inputReactions, service.getProgressListener());
             Platform.runLater(() -> window.getExportManager().addOrReplace(outputReactions));
             final String infoLine1;
             final String infoLine2;

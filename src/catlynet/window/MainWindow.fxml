@@ -288,12 +288,6 @@
                         </Menu>
                         <Menu fx:id="algorithmMenu" mnemonicParsing="false" text="Run">
                             <items>
-                                <MenuItem fx:id="expandInputMenuItem" mnemonicParsing="false" text="Expand Input">
-                                    <accelerator>
-                                        <KeyCodeCombination alt="UP" code="E" control="UP" meta="DOWN" shift="UP"
-                                                            shortcut="UP"/>
-                                    </accelerator>
-                                </MenuItem>
                                 <MenuItem fx:id="computeVisualizationMenuItem" mnemonicParsing="false"
                                           text="Compute Visualization">
                                     <accelerator>
@@ -486,16 +480,16 @@
                     <children>
                         <TabPane fx:id="outputTabPane">
                             <tabs>
-                                <Tab fx:id="expandedReactionsTab" closable="false" disable="true" text="Expanded">
+                                <Tab fx:id="workingReactionsTab" closable="false" disable="true" text="Input">
                                     <content>
                                         <BorderPane>
                                             <center>
-                                                <TextArea fx:id="expandedReactionsTextArea" editable="false"
+                                                <TextArea fx:id="workingReactionsTextArea" editable="false"
                                                           prefHeight="200.0" prefWidth="200.0"
-                                                          promptText="Expanded input" wrapText="true"/>
+                                                          promptText="Working input" wrapText="true"/>
                                             </center>
                                             <top>
-                                                <VBox fx:id="expandedReactionsVBox" minHeight="4.0"
+                                                <VBox fx:id="workingReactionsVBox" minHeight="4.0"
                                                       BorderPane.alignment="CENTER"/>
                                             </top>
                                         </BorderPane>

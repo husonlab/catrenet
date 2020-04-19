@@ -24,6 +24,7 @@ import jloda.util.Basic;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * a reaction
@@ -102,9 +103,15 @@ public class Reaction implements Comparable<Reaction> {
         return set;
     }
 
-    public boolean isCatalyzedAndUninhibitedAndHasAllReactants(Collection<MoleculeType> food) {
-        return food.containsAll(getReactants()) && getCatalystConjunctions().stream().map(m -> MoleculeType.valuesOf(m.getName().split("&"))).anyMatch(food::containsAll)
-                && getInhibitions().stream().noneMatch(food::contains);
+    public Set<MoleculeType> getCatalystElements() {
+        return getCatalystConjunctions().parallelStream().map(c -> MoleculeType.valuesOf(Basic.split(c.getName(), '&'))).flatMap(Collection::stream).collect(Collectors.toSet());
+    }
+
+    public boolean isCatalyzedAndUninhibitedAndHasAllReactants(Collection<MoleculeType> food, Direction direction) {
+        return (((direction == Direction.forward || direction == Direction.both) && (getDirection() == Direction.forward || getDirection() == Direction.both) && food.containsAll(getReactants()))
+                || ((direction == Direction.reverse || direction == Direction.both) && (getDirection() == Direction.reverse || getDirection() == Direction.both) && food.containsAll(getProducts())))
+                && (getCatalysts().size() == 0 || getCatalystConjunctions().stream().map(m -> MoleculeType.valuesOf(m.getName().split("&"))).anyMatch(food::containsAll))
+                && (getInhibitions().size() == 0 || getInhibitions().stream().noneMatch(food::contains));
     }
 
     public Set<MoleculeType> getInhibitions() {
@@ -283,51 +290,6 @@ public class Reaction implements Comparable<Reaction> {
 
     public String toString() {
         return getName();
-    }
-
-    /**
-     * creates the reverse reaction (and adds a - to the name) as a forward reaction by swapping reactants and products
-     *
-     * @return reverse reaction
-     */
-    public Reaction createReverse() {
-        final Reaction reverse = new Reaction(getName() + "-");
-        reverse.getReactants().addAll(getProducts());
-        reverse.getProducts().addAll(getReactants());
-        reverse.getCatalysts().addAll(getCatalysts());
-        reverse.getInhibitions().addAll(getInhibitions());
-        return reverse;
-    }
-
-    /**
-     * creates the forward reaction (and adds a + to the name)
-     *
-     * @return forward reaction
-     */
-    public Reaction createForward() {
-        final Reaction forward = new Reaction(getName() + "+");
-        forward.getReactants().addAll(getReactants());
-        forward.getProducts().addAll(getProducts());
-        forward.getCatalysts().addAll(getCatalysts());
-        forward.getInhibitions().addAll(getInhibitions());
-        return forward;
-    }
-
-    /**
-     * creates the both reaction (and removes a trailing + from the name)
-     *
-     * @return both reaction
-     */
-    public Reaction createBoth() {
-        if (!getName().endsWith("+"))
-            throw new IllegalArgumentException("name must end on '+'");
-        final Reaction both = new Reaction(getName().substring(0, getName().length() - 1));
-        both.getReactants().addAll(getReactants());
-        both.getProducts().addAll(getProducts());
-        both.getCatalysts().addAll(getCatalysts());
-        both.getInhibitions().addAll(getInhibitions());
-        both.setDirection(Direction.both);
-        return both;
     }
 
     public int getReactantCoefficient(MoleculeType reactant) {

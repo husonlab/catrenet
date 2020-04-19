@@ -54,7 +54,7 @@ public class MinIrrRAFHeuristic extends AlgorithmBase {
         progress.setMaximum(getNumberOfRandomInsertionOrders());
         progress.setProgress(0);
 
-        final ReactionSystem maxRAF = new MaxRAFAlgorithm().apply(input, new ProgressSilent()).computeCompressedSystem();
+        final ReactionSystem maxRAF = new MaxRAFAlgorithm().apply(input, new ProgressSilent());
         final ArrayList<Reaction> reactions = new ArrayList<>(maxRAF.getReactions());
 
         final ArrayList<Integer> seeds = new ArrayList<>();
@@ -70,7 +70,7 @@ public class MinIrrRAFHeuristic extends AlgorithmBase {
                 work.getReactions().remove(r);
                 try {
                     progress.checkForCancel();
-                    ReactionSystem next = new MaxRAFAlgorithm().apply(work, new ProgressSilent()).computeCompressedSystem();
+                    ReactionSystem next = new MaxRAFAlgorithm().apply(work, new ProgressSilent());
                     if (next.size() > 0 && next.size() <= work.size()) {
                         work = next;
                         synchronized (bestSize) {

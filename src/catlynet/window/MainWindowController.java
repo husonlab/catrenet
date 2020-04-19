@@ -134,9 +134,6 @@ public class MainWindowController {
     private Menu algorithmMenu;
 
     @FXML
-    private MenuItem expandInputMenuItem;
-
-    @FXML
     private MenuItem computeVisualizationMenuItem;
 
     @FXML
@@ -292,13 +289,13 @@ public class MainWindowController {
     private TabPane outputTabPane;
 
     @FXML
-    private Tab expandedReactionsTab;
+    private Tab workingReactionsTab;
 
     @FXML
-    private TextArea expandedReactionsTextArea;
+    private TextArea workingReactionsTextArea;
 
     @FXML
-    private VBox expandedReactionsVBox;
+    private VBox workingReactionsVBox;
 
     @FXML
     private Tab visualizationTab;
@@ -550,10 +547,6 @@ public class MainWindowController {
         return algorithmMenu;
     }
 
-    public MenuItem getExpandInputMenuItem() {
-        return expandInputMenuItem;
-    }
-
     public MenuItem getComputeVisualizationMenuItem() {
         return computeVisualizationMenuItem;
     }
@@ -750,16 +743,16 @@ public class MainWindowController {
         return inputTextArea;
     }
 
-    public Tab getExpandedReactionsTab() {
-        return expandedReactionsTab;
+    public Tab getWorkingReactionsTab() {
+        return workingReactionsTab;
     }
 
-    public TextArea getExpandedReactionsTextArea() {
-        return expandedReactionsTextArea;
+    public TextArea getWorkingReactionsTextArea() {
+        return workingReactionsTextArea;
     }
 
-    public VBox getExpandedReactionsVBox() {
-        return expandedReactionsVBox;
+    public VBox getWorkingReactionsVBox() {
+        return workingReactionsVBox;
     }
 
     public Tab getVisualizationTab() {

@@ -41,7 +41,9 @@ public class Utilities {
      */
     public static Set<MoleculeType> addAllMentionedProducts(Collection<MoleculeType> molecules, Collection<Reaction> reactions) {
         final Set<MoleculeType> result = new TreeSet<>(molecules);
-        result.addAll(reactions.stream().map(Reaction::getProducts).flatMap(Collection::stream).collect(Collectors.toList()));
+        result.addAll(reactions.stream().filter(r -> r.getDirection() == Reaction.Direction.forward || r.getDirection() == Reaction.Direction.both).map(Reaction::getProducts).flatMap(Collection::stream).collect(Collectors.toList()));
+        result.addAll(reactions.stream().filter(r -> r.getDirection() == Reaction.Direction.reverse || r.getDirection() == Reaction.Direction.both).map(Reaction::getReactants).flatMap(Collection::stream).collect(Collectors.toList()));
+
         return result;
     }
 
@@ -54,19 +56,16 @@ public class Utilities {
      */
     public static Set<MoleculeType> computeClosure(Collection<MoleculeType> molecules, Collection<Reaction> reactions) {
         final Set<MoleculeType> allMolecules = new TreeSet<>(molecules);
-        boolean changed;
+        int size;
         do {
-            changed = false;
-            for (Reaction reaction : reactions) {
-                if (allMolecules.containsAll(reaction.getReactants())) {
-                    if (!allMolecules.containsAll(reaction.getProducts())) {
-                        allMolecules.addAll(reaction.getProducts());
-                        changed = true;
-                    }
-                }
-            }
+            size = allMolecules.size();
+            allMolecules.addAll(reactions.stream().filter(r -> r.getDirection() == Reaction.Direction.forward || r.getDirection() == Reaction.Direction.both).
+                    filter(r -> allMolecules.containsAll(r.getReactants())).map(Reaction::getProducts).flatMap(Collection::stream).collect(Collectors.toList()));
+            allMolecules.addAll(reactions.stream().filter(r -> r.getDirection() == Reaction.Direction.reverse || r.getDirection() == Reaction.Direction.both).
+                    filter(r -> allMolecules.containsAll(r.getProducts())).map(Reaction::getReactants).flatMap(Collection::stream).collect(Collectors.toList()));
+
         }
-        while (changed);
+        while (allMolecules.size() > size);
         return allMolecules;
     }
 
@@ -78,6 +77,6 @@ public class Utilities {
      * @return filtered reactions
      */
     public static Set<Reaction> filterReactions(Collection<MoleculeType> food, Collection<Reaction> reactions) {
-        return reactions.stream().filter(r -> r.isCatalyzedAndUninhibitedAndHasAllReactants(food)).collect(Collectors.toSet());
+        return reactions.stream().filter(r -> r.isCatalyzedAndUninhibitedAndHasAllReactants(food, Reaction.Direction.both)).collect(Collectors.toSet());
     }
 }

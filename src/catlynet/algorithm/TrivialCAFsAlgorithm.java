@@ -52,9 +52,9 @@ public class TrivialCAFsAlgorithm extends AlgorithmBase {
         result.getReactions().addAll(
                 input.getReactions().parallelStream().filter(r ->
                         ((r.getDirection() == Reaction.Direction.forward || r.getDirection() == Reaction.Direction.both)) &&
-                                r.isCatalyzedAndUninhibitedAndHasAllReactants(input.getFoods())
+                                r.isCatalyzedAndUninhibitedAndHasAllReactants(input.getFoods(), Reaction.Direction.forward)
                                 || ((r.getDirection() == Reaction.Direction.reverse || r.getDirection() == Reaction.Direction.both)) &&
-                                r.createReverse().isCatalyzedAndUninhibitedAndHasAllReactants(input.getFoods())).collect(Collectors.toList()));
+                                r.isCatalyzedAndUninhibitedAndHasAllReactants(input.getFoods(), Reaction.Direction.reverse)).collect(Collectors.toList()));
         result.getFoods().setAll(result.computeMentionedFoods(input.getFoods()));
         return result;
     }

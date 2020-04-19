@@ -52,10 +52,9 @@ public class MaxPseudoRAFAlgorithm extends AlgorithmBase {
         final ReactionSystem result = new ReactionSystem();
         result.setName(Name);
 
-        final ReactionSystem expanded = input.computeExpandedSystem();
-        final Set<Reaction> inputReactions = new TreeSet<>(expanded.getReactions());
+        final Set<Reaction> inputReactions = new TreeSet<>(input.getReactions());
         if (inputReactions.size() > 0) {
-            final Set<MoleculeType> inputFood = new TreeSet<>(expanded.getFoods());
+            final Set<MoleculeType> inputFood = new TreeSet<>(input.getFoods());
 
             final ArrayList<Set<Reaction>> reactions = new ArrayList<>();
             final ArrayList<Set<MoleculeType>> molecules = new ArrayList<>();

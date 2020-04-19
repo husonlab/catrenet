@@ -51,11 +51,8 @@ public class MuCAFAlgorithm extends AlgorithmBase {
         final ReactionSystem result = new ReactionSystem();
         result.setName(Name);
 
-        final ReactionSystem expanded = input.computeExpandedSystem();
-        final ArrayList<Reaction> inputReactions = Basic.randomize(expanded.getReactions(), new Random());
-        //final ArrayList<Reaction> inputReactions = new ArrayList<>(expanded.getReactions());
-
-        final Set<MoleculeType> inputFood = new TreeSet<>(expanded.getFoods());
+        final ArrayList<Reaction> inputReactions = Basic.randomize(input.getReactions(), new Random());
+        final Set<MoleculeType> inputFood = new TreeSet<>(input.getFoods());
 
         final ArrayList<Set<MoleculeType>> molecules = new ArrayList<>();
         final ArrayList<Set<Reaction>> reactions = new ArrayList<>();

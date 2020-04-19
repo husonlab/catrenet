@@ -48,8 +48,8 @@ public class GreedilyGrowMaxCAF2MaxRAF {
         service.setCallable(() -> {
             final ProgressListener progress = service.getProgressListener();
             progress.setTasks("Grow maxCAF to maxRAF", "Initializing");
-            final ReactionSystem maxCAF = (new MaxCAFAlgorithm()).apply(inputReactionSystem, new ProgressSilent()).computeCompressedSystem();
-            final ReactionSystem maxRAF = (new MaxRAFAlgorithm()).apply(inputReactionSystem, new ProgressSilent()).computeCompressedSystem();
+            final ReactionSystem maxCAF = (new MaxCAFAlgorithm()).apply(inputReactionSystem, new ProgressSilent());
+            final ReactionSystem maxRAF = (new MaxRAFAlgorithm()).apply(inputReactionSystem, new ProgressSilent());
 
             final Set<String> remainingReactions = maxRAF.getReactions().stream().map(Reaction::getName).filter(n -> !maxCAF.getReactionNames().contains(n)).collect(Collectors.toSet());
 
@@ -71,7 +71,7 @@ public class GreedilyGrowMaxCAF2MaxRAF {
                     workingSystem.replaceNamedReaction(name, augmentedReaction);
                     try {
                         progress.checkForCancel();
-                        final ReactionSystem workingMaxCAF = (new MaxCAFAlgorithm()).apply(workingSystem, new ProgressSilent()).computeCompressedSystem();
+                        final ReactionSystem workingMaxCAF = (new MaxCAFAlgorithm()).apply(workingSystem, new ProgressSilent());
                         return new Pair<>(augmentedReaction, workingMaxCAF.size());
                     } catch (CanceledException ignored) {
                         return new Pair<>(augmentedReaction, 0);

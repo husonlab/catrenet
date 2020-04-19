@@ -24,7 +24,6 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import jloda.util.Basic;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -183,102 +182,6 @@ public class ReactionSystem {
     }
 
     /**
-     * computes the expanded model in which each bi-direction reaction is replaced by two one-way reactions and
-     * for each 'and' set of catalysts the correspond enforcing reaction has been added.
-     * Unused food items are removed.
-     *
-     * @return expanded reaction system
-     */
-    public ReactionSystem computeExpandedSystem() {
-        final ReactionSystem expanded = new ReactionSystem();
-        expanded.setName(getName() + " (expanded)");
-
-        final Set<MoleculeType> mentionedMolecules = new HashSet<>();
-
-        final ArrayList<Reaction> auxiliaryReactions = new ArrayList<>();
-
-        for (Reaction reaction : getReactions()) {
-            {
-                final String name = Basic.toString(reaction.getCatalysts(), ",");
-                if (name.contains("&") || name.contains("(")) {
-                    reaction = new Reaction(reaction);
-                    reaction.getCatalysts().clear();
-                    for (String part : DisjunctiveNormalForm.compute(name).split(","))
-                        reaction.getCatalysts().add(MoleculeType.valueOf(part));
-                }
-            }
-
-            switch (reaction.getDirection()) {
-                case forward: {
-                    expanded.getReactions().add(reaction); // don't use create forward, as that changes the name
-                    break;
-                }
-                case reverse: {
-                    expanded.getReactions().add(reaction.createReverse());
-                    break;
-                }
-                case both: {
-                    expanded.getReactions().add(reaction.createForward());
-                    expanded.getReactions().add(reaction.createReverse());
-                    break;
-                }
-            }
-
-            for (MoleculeType catalyst : reaction.getCatalysts()) {
-                final String name = catalyst.getName();
-                if (name.contains("&")) {
-                    final String[] molecules = Basic.split(name, '&');
-                    final Reaction auxReaction = new Reaction(reaction.getName() + "/" + name + "/");
-                    for (String reactantName : molecules) {
-                        auxReaction.getReactants().add(MoleculeType.valueOf(reactantName));
-                    }
-                    mentionedMolecules.addAll(MoleculeType.valuesOf(molecules));
-
-                    auxReaction.getCatalysts().add(catalyst);
-                    auxReaction.getProducts().add(catalyst);
-                    boolean found = false;
-                    for (Reaction other : auxiliaryReactions) {
-                        if (other.getReactants().equals(auxReaction.getReactants()) && other.getCatalysts().equals(auxReaction.getCatalysts()) && other.getProducts().equals(auxReaction.getProducts())) {
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        auxiliaryReactions.add(auxReaction);
-                        expanded.getReactions().add(auxReaction);
-                    }
-                }
-            }
-            mentionedMolecules.addAll(reaction.getReactants());
-            mentionedMolecules.addAll(reaction.getProducts());
-            mentionedMolecules.addAll(reaction.getCatalysts());
-            mentionedMolecules.addAll(reaction.getInhibitions());
-        }
-
-        expanded.getFoods().setAll(Basic.intersection(getFoods(), mentionedMolecules));
-
-        return expanded;
-    }
-
-    /**
-     * computes the compressed system (opposite of expanded)
-     *
-     * @return compressed reaction system
-     */
-    public ReactionSystem computeCompressedSystem() {
-        final ReactionSystem compressed = new ReactionSystem();
-        compressed.setName(getName().replaceAll(" (expanded)", ""));
-        compressed.getFoods().setAll(getFoods());
-        for (Reaction reaction : reactions) {
-            if (reaction.getName().endsWith("+")) {
-                compressed.getReactions().add(reaction.createBoth());
-            } else if (!reaction.getName().endsWith("-") && !reaction.getName().endsWith("/"))
-                compressed.getReactions().add(reaction);
-        }
-        return compressed;
-    }
-
-    /**
      * gets all mentioned molecule types
      *
      * @return
@@ -331,5 +234,12 @@ public class ReactionSystem {
             throw new IllegalArgumentException("no such reaction: " + name);
         getReactions().remove(old);
         getReactions().add(reaction);
+    }
+
+    public ReactionSystem sorted() {
+        final ReactionSystem reactionSystem = new ReactionSystem(getName());
+        reactionSystem.getFoods().addAll(new TreeSet<>(getFoods()));
+        reactionSystem.getReactions().addAll(new TreeSet<>(getReactions()));
+        return reactionSystem;
     }
 }

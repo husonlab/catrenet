@@ -58,27 +58,18 @@ public class SetupFullGraph {
             molecules.addAll(reaction.getProducts());
 
             if (!suppressCatalystEdges) {
+                molecules.addAll(reaction.getCatalystElements());
                 molecules.addAll(reaction.getCatalystConjunctions()); // will have one node for each conjunction
                 molecules.addAll(reaction.getInhibitions());
             }
+
+
             for (MoleculeType molecule : molecules) {
                 if (molecule2node.get(molecule) == null) { // must be a food molecule mentioned in a conjunction
-                    if (molecule.getName().contains("&")) {
-                        molecule2node.put(molecule, reactionGraph.newNode(new ReactionGraphView.AndNode()));
-                        for (MoleculeType catalyst : MoleculeType.valuesOf(Basic.trimAll(Basic.split(molecule.getName(), '&')))) {
-                            if (molecule2node.get(catalyst) == null) {
-                                final Node w = reactionGraph.newNode(catalyst);
-                                molecule2node.put(catalyst, w);
-                                if (reactionSystem.getFoods().contains(catalyst))
-                                    foodNodes.add(w);
-                            }
-                        }
-                    } else {
-                        final Node v = reactionGraph.newNode(molecule);
-                        molecule2node.put(molecule, v);
-                        if (reactionSystem.getFoods().contains(molecule))
-                            foodNodes.add(v);
-                    }
+                    final Node v = reactionGraph.newNode(molecule.getName().contains("&") ? new ReactionGraphView.AndNode() : molecule);
+                    molecule2node.put(molecule, v);
+                    if (reactionSystem.getFoods().contains(molecule))
+                        foodNodes.add(v);
                 }
             }
 
