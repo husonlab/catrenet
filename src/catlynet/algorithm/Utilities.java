@@ -77,6 +77,6 @@ public class Utilities {
      * @return filtered reactions
      */
     public static Set<Reaction> filterReactions(Collection<MoleculeType> food, Collection<Reaction> reactions) {
-        return reactions.stream().filter(r -> r.isCatalyzedAndUninhibitedAndHasAllReactants(food, Reaction.Direction.both)).collect(Collectors.toSet());
+        return reactions.stream().filter(r -> r.isCatalyzedAndUninhibitedAndHasAllReactants(food, r.getDirection())).collect(Collectors.toSet());
     }
 }
