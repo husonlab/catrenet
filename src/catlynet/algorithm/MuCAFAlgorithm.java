@@ -69,11 +69,7 @@ public class MuCAFAlgorithm extends AlgorithmBase {
 
             Reaction anUninhibitedReaction = null;
             for (Reaction reaction : Basic.difference(inputReactions, reactions.get(i - 1))) {
-                if (!Basic.intersects(reaction.getProducts(), reaction.getInhibitions())
-                        && !Basic.intersects(inhibitions.get(i - 1), reaction.getProducts())
-                        && molecules.get(i - 1).containsAll(reaction.getReactants())
-                        && Basic.intersects(molecules.get(i - 1), reaction.getCatalysts())
-                        && !Basic.intersects(molecules.get(i - 1), reaction.getInhibitions())) {
+                if (reaction.isCatalyzedAndUninhibitedAndHasAllReactants(molecules.get(i - 1), molecules.get(i - 1), inhibitions.get(i - 1), reaction.getDirection())) {
                     anUninhibitedReaction = reaction;
                     break;
                 }

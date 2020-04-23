@@ -65,7 +65,7 @@ public class GreedilyGrowMaxCAF2MaxRAF {
                 final Optional<Pair<Reaction, Integer>> best = remainingReactions.parallelStream().map(name -> {
                     final Reaction reaction = maxRAF.getReaction(name);
                     final Reaction augmentedReaction = new Reaction(reaction);
-                    augmentedReaction.getCatalysts().clear();
+                    augmentedReaction.setCatalysts("");
                     augmentedReaction.getInhibitions().clear();
                     final ReactionSystem workingSystem = augmentedSystem.shallowCopy();
                     workingSystem.replaceNamedReaction(name, augmentedReaction);

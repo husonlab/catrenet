@@ -188,11 +188,11 @@ public class ModelIO {
         if (reactionNotation == ReactionNotation.Tabbed)
             return String.format("%s\t%s %s %s\t%s%s",
                     reaction.getName(), Basic.toString(reaction.getReactants(), " + "),
-                    arrow, Basic.toString(reaction.getProducts(), " + "), Basic.toString(reaction.getCatalysts(), " "),
+                    arrow, Basic.toString(reaction.getProducts(), " + "), reaction.getCatalysts(),
                     (reaction.getInhibitions().size() == 0 ? "" : "\t" + Basic.toString(reaction.getInhibitions(), " ")));
         else
             return String.format("%s : %s [%s]%s%s %s",
-                    reaction.getName(), Basic.toString(reaction.getReactants(), " + "), Basic.toString(reaction.getCatalysts(), reactionNotation == ReactionNotation.Full ? "," : " "),
+                    reaction.getName(), Basic.toString(reaction.getReactants(), " + "), (reactionNotation == ReactionNotation.Full ? reaction.getCatalysts() : reaction.getCatalysts().replaceAll("\\s+,\\s+", " ")),
                     (reaction.getInhibitions().size() == 0 ? " " : " {" + Basic.toString(reaction.getInhibitions(), reactionNotation == ReactionNotation.Full ? "," : " ") + "} "),
                     arrow, Basic.toString(reaction.getProducts(), " + "));
     }

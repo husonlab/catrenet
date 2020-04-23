@@ -55,8 +55,9 @@ public class FileOpener implements Consumer<String> {
         final ReactionSystem reactionSystem = window.getInputReactionSystem();
 
         try {
-            final Pair<ReactionNotation, ArrowNotation> notation;
             final ArrayList<String> inputLines;
+
+            final Pair<ReactionNotation, ArrowNotation> notation;
 
             if (ImportWimsFormat.isInWimsFormat(fileName)) {
                 inputLines = ImportWimsFormat.importToString(fileName);
@@ -72,8 +73,9 @@ public class FileOpener implements Consumer<String> {
                 notation = ReactionNotation.detectNotation(Arrays.asList(lines));
             }
 
-            if (notation == null)
+            if (notation == null) {
                 throw new IOException("Couldn't detect 'full', 'sparse' or 'tabbed' file format");
+            }
 
             try (BufferedReader r = new BufferedReader(new StringReader(Basic.toString(inputLines, "\n")))) {
                 reactionSystem.clear();
@@ -97,7 +99,14 @@ public class FileOpener implements Consumer<String> {
                 VerifyInput.verify(window);
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
+            if (false) { // here we need to drop the text into a window and highlight the error
+                try {
+                    final ArrayList<String> inputLines = Basic.getLinesFromFile(fileName);
+                    window.getController().getInputTextArea().setText(Basic.toString(inputLines, "\n"));
+                } catch (IOException ignored) {
+                }
+            }
             NotificationManager.showError("Open file '" + fileName + "' failed: " + e.getMessage());
         }
     }

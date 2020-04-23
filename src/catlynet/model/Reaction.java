@@ -39,7 +39,7 @@ public class Reaction implements Comparable<Reaction> {
 
     private final Set<MoleculeType> reactants = new TreeSet<>();
     private final Set<MoleculeType> products = new TreeSet<>();
-    private final TreeSet<MoleculeType> catalysts = new TreeSet<>();
+    private String catalysts = "";
     private final Set<MoleculeType> inhibitions = new TreeSet<>();
 
     private final Map<MoleculeType, Integer> reactantCoefficient = new HashMap<>();
@@ -65,7 +65,7 @@ public class Reaction implements Comparable<Reaction> {
         this(src.getName());
         reactants.addAll(src.getReactants());
         products.addAll(src.getProducts());
-        catalysts.addAll(src.getCatalysts());
+        catalysts = src.getCatalysts();
         inhibitions.addAll(src.getInhibitions());
         direction = src.getDirection();
     }
@@ -80,59 +80,23 @@ public class Reaction implements Comparable<Reaction> {
         this(name);
         reactants.addAll(src.getReactants());
         products.addAll(src.getProducts());
-        catalysts.addAll(src.getCatalysts());
+        catalysts = src.getCatalysts();
         inhibitions.addAll(src.getInhibitions());
         direction = src.getDirection();
     }
 
-    /**
-     * get the name
-     *
-     * @return name
-     */
-    public String getName() {
-        return name;
-    }
-
-    public Set<MoleculeType> getReactants() {
-        return reactants;
-    }
-
-    public Set<MoleculeType> getProducts() {
-        return products;
-    }
-
-    public TreeSet<MoleculeType> getCatalysts() {
-        return catalysts;
-    }
-
-    public Set<MoleculeType> getCatalystConjunctions() {
-           final Set<MoleculeType> set = new TreeSet<>();
-        for (MoleculeType catalyst : getCatalysts()) {
-            final String string = catalyst.getName();
-            final String dnf = DisjunctiveNormalForm.compute(string);
-            for (String part : dnf.split(",")) {
-                set.add(MoleculeType.valueOf(part));
-            }
-        }
-        return set;
-    }
-
-    public Set<MoleculeType> getCatalystElements() {
-        return getCatalystConjunctions().parallelStream().map(c -> MoleculeType.valuesOf(Basic.split(c.getName(), '&'))).flatMap(Collection::stream).collect(Collectors.toSet());
-    }
 
     public boolean isCatalyzedAndUninhibitedAndHasAllReactants(Collection<MoleculeType> food, Direction direction) {
         return (((direction == Direction.forward || direction == Direction.both) && (getDirection() == Direction.forward || getDirection() == Direction.both) && food.containsAll(getReactants()))
                 || ((direction == Direction.reverse || direction == Direction.both) && (getDirection() == Direction.reverse || getDirection() == Direction.both) && food.containsAll(getProducts())))
-                && (getCatalysts().size() == 0 || getCatalystConjunctions().stream().map(m -> MoleculeType.valuesOf(m.getName().split("&"))).anyMatch(food::containsAll))
+                && (getCatalysts().length() == 0 || getCatalystConjunctions().stream().map(m -> MoleculeType.valuesOf(m.getName().split("&"))).anyMatch(food::containsAll))
                 && (getInhibitions().size() == 0 || getInhibitions().stream().noneMatch(food::contains));
     }
 
     public boolean isCatalyzedAndUninhibitedAndHasAllReactants(Collection<MoleculeType> foodForReactants, Collection<MoleculeType> foodForCatalysts, Collection<MoleculeType> foodForInhibitors, Direction direction) {
         return (((direction == Direction.forward || direction == Direction.both) && (getDirection() == Direction.forward || getDirection() == Direction.both) && foodForReactants.containsAll(getReactants()))
                 || ((direction == Direction.reverse || direction == Direction.both) && (getDirection() == Direction.reverse || getDirection() == Direction.both) && foodForReactants.containsAll(getProducts())))
-                && (getCatalysts().size() == 0 || getCatalystConjunctions().stream().map(m -> MoleculeType.valuesOf(m.getName().split("&"))).anyMatch(foodForCatalysts::containsAll))
+                && (getCatalysts().length() == 0 || getCatalystConjunctions().stream().map(m -> MoleculeType.valuesOf(m.getName().split("&"))).anyMatch(foodForCatalysts::containsAll))
                 && (getInhibitions().size() == 0 || getInhibitions().stream().noneMatch(foodForReactants::contains));
     }
 
@@ -216,18 +180,15 @@ public class Reaction implements Comparable<Reaction> {
 
         final String[] reactants = Basic.trimAll(line.substring(colonPos + 1, openSquareBracket).trim().split("[+\\s]+"));
 
-        final String[] catalysts;
-        {
-            String catalystsString = line.substring(openSquareBracket + 1, closeSquareBracket).trim()
-                    .replaceAll("\\s*,\\s*", ",")
-                    .replaceAll("\\*", "&")
-                    .replaceAll("\\|", ",")
-                    .replaceAll("\\s*&\\s*", "&");
+        final String catalysts = line.substring(openSquareBracket + 1, closeSquareBracket).trim()
+                .replaceAll("\\|", ",")
+                .replaceAll("\\*", "&")
+                .replaceAll("\\s*\\(\\s*", "(")
+                .replaceAll("\\s*\\)\\s*", ")")
+                .replaceAll("\\s*&\\s*", "&")
+                .replaceAll("\\s*,\\s*", ",")
+                .replaceAll("\\s+", ",");
 
-            if (!catalystsString.contains("(") && !catalystsString.contains("&"))
-                catalystsString = catalystsString.replaceAll(",", " ");
-            catalysts = Arrays.stream(Basic.trimAll(catalystsString.split("\\s+"))).map(String::trim).filter(s -> s.length() > 0).toArray(String[]::new);
-        }
 
         final String[] inhibitors;
         if (openCurlyBracket != -1 && closeCurlyBracket != -1) {
@@ -299,7 +260,7 @@ public class Reaction implements Comparable<Reaction> {
             if (coefficient != -1)
                 throw new IOException("Can't distinguish between coefficients and product names : " + Basic.toString(products, " "));
         }
-        reaction.getCatalysts().addAll(MoleculeType.valuesOf(catalysts));
+        reaction.setCatalysts(catalysts);
         reaction.getInhibitions().addAll(MoleculeType.valuesOf(inhibitors));
         reaction.setDirection(direction);
         return reaction;
@@ -313,6 +274,45 @@ public class Reaction implements Comparable<Reaction> {
     public String toString() {
         return getName();
     }
+
+    /**
+     * get the name
+     *
+     * @return name
+     */
+    public String getName() {
+        return name;
+    }
+
+    public Set<MoleculeType> getReactants() {
+        return reactants;
+    }
+
+    public Set<MoleculeType> getProducts() {
+        return products;
+    }
+
+    public String getCatalysts() {
+        return catalysts;
+    }
+
+    public void setCatalysts(String catalysts) {
+        this.catalysts = (catalysts != null ? catalysts : "");
+    }
+
+    public Set<MoleculeType> getCatalystConjunctions() {
+        final Set<MoleculeType> set = new TreeSet<>();
+        final String dnf = DisjunctiveNormalForm.compute(getCatalysts());
+        for (String part : dnf.split(",")) {
+            set.add(MoleculeType.valueOf(part));
+        }
+        return set;
+    }
+
+    public Set<MoleculeType> getCatalystElements() {
+        return getCatalystConjunctions().parallelStream().map(c -> MoleculeType.valuesOf(Basic.split(c.getName(), '&'))).flatMap(Collection::stream).collect(Collectors.toSet());
+    }
+
 
     public int getReactantCoefficient(MoleculeType reactant) {
         return reactantCoefficient.getOrDefault(reactant, 1);

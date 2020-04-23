@@ -199,7 +199,7 @@ public class SelectionBindings {
      * @param subReactionSystem
      */
     private static void selectForAlgorithm(ReactionGraphView view, ReactionSystem subReactionSystem) {
-        final Set<MoleculeType> molecules = subReactionSystem.getMoleculeTypes(true, true, true, false, false);
+        final Set<MoleculeType> molecules = subReactionSystem.getFoodAndReactantAndProductMolecules();
 
         final ItemSelectionModel<Node> nodeSelection = view.getNodeSelection();
         final ItemSelectionModel<Edge> edgeSelection = view.getEdgeSelection();

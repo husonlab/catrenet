@@ -26,6 +26,7 @@ import jloda.fx.util.RecentFilesManager;
 import jloda.fx.util.TextFileFilter;
 import jloda.util.Basic;
 import jloda.util.FileLineIterator;
+import jloda.util.IOExceptionWithLineNumber;
 import jloda.util.ProgramProperties;
 
 import java.io.File;
@@ -77,7 +78,9 @@ public class ImportWimsFormat {
      */
     public static ArrayList<String> importToString(String fileName) throws IOException {
         final ArrayList<String> food = new ArrayList<>();
+        final Set<String> foodSet = new HashSet<>();
         final ArrayList<String> reactions = new ArrayList<>();
+        final Set<String> reactionsSet = new HashSet<>();
 
         try (FileLineIterator it = new FileLineIterator(fileName)) {
             String part = "";
@@ -86,6 +89,10 @@ public class ImportWimsFormat {
             int nrReactions = -1;
 
             int moleculesFound = 0;
+
+            long lineNrMolecules = 0;
+            long lineNrFoodSet = 0;
+            long lineReactions = 0;
 
             while (it.hasNext()) {
                 final String line = it.next().trim();
@@ -98,12 +105,15 @@ public class ImportWimsFormat {
                                 switch (Basic.getFirstWord(line)) {
                                     case "nrMolecules":
                                         nrMolecules = Basic.parseInt(Basic.getLastWord(line));
+                                        lineNrMolecules = it.getLineNumber();
                                         break;
                                     case "nrFoodSet":
                                         nrFoodSet = Basic.parseInt(Basic.getLastWord(line));
+                                        lineNrFoodSet = it.getLineNumber();
                                         break;
                                     case "nrReactions":
                                         nrReactions = Basic.parseInt(Basic.getLastWord(line));
+                                        lineReactions = it.getLineNumber();
                                         break;
                                 }
                                 break;
@@ -114,10 +124,18 @@ public class ImportWimsFormat {
                                 break;
                             }
                             case "<food set>": {
+                                if (foodSet.contains(line))
+                                    throw new IOExceptionWithLineNumber(it.getLineNumber(), "Wim's format: <food> contains duplicate item: " + line);
+                                else
+                                    foodSet.add(line);
                                 food.add(Basic.getLastWord(line));
                                 break;
                             }
                             case "<reactions>": {
+                                if (reactionsSet.contains(line))
+                                    throw new IOExceptionWithLineNumber(it.getLineNumber(), "Wim's format: <reactions> contains duplicate item: " + line);
+                                else
+                                    reactionsSet.add(line);
                                 reactions.add(line.replaceAll("\\t[0-9.]*$", ""));
                             }
                         }
@@ -125,25 +143,15 @@ public class ImportWimsFormat {
                 }
             }
             if (nrMolecules > 0 && nrMolecules != moleculesFound) {
-                throw new IOException(String.format("Expected nrMolecules=%d molecules, found %d", nrMolecules, moleculesFound));
+                throw new IOExceptionWithLineNumber(lineNrMolecules, String.format("Wim's format: Expected nrMolecules=%d molecules, found %d", nrMolecules, moleculesFound));
             }
             if (nrFoodSet > 0 && nrFoodSet != food.size()) {
-                throw new IOException(String.format("Expected nrFoodSet=%d food items, found %d", nrFoodSet, food.size()));
+                throw new IOExceptionWithLineNumber(lineNrFoodSet, String.format("Wim's format: Expected nrFoodSet=%d food items, found %d", nrFoodSet, food.size()));
             }
             if (nrReactions > 0 && nrReactions != reactions.size()) {
                 System.err.println("first reaction: " + reactions.get(0));
                 System.err.println("last reaction:  " + reactions.get(reactions.size() - 1));
-                throw new IOException(String.format("Expected nrReactions=%d reactions, found %d", nrReactions, reactions.size()));
-            }
-            {
-                final Set<String> foodSet = new HashSet<>(food);
-                if (foodSet.size() < food.size()) {
-                    throw new IOException("<food> contains duplicate items");
-                }
-                final Set<String> reactionSet = new HashSet<>(reactions);
-                if (reactionSet.size() < reactions.size()) {
-                    throw new IOException("<reactions> contains duplicate items");
-                }
+                throw new IOExceptionWithLineNumber(lineReactions, String.format("Wim's format: Expected nrReactions=%d reactions, found %d", nrReactions, reactions.size()));
             }
         }
         final ArrayList<String> output = new ArrayList<>();

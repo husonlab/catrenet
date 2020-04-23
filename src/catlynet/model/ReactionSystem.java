@@ -186,19 +186,11 @@ public class ReactionSystem {
      *
      * @return
      */
-    public Set<MoleculeType> getMoleculeTypes(boolean foodSet, boolean reactants, boolean products, boolean catalysts, boolean inhibitors) {
-        final Set<MoleculeType> moleculeTypes = new TreeSet<>();
-        if (foodSet)
-            moleculeTypes.addAll(getFoods());
+    public Set<MoleculeType> getFoodAndReactantAndProductMolecules() {
+        final Set<MoleculeType> moleculeTypes = new TreeSet<>(getFoods());
         for (Reaction reaction : getReactions()) {
-            if (reactants)
-                moleculeTypes.addAll(reaction.getReactants());
-            if (products)
-                moleculeTypes.addAll(reaction.getProducts());
-            if (catalysts)
-                moleculeTypes.addAll(reaction.getCatalysts());
-            if (inhibitors)
-                moleculeTypes.addAll(reaction.getInhibitions());
+            moleculeTypes.addAll(reaction.getReactants());
+            moleculeTypes.addAll(reaction.getProducts());
         }
         return moleculeTypes;
     }
