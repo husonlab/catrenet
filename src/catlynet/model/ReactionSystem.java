@@ -203,7 +203,7 @@ public class ReactionSystem {
         return names;
     }
 
-    public Collection<? extends MoleculeType> computeMentionedFoods(Collection<MoleculeType> foods) {
+    public Collection<MoleculeType> computeMentionedFoods(Collection<MoleculeType> foods) {
         final Set<MoleculeType> set = new HashSet<>();
         reactions.forEach(r -> {
             set.addAll(r.getReactants());

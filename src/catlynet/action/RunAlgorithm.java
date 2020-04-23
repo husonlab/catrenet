@@ -54,9 +54,13 @@ public class RunAlgorithm {
         window.getTabManager().getTab(algorithm.getName()).disableProperty().bind(result.sizeProperty().isEqualTo(0));
         controller.getOutputTabPane().getSelectionModel().select(window.getTabManager().getTab(algorithm.getName()));
 
-        controller.getWorkingReactionsTextArea().setText(String.format("# Input has %,d reactions (%,d two-way and %,d one-way) on %,d food items\n\n%s",
-                inputReactions.size(), inputReactions.getNumberOfTwoWayReactions(), inputReactions.getNumberOfOneWayReactions(), inputReactions.getFoodSize(),
-                ModelIO.toString(window.getInputReactionSystem().sorted(), true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation())));
+        if (updateWorkingInputTextArea) {
+            controller.getWorkingReactionsTextArea().setText(String.format("# Input has %,d reactions (%,d two-way and %,d one-way) on %,d food items\n\n%s",
+                    inputReactions.size(), inputReactions.getNumberOfTwoWayReactions(), inputReactions.getNumberOfOneWayReactions(), inputReactions.getFoodSize(),
+                    ModelIO.toString(window.getInputReactionSystem().sorted(), true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation())));
+
+            WarnAboutMissingMoleculesOrUnusedFood.run(window);
+        }
 
         final AService<Triplet<ReactionSystem, String, String>> service = new AService<>(controller.getStatusFlowPane());
         service.setCallable(() -> {

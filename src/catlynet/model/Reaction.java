@@ -266,6 +266,7 @@ public class Reaction implements Comparable<Reaction> {
         return reaction;
     }
 
+
     @Override
     public int compareTo(Reaction that) {
         return this.getName().compareTo(that.getName());

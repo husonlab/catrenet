@@ -20,22 +20,13 @@
 package catlynet.action;
 
 import catlynet.algorithm.*;
-import catlynet.io.ModelIO;
-import catlynet.model.MoleculeType;
-import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
 import catlynet.tab.TabManager;
 import catlynet.window.MainWindow;
 import catlynet.window.MainWindowController;
 import javafx.beans.value.ChangeListener;
-import jloda.fx.util.AService;
-import jloda.util.Basic;
 
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * run all algorithms
@@ -58,26 +49,7 @@ public class RunAll {
         if (VerifyInput.verify(window)) {
             final ReactionSystem inputReactions = window.getInputReactionSystem();
 
-            controller.getWorkingReactionsTextArea().setText(String.format("# Input has %,d reactions (%,d two-way and %,d one-way) on %,d food items\n\n%s",
-                    inputReactions.size(), inputReactions.getNumberOfTwoWayReactions(), inputReactions.getNumberOfOneWayReactions(), inputReactions.getFoodSize(),
-                    ModelIO.toString(window.getInputReactionSystem().sorted(), true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation())));
-
-            AService<Set<MoleculeType>> aService = new AService<>(() -> {
-                final Set<MoleculeType> catalysts = inputReactions.getReactions().parallelStream().map(Reaction::getCatalystElements).flatMap(Collection::stream).collect(Collectors.toSet());
-                final Set<MoleculeType> foodAndProducts = new HashSet<>(inputReactions.getFoods());
-                foodAndProducts.addAll(inputReactions.getReactions().parallelStream().filter(r -> r.getDirection() == Reaction.Direction.forward || r.getDirection() == Reaction.Direction.both).map(Reaction::getProducts).flatMap(Collection::stream).collect(Collectors.toSet()));
-                foodAndProducts.addAll(inputReactions.getReactions().parallelStream().filter(r -> r.getDirection() == Reaction.Direction.reverse || r.getDirection() == Reaction.Direction.both).map(Reaction::getReactants).flatMap(Collection::stream).collect(Collectors.toSet()));
-
-                catalysts.removeAll(foodAndProducts);
-                return catalysts;
-            });
-            aService.setOnSucceeded(c -> {
-                if (aService.getValue().size() > 0)
-                    controller.getLogTextArea().setText(controller.getLogTextArea().getText() + "\n\nThere are " + aService.getValue().size() + " catalysts that are never provided or produced: " + Basic.toString(aService.getValue(), ", ") + "\n");
-            });
-            aService.start();
-
-            RunAlgorithm.apply(window, inputReactions, new MaxCAFAlgorithm(), runningListener, false);
+            RunAlgorithm.apply(window, inputReactions, new MaxCAFAlgorithm(), runningListener, true);
             RunAlgorithm.apply(window, inputReactions, new MaxRAFAlgorithm(), runningListener, false);
             RunAlgorithm.apply(window, inputReactions, new MaxPseudoRAFAlgorithm(), runningListener, false);
             RunAlgorithm.apply(window, inputReactions, new TrivialCAFsAlgorithm(), runningListener, false);
