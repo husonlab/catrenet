@@ -81,7 +81,7 @@ public class Importance {
             progress.setProgress(5000000);
             final int increment = 5000000 / inputSystem.getReactions().size();
 
-            final float sizeToCompareAgainst = originalResult.size(); // todo: do we need to use - 1;
+            final float sizeToCompareAgainst = originalResult.size() - 1;
 
             for (Reaction reaction : inputSystem.getReactions()) {
                 final ReactionSystem replicateInput = inputSystem.shallowCopy();

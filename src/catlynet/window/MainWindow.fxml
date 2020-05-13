@@ -288,6 +288,13 @@
                         </Menu>
                         <Menu fx:id="algorithmMenu" mnemonicParsing="false" text="Run">
                             <items>
+                                <MenuItem fx:id="runMenuItem" mnemonicParsing="false" text="Run Main">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="R" control="UP" meta="DOWN" shift="UP"
+                                                            shortcut="UP"/>
+                                    </accelerator>
+                                </MenuItem>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="computeVisualizationMenuItem" mnemonicParsing="false"
                                           text="Compute Visualization">
                                     <accelerator>
@@ -312,13 +319,6 @@
                                           text="Remove Trivial RAFs Algorithm"/>
                                 <MenuItem fx:id="runMinIrrRAFMenuItem" mnemonicParsing="false"
                                           text="Min Irr RAF Heuristic"/>
-                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="runMenuItem" mnemonicParsing="false" text="Run All">
-                                    <accelerator>
-                                        <KeyCodeCombination alt="UP" code="R" control="UP" meta="DOWN" shift="UP"
-                                                            shortcut="UP"/>
-                                    </accelerator>
-                                </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="runMuCAFMenuItem" mnemonicParsing="false" text="MU CAF Algorithm"/>
                                 <MenuItem fx:id="runURAFMenuItem" mnemonicParsing="false" text="U RAF Algorithm"/>
@@ -374,7 +374,7 @@
                 <ToolBar fx:id="mainToolBar" minHeight="-Infinity" prefHeight="30.0">
                     <items>
                         <Button fx:id="runButton" minHeight="-Infinity" mnemonicParsing="false" prefHeight="24.0"
-                                text="Run All Algorithms"/>
+                                text="Run Main Algorithms"/>
                         <Separator orientation="VERTICAL" prefHeight="200.0"/>
                         <Button fx:id="stopAnimationButton" minHeight="-Infinity" mnemonicParsing="false"
                                 prefHeight="24.0" text="Animation">
