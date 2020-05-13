@@ -305,12 +305,13 @@
                                 <MenuItem fx:id="runTrivialRAFsAlgorithmMenuItem" mnemonicParsing="false"
                                           text="Trivial RAFs Algorithm"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="runMinIrrRAFMenuItem" mnemonicParsing="false"
-                                          text="Min Irr RAF Heuristic"/>
+                                <MenuItem fx:id="runCoreRAFMenuItem" mnemonicParsing="false" text="Core RAF Algorithm"/>
                                 <MenuItem fx:id="runQuotientRAFMenuItem" mnemonicParsing="false"
                                           text="Quotient RAF Algorithm"/>
                                 <MenuItem fx:id="removeTrivialRAFsAlgorithmMenuItem" mnemonicParsing="false"
                                           text="Remove Trivial RAFs Algorithm"/>
+                                <MenuItem fx:id="runMinIrrRAFMenuItem" mnemonicParsing="false"
+                                          text="Min Irr RAF Heuristic"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="runMenuItem" mnemonicParsing="false" text="Run All">
                                     <accelerator>

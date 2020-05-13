@@ -67,35 +67,36 @@ public class Importance {
      *
      * @param inputSystem
      * @param algorithm
-     * @return list of reaction, immportance pairs, in order of decreasing importance (difference between model size and model size without given reaction)
+     * @return list of reaction, importance pairs, in order of decreasing importance (difference between model size and model size without given reaction)
      */
     public static ArrayList<Pair<Reaction, Float>> computeReactionImportance(ReactionSystem inputSystem, ReactionSystem originalResult, AlgorithmBase algorithm, ProgressListener progress) throws CanceledException {
         final ArrayList<Pair<Reaction, Float>> result = new ArrayList<>();
 
-        progress.setTasks(Basic.fromCamelCase(Basic.getShortName(algorithm.getClass())), "importance");
-        progress.setMaximum(inputSystem.getFoods().size());
-        progress.setMaximum(10000000);
-        progress.setProgress(5000000);
-        final int increment = 5000000 / inputSystem.getReactions().size();
+        if (originalResult.size() == 1) {
+            result.add(new Pair<>(originalResult.getReactions().get(0), 100f));
+        } else if (originalResult.size() > 1) {
+            progress.setTasks(Basic.fromCamelCase(Basic.getShortName(algorithm.getClass())), "importance");
+            progress.setMaximum(inputSystem.getFoods().size());
+            progress.setMaximum(10000000);
+            progress.setProgress(5000000);
+            final int increment = 5000000 / inputSystem.getReactions().size();
 
-        for (Reaction reaction : inputSystem.getReactions()) {
-            if (originalResult.size() > 1) {
+            final float sizeToCompareAgainst = originalResult.size(); // todo: do we need to use - 1;
+
+            for (Reaction reaction : inputSystem.getReactions()) {
                 final ReactionSystem replicateInput = inputSystem.shallowCopy();
                 replicateInput.setName("Reaction importance");
                 replicateInput.getReactions().remove(reaction);
                 final ReactionSystem replicateOutput = algorithm.apply(replicateInput, new ProgressSilent());
-
-
-                if (originalResult.size() - replicateOutput.size() > 1) {
-                    final float importance = 100f * (originalResult.size() - replicateOutput.size()) / (float) originalResult.size();
+                if (replicateOutput.size() < sizeToCompareAgainst) {
+                    final float importance = 100f * (sizeToCompareAgainst - replicateOutput.size()) / sizeToCompareAgainst;
                     if (importance > 0)
                         result.add(new Pair<>(reaction, importance));
                 }
+                result.sort((a, b) -> -Float.compare(a.getSecond(), b.getSecond()));
+                progress.setProgress(progress.getProgress() + increment);
             }
-            result.sort((a, b) -> -Float.compare(a.getSecond(), b.getSecond()));
-            progress.setProgress(progress.getProgress() + increment);
         }
-
         return result;
     }
 

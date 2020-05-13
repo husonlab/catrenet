@@ -64,6 +64,7 @@ import java.util.Optional;
  * Daniel Huson, 7.2019
  */
 public class ControlBindings {
+    private static boolean computeImportance = false;
 
     public static void setup(MainWindow window) {
         final ObjectProperty<javafx.scene.Node> printableNode = new SimpleObjectProperty<>();
@@ -289,6 +290,13 @@ public class ControlBindings {
             }
         });
         controller.getRunQuotientRAFMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
+
+        controller.getRunCoreRAFMenuItem().setOnAction(e -> {
+            if (VerifyInput.verify(window)) {
+                RunAlgorithm.apply(window, window.getInputReactionSystem(), new CoreRAFAlgorithm(), runningListener, true);
+            }
+        });
+        controller.getRunCoreRAFMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
         controller.getRemoveTrivialRAFsAlgorithmMenuItem().setOnAction(e -> {
             if (VerifyInput.verify(window)) {
@@ -531,6 +539,9 @@ public class ControlBindings {
                 graphView.setEmbeddingIterations(Math.max(10, Basic.parseInt(result.get())));
             }
         });
+
+        controller.getComputeImportanceCheckMenuItem().setSelected(computeImportance); // this is a program-run parameter
+        controller.getComputeImportanceCheckMenuItem().selectedProperty().addListener((c, o, n) -> computeImportance = n);
 
         window.getInputReactionSystem().sizeProperty().addListener((c, o, n) -> controller.getInputReactionsSizeLabel().setText(String.format("%,d", n.intValue())));
         window.getInputReactionSystem().foodSizeProperty().addListener((c, o, n) -> controller.getInputFoodSizeLabel().setText(String.format("%,d", n.intValue())));
