@@ -72,15 +72,19 @@ public class ExportManager {
         final MenuItem exportMenuItem;
 
         final Optional<MenuItem> existing = exportMenu.getItems().stream().filter(m -> !(m instanceof SeparatorMenuItem) && m.getText().equals(reactionName + "...")).findAny();
-        if (existing.isPresent())
-            exportMenuItem = existing.get();
-        else {
-            exportMenuItem = new MenuItem(reactionName + "...");
-            exportMenu.getItems().add(exportMenuItem);
-            //exportMenu.getItems().setAll(exportMenu.getItems().stream().sorted(Comparator.comparing(MenuItem::getText)).collect(Collectors.toList()));
+        if (reactions.size() > 0) {
+            if (existing.isPresent())
+                exportMenuItem = existing.get();
+            else {
+                exportMenuItem = new MenuItem(reactionName + "...");
+                exportMenu.getItems().add(exportMenuItem);
+                //exportMenu.getItems().setAll(exportMenu.getItems().stream().sorted(Comparator.comparing(MenuItem::getText)).collect(Collectors.toList()));
+            }
+            exportMenuItem.setOnAction(c -> exportDialog(window, Basic.toCamelCase(reactionName), reactions));
+            exportMenuItem.setDisable(reactions.size() == 0);
+        } else {
+            existing.ifPresent(menuItem -> exportMenu.getItems().remove(menuItem));
         }
-        exportMenuItem.setOnAction(c -> exportDialog(window, Basic.toCamelCase(reactionName), reactions));
-        exportMenuItem.setDisable(reactions.size() == 0);
     }
 
     /**

@@ -219,7 +219,7 @@ public class Reaction implements Comparable<Reaction> {
                     if (coefficient > 0) {
                         reaction.setReactantCoefficient(MoleculeType.valueOf(token), coefficient);
                         if (!warnedAboutSuppressingCoefficients) {
-                            NotificationManager.showWarning("Any coefficients found in reactions are ignored");
+                            NotificationManager.showWarning("Coefficients found in reactions, ignored");
                             warnedAboutSuppressingCoefficients = true;
                         }
                     }
@@ -248,7 +248,7 @@ public class Reaction implements Comparable<Reaction> {
                     if (coefficient > 0) {
                         reaction.setProductCoefficient(MoleculeType.valueOf(token), coefficient);
                         if (!warnedAboutSuppressingCoefficients) {
-                            NotificationManager.showWarning("Any coefficients found in reactions are ignored");
+                            NotificationManager.showWarning("Coefficients found in reactions, ignored");
                             warnedAboutSuppressingCoefficients = true;
                         }
                     }

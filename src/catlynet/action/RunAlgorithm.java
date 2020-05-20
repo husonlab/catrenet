@@ -49,10 +49,7 @@ public class RunAlgorithm {
     public static void apply(MainWindow window, final ReactionSystem inputReactions, AlgorithmBase algorithm, ChangeListener<Boolean> runningListener, boolean updateWorkingInputTextArea) {
         final MainWindowController controller = window.getController();
 
-        final TextArea textArea = window.getTabManager().getTextArea(algorithm.getName());
         final ReactionSystem result = window.getReactionSystem(algorithm.getName());
-        window.getTabManager().getTab(algorithm.getName()).disableProperty().bind(result.sizeProperty().isEqualTo(0));
-        controller.getOutputTabPane().getSelectionModel().select(window.getTabManager().getTab(algorithm.getName()));
 
         if (updateWorkingInputTextArea) {
             controller.getWorkingReactionsTextArea().setText(String.format("# Input has %,d reactions (%,d two-way and %,d one-way) on %,d food items\n\n%s",
@@ -65,7 +62,7 @@ public class RunAlgorithm {
         final AService<Triplet<ReactionSystem, String, String>> service = new AService<>(controller.getStatusFlowPane());
         service.setCallable(() -> {
             final ReactionSystem outputReactions = algorithm.apply(inputReactions, service.getProgressListener());
-            Platform.runLater(() -> window.getExportManager().addOrReplace(outputReactions));
+
             final String infoLine1;
             final String infoLine2;
             if (algorithm instanceof MuCAFAlgorithm || !window.getController().getComputeImportanceCheckMenuItem().isSelected()) {
@@ -88,6 +85,8 @@ public class RunAlgorithm {
 
             result.shallowCopy(triplet.getFirst());
 
+            window.getExportManager().addOrReplace(result);
+
             if (result.size() > 0) {
                 final String headLine = result.getName() + " has " + result.size() + " reactions"
                         + (result.getNumberOfTwoWayReactions() > 0 ? " (" + result.getNumberOfTwoWayReactions() + " two-way and " + result.getNumberOfOneWayReactions() + " one-way)" : "")
@@ -98,11 +97,15 @@ public class RunAlgorithm {
 
                 NotificationManager.showInformation(headLine);
 
+                final TextArea textArea = window.getTabManager().getTextArea(algorithm.getName());
+                window.getTabManager().getTab(algorithm.getName()).disableProperty().bind(result.sizeProperty().isEqualTo(0));
+                controller.getOutputTabPane().getSelectionModel().select(window.getTabManager().getTab(algorithm.getName()));
+
                 if (infoLine1 != null && infoLine2 != null) {
                     //final String text="# " + headLine + ":\n# " + infoLine1 + "\n# " + infoLine2 + "\n\n" + ModelIO.toString(result, false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation());
                     final String text = "# " + headLine + ":\n# " + infoLine1 + "\n# " + infoLine2 + "\n\n" + Basic.toString(result.getReactionNames(), "\n");
                     textArea.setText(text);
-                    window.getLogStream().println("\n" + headLine);
+                    window.getLogStream().println("\n\n" + headLine);
                     window.getLogStream().println(infoLine1);
                     window.getLogStream().println(infoLine2);
                 } else {
@@ -112,10 +115,10 @@ public class RunAlgorithm {
                     window.getLogStream().println("\n" + headLine);
                 }
             } else {
-                window.getLogStream().println("\nNo " + result.getName());
-                textArea.setText("# No " + result.getName() + "\n");
+                window.getLogStream().println("\n\nNo " + result.getName());
                 NotificationManager.showInformation("No " + result.getName());
-
+                window.getTabManager().clear(algorithm.getName());
+                Platform.runLater(() -> controller.getLogTab().getTabPane().getSelectionModel().select(controller.getLogTab()));
             }
         });
         service.start();

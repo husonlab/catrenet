@@ -243,6 +243,11 @@ public class MainWindowController {
     @FXML
     private CheckMenuItem useMultiCopyFoodNodesMenuItem;
 
+    @FXML
+    private CheckMenuItem moveLabelsMenuItem;
+
+    @FXML
+    private CheckMenuItem useColorsMenuItem;
 
     @FXML
     private MenuItem fullScreenMenuItem;
@@ -825,5 +830,13 @@ public class MainWindowController {
 
     public ZoomableScrollPane getVisualizationScrollPane() {
         return zoomableScrollPane;
+    }
+
+    public CheckMenuItem getMoveLabelsMenuItem() {
+        return moveLabelsMenuItem;
+    }
+
+    public CheckMenuItem getuseColorsMenuItem() {
+        return useColorsMenuItem;
     }
 }

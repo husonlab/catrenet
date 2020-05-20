@@ -286,9 +286,9 @@
                                 </MenuItem>
                             </items>
                         </Menu>
-                        <Menu fx:id="algorithmMenu" mnemonicParsing="false" text="Run">
+                        <Menu fx:id="algorithmMenu" mnemonicParsing="false" text="Algorithms">
                             <items>
-                                <MenuItem fx:id="runMenuItem" mnemonicParsing="false" text="Run Main">
+                                <MenuItem fx:id="runMenuItem" mnemonicParsing="false" text="Run All Main Algorithms">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="R" control="UP" meta="DOWN" shift="UP"
                                                             shortcut="UP"/>
@@ -352,6 +352,9 @@
                                 <CheckMenuItem fx:id="animateInhibitionsMenuItem" mnemonicParsing="false"
                                                text="Animate Inhibitions"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
+                                <CheckMenuItem fx:id="moveLabelsMenuItem" mnemonicParsing="false" text="Move Labels"/>
+                                <CheckMenuItem fx:id="useColorsMenuItem" mnemonicParsing="false" text="Use Colors"/>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="stopAnimationMenuItem" mnemonicParsing="false" text="Stop Animation">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="SPACE" control="UP" meta="DOWN" shift="UP"
@@ -392,11 +395,11 @@
         </VBox>
     </top>
     <bottom>
-        <AnchorPane BorderPane.alignment="CENTER">
+        <AnchorPane minHeight="30.0" BorderPane.alignment="CENTER">
             <children>
-                <FlowPane fx:id="statusFlowPane" alignment="CENTER_LEFT" prefHeight="30.0" rowValignment="TOP"
-                          style="-fx-border-color: lightgray;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                          AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <FlowPane fx:id="statusFlowPane" alignment="CENTER_LEFT" minHeight="-Infinity" prefHeight="30.0"
+                          rowValignment="TOP" style="-fx-border-color: lightgray;" AnchorPane.bottomAnchor="0.0"
+                          AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <padding>
                         <Insets right="50.0"/>
                     </padding>

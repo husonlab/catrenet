@@ -24,14 +24,19 @@ import catlynet.model.Reaction;
 import javafx.animation.PathTransition;
 import javafx.application.Platform;
 import javafx.beans.property.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Path;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import jloda.fx.util.SelectionEffectRed;
+import jloda.fx.util.ColorSchemeManager;
+import jloda.fx.util.SelectionEffect;
 import jloda.graph.*;
 import jloda.util.Basic;
 import jloda.util.Pair;
@@ -58,6 +63,10 @@ public class MoleculeFlowAnimation {
 
     private final BooleanProperty animateInhibitions = new SimpleBooleanProperty(false);
 
+    private final BooleanProperty moveLabels = new SimpleBooleanProperty(false);
+    private final BooleanProperty multiColorMovingParts = new SimpleBooleanProperty(true);
+
+    private final ObservableList<Color> colorScheme = FXCollections.observableArrayList(ColorSchemeManager.getInstance().getColorScheme("Retro29"));
 
     /**
      * setup molecule flow simulation
@@ -70,8 +79,6 @@ public class MoleculeFlowAnimation {
     public MoleculeFlowAnimation(Graph graph, NodeSet foodNodes, EdgeArray<EdgeView> edge2Group, Group world) {
         final EdgeIntegerArray edge2totalCount = new EdgeIntegerArray(graph);
         final EdgeIntegerArray edge2currentCount = new EdgeIntegerArray(graph);
-
-        final Color color = Color.DARKRED.brighter().brighter().brighter().brighter();
 
         // this service pumps molecules into the system
         final Service<Boolean> service = new Service<>() {
@@ -88,11 +95,11 @@ public class MoleculeFlowAnimation {
                                 for (Edge e : Basic.randomize(v.adjacentEdges(), random)) {
                                     if (e.getInfo() == EdgeType.Reactant || e.getInfo() == EdgeType.ReactantReversible || e.getInfo() == EdgeType.Catalyst) {
                                         final String label = ((MoleculeType) e.getSource().getInfo()).getName();
-                                        Platform.runLater(() -> animateEdge(e, false, label, edge2totalCount, edge2currentCount, edge2Group, color, world));
+                                        Platform.runLater(() -> animateEdge(e, false, label, edge2totalCount, edge2currentCount, edge2Group, world));
                                         break;
                                     } else if (e.getInfo() == EdgeType.ProductReversible) {
                                         final String label = ((MoleculeType) e.getTarget().getInfo()).getName();
-                                        Platform.runLater(() -> animateEdge(e, true, label, edge2totalCount, edge2currentCount, edge2Group, color, world));
+                                        Platform.runLater(() -> animateEdge(e, true, label, edge2totalCount, edge2currentCount, edge2Group, world));
                                         break;
                                     }
                                 }
@@ -108,11 +115,11 @@ public class MoleculeFlowAnimation {
                                             if (e.getInfo() == EdgeType.Reactant || e.getInfo() == EdgeType.ReactantReversible || e.getInfo() == EdgeType.Catalyst) {
                                                 final Set<Pair<Edge, Boolean>> history;
                                                 final String label = ((MoleculeType) e.getSource().getInfo()).getName();
-                                                Platform.runLater(() -> animateEdge(e, false, label, edge2totalCount, edge2currentCount, edge2Group, color, world));
+                                                Platform.runLater(() -> animateEdge(e, false, label, edge2totalCount, edge2currentCount, edge2Group, world));
                                                 break loop;
                                             } else if (e.getInfo() == EdgeType.ProductReversible) {
                                                 final String label = ((MoleculeType) e.getTarget().getInfo()).getName();
-                                                Platform.runLater(() -> animateEdge(e, true, label, edge2totalCount, edge2currentCount, edge2Group, color, world));
+                                                Platform.runLater(() -> animateEdge(e, true, label, edge2totalCount, edge2currentCount, edge2Group, world));
                                                 break loop;
                                             }
                                         }
@@ -138,42 +145,12 @@ public class MoleculeFlowAnimation {
             }
         });
 
-    }
-
-    public boolean isPlaying() {
-        return playing.get();
-    }
-
-    public BooleanProperty playingProperty() {
-        return playing;
-    }
-
-    public void setPlaying(boolean playing) {
-        this.playing.set(playing);
-    }
-
-    public Model getModel() {
-        return model.get();
-    }
-
-    public ObjectProperty<Model> modelProperty() {
-        return model;
-    }
-
-    public void setModel(Model model) {
-        this.model.set(model);
-    }
-
-    public int getUncatalyzedOrInhibitedThreshold() {
-        return uncatalyzedOrInhibitedThreshold.get();
-    }
-
-    public IntegerProperty uncatalyzedOrInhibitedThresholdProperty() {
-        return uncatalyzedOrInhibitedThreshold;
-    }
-
-    public void setUncatalyzedOrInhibitedThreshold(int uncatalyzedOrInhibitedThreshold) {
-        this.uncatalyzedOrInhibitedThreshold.set(uncatalyzedOrInhibitedThreshold);
+        multiColorMovingParts.addListener((c, o, n) -> {
+            if (n)
+                colorScheme.setAll(ColorSchemeManager.getInstance().getColorScheme("Retro29"));
+            else
+                colorScheme.setAll(Color.GRAY);
+        });
     }
 
     /**
@@ -185,33 +162,42 @@ public class MoleculeFlowAnimation {
      * @param edge2view
      * @param world
      */
-    private void animateEdge(Edge edge, boolean reverse, String label, EdgeIntegerArray edge2totalCount, EdgeIntegerArray edge2currentCount, EdgeArray<EdgeView> edge2view, Color color, Group world) {
-        if (edge2currentCount.get(edge) >= 10)
+    private void animateEdge(Edge edge, boolean reverse, String label, EdgeIntegerArray edge2totalCount, EdgeIntegerArray edge2currentCount, EdgeArray<EdgeView> edge2view, Group world) {
+        if (edge.getOwner() == null || edge2currentCount.get(edge) >= 10)
             return;
 
         if (edge.getOwner() != null) {
             final Path path = ReactionGraphView.getPath(edge2view.get(edge));
 
             if (path != null) {
-                final Text text = new Text(label);
-                text.setFont(ReactionGraphView.getFont());
-                text.setFill(color);
+                final Shape movingPart;
+                if (isMoveLabels()) {
+                    final Text text = new Text(label);
+                    text.setFont(ReactionGraphView.getFont());
+                    text.setFill(colorScheme.get(Math.abs(label.hashCode()) % colorScheme.size()));
+                    movingPart = text;
+                } else {
+                    final Circle circle = new Circle(3);
+                    circle.setFill(colorScheme.get(Math.abs(label.hashCode()) % colorScheme.size()));
+                    circle.setStroke(((Color) circle.getFill()).darker());
+                    movingPart = circle;
+                }
 
-                final PathTransition pathTransition = new PathTransition(Duration.seconds(2), path, text);
+                final PathTransition pathTransition = new PathTransition(Duration.seconds(2), path, movingPart);
 
                 edge2currentCount.increment(edge);
 
                 pathTransition.setOnFinished(e -> {
-                    world.getChildren().remove(text);
+                    world.getChildren().remove(movingPart);
                     if (edge.getOwner() != null) {
                         edge2totalCount.increment(edge);
                         edge2currentCount.decrement(edge);
                     }
                     if (edge.getOwner() != null && playing.get()) {
-                        path.setEffect(SelectionEffectRed.getInstance());
+                        path.setEffect(SelectionEffect.create(((Color) movingPart.getFill()).deriveColor(1, 1, 1, 0.2)));
 
                         for (Triplet<Edge, Boolean, String> triplet : computeEdgesReadyToFire(edge, reverse ? edge.getSource() : edge.getTarget(), edge2totalCount)) {
-                            animateEdge(triplet.getFirst(), triplet.getSecond(), triplet.getThird(), edge2totalCount, edge2currentCount, edge2view, color.darker(), world);
+                            animateEdge(triplet.getFirst(), triplet.getSecond(), triplet.getThird(), edge2totalCount, edge2currentCount, edge2view, world);
                         }
                     } else
                         path.setEffect(null);
@@ -224,7 +210,7 @@ public class MoleculeFlowAnimation {
                     pathTransition.play();
                 } else
                     pathTransition.play();
-                Platform.runLater(() -> world.getChildren().add(text));
+                Platform.runLater(() -> world.getChildren().add(movingPart));
             }
         }
     }
@@ -347,5 +333,65 @@ public class MoleculeFlowAnimation {
             return 0;
         else
             return result;
+    }
+
+    public boolean isPlaying() {
+        return playing.get();
+    }
+
+    public BooleanProperty playingProperty() {
+        return playing;
+    }
+
+    public void setPlaying(boolean playing) {
+        this.playing.set(playing);
+    }
+
+    public Model getModel() {
+        return model.get();
+    }
+
+    public ObjectProperty<Model> modelProperty() {
+        return model;
+    }
+
+    public void setModel(Model model) {
+        this.model.set(model);
+    }
+
+    public int getUncatalyzedOrInhibitedThreshold() {
+        return uncatalyzedOrInhibitedThreshold.get();
+    }
+
+    public IntegerProperty uncatalyzedOrInhibitedThresholdProperty() {
+        return uncatalyzedOrInhibitedThreshold;
+    }
+
+    public void setUncatalyzedOrInhibitedThreshold(int uncatalyzedOrInhibitedThreshold) {
+        this.uncatalyzedOrInhibitedThreshold.set(uncatalyzedOrInhibitedThreshold);
+    }
+
+    public boolean isMoveLabels() {
+        return moveLabels.get();
+    }
+
+    public BooleanProperty moveLabelsProperty() {
+        return moveLabels;
+    }
+
+    public void setMoveLabels(boolean moveLabels) {
+        this.moveLabels.set(moveLabels);
+    }
+
+    public boolean isMultiColorMovingParts() {
+        return multiColorMovingParts.get();
+    }
+
+    public BooleanProperty multiColorMovingPartsProperty() {
+        return multiColorMovingParts;
+    }
+
+    public void setMultiColorMovingParts(boolean multiColorMovingParts) {
+        this.multiColorMovingParts.set(multiColorMovingParts);
     }
 }

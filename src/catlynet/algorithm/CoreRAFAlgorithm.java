@@ -20,10 +20,7 @@
 package catlynet.algorithm;
 
 import catlynet.model.ReactionSystem;
-import jloda.util.CanceledException;
-import jloda.util.Pair;
-import jloda.util.ProgressListener;
-import jloda.util.ProgressSilent;
+import jloda.util.*;
 
 import java.util.stream.Collectors;
 
@@ -47,24 +44,20 @@ public class CoreRAFAlgorithm extends AlgorithmBase {
      * @throws CanceledException
      */
     public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException {
-        progress.setTasks("Compute core RAF", "");
-        progress.setMaximum(3);
-        progress.setProgress(0);
+        progress = new ProgressOverrideTaskName(progress, "Compute core RAF");
 
         final ReactionSystem maxRAF = new MaxRAFAlgorithm().apply(input, new ProgressSilent());
-        progress.setProgress(1);
 
         final ReactionSystem importantReactions = new ReactionSystem();
         importantReactions.setName("Important");
 
-        importantReactions.getReactions().addAll(Importance.computeReactionImportance(input, maxRAF, new MaxRAFAlgorithm(), new ProgressSilent())
+        importantReactions.getReactions().addAll(Importance.computeReactionImportance(input, maxRAF, new MaxRAFAlgorithm(), progress)
                 .stream().filter(p -> p.getSecond() == 100f).map(Pair::getFirst).collect(Collectors.toList()));
         importantReactions.getFoods().addAll(importantReactions.computeMentionedFoods(input.getFoods()));
         progress.setProgress(2);
 
-        final ReactionSystem coreRAF = new MaxRAFAlgorithm().apply(importantReactions, new ProgressSilent());
+        final ReactionSystem coreRAF = new MaxRAFAlgorithm().apply(importantReactions, progress);
         coreRAF.setName("Core RAF");
-        progress.setProgress(3);
         return coreRAF;
     }
 }

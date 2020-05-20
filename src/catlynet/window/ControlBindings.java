@@ -75,7 +75,9 @@ public class ControlBindings {
 
         final BooleanProperty disableGraphItems = new SimpleBooleanProperty(true);
         final BooleanProperty disableFullGraphItems = new SimpleBooleanProperty(true);
-        disableFullGraphItems.bind(disableGraphItems.or(graphView.graphTypeProperty().isEqualTo(ReactionGraphView.Type.dependencyGraph).or(graphView.graphTypeProperty().isEqualTo(ReactionGraphView.Type.reactantDependencyGraph))));
+        disableFullGraphItems.bind(disableGraphItems.or(graphView.graphTypeProperty().isEqualTo(ReactionGraphView.Type.dependencyGraph)
+                .or(graphView.graphTypeProperty().isEqualTo(ReactionGraphView.Type.reactantDependencyGraph)))
+                .or(window.getReactionGraphView().getMoleculeFlowAnimation().playingProperty()));
 
         final IntegerProperty algorithmsRunning = new SimpleIntegerProperty(0);
         final ChangeListener<Boolean> runningListener = (c, o, n) -> {
@@ -494,6 +496,14 @@ public class ControlBindings {
 
             graphView.getMoleculeFlowAnimation().animateInhibitionsProperty().bind(controller.getAnimateInhibitionsMenuItem().selectedProperty());
             controller.getAnimateInhibitionsMenuItem().disableProperty().bind(window.getInputReactionSystem().inhibitorsPresentProperty().not());
+
+            controller.getMoveLabelsMenuItem().setSelected(graphView.getMoleculeFlowAnimation().isMoveLabels());
+            controller.getMoveLabelsMenuItem().selectedProperty().bindBidirectional(graphView.getMoleculeFlowAnimation().moveLabelsProperty());
+            controller.getMoveLabelsMenuItem().disableProperty().bind(disableFullGraphItems);
+
+            controller.getuseColorsMenuItem().setSelected(graphView.getMoleculeFlowAnimation().isMultiColorMovingParts());
+            controller.getuseColorsMenuItem().selectedProperty().bindBidirectional(graphView.getMoleculeFlowAnimation().multiColorMovingPartsProperty());
+            controller.getuseColorsMenuItem().disableProperty().bind(disableFullGraphItems);
         }
         SelectionBindings.setup(window, controller);
 
@@ -510,13 +520,13 @@ public class ControlBindings {
         graphView.graphTypeProperty().addListener((c, o, n) -> controller.getGraphTypeLabel().setText(Basic.capitalizeFirstLetter(Basic.fromCamelCase(n.name()))));
 
         controller.getFullGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> graphView.setGraphType(ReactionGraphView.Type.fullGraph));
-        controller.getFullGraphRadioMenuItem().disableProperty().bind(controller.getRunMenuItem().disableProperty());
+        controller.getFullGraphRadioMenuItem().disableProperty().bind(controller.getRunMenuItem().disableProperty().or(window.getReactionGraphView().getMoleculeFlowAnimation().playingProperty()));
 
         controller.getDependencyGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> graphView.setGraphType(ReactionGraphView.Type.dependencyGraph));
-        controller.getDependencyGraphRadioMenuItem().disableProperty().bind(controller.getRunMenuItem().disableProperty());
+        controller.getDependencyGraphRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty());
 
         controller.getReactantDependencyGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> graphView.setGraphType(ReactionGraphView.Type.reactantDependencyGraph));
-        controller.getReactantDependencyGraphRadioMenuItem().disableProperty().bind(controller.getRunMenuItem().disableProperty());
+        controller.getReactantDependencyGraphRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty());
 
         controller.getSuppressCatalystEdgesMenuItem().selectedProperty().addListener((c, o, n) -> graphView.setSuppressCatalystEdges(n));
         controller.getSuppressCatalystEdgesMenuItem().disableProperty().bind(disableFullGraphItems);
