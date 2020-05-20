@@ -215,11 +215,11 @@ public class ControlBindings {
 
         controller.getComputeVisualizationMenuItem().setOnAction(c -> {
             disableGraphItems.set(false);
-            controller.getVisualizationTab().getTabPane().getSelectionModel().select(controller.getVisualizationTab());
             ComputeGraph.apply(window, controller);
+            controller.getVisualizationTab().getTabPane().getSelectionModel().select(controller.getVisualizationTab());
+
         });
         controller.getComputeVisualizationMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()).or(controller.getInputFoodTextArea().textProperty().isEmpty()));
-
 
         disableGraphItems.addListener((c, o, n) -> {
             if (n)
@@ -519,19 +519,38 @@ public class ControlBindings {
         controller.getGraphTypeLabel().setText("");
         graphView.graphTypeProperty().addListener((c, o, n) -> controller.getGraphTypeLabel().setText(Basic.capitalizeFirstLetter(Basic.fromCamelCase(n.name()))));
 
-        controller.getFullGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> graphView.setGraphType(ReactionGraphView.Type.fullGraph));
+        controller.getFullGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> {
+                    graphView.setGraphType(ReactionGraphView.Type.fullGraph);
+                    controller.getVisualizationTab().getTabPane().getSelectionModel().select(controller.getVisualizationTab());
+                }
+        );
         controller.getFullGraphRadioMenuItem().disableProperty().bind(controller.getRunMenuItem().disableProperty().or(window.getReactionGraphView().getMoleculeFlowAnimation().playingProperty()));
 
-        controller.getDependencyGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> graphView.setGraphType(ReactionGraphView.Type.dependencyGraph));
+        controller.getDependencyGraphRadioMenuItem().selectedProperty().addListener((c, o, n) ->
+        {
+            graphView.setGraphType(ReactionGraphView.Type.dependencyGraph);
+            controller.getVisualizationTab().getTabPane().getSelectionModel().select(controller.getVisualizationTab());
+        });
         controller.getDependencyGraphRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty());
 
-        controller.getReactantDependencyGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> graphView.setGraphType(ReactionGraphView.Type.reactantDependencyGraph));
+        controller.getReactantDependencyGraphRadioMenuItem().selectedProperty().addListener((c, o, n) ->
+        {
+            graphView.setGraphType(ReactionGraphView.Type.reactantDependencyGraph);
+            controller.getVisualizationTab().getTabPane().getSelectionModel().select(controller.getVisualizationTab());
+        });
         controller.getReactantDependencyGraphRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty());
 
-        controller.getSuppressCatalystEdgesMenuItem().selectedProperty().addListener((c, o, n) -> graphView.setSuppressCatalystEdges(n));
+        controller.getSuppressCatalystEdgesMenuItem().selectedProperty().addListener((c, o, n) -> {
+            graphView.setSuppressCatalystEdges(n);
+            controller.getVisualizationTab().getTabPane().getSelectionModel().select(controller.getVisualizationTab());
+        });
         controller.getSuppressCatalystEdgesMenuItem().disableProperty().bind(disableFullGraphItems);
 
-        controller.getUseMultiCopyFoodNodesMenuItem().selectedProperty().addListener((c, o, n) -> graphView.setUseMultiCopyFoodNodes(n));
+        controller.getUseMultiCopyFoodNodesMenuItem().selectedProperty().addListener((c, o, n) ->
+        {
+            graphView.setUseMultiCopyFoodNodes(n);
+            controller.getVisualizationTab().getTabPane().getSelectionModel().select(controller.getVisualizationTab());
+        });
         controller.getUseMultiCopyFoodNodesMenuItem().disableProperty().bind(disableFullGraphItems);
 
         controller.getGraphEmbedderIterationsMenuItem().setOnAction(e -> {
