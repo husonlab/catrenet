@@ -20,5 +20,4 @@ module catlynet {
 
     opens catlynet.resources.images;
     opens catlynet.resources.icons;
-
 }

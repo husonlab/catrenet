@@ -22,6 +22,7 @@ package catlynet.view;
 import catlynet.model.MoleculeType;
 import catlynet.model.Reaction;
 import javafx.animation.PathTransition;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -89,7 +90,7 @@ public class MoleculeFlowAnimation {
                         int count = 0;
 
                         while (!isCancelled()) {
-                            Thread.sleep(Math.round(nextGaussian(random, 100, 10, true)));
+                            Thread.sleep(Math.round(nextGaussian(random, 200, 20, true)));
                             count++;
                             for (Node v : Basic.randomize(foodNodes, random)) {
                                 for (Edge e : Basic.randomize(v.adjacentEdges(), random)) {
@@ -166,7 +167,6 @@ public class MoleculeFlowAnimation {
         if (edge.getOwner() == null || edge2currentCount.get(edge) >= 10)
             return;
 
-        if (edge.getOwner() != null) {
             final Path path = ReactionGraphView.getPath(edge2view.get(edge));
 
             if (path != null) {
@@ -207,12 +207,15 @@ public class MoleculeFlowAnimation {
                 if (reverse) {
                     pathTransition.setRate(-pathTransition.getRate());
                     pathTransition.jumpTo(pathTransition.getDuration());
+                }
+
+                final PauseTransition pauseTransition = new PauseTransition(Duration.millis(200));
+                pauseTransition.setOnFinished(z -> {
                     pathTransition.play();
-                } else
-                    pathTransition.play();
-                Platform.runLater(() -> world.getChildren().add(movingPart));
+                    Platform.runLater(() -> world.getChildren().add(movingPart));
+                });
+                pauseTransition.play();
             }
-        }
     }
 
     /**
@@ -257,8 +260,10 @@ public class MoleculeFlowAnimation {
                 return result;
             } else if (e.getInfo() == EdgeType.ReactantReversible) {
                 for (Edge f : v.inEdges()) {
-                    if (f.getInfo() == EdgeType.ReactantReversible && edge2count.get(f) < reactantThreshold)
-                        return emptyList;
+                    if (f.getInfo() == EdgeType.ReactantReversible) {
+                        if (edge2count.get(f) < reactantThreshold)
+                            return emptyList;
+                    }
                 }
                 for (Edge f : v.inEdges()) {
                     if (f.getInfo() == EdgeType.ReactantReversible)

@@ -22,6 +22,7 @@ package catlynet.format;
 import catlynet.io.ModelIO;
 import catlynet.main.Version;
 import catlynet.window.MainWindow;
+import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.RadioButton;
@@ -88,8 +89,14 @@ public class FormatWindow {
         stage.setX(mainWindow.getStage().getX() + 150);
         stage.setY(mainWindow.getStage().getY() + 150);
 
-        stage.setTitle("ReactionNotation - " + Basic.getFileBaseName(mainWindow.getDocument().getFileName()) + " - " + Version.NAME);
+        stage.setTitle("ReactionNotation - " + Basic.getFileNameWithoutPath(mainWindow.getDocument().getFileName()) + " - " + Version.NAME);
         stage.show();
+
+        // ensures that window can't be resized too small:
+        Platform.runLater(() -> {
+            stage.setMinWidth(stage.getWidth());
+            stage.setMinHeight(stage.getHeight());
+        });
 
         MainWindowManager.getInstance().addAuxiliaryWindow(mainWindow, stage);
 

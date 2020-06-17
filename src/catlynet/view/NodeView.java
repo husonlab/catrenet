@@ -60,7 +60,7 @@ public class NodeView {
         this.v = v;
 
         if (v.getInfo() instanceof Reaction) {
-            shape = new CircleShape(10);
+            shape = new SquareShape(10);
             shape.setStroke(Color.BLACK);
             shape.setFill(Color.WHITE);
             shape.setStrokeWidth(2);
@@ -70,7 +70,7 @@ public class NodeView {
             graphView.setupMouseInteraction(text, text, v, null);
             text.setBackground(labelBackground);
         } else if (v.getInfo() instanceof MoleculeType) {
-            shape = new SquareShape(10);
+            shape = new CircleShape(10);
             shape.setStroke(Color.BLACK);
             shape.setFill(Color.WHITE);
             if (food.contains((MoleculeType) v.getInfo()))

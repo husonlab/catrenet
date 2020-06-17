@@ -63,7 +63,6 @@ public class SetupFullGraph {
                 molecules.addAll(reaction.getInhibitions());
             }
 
-
             for (MoleculeType molecule : molecules) {
                 if (molecule2node.get(molecule) == null) { // must be a food molecule mentioned in a conjunction
                     final Node v = reactionGraph.newNode(molecule.getName().contains("&") ? new ReactionGraphView.AndNode() : molecule);
@@ -105,6 +104,10 @@ public class SetupFullGraph {
                     if (e.getSource().getDegree() == 1)
                         foodNodes.add(e.getSource());
                 }
+            } else if (v.getInfo() instanceof MoleculeType) {
+                if (reactionSystem.getFoods().contains((MoleculeType) v.getInfo()))
+                    foodNodes.add(v);
+
             }
         }
     }
@@ -128,12 +131,14 @@ public class SetupFullGraph {
         final Node v;
         if (!multiCopyFoodNodes)
             v = molecule2node.get(molecule);
-        else if (molecule2node.containsKey(molecule)) {
-            v = molecule2node.get(molecule);
-            if (reactionSystem.getFoods().contains(molecule))
-                molecule2node.remove(molecule);
-        } else
-            v = reactionGraph.newNode(molecule);
+        else {
+            if (molecule2node.containsKey(molecule)) {
+                v = molecule2node.get(molecule);
+                if (reactionSystem.getFoods().contains(molecule))
+                    molecule2node.remove(molecule); // remove so that we recreate later
+            } else
+                v = reactionGraph.newNode(molecule);
+        }
         return v;
     }
 
