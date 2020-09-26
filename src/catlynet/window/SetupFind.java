@@ -64,7 +64,14 @@ public class SetupFind {
         });
 
         final ReactionGraphView gv = window.getReactionGraphView();
-        final FindToolBar graphFindToolBar = new FindToolBar(window.getStage(), new GraphSearcher(window.getController().getVisualizationScrollPane(), gv.getReactionGraph(), gv.getNodeSelection(), gv::getLabel, null));
+        final GraphSearcher graphSearcher = new GraphSearcher(gv.getReactionGraph(), gv.getNodeSelection(), (v) -> gv.getLabel(v).getText(), (v, t) -> gv.getLabel(v).setText(t));
+        graphSearcher.foundProperty().addListener((c, o, n) -> {
+            if (n != null && gv.getLabel(n) != null) {
+                controller.getVisualizationScrollPane().ensureVisible(gv.getLabel(n));
+            }
+        });
+        final FindToolBar graphFindToolBar = new FindToolBar(window.getStage(), graphSearcher);
+
         controller.getVisualizationVBox().getChildren().add(graphFindToolBar);
 
         controller.getFindMenuItem().setOnAction((e) -> {
