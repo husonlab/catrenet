@@ -190,9 +190,9 @@ public class ReactionGraphView {
 
 
         final FruchtermanReingoldLayout layout = new FruchtermanReingoldLayout(reactionGraph);
-        final AService<NodeArray<APoint2D>> service = new AService<>(controller.getStatusFlowPane());
+        final AService<NodeArray<APoint2D<?>>> service = new AService<>(controller.getStatusFlowPane());
 
-        final NodeArray<APoint2D> result = new NodeArray<>(reactionGraph);
+        final NodeArray<APoint2D<?>> result = new NodeArray<>(reactionGraph);
 
         service.setCallable(() -> {
             layout.apply(getEmbeddingIterations(), result, service.getProgressListener(), ProgramExecutorService.getNumberOfCoresToUse());
@@ -247,7 +247,7 @@ public class ReactionGraphView {
      * @param coordinates
      * @return graph view
      */
-    private Collection<? extends javafx.scene.Node> setupGraphView(ReactionSystem reactionSystem, Graph graph, NodeArray<NodeView> node2view, EdgeArray<EdgeView> edge2view, NodeArray<APoint2D> coordinates) {
+    private Collection<? extends javafx.scene.Node> setupGraphView(ReactionSystem reactionSystem, Graph graph, NodeArray<NodeView> node2view, EdgeArray<EdgeView> edge2view, NodeArray<APoint2D<?>> coordinates) {
         final Group spacers = new Group();
         final Group nodes = new Group();
         final Group edges = new Group();
