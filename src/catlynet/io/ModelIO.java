@@ -103,10 +103,10 @@ public class ModelIO {
                             reactionSystem.getFoods().addAll(parseFood(line));
                         } else {
                             Reaction reaction = Reaction.parse(line, auxReactions, reactionNotation.equals(ReactionNotation.Tabbed));
-                                if (reactionNames.contains(reaction.getName()))
-                                    throw new IOException("Multiple reactions have the same name: " + reaction.getName());
+                            if (reactionNames.contains(reaction.getName()))
+                                throw new IOException("Multiple reactions have the same name: " + reaction.getName());
                             reactionSystem.getReactions().add(reaction);
-                                reactionNames.add(reaction.getName());
+                            reactionNames.add(reaction.getName());
                         }
                     } catch (Exception ex) {
                         throw new IOExceptionWithLineNumber(ex.getMessage(), lineNumber);
@@ -140,7 +140,7 @@ public class ModelIO {
      *
      * @param reactionSystem
      * @param w
-     * @param includeFood include food line
+     * @param includeFood    include food line
      * @throws IOException
      */
     public static void write(ReactionSystem reactionSystem, Writer w, boolean includeFood, ReactionNotation reactionNotation, ArrowNotation arrowNotation) throws IOException {
@@ -149,7 +149,7 @@ public class ModelIO {
         }
 
         for (Reaction reaction : reactionSystem.getReactions()) {
-                w.write(toString(reaction, reactionNotation, arrowNotation) + "\n");
+            w.write(toString(reaction, reactionNotation, arrowNotation) + "\n");
         }
     }
 

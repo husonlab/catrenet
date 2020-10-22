@@ -85,7 +85,7 @@ public class CatlyNet extends Application {
                 System.err.println("Fatal error:" + "\n" + th.toString());
                 Basic.caught(th);
             }
-                System.exit(1);
+            System.exit(1);
         }
 
         launch(args);

@@ -36,43 +36,43 @@ import java.util.stream.Collectors;
  * Daniel Huson, 4.2020
  */
 public class QuotientRAFAlgorithm extends AlgorithmBase {
-        public static final String Name = "Quotient RAF";
+    public static final String Name = "Quotient RAF";
 
-        @Override
-        public String getName() {
-                return Name;
-        }
+    @Override
+    public String getName() {
+        return Name;
+    }
 
-        /**
-         * compute the quotient max RAF
-         *
-         * @param input
-         * @param progress
-         * @throws CanceledException
-         */
-        public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException {
-                progress.setTasks("Compute quotient RAF", "");
-                progress.setMaximum(3);
-                progress.setProgress(0);
+    /**
+     * compute the quotient max RAF
+     *
+     * @param input
+     * @param progress
+     * @throws CanceledException
+     */
+    public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException {
+        progress.setTasks("Compute quotient RAF", "");
+        progress.setMaximum(3);
+        progress.setProgress(0);
 
-                final ReactionSystem maxRAF = new MaxRAFAlgorithm().apply(input, new ProgressSilent());
-                progress.setProgress(1);
+        final ReactionSystem maxRAF = new MaxRAFAlgorithm().apply(input, new ProgressSilent());
+        progress.setProgress(1);
 
-            final ReactionSystem maxCAF = new MaxCAFAlgorithm().apply(maxRAF, new ProgressSilent());
-                progress.setProgress(2);
+        final ReactionSystem maxCAF = new MaxCAFAlgorithm().apply(maxRAF, new ProgressSilent());
+        progress.setProgress(2);
 
-                final ReactionSystem result = maxRAF.shallowCopy();
-                result.setName(Name);
+        final ReactionSystem result = maxRAF.shallowCopy();
+        result.setName(Name);
 
-                result.getReactions().removeAll(maxCAF.getReactions());
+        result.getReactions().removeAll(maxCAF.getReactions());
 
-                final Set<MoleculeType> products = new TreeSet<>();
-                products.addAll(maxCAF.getReactions().stream().filter(r -> r.getDirection() == Reaction.Direction.forward || r.getDirection() == Reaction.Direction.both).map(Reaction::getProducts).flatMap(Collection::stream).collect(Collectors.toList()));
-                products.addAll(maxCAF.getReactions().stream().filter(r -> r.getDirection() == Reaction.Direction.reverse || r.getDirection() == Reaction.Direction.both).map(Reaction::getReactants).flatMap(Collection::stream).collect(Collectors.toList()));
-                products.addAll(result.getFoods()); // these two lines ensures alphabetical order
+        final Set<MoleculeType> products = new TreeSet<>();
+        products.addAll(maxCAF.getReactions().stream().filter(r -> r.getDirection() == Reaction.Direction.forward || r.getDirection() == Reaction.Direction.both).map(Reaction::getProducts).flatMap(Collection::stream).collect(Collectors.toList()));
+        products.addAll(maxCAF.getReactions().stream().filter(r -> r.getDirection() == Reaction.Direction.reverse || r.getDirection() == Reaction.Direction.both).map(Reaction::getReactants).flatMap(Collection::stream).collect(Collectors.toList()));
+        products.addAll(result.getFoods()); // these two lines ensures alphabetical order
 
-                result.getFoods().setAll(products);
-                progress.setProgress(3);
-                return result;
-        }
+        result.getFoods().setAll(products);
+        progress.setProgress(3);
+        return result;
+    }
 }

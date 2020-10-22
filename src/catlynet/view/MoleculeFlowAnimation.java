@@ -167,55 +167,55 @@ public class MoleculeFlowAnimation {
         if (edge.getOwner() == null || edge2currentCount.get(edge) >= 10)
             return;
 
-            final Path path = ReactionGraphView.getPath(edge2view.get(edge));
+        final Path path = ReactionGraphView.getPath(edge2view.get(edge));
 
-            if (path != null) {
-                final Shape movingPart;
-                if (isMoveLabels()) {
-                    final Text text = new Text(label);
-                    text.setFont(ReactionGraphView.getFont());
-                    text.setFill(colorScheme.get(Math.abs(label.hashCode()) % colorScheme.size()));
-                    movingPart = text;
-                } else {
-                    final Circle circle = new Circle(3);
-                    circle.setFill(colorScheme.get(Math.abs(label.hashCode()) % colorScheme.size()));
-                    circle.setStroke(((Color) circle.getFill()).darker());
-                    movingPart = circle;
-                }
-
-                final PathTransition pathTransition = new PathTransition(Duration.seconds(2), path, movingPart);
-
-                edge2currentCount.increment(edge);
-
-                pathTransition.setOnFinished(e -> {
-                    world.getChildren().remove(movingPart);
-                    if (edge.getOwner() != null) {
-                        edge2totalCount.increment(edge);
-                        edge2currentCount.decrement(edge);
-                    }
-                    if (edge.getOwner() != null && playing.get()) {
-                        path.setEffect(SelectionEffect.create(((Color) movingPart.getFill()).deriveColor(1, 1, 1, 0.2)));
-
-                        for (Triplet<Edge, Boolean, String> triplet : computeEdgesReadyToFire(edge, reverse ? edge.getSource() : edge.getTarget(), edge2totalCount)) {
-                            animateEdge(triplet.getFirst(), triplet.getSecond(), triplet.getThird(), edge2totalCount, edge2currentCount, edge2view, world);
-                        }
-                    } else
-                        path.setEffect(null);
-
-                });
-
-                if (reverse) {
-                    pathTransition.setRate(-pathTransition.getRate());
-                    pathTransition.jumpTo(pathTransition.getDuration());
-                }
-
-                final PauseTransition pauseTransition = new PauseTransition(Duration.millis(200));
-                pauseTransition.setOnFinished(z -> {
-                    pathTransition.play();
-                    Platform.runLater(() -> world.getChildren().add(movingPart));
-                });
-                pauseTransition.play();
+        if (path != null) {
+            final Shape movingPart;
+            if (isMoveLabels()) {
+                final Text text = new Text(label);
+                text.setFont(ReactionGraphView.getFont());
+                text.setFill(colorScheme.get(Math.abs(label.hashCode()) % colorScheme.size()));
+                movingPart = text;
+            } else {
+                final Circle circle = new Circle(3);
+                circle.setFill(colorScheme.get(Math.abs(label.hashCode()) % colorScheme.size()));
+                circle.setStroke(((Color) circle.getFill()).darker());
+                movingPart = circle;
             }
+
+            final PathTransition pathTransition = new PathTransition(Duration.seconds(2), path, movingPart);
+
+            edge2currentCount.increment(edge);
+
+            pathTransition.setOnFinished(e -> {
+                world.getChildren().remove(movingPart);
+                if (edge.getOwner() != null) {
+                    edge2totalCount.increment(edge);
+                    edge2currentCount.decrement(edge);
+                }
+                if (edge.getOwner() != null && playing.get()) {
+                    path.setEffect(SelectionEffect.create(((Color) movingPart.getFill()).deriveColor(1, 1, 1, 0.2)));
+
+                    for (Triplet<Edge, Boolean, String> triplet : computeEdgesReadyToFire(edge, reverse ? edge.getSource() : edge.getTarget(), edge2totalCount)) {
+                        animateEdge(triplet.getFirst(), triplet.getSecond(), triplet.getThird(), edge2totalCount, edge2currentCount, edge2view, world);
+                    }
+                } else
+                    path.setEffect(null);
+
+            });
+
+            if (reverse) {
+                pathTransition.setRate(-pathTransition.getRate());
+                pathTransition.jumpTo(pathTransition.getDuration());
+            }
+
+            final PauseTransition pauseTransition = new PauseTransition(Duration.millis(200));
+            pauseTransition.setOnFinished(z -> {
+                pathTransition.play();
+                Platform.runLater(() -> world.getChildren().add(movingPart));
+            });
+            pauseTransition.play();
+        }
     }
 
     /**

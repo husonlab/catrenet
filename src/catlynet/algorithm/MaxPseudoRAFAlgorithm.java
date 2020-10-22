@@ -75,7 +75,7 @@ public class MaxPseudoRAFAlgorithm extends AlgorithmBase {
                 progress.setProgress(Math.min(100, reactions.size()));
             }
             while (reactions.get(i + 1).size() < reactions.get(i).size());
-            
+
             if (reactions.get(i).size() > 0) {
                 result.getReactions().setAll(reactions.get(i));
                 result.getFoods().setAll(result.computeMentionedFoods(input.getFoods()));

@@ -43,6 +43,7 @@ import java.util.stream.Collectors;
  */
 public class SelectionBindings {
     private static final ObservableSet<String> previousSelection = FXCollections.observableSet(new TreeSet<>());
+
     /**
      * setup
      *
