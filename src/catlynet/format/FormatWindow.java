@@ -36,6 +36,7 @@ import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 
 public class FormatWindow {
+    public static final String title = "Node and Edge Format";
 
     private final Stage stage;
 
@@ -89,7 +90,7 @@ public class FormatWindow {
         stage.setX(mainWindow.getStage().getX() + 150);
         stage.setY(mainWindow.getStage().getY() + 150);
 
-        stage.setTitle("ReactionNotation - " + Basic.getFileNameWithoutPath(mainWindow.getDocument().getFileName()) + " - " + Version.NAME);
+        stage.setTitle(title + " - " + Basic.getFileNameWithoutPath(mainWindow.getDocument().getFileName()) + " - " + Version.NAME);
         stage.show();
 
         // ensures that window can't be resized too small:

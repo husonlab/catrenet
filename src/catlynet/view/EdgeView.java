@@ -29,12 +29,29 @@ import javafx.scene.shape.*;
 import jloda.fx.shapes.CircleShape;
 import jloda.fx.util.GeometryUtilsFX;
 import jloda.graph.Edge;
+import jloda.util.ProgramProperties;
 
 /**
  * edge view
  * Daniel Huson, 2.2020
  */
 public class EdgeView extends Group {
+    public enum EdgeStyle {Solid, Dashed, Dotted}
+
+    private final EdgeStyle reactionEdgeStyle = EdgeStyle.valueOf(ProgramProperties.get("reactionEdgeStyle", EdgeStyle.Solid.name()));
+    private final EdgeStyle catalystEdgeStyle = EdgeStyle.valueOf(ProgramProperties.get("catalystEdgeStyle", EdgeStyle.Dashed.name()));
+    private final EdgeStyle inhibitionEdgeStyle = EdgeStyle.valueOf(ProgramProperties.get("inhibitionEdgeStyle", EdgeStyle.Dashed.name()));
+
+    private final Color reactionColor = ProgramProperties.get("reactionColor", Color.BLACK);
+    private final Color catalystColor = ProgramProperties.get("catalystColor", Color.BLACK);
+    private final Color inhibitionColor = ProgramProperties.get("inhibitionColor", Color.LIGHTGREY);
+
+    private final int reactionEdgeWidth = ProgramProperties.get("reactionEdgeWidth", 2);
+    private final int catalystEdgeWidth = ProgramProperties.get("catalystEdgeWidth", 2);
+    private final int inhibitionEdgeWidth = ProgramProperties.get("inhibitionEdgeWidth", 2);
+
+    private EdgeView() {
+    }
 
     public EdgeView(ReactionGraphView graphView, Edge e, ReadOnlyDoubleProperty aX, ReadOnlyDoubleProperty aY, ReadOnlyDoubleProperty bX, ReadOnlyDoubleProperty bY, EdgeType edgeType) {
         final Shape arrowHead;
@@ -117,11 +134,39 @@ public class EdgeView extends Group {
         graphView.setupMouseInteraction(path, circleShape, null, e);
 
 
-        if (edgeType == EdgeType.Catalyst) {
-            path.getStrokeDashArray().addAll(2.0, 4.0);
-        } else if (edgeType == EdgeType.Inhibitor) {
-            path.getStrokeDashArray().addAll(2.0, 4.0);
-            path.setStroke(graphView.getInhibitionEdgeColor());
+        switch (edgeType) {
+            case Catalyst: {
+                if (getCatalystEdgeStyle() == EdgeStyle.Dashed) {
+                    path.getStrokeDashArray().setAll(4.0, 6.0);
+                } else if (getCatalystEdgeStyle() == EdgeStyle.Dotted) {
+                    path.getStrokeDashArray().setAll(1.0, 5.0);
+                }
+                path.setStroke(getCatalystColor());
+                path.setStrokeWidth(getCatalystEdgeWidth());
+                break;
+            }
+            case Inhibitor: {
+                if (getInhibitionEdgeStyle() == EdgeStyle.Dashed) {
+                    path.getStrokeDashArray().setAll(4.0, 6.0);
+                } else if (getInhibitionEdgeStyle() == EdgeStyle.Dotted) {
+                    path.getStrokeDashArray().setAll(1.0, 5.0);
+                }
+                path.setStroke(getInhibitionColor());
+                path.setStrokeWidth(getInhibitionEdgeWidth());
+
+                break;
+            }
+            default: {
+                if (getReactionEdgeStyle() == EdgeStyle.Dashed) {
+                    path.getStrokeDashArray().setAll(4.0, 6.0);
+                } else if (getReactionEdgeStyle() == EdgeStyle.Dotted) {
+                    path.getStrokeDashArray().setAll(1.0, 5.0);
+                }
+                path.setStroke(getReactionColor());
+                path.setStrokeWidth(getReactionEdgeWidth());
+
+                break;
+            }
         }
 
         getChildren().addAll(path, arrowHead, circleShape);
@@ -220,5 +265,45 @@ public class EdgeView extends Group {
                 return true;
         }
         return false;
+    }
+
+    public EdgeStyle getReactionEdgeStyle() {
+        return reactionEdgeStyle;
+    }
+
+    public EdgeStyle getCatalystEdgeStyle() {
+        return catalystEdgeStyle;
+    }
+
+    public EdgeStyle getInhibitionEdgeStyle() {
+        return inhibitionEdgeStyle;
+    }
+
+    public Color getReactionColor() {
+        return reactionColor;
+    }
+
+    public Color getCatalystColor() {
+        return catalystColor;
+    }
+
+    public Color getInhibitionColor() {
+        return inhibitionColor;
+    }
+
+    public int getReactionEdgeWidth() {
+        return reactionEdgeWidth;
+    }
+
+    public int getCatalystEdgeWidth() {
+        return catalystEdgeWidth;
+    }
+
+    public int getInhibitionEdgeWidth() {
+        return inhibitionEdgeWidth;
+    }
+
+    public static EdgeView createNullEdgeView() {
+        return new EdgeView();
     }
 }

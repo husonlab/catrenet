@@ -142,6 +142,29 @@
                                                             shortcut="UP"/>
                                     </accelerator>
                                 </MenuItem>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <Menu mnemonicParsing="false" text="Preferences">
+                                    <items>
+                                        <MenuItem fx:id="formatMenuItem" mnemonicParsing="false"
+                                                  text="Reaction Format...">
+                                            <accelerator>
+                                                <KeyCodeCombination alt="UP" code="J" control="UP" meta="DOWN"
+                                                                    shift="UP" shortcut="UP"/>
+                                            </accelerator>
+                                        </MenuItem>
+                                        <CheckMenuItem fx:id="wrapTextMenuItem" mnemonicParsing="false"
+                                                       text="Wrap Text"/>
+
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <MenuItem fx:id="showNodeAndEdgeFormatMenuItem" mnemonicParsing="false"
+                                                  text="Node and Edge Format...">
+                                            <accelerator>
+                                                <KeyCodeCombination alt="UP" code="J" control="UP" meta="DOWN"
+                                                                    shift="DOWN" shortcut="UP"/>
+                                            </accelerator>
+                                        </MenuItem>
+                                    </items>
+                                </Menu>
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Select">
@@ -249,15 +272,6 @@
                                                             shortcut="DOWN"/>
                                     </accelerator>
                                 </MenuItem>
-
-                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="formatMenuItem" mnemonicParsing="false" text="Reaction Format...">
-                                    <accelerator>
-                                        <KeyCodeCombination alt="UP" code="J" control="UP" meta="DOWN" shift="UP"
-                                                            shortcut="UP"/>
-                                    </accelerator>
-                                </MenuItem>
-                                <CheckMenuItem fx:id="wrapTextMenuItem" mnemonicParsing="false" text="Wrap Text"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="showNodeLabels" mnemonicParsing="false" text="Show/Hide Node Labels">
                                     <accelerator>

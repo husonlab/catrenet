@@ -178,7 +178,8 @@ public class MoleculeFlowAnimation {
                 movingPart = text;
             } else {
                 final Circle circle = new Circle(3);
-                circle.setFill(colorScheme.get(Math.abs(label.hashCode()) % colorScheme.size()));
+                final Color color = colorScheme.get(Math.abs(label.hashCode()) % colorScheme.size());
+                circle.setFill(color);
                 circle.setStroke(((Color) circle.getFill()).darker());
                 movingPart = circle;
             }

@@ -16,6 +16,8 @@ module catlynet {
     opens catlynet.tab;
     opens catlynet.window;
     opens catlynet.format;
+    opens catlynet.vformat;
+
     opens catlynet.dialog.exportlist;
 
     opens catlynet.resources.images;

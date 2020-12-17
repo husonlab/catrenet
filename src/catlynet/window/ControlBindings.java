@@ -28,6 +28,7 @@ import catlynet.io.SaveBeforeClosingDialog;
 import catlynet.main.CheckForUpdate;
 import catlynet.tab.TabManager;
 import catlynet.tab.TextTab;
+import catlynet.vformat.VFormatWindow;
 import catlynet.view.MoleculeFlowAnimation;
 import catlynet.view.ReactionGraphView;
 import catlynet.view.SelectionBindings;
@@ -65,6 +66,8 @@ import java.util.Optional;
  */
 public class ControlBindings {
     private static boolean computeImportance = false;
+
+    private static Stage vFormatWindowStage = null;
 
     public static void setup(MainWindow window) {
         final ObjectProperty<javafx.scene.Node> printableNode = new SimpleObjectProperty<>();
@@ -231,7 +234,7 @@ public class ControlBindings {
         controller.getFormatMenuItem().setOnAction(e -> {
             Stage stage = null;
             for (Stage auxStage : MainWindowManager.getInstance().getAuxiliaryWindows(window)) {
-                if (auxStage.getTitle().contains("ReactionNotation")) {
+                if (auxStage.getTitle().contains(FormatWindow.title)) {
                     stage = auxStage;
                     break;
                 }
@@ -242,6 +245,16 @@ public class ControlBindings {
             }
             stage.setIconified(false);
             stage.toFront();
+        });
+
+        controller.getShowNodeAndEdgeFormatMenuItem().setOnAction(e -> {
+
+            if (vFormatWindowStage == null) {
+                final VFormatWindow formatWindow = new VFormatWindow(window);
+                vFormatWindowStage = formatWindow.getStage();
+            }
+            vFormatWindowStage.setIconified(false);
+            vFormatWindowStage.toFront();
         });
 
         controller.getRunRAFMenuItem().setOnAction(e -> {
@@ -501,9 +514,9 @@ public class ControlBindings {
             controller.getMoveLabelsMenuItem().selectedProperty().bindBidirectional(graphView.getMoleculeFlowAnimation().moveLabelsProperty());
             controller.getMoveLabelsMenuItem().disableProperty().bind(disableFullGraphItems);
 
-            controller.getuseColorsMenuItem().setSelected(graphView.getMoleculeFlowAnimation().isMultiColorMovingParts());
-            controller.getuseColorsMenuItem().selectedProperty().bindBidirectional(graphView.getMoleculeFlowAnimation().multiColorMovingPartsProperty());
-            controller.getuseColorsMenuItem().disableProperty().bind(disableFullGraphItems);
+            controller.getUseColorsMenuItem().setSelected(graphView.getMoleculeFlowAnimation().isMultiColorMovingParts());
+            controller.getUseColorsMenuItem().selectedProperty().bindBidirectional(graphView.getMoleculeFlowAnimation().multiColorMovingPartsProperty());
+            controller.getUseColorsMenuItem().disableProperty().bind(disableFullGraphItems);
         }
         SelectionBindings.setup(window, controller);
 

@@ -226,6 +226,9 @@ public class MainWindowController {
     private MenuItem formatMenuItem;
 
     @FXML
+    private MenuItem showNodeAndEdgeFormatMenuItem;
+
+    @FXML
     private MenuItem showNodeLabels;
 
     @FXML
@@ -675,6 +678,10 @@ public class MainWindowController {
         return formatMenuItem;
     }
 
+    public MenuItem getShowNodeAndEdgeFormatMenuItem() {
+        return showNodeAndEdgeFormatMenuItem;
+    }
+
     public MenuItem getFullScreenMenuItem() {
         return fullScreenMenuItem;
     }
@@ -836,7 +843,7 @@ public class MainWindowController {
         return moveLabelsMenuItem;
     }
 
-    public CheckMenuItem getuseColorsMenuItem() {
+    public CheckMenuItem getUseColorsMenuItem() {
         return useColorsMenuItem;
     }
 }

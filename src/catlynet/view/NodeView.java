@@ -32,6 +32,7 @@ import javafx.scene.text.Font;
 import jloda.fx.shapes.CircleShape;
 import jloda.fx.shapes.SquareShape;
 import jloda.graph.Node;
+import jloda.util.ProgramProperties;
 
 import java.util.Collection;
 
@@ -40,12 +41,36 @@ import java.util.Collection;
  * Daniel Huson, 2.2020
  */
 public class NodeView {
+    public enum NodeStyle {Square, Circle, BoldSquare, BoldCircle}
+
     final private static Background labelBackground = new Background(new BackgroundFill(Color.WHITE.deriveColor(1, 1, 1, 0.7), null, null));
 
     private final Node v;
     private final Shape shape;
     private final Label text;
     private final Shape spacer;
+
+    private final NodeStyle reactionNodeStyle = NodeStyle.valueOf(ProgramProperties.get("reactionNodeStyle", NodeStyle.Square.name()));
+    private final NodeStyle moleculeNodeStyle = NodeStyle.valueOf(ProgramProperties.get("moleculeNodeStyle", NodeStyle.Circle.name()));
+    private final NodeStyle foodNodeStyle = NodeStyle.valueOf(ProgramProperties.get("foodNodeStyle", NodeStyle.BoldCircle.name()));
+    private final NodeStyle andNodeStyle = NodeStyle.valueOf(ProgramProperties.get("andNodeStyle", NodeStyle.Circle.name()));
+
+    private final Color reactionNodeFillColor = ProgramProperties.get("reactionNodeFillColor", Color.WHITE);
+    private final Color moleculeNodeFillColor = ProgramProperties.get("moleculeNodeFillColor", Color.WHITE);
+    private final Color foodNodeFillColor = ProgramProperties.get("foodNodeFillColor", Color.WHITE);
+    private final Color andNodeFillColor = ProgramProperties.get("andNodeFillColor", Color.WHITE);
+
+    private final int reactionNodeSize = ProgramProperties.get("reactionNodeSize", 10);
+    private final int moleculeNodeSize = ProgramProperties.get("moleculeNodeSize", 10);
+    private final int foodNodeSize = ProgramProperties.get("foodNodeSize", 10);
+    private final int andNodeSize = ProgramProperties.get("andNodeSize", 10);
+
+    private NodeView() {
+        v = null;
+        shape = null;
+        text = null;
+        spacer = null;
+    }
 
     /**
      * constructor
@@ -60,33 +85,25 @@ public class NodeView {
         this.v = v;
 
         if (v.getInfo() instanceof Reaction) {
-            shape = new SquareShape(10);
-            shape.setStroke(Color.BLACK);
-            shape.setFill(Color.WHITE);
-            shape.setStrokeWidth(2);
-
+            shape = createShape(getReactionNodeShape(), getReactionNodeSize(), getReactionNodeFillColor());
             text = new Label(((Reaction) v.getInfo()).getName());
-            text.setLayoutX(10);
+            text.setLayoutX(getReactionNodeSize() + 2);
+            text.setLayoutY(-ReactionGraphView.getFont().getSize() / 2);
             graphView.setupMouseInteraction(text, text, v, null);
             text.setBackground(labelBackground);
         } else if (v.getInfo() instanceof MoleculeType) {
-            shape = new CircleShape(10);
-            shape.setStroke(Color.BLACK);
-            shape.setFill(Color.WHITE);
             if (food.contains((MoleculeType) v.getInfo()))
-                shape.setStrokeWidth(4);
+                shape = createShape(getFoodNodeShape(), getFoodNodeSize(), getFoodNodeFillColor());
             else
-                shape.setStrokeWidth(2);
-
+                shape = createShape(getMoleculeNodeShape(), getMoleculeNodeSize(), getMoleculeNodeFillColor());
             text = new Label(((MoleculeType) v.getInfo()).getName());
-            text.setLayoutX(10);
+            text.setLayoutX(getFoodNodeSize() + 2);
+            text.setLayoutY(-ReactionGraphView.getFont().getSize() / 2);
             graphView.setupMouseInteraction(text, text, v, null);
             text.setBackground(labelBackground);
         } else if (v.getInfo() instanceof ReactionGraphView.AndNode) {
-            shape = new CircleShape(10);
-            shape.setStroke(Color.TRANSPARENT);
-            shape.setFill(Color.WHITE);
-            //shape.setStrokeWidth(1);
+            shape = createShape(getAndNodeShape(), getAndNodeSize(), getAndNodeFillColor());
+            shape.setStrokeWidth(1);
 
             text = new Label("&");
             text.setFont(Font.font("Courier New", 8));
@@ -144,5 +161,78 @@ public class NodeView {
     public void translate(double dx, double dy) {
         shape.setTranslateX(shape.getTranslateX() + dx);
         shape.setTranslateY(shape.getTranslateY() + dy);
+    }
+
+    private Shape createShape(NodeStyle nodeStyle, int size, Color fillColor) {
+        final Shape shape;
+        int strokeWidth = 2;
+        switch (nodeStyle) {
+            case BoldSquare:
+                strokeWidth = 4;
+            case Square:
+                shape = new SquareShape(size);
+                break;
+            default:
+            case BoldCircle:
+                strokeWidth = 4;
+            case Circle:
+                shape = new CircleShape(size);
+        }
+        shape.setStroke(Color.BLACK);
+        shape.setFill(fillColor);
+        shape.setStrokeWidth(strokeWidth);
+        return shape;
+    }
+
+    public NodeStyle getReactionNodeShape() {
+        return reactionNodeStyle;
+    }
+
+    public NodeStyle getFoodNodeShape() {
+        return foodNodeStyle;
+    }
+
+    public NodeStyle getAndNodeShape() {
+        return andNodeStyle;
+    }
+
+    public int getReactionNodeSize() {
+        return reactionNodeSize;
+    }
+
+    public int getFoodNodeSize() {
+        return foodNodeSize;
+    }
+
+    public int getAndNodeSize() {
+        return andNodeSize;
+    }
+
+    public NodeStyle getMoleculeNodeShape() {
+        return moleculeNodeStyle;
+    }
+
+    public int getMoleculeNodeSize() {
+        return moleculeNodeSize;
+    }
+
+    public Color getReactionNodeFillColor() {
+        return reactionNodeFillColor;
+    }
+
+    public Color getMoleculeNodeFillColor() {
+        return moleculeNodeFillColor;
+    }
+
+    public Color getFoodNodeFillColor() {
+        return foodNodeFillColor;
+    }
+
+    public Color getAndNodeFillColor() {
+        return andNodeFillColor;
+    }
+
+    public static NodeView createNullNodeView() {
+        return new NodeView();
     }
 }
