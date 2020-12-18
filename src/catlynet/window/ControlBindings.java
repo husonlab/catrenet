@@ -254,6 +254,7 @@ public class ControlBindings {
                 vFormatWindowStage = formatWindow.getStage();
             }
             vFormatWindowStage.setIconified(false);
+            vFormatWindowStage.show();
             vFormatWindowStage.toFront();
         });
 
