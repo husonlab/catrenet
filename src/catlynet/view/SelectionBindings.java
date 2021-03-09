@@ -33,6 +33,7 @@ import javafx.collections.ObservableSet;
 import javafx.scene.control.MenuItem;
 import jloda.fx.control.ItemSelectionModel;
 import jloda.graph.*;
+import jloda.graphs.algorithms.ConnectedComponents;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -107,7 +108,7 @@ public class SelectionBindings {
         controller.getSelectConnectedComponentMenuItem().setOnAction(c -> {
             final Graph reactionGraph = view.getReactionGraph();
             final NodeSet nodes = new NodeSet(reactionGraph);
-            new ArrayList<>(view.getNodeSelection().getSelectedItems()).forEach(v -> reactionGraph.visitConnectedComponent(v, nodes));
+            new ArrayList<>(view.getNodeSelection().getSelectedItems()).forEach(v -> ConnectedComponents.collect(v, nodes));
             view.getNodeSelection().selectItems(nodes);
             final EdgeSet edges = new EdgeSet(reactionGraph);
             for (Node p : nodes) {

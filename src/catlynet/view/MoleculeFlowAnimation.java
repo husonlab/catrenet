@@ -167,7 +167,7 @@ public class MoleculeFlowAnimation {
         if (edge.getOwner() == null || edge2currentCount.get(edge) >= 10)
             return;
 
-        final Path path = ReactionGraphView.getPath(edge2view.get(edge));
+        final Path path = ReactionGraphView.getPath(edge2view.getValue(edge));
 
         if (path != null) {
             final Shape movingPart;
