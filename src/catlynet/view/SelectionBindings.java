@@ -33,7 +33,7 @@ import javafx.collections.ObservableSet;
 import javafx.scene.control.MenuItem;
 import jloda.fx.control.ItemSelectionModel;
 import jloda.graph.*;
-import jloda.graphs.algorithms.ConnectedComponents;
+import jloda.graph.algorithms.ConnectedComponents;
 
 import java.util.*;
 import java.util.stream.Collectors;

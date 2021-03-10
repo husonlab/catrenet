@@ -39,8 +39,8 @@ import jloda.fx.util.ProgramExecutorService;
 import jloda.fx.util.SelectionEffectBlue;
 import jloda.fx.window.NotificationManager;
 import jloda.graph.*;
-import jloda.graphs.algorithms.ConnectedComponents;
-import jloda.graphs.algorithms.FruchtermanReingoldLayout;
+import jloda.graph.algorithms.ConnectedComponents;
+import jloda.graph.algorithms.FruchtermanReingoldLayout;
 import jloda.util.APoint2D;
 import jloda.util.Basic;
 
