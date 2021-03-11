@@ -108,14 +108,14 @@ public class ReactionGraphView {
         nodeSelection.getSelectedItems().addListener((ListChangeListener<Node>) (e) -> {
             while (e.next()) {
                 for (Node v : e.getAddedSubList()) {
-                    final NodeView nv = node2view.getValue(v);
+                    final NodeView nv = node2view.get(v);
                     if (nv != null) {
                         nv.getLabel().setEffect(SelectionEffectBlue.getInstance());
                         nv.getShape().setEffect(SelectionEffectBlue.getInstance());
                     }
                 }
                 for (Node v : e.getRemoved()) {
-                    final NodeView nv = node2view.getValue(v);
+                    final NodeView nv = node2view.get(v);
                     if (nv != null) {
                         nv.getLabel().setEffect(null);
                         nv.getShape().setEffect(null);
@@ -127,14 +127,14 @@ public class ReactionGraphView {
         edgeSelection.getSelectedItems().addListener((ListChangeListener<Edge>) c -> {
             while (c.next()) {
                 for (Edge e : c.getAddedSubList()) {
-                    final Group group = edge2view.getValue(e);
+                    final Group group = edge2view.get(e);
                     if (group != null) {
                         for (javafx.scene.Node node : group.getChildren())
                             node.setEffect(SelectionEffectBlue.getInstance());
                     }
                 }
                 for (Edge e : c.getRemoved()) {
-                    final Group group = edge2view.getValue(e);
+                    final Group group = edge2view.get(e);
                     if (group != null) {
                         for (javafx.scene.Node node : group.getChildren())
                             node.setEffect(null);
@@ -146,7 +146,7 @@ public class ReactionGraphView {
         inhibitionEdgeColor.addListener((c, o, n) -> {
             for (Edge e : reactionGraph.edges()) {
                 if (e.getInfo() == EdgeType.Inhibitor) {
-                    for (javafx.scene.Node node : edge2view.getValue(e).getChildren()) {
+                    for (javafx.scene.Node node : edge2view.get(e).getChildren()) {
                         if (node instanceof Path || node instanceof Polyline)
                             ((Shape) node).setStroke(n);
                     }
@@ -157,7 +157,7 @@ public class ReactionGraphView {
         nodeLabelStyle.addListener((c, o, n) -> {
 
             for (Node v : reactionGraph.nodes()) {
-                node2view.getValue(v).getLabel().setStyle(n);
+                node2view.get(v).getLabel().setStyle(n);
             }
         });
 
@@ -256,7 +256,7 @@ public class ReactionGraphView {
         final Group labels = new Group();
 
         graph.nodeStream().forEach(v -> {
-            final NodeView nv = new NodeView(this, reactionSystem.getFoods(), v, coordinates.getValue(v).getX(), coordinates.getValue(v).getY());
+            final NodeView nv = new NodeView(this, reactionSystem.getFoods(), v, coordinates.get(v).getX(), coordinates.get(v).getY());
             nv.getLabel().setStyle(getNodeLabelStyle());
             node2view.put(v, nv);
             spacers.getChildren().add(nv.getSpacer());
@@ -267,8 +267,8 @@ public class ReactionGraphView {
         for (Edge edge : graph.edges()) {
             final EdgeType edgeType = (EdgeType) edge.getInfo();
 
-            final Shape sourceShape = node2view.getValue(edge.getSource()).getShape();
-            final Shape targetShape = node2view.getValue(edge.getTarget()).getShape();
+            final Shape sourceShape = node2view.get(edge.getSource()).getShape();
+            final Shape targetShape = node2view.get(edge.getTarget()).getShape();
 
             final EdgeView edgeView = new EdgeView(this, edge, sourceShape.translateXProperty(), sourceShape.translateYProperty(), targetShape.translateXProperty(), targetShape.translateYProperty(), edgeType);
 
@@ -304,7 +304,7 @@ public class ReactionGraphView {
 
             if (v != null && !nodeToMove.translateXProperty().isBound()) {
                 for (Node w : nodeSelection.getSelectedItems()) {
-                    node2view.getValue(w).translate(mouseX - mouseDown[0], mouseY - mouseDown[1]);
+                    node2view.get(w).translate(mouseX - mouseDown[0], mouseY - mouseDown[1]);
                 }
             } else {
 
@@ -425,11 +425,11 @@ public class ReactionGraphView {
     }
 
     public Shape getShape(Node v) {
-        return node2view.getValue(v).getShape();
+        return node2view.get(v).getShape();
     }
 
     public Label getLabel(Node v) {
-        return node2view.getValue(v).getLabel();
+        return node2view.get(v).getLabel();
     }
 
     public String getNodeLabelStyle() {
@@ -451,7 +451,7 @@ public class ReactionGraphView {
         double maxY = Double.MIN_VALUE;
 
         for (Node v : reactionGraph.nodes()) {
-            final Shape shape = node2view.getValue(v).getShape();
+            final Shape shape = node2view.get(v).getShape();
             minX = Math.min(minX, shape.getTranslateX());
             minY = Math.min(minY, shape.getTranslateY());
             maxX = Math.max(maxX, shape.getTranslateY());

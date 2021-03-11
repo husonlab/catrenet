@@ -78,8 +78,8 @@ public class MoleculeFlowAnimation {
      * @param world
      */
     public MoleculeFlowAnimation(Graph graph, NodeSet foodNodes, EdgeArray<EdgeView> edge2Group, Group world) {
-        final EdgeIntegerArray edge2totalCount = new EdgeIntegerArray(graph);
-        final EdgeIntegerArray edge2currentCount = new EdgeIntegerArray(graph);
+        final EdgeIntArray edge2totalCount = new EdgeIntArray(graph);
+        final EdgeIntArray edge2currentCount = new EdgeIntArray(graph);
 
         // this service pumps molecules into the system
         final Service<Boolean> service = new Service<>() {
@@ -163,11 +163,11 @@ public class MoleculeFlowAnimation {
      * @param edge2view
      * @param world
      */
-    private void animateEdge(Edge edge, boolean reverse, String label, EdgeIntegerArray edge2totalCount, EdgeIntegerArray edge2currentCount, EdgeArray<EdgeView> edge2view, Group world) {
-        if (edge.getOwner() == null || edge2currentCount.get(edge) >= 10)
+    private void animateEdge(Edge edge, boolean reverse, String label, EdgeIntArray edge2totalCount, EdgeIntArray edge2currentCount, EdgeArray<EdgeView> edge2view, Group world) {
+        if (edge.getOwner() == null || edge2currentCount.getInt(edge) >= 10)
             return;
 
-        final Path path = ReactionGraphView.getPath(edge2view.getValue(edge));
+        final Path path = ReactionGraphView.getPath(edge2view.get(edge));
 
         if (path != null) {
             final Shape movingPart;
@@ -226,7 +226,7 @@ public class MoleculeFlowAnimation {
      * @param edge2count
      * @return edges ready to fire
      */
-    private ArrayList<Triplet<Edge, Boolean, String>> computeEdgesReadyToFire(Edge e, Node v, EdgeIntegerArray edge2count) {
+    private ArrayList<Triplet<Edge, Boolean, String>> computeEdgesReadyToFire(Edge e, Node v, EdgeIntArray edge2count) {
         final ArrayList<Triplet<Edge, Boolean, String>> emptyList = new ArrayList<>();
 
         if (v.getInfo() instanceof Reaction) {
@@ -234,9 +234,9 @@ public class MoleculeFlowAnimation {
             boolean hasInhibitor = false;
 
             for (Edge f : v.inEdges()) {
-                if (f.getInfo() == EdgeType.Catalyst && edge2count.get(f) > 0) {
+                if (f.getInfo() == EdgeType.Catalyst && edge2count.getInt(f) > 0) {
                     hasCatalyst = true;
-                } else if (isAnimateInhibitions() && f.getInfo() == EdgeType.Inhibitor && edge2count.get(f) > 0) {
+                } else if (isAnimateInhibitions() && f.getInfo() == EdgeType.Inhibitor && edge2count.getInt(f) > 0) {
                     hasInhibitor = true;
                 }
             }
@@ -246,7 +246,7 @@ public class MoleculeFlowAnimation {
 
             if (e.getInfo() == EdgeType.Reactant) {
                 for (Edge f : v.inEdges()) {
-                    if (f.getInfo() == EdgeType.Reactant && edge2count.get(f) < reactantThreshold)
+                    if (f.getInfo() == EdgeType.Reactant && edge2count.getInt(f) < reactantThreshold)
                         return emptyList;
                 }
                 for (Edge f : v.inEdges()) {
@@ -262,7 +262,7 @@ public class MoleculeFlowAnimation {
             } else if (e.getInfo() == EdgeType.ReactantReversible) {
                 for (Edge f : v.inEdges()) {
                     if (f.getInfo() == EdgeType.ReactantReversible) {
-                        if (edge2count.get(f) < reactantThreshold)
+                        if (edge2count.getInt(f) < reactantThreshold)
                             return emptyList;
                     }
                 }
@@ -278,7 +278,7 @@ public class MoleculeFlowAnimation {
                 return result;
             } else if (e.getInfo() == EdgeType.ProductReversible) {
                 for (Edge f : v.outEdges()) {
-                    if (e.getInfo() == EdgeType.ProductReversible && edge2count.get(f) < reactantThreshold)
+                    if (e.getInfo() == EdgeType.ProductReversible && edge2count.getInt(f) < reactantThreshold)
                         return emptyList;
                 }
                 for (Edge f : v.outEdges()) {
@@ -294,7 +294,7 @@ public class MoleculeFlowAnimation {
             }
         } else if (v.getInfo() instanceof ReactionGraphView.AndNode) {
             for (Edge f : v.inEdges()) {
-                if (edge2count.get(f) <= 0)
+                if (edge2count.getInt(f) <= 0)
                     return emptyList;
             }
             final StringBuilder buf = new StringBuilder();
