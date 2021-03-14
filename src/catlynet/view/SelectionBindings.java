@@ -189,7 +189,7 @@ public class SelectionBindings {
                 view.getNodeSelection().clearSelection(v);
         }
         if (edges) {
-            view.getEdgeSelection().selectItems(view.getReactionGraph().getEdgesAsSet());
+            view.getEdgeSelection().selectItems(view.getReactionGraph().getEdgesAsList());
         } else if (deselectNonMatched)
             view.getEdgeSelection().clearSelection();
     }
