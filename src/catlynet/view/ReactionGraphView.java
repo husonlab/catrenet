@@ -205,7 +205,7 @@ public class ReactionGraphView {
         service.setOnFailed(e -> NotificationManager.showError("Graph layout failed: " + service.getException().getMessage()));
         service.setOnCancelled(e -> {
                     NotificationManager.showWarning("Graph layout CANCELED");
-                    if (!result.isClear()) // use what ever has been produced
+                    if (!result.isEmpty()) // use what ever has been produced
                         world.getChildren().setAll(setupGraphView(reactionSystem, reactionGraph, node2view, edge2view, service.getValue()));
                 }
         );
