@@ -350,8 +350,10 @@ public class MainWindowController {
     @FXML
     private Label inputReactionsSizeLabel;
 
-    private ZoomableScrollPane zoomableScrollPane;
+    @FXML
+    private CheckMenuItem useDarkThemeCheckMenuItem;
 
+    private ZoomableScrollPane zoomableScrollPane;
 
     @FXML
     void initialize() {
@@ -845,5 +847,9 @@ public class MainWindowController {
 
     public CheckMenuItem getUseColorsMenuItem() {
         return useColorsMenuItem;
+    }
+
+    public CheckMenuItem getUseDarkThemeCheckMenuItem() {
+        return useDarkThemeCheckMenuItem;
     }
 }
