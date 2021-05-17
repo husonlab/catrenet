@@ -131,6 +131,7 @@ public class NodeView {
 
         // setupMouseInteraction(text, shape, v, null);
         text.setFont(ReactionGraphView.getFont());
+        text.getStyleClass().remove("label");
         text.translateXProperty().bind(shape.translateXProperty());
         text.translateYProperty().bind(shape.translateYProperty());
 

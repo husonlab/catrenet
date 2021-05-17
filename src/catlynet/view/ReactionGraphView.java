@@ -81,7 +81,7 @@ public class ReactionGraphView {
 
     private final BooleanProperty empty = new SimpleBooleanProperty(true);
 
-    private StringProperty nodeLabelStyle = new SimpleStringProperty("");
+    private final StringProperty nodeLabelStyle = new SimpleStringProperty("");
 
     static class AndNode {
     }
@@ -188,7 +188,7 @@ public class ReactionGraphView {
 
         final int numberOfConnectedComponts = ConnectedComponents.count(reactionGraph);
         if (numberOfConnectedComponts > 1)
-            logStream.println(String.format("Reaction graph has %d connected components", numberOfConnectedComponts));
+            logStream.printf("Reaction graph has %d connected components%n", numberOfConnectedComponts);
 
 
         final FruchtermanReingoldLayout layout = new FruchtermanReingoldLayout(reactionGraph);
