@@ -30,6 +30,7 @@ import catlynet.tab.TabManager;
 import catlynet.tab.TextTab;
 import catlynet.vformat.VFormatWindow;
 import catlynet.view.MoleculeFlowAnimation;
+import catlynet.view.NodeView;
 import catlynet.view.ReactionGraphView;
 import catlynet.view.SelectionBindings;
 import javafx.application.Platform;
@@ -388,7 +389,6 @@ public class ControlBindings {
 
         controller.getLogTextArea().appendText(Basic.stopCollectingStdErr());
 
-
         {
             final ZoomableScrollPane scrollPane = controller.getVisualizationScrollPane();
             scrollPane.setMouseScrollZoomFactor(1.05);
@@ -400,9 +400,9 @@ public class ControlBindings {
                 final double zoomX = scrollPane.getZoomFactorX();
                 final double zoomY = scrollPane.getZoomFactorY();
                 for (javafx.scene.Node node : BasicFX.getAllChildrenRecursively(graphView.getWorld().getChildren())) {
-                    if (!node.translateXProperty().isBound())
+                    if (!node.translateXProperty().isBound() && node.getUserData() instanceof NodeView.NodeStyle)
                         node.setTranslateX(node.getTranslateX() * zoomX);
-                    if (!node.translateYProperty().isBound())
+                    if (!node.translateYProperty().isBound() && node.getUserData() instanceof NodeView.NodeStyle)
                         node.setTranslateY(node.getTranslateY() * zoomY);
                 }
             });
@@ -428,9 +428,8 @@ public class ControlBindings {
 
                 Platform.runLater(() -> {
                     final Rectangle2D bbox = graphView.getBBox();
-                    final double zoomX = Math.max(100.0, (controller.getVisualizationBorderPane().getWidth() - 100.0)) / bbox.getWidth();
-                    final double zoomY = Math.max(100.0, (controller.getVisualizationBorderPane().getHeight() - 100.0)) / bbox.getHeight();
-                    System.err.println("zoomX: " + zoomX + " zoomY: " + zoomY);
+                    final double zoomX = Math.max(100.0, (controller.getVisualizationBorderPane().getWidth())) / bbox.getWidth();
+                    final double zoomY = Math.max(100.0, (controller.getVisualizationBorderPane().getHeight())) / bbox.getHeight();
                     final double zoom = Math.min(zoomX, zoomY);
 
                     scrollPane.zoomBy(zoom, zoom);

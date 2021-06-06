@@ -182,6 +182,7 @@ public class NodeView {
         shape.setStroke(Color.BLACK);
         shape.setFill(fillColor);
         shape.setStrokeWidth(strokeWidth);
+        shape.setUserData(nodeStyle);
         return shape;
     }
 

@@ -41,6 +41,7 @@ import jloda.fx.window.NotificationManager;
 import jloda.graph.*;
 import jloda.graph.algorithms.ConnectedComponents;
 import jloda.graph.algorithms.FruchtermanReingoldLayout;
+import jloda.graph.fmm.MultiComponents;
 import jloda.util.APoint2D;
 import jloda.util.Basic;
 
@@ -190,16 +191,37 @@ public class ReactionGraphView {
         if (numberOfConnectedComponts > 1)
             logStream.printf("Reaction graph has %d connected components%n", numberOfConnectedComponts);
 
-
-        final FruchtermanReingoldLayout layout = new FruchtermanReingoldLayout(reactionGraph);
         final AService<NodeArray<APoint2D<?>>> service = new AService<>(controller.getStatusFlowPane());
 
         final NodeArray<APoint2D<?>> result = new NodeArray<>(reactionGraph);
 
         service.setCallable(() -> {
-            layout.apply(getEmbeddingIterations(), result, service.getProgressListener(), ProgramExecutorService.getNumberOfCoresToUse());
+            var maxWidth = Math.max(600, controller.getVisualizationScrollPane().getViewportBounds().getWidth() - 100);
+            if (true)
+                MultiComponents.apply(null, 0.9 * maxWidth, maxWidth, 80, 80, reactionGraph, e -> 1d, (v, p) -> result.put(v, new APoint2D<>(p.getX(), p.getY(), v)));
+            else {
+                final FruchtermanReingoldLayout layout = new FruchtermanReingoldLayout(reactionGraph);
+                layout.apply(getEmbeddingIterations(), result, service.getProgressListener(), ProgramExecutorService.getNumberOfCoresToUse());
+            }
             return result;
         });
+
+        /*
+         service.setCallable(() -> {
+            if(reactionGraph.isSimple())
+                FastMultiLayerMethodLayout.apply(null,reactionGraph,e->1d,(v,p)->result.put(v,new APoint2D<>(p.getX(),p.getY(),v)));
+            else {
+                var simpleGraph=new Graph();
+                var src2tar=reactionGraph.extract(new HashSet<>(reactionGraph.getNodesAsList()),subsetSimpleEdges(reactionGraph),simpleGraph);
+                var tar2src=new NodeArray<Node>(simpleGraph);
+                for(var v:src2tar.keys()) {
+                    tar2src.put(src2tar.get(v),v);
+                }
+                FastMultiLayerMethodLayout.apply(null,simpleGraph,e->1d,(v,p)->result.put(tar2src.get(v),new APoint2D<>(p.getX(),p.getY(),tar2src.get(v))));
+            }
+            return result;
+        });
+         */
 
         service.setOnRunning(e -> service.getProgressListener().setTasks("Graph layout", ""));
         service.setOnFailed(e -> NotificationManager.showError("Graph layout failed: " + service.getException().getMessage()));

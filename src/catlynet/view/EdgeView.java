@@ -99,7 +99,7 @@ public class EdgeView extends Group {
 
         final CircleShape circleShape = new CircleShape(3);
 
-        final InvalidationListener invalidationListener = c -> {
+        final InvalidationListener invalidationListener = v -> {
             final Point2D lineCenter = updatePath(aX.get(), aY.get(), bX.get(), bY.get(), null, moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(e));
 
             if (lineCenter != null) {
@@ -215,7 +215,6 @@ public class EdgeView extends Group {
 
             final Point2D m = new Point2D(0.5 * (ax + ex), 0.5 * (ay + ey));
             if (center == null) {
-                final Point2D c;
                 if (!clockwise)
                     center = m.add(-Math.sin(GeometryUtilsFX.deg2rad(alpha)) * liftFactor * distance, Math.cos(GeometryUtilsFX.deg2rad(alpha)) * liftFactor * distance);
                 else
