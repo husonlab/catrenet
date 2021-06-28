@@ -5,18 +5,16 @@ CatlyNet is a program for working with autocatalytic networks. It is written in 
 
 CatlyNet is loosely based on a web application written by Dietrich Radel: http://www.math.canterbury.ac.nz/bio/RAF/
 
+## Further reading
+
+Here is a publication that describes and uses CatlyNet:
+
+Steel M, Xavier JC, Huson DH. 2020 The structure of autocatalytic networks, with application to early biochemistry. J. R. Soc. Interface 17: 20200488. http://dx.doi.org/10.1098/rsif.2020.0488
+
 Read more about autocatlyic networks and RAFs here:
 
 Hordijk, W. and Steel, M. (2017). [Chasing the tail: The emergence of autocatalytic networks. Biosystems](http://www.sciencedirect.com/science/article/pii/S030326471630274X), 152: 1-10.
 
-## Early release
-This program is at a very early stage of development. The program has not been throughly tested and will definitely contain many bugs. Any or all of the features of the code base and program may change without notice. Use at your own risk. Please report any bugs or feature requests to the authors.
-
-## Todo
-We intend to
-* use this program as a means of delivering new algorithms for calculating or analyzing catalytic networks,
-* implement support for "inhibitors" and associated algorithms, and
-* provide different visualization and interactive exploration techniques for catayltic networks.
 
 ## Installers
 One click installers for MacOS, Windows and Linux are available [here](http://ab.inf.uni-tuebingen.de/data/software/catlynet/download/welcome.html). 
