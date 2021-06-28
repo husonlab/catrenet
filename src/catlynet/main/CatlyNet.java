@@ -20,7 +20,6 @@
 package catlynet.main;
 
 import catlynet.window.MainWindow;
-import com.briksoftware.javafx.platform.osx.OSXIntegration;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import jloda.fx.util.ArgsOptions;
@@ -143,18 +142,6 @@ public class CatlyNet extends Application {
                 //FileOpenManager.fileOpener().accept(fileName);
             }
 
-            // setup about and preferences menu for apple:
-            if (false) {
-                OSXIntegration.init();
-                OSXIntegration.populateAppleMenu(() -> SplashScreen.showSplash(Duration.ofMinutes(1)), () -> System.err.println("Preferences"));
-
-                // open files by double-click under Mac OS: // untested
-                OSXIntegration.setOpenFilesHandler(files -> {
-                    for (File file : files) {
-                        System.err.println("Open file " + file + ": not implemented");
-                    }
-                });
-            }
             MainWindowManager.getInstance().addMainWindow(mainWindow);
 
         } catch (Exception ex) {
