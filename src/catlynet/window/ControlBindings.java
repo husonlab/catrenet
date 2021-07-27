@@ -588,8 +588,7 @@ public class ControlBindings {
         window.getInputReactionSystem().sizeProperty().addListener((c, o, n) -> controller.getInputReactionsSizeLabel().setText(String.format("%,d", n.intValue())));
         window.getInputReactionSystem().foodSizeProperty().addListener((c, o, n) -> controller.getInputFoodSizeLabel().setText(String.format("%,d", n.intValue())));
 
-        controller.getUseDarkThemeCheckMenuItem().selectedProperty().addListener(MainWindowManager.getUseDarkThemeListener(window));
-        controller.getUseDarkThemeCheckMenuItem().setSelected(MainWindowManager.isUseDarkTheme());
+        controller.getUseDarkThemeCheckMenuItem().selectedProperty().bindBidirectional(MainWindowManager.useDarkThemeProperty());
 
         SetupFind.apply(window);
 
