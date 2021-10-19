@@ -21,6 +21,7 @@ package catlynet.model;
 
 import jloda.fx.window.NotificationManager;
 import jloda.util.Basic;
+import jloda.util.StringUtils;
 
 import java.io.IOException;
 import java.util.*;
@@ -133,7 +134,7 @@ public class Reaction implements Comparable<Reaction> {
         line = line.replaceAll("->", "=>").replaceAll("<-", "<=");
 
         if (tabbedFormat) { // name <tab>  a+b -> c <tab> catalysts
-            final String[] tokens = Basic.trimAll(Basic.split(line, '\t'));
+			final String[] tokens = StringUtils.trimAll(StringUtils.split(line, '\t'));
             if (tokens.length == 3 || tokens.length == 4) {
 
                 int arrowStart = tokens[1].indexOf("<=");
@@ -178,7 +179,7 @@ public class Reaction implements Comparable<Reaction> {
 
         final String reactionName = line.substring(0, colonPos).trim();
 
-        final String[] reactants = Basic.trimAll(line.substring(colonPos + 1, openSquareBracket).trim().split("[+\\s]+"));
+		final String[] reactants = StringUtils.trimAll(line.substring(colonPos + 1, openSquareBracket).trim().split("[+\\s]+"));
 
         final String catalysts = line.substring(openSquareBracket + 1, closeSquareBracket).trim()
                 .replaceAll("\\|", ",")
@@ -193,13 +194,13 @@ public class Reaction implements Comparable<Reaction> {
         final String[] inhibitors;
         if (openCurlyBracket != -1 && closeCurlyBracket != -1) {
             final String inhibitorsString = line.substring(openCurlyBracket + 1, closeCurlyBracket).trim().replaceAll(",", " ");
-            inhibitors = Basic.trimAll(inhibitorsString.split("\\s+"));
+			inhibitors = StringUtils.trimAll(inhibitorsString.split("\\s+"));
         } else if ((openCurlyBracket >= 0) != (closeCurlyBracket >= 0))
             throw new IOException("Can't parse reaction: " + line);
         else
             inhibitors = new String[0];
 
-        final String[] products = Basic.trimAll(line.substring(endArrow + 1).trim().split("[+\\s]+"));
+		final String[] products = StringUtils.trimAll(line.substring(endArrow + 1).trim().split("[+\\s]+"));
 
         final Reaction reaction = new Reaction(reactionName);
 
@@ -212,7 +213,7 @@ public class Reaction implements Comparable<Reaction> {
                     if (coefficient == -1)
                         coefficient = Basic.parseInt(token);
                     else
-                        throw new IOException("Can't distinguish between coefficients and reactant names : " + Basic.toString(reactants, " "));
+						throw new IOException("Can't distinguish between coefficients and reactant names : " + StringUtils.toString(reactants, " "));
                 } else {
                     if (coefficient == -1 || coefficient > 0)
                         reaction.getReactants().add(MoleculeType.valueOf(token));
@@ -229,7 +230,7 @@ public class Reaction implements Comparable<Reaction> {
                     coefficient = Basic.parseInt(token);
             }
             if (coefficient != -1)
-                throw new IOException("Can't distinguish between coefficients and reactant names : " + Basic.toString(reactants, " "));
+				throw new IOException("Can't distinguish between coefficients and reactant names : " + StringUtils.toString(reactants, " "));
         }
 
         if (Arrays.stream(products).allMatch(Basic::isDouble)) { // all tokens look like numbers, don't allow coefficients
@@ -241,7 +242,7 @@ public class Reaction implements Comparable<Reaction> {
                     if (coefficient == -1)
                         coefficient = Basic.parseInt(token);
                     else
-                        throw new IOException("Can't distinguish between coefficients and product names : " + Basic.toString(products, " "));
+						throw new IOException("Can't distinguish between coefficients and product names : " + StringUtils.toString(products, " "));
                 } else {
                     if (coefficient == -1 || coefficient > 0)
                         reaction.getProducts().add(MoleculeType.valueOf(token));
@@ -258,7 +259,7 @@ public class Reaction implements Comparable<Reaction> {
                     coefficient = Basic.parseInt(token);
             }
             if (coefficient != -1)
-                throw new IOException("Can't distinguish between coefficients and product names : " + Basic.toString(products, " "));
+				throw new IOException("Can't distinguish between coefficients and product names : " + StringUtils.toString(products, " "));
         }
         reaction.setCatalysts(catalysts);
         reaction.getInhibitions().addAll(MoleculeType.valuesOf(inhibitors));
@@ -311,7 +312,7 @@ public class Reaction implements Comparable<Reaction> {
     }
 
     public Set<MoleculeType> getCatalystElements() {
-        return getCatalystConjunctions().parallelStream().map(c -> MoleculeType.valuesOf(Basic.split(c.getName(), '&'))).flatMap(Collection::stream).collect(Collectors.toSet());
+		return getCatalystConjunctions().parallelStream().map(c -> MoleculeType.valuesOf(StringUtils.split(c.getName(), '&'))).flatMap(Collection::stream).collect(Collectors.toSet());
     }
 
 

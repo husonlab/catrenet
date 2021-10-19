@@ -43,7 +43,6 @@ import jloda.graph.algorithms.ConnectedComponents;
 import jloda.graph.algorithms.FruchtermanReingoldLayout;
 import jloda.graph.fmm.MultiComponents;
 import jloda.util.APoint2D;
-import jloda.util.Basic;
 
 import java.io.PrintStream;
 import java.util.Arrays;
@@ -385,8 +384,8 @@ public class ReactionGraphView {
         mouseTarget.setOnMouseClicked(c -> {
             if (c.getClickCount() == 2) {
                 if (v != null) {
-                    nodeSelection.selectItems(Basic.asList(v.adjacentNodes()));
-                    edgeSelection.selectItems(Basic.asList(v.adjacentEdges()));
+                    nodeSelection.selectItems(IteratorUtils.asList(v.adjacentNodes()));
+                    edgeSelection.selectItems(IteratorUtils.asList(v.adjacentEdges()));
                 }
             } else if (c.getClickCount() == 3) {
                 final NodeSet nodes = new NodeSet(reactionGraph);

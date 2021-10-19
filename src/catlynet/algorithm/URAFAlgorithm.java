@@ -23,8 +23,8 @@ import catlynet.model.MoleculeType;
 import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
 import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
 import jloda.util.SetUtils;
+import jloda.util.progress.ProgressListener;
 
 import java.util.Set;
 

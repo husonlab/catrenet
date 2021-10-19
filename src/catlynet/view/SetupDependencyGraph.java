@@ -25,6 +25,7 @@ import catlynet.model.ReactionSystem;
 import jloda.graph.Graph;
 import jloda.graph.Node;
 import jloda.util.Basic;
+import jloda.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -73,7 +74,7 @@ public class SetupDependencyGraph {
 
                     if (nonFoodProducts.size() > 0) {
                         final Set<MoleculeType> catalysts = new HashSet<>();
-                        r2.getCatalystConjunctions().forEach(c -> catalysts.addAll(MoleculeType.valuesOf(Basic.split(c.getName(), '&'))));
+						r2.getCatalystConjunctions().forEach(c -> catalysts.addAll(MoleculeType.valuesOf(StringUtils.split(c.getName(), '&'))));
 
                         if ((r2.getDirection() == Reaction.Direction.forward || r2.getDirection() == Reaction.Direction.both) &&
                                 (Basic.intersects(nonFoodProducts, r2.getReactants()) || (useCatalysts && (Basic.intersects(nonFoodProducts, catalysts)) || Basic.intersects(nonFoodProducts, r2.getInhibitions())))

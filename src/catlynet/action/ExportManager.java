@@ -33,7 +33,9 @@ import jloda.fx.util.RecentFilesManager;
 import jloda.fx.util.TextFileFilter;
 import jloda.fx.window.NotificationManager;
 import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -80,8 +82,8 @@ public class ExportManager {
                 exportMenu.getItems().add(exportMenuItem);
                 //exportMenu.getItems().setAll(exportMenu.getItems().stream().sorted(Comparator.comparing(MenuItem::getText)).collect(Collectors.toList()));
             }
-            exportMenuItem.setOnAction(c -> exportDialog(window, Basic.toCamelCase(reactionName), reactions));
-            exportMenuItem.setDisable(reactions.size() == 0);
+			exportMenuItem.setOnAction(c -> exportDialog(window, StringUtils.toCamelCase(reactionName), reactions));
+			exportMenuItem.setDisable(reactions.size() == 0);
         } else {
             existing.ifPresent(menuItem -> exportMenu.getItems().remove(menuItem));
         }
@@ -98,7 +100,7 @@ public class ExportManager {
         final FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Export File - " + ProgramProperties.getProgramVersion());
 
-        File currentFile = new File(Basic.replaceFileSuffix(window.getDocument().getFileName(), "-" + reactionName + ".crs"));
+		File currentFile = new File(FileUtils.replaceFileSuffix(window.getDocument().getFileName(), "-" + reactionName + ".crs"));
 
         fileChooser.getExtensionFilters().addAll(CRSFileFilter.getInstance(), TextFileFilter.getInstance());
 
@@ -149,9 +151,9 @@ public class ExportManager {
             if (v.getInfo() instanceof Reaction) {
                 final Reaction r = (Reaction) v.getInfo();
                 food.addAll(r.getReactants());
-                food.addAll(r.getProducts());
-                r.getCatalystConjunctions().forEach(c -> food.addAll(MoleculeType.valuesOf(Basic.split(c.getName(), '&'))));
-                food.addAll(r.getInhibitions());
+				food.addAll(r.getProducts());
+				r.getCatalystConjunctions().forEach(c -> food.addAll(MoleculeType.valuesOf(StringUtils.split(c.getName(), '&'))));
+				food.addAll(r.getInhibitions());
                 output.getReactions().add(r);
             } else if (v.getInfo() instanceof MoleculeType) {
                 food.add((MoleculeType) v.getInfo());

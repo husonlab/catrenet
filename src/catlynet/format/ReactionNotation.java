@@ -19,8 +19,8 @@
 
 package catlynet.format;
 
-import jloda.util.Basic;
 import jloda.util.Pair;
+import jloda.util.StringUtils;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -32,7 +32,7 @@ public enum ReactionNotation {
     Full, Sparse, Tabbed;
 
     public static ReactionNotation valueOfIgnoreCase(String name) {
-        return Basic.valueOfIgnoreCase(ReactionNotation.class, name);
+		return StringUtils.valueOfIgnoreCase(ReactionNotation.class, name);
     }
 
     /**

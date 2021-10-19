@@ -34,6 +34,7 @@ import javafx.stage.Stage;
 import jloda.fx.util.ExtendedFXMLLoader;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -71,8 +72,8 @@ public class ExportList {
         final ReactionSystem inputReactions = window.getInputReactionSystem();
 
         controller.getReactionsTextArea().textProperty().addListener((InvalidationListener) c -> {
-            final Set<String> set = new HashSet<>(Basic.getLinesFromString(controller.getReactionsTextArea().getText()));
-            final int total = window.getInputReactionSystem().size();
+			final Set<String> set = new HashSet<>(StringUtils.getLinesFromString(controller.getReactionsTextArea().getText()));
+			final int total = window.getInputReactionSystem().size();
             reactionNames.clear();
             reactionNames.addAll(Basic.intersection(set, inputReactions.getReactionNames()));
             final int found = reactionNames.size();

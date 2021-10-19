@@ -26,7 +26,7 @@ import jloda.graph.Edge;
 import jloda.graph.Graph;
 import jloda.graph.Node;
 import jloda.graph.NodeSet;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -81,15 +81,15 @@ public class SetupFullGraph {
             if (!suppressCatalystEdges) {
                 for (MoleculeType molecule : reaction.getCatalystConjunctions()) {
                     if (molecule.getName().contains("&")) {
-                        for (MoleculeType catalyst : MoleculeType.valuesOf(Basic.trimAll(Basic.split(molecule.getName(), '&')))) {
-                            final Node andNode = getNode(reactionGraph, reactionSystem, molecule, molecule2node, useMultiCopyFoodNodes);
-                            if (useMultiCopyFoodNodes) {
-                                final Optional<Node> node = StreamSupport.stream(andNode.parents().spliterator(), true).filter(v -> v.getInfo().equals(catalyst)).findAny();
-                                if (node.isPresent())
-                                    continue;
-                            }
-                            addNewEdgeIfNotPresent(reactionGraph, getNode(reactionGraph, reactionSystem, catalyst, molecule2node, useMultiCopyFoodNodes), andNode, EdgeType.Catalyst);
-                        }
+						for (MoleculeType catalyst : MoleculeType.valuesOf(StringUtils.trimAll(StringUtils.split(molecule.getName(), '&')))) {
+							final Node andNode = getNode(reactionGraph, reactionSystem, molecule, molecule2node, useMultiCopyFoodNodes);
+							if (useMultiCopyFoodNodes) {
+								final Optional<Node> node = StreamSupport.stream(andNode.parents().spliterator(), true).filter(v -> v.getInfo().equals(catalyst)).findAny();
+								if (node.isPresent())
+									continue;
+							}
+							addNewEdgeIfNotPresent(reactionGraph, getNode(reactionGraph, reactionSystem, catalyst, molecule2node, useMultiCopyFoodNodes), andNode, EdgeType.Catalyst);
+						}
                     }
                     addNewEdgeIfNotPresent(reactionGraph, getNode(reactionGraph, reactionSystem, molecule, molecule2node, useMultiCopyFoodNodes), reactionNode, EdgeType.Catalyst);
                 }

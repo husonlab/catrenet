@@ -22,7 +22,12 @@ package catlynet.algorithm;
 import catlynet.model.MoleculeType;
 import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
-import jloda.util.*;
+import jloda.util.Basic;
+import jloda.util.CanceledException;
+import jloda.util.Pair;
+import jloda.util.StringUtils;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressSilent;
 
 import java.util.ArrayList;
 
@@ -41,7 +46,7 @@ public class Importance {
     public static ArrayList<Pair<MoleculeType, Float>> computeFoodImportance(ReactionSystem inputSystem, ReactionSystem originalResult, AlgorithmBase algorithm, ProgressListener progress) throws CanceledException {
         final ArrayList<Pair<MoleculeType, Float>> result = new ArrayList<>();
 
-        progress.setTasks(Basic.fromCamelCase(Basic.getShortName(algorithm.getClass())), "importance");
+        progress.setTasks(StringUtils.fromCamelCase(Basic.getShortName(algorithm.getClass())), "importance");
         progress.setMaximum(inputSystem.getFoods().size());
         progress.setMaximum(10000000);
         progress.setProgress(0);
@@ -75,7 +80,7 @@ public class Importance {
         if (originalResult.size() == 1) {
             result.add(new Pair<>(originalResult.getReactions().get(0), 100f));
         } else if (originalResult.size() > 1) {
-            progress.setTasks(Basic.fromCamelCase(Basic.getShortName(algorithm.getClass())), "importance");
+            progress.setTasks(StringUtils.fromCamelCase(Basic.getShortName(algorithm.getClass())), "importance");
             progress.setMaximum(inputSystem.getFoods().size());
             progress.setMaximum(10000000);
             progress.setProgress(5000000);

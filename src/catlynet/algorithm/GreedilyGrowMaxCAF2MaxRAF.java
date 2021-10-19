@@ -25,7 +25,11 @@ import catlynet.window.MainWindow;
 import javafx.beans.value.ChangeListener;
 import jloda.fx.util.AService;
 import jloda.fx.window.NotificationManager;
-import jloda.util.*;
+import jloda.util.CanceledException;
+import jloda.util.Pair;
+import jloda.util.StringUtils;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressSilent;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -107,7 +111,7 @@ public class GreedilyGrowMaxCAF2MaxRAF {
                 NotificationManager.showInformation(message);
             } else {
                 message = String.format("Greedily grow MaxCAF (size %d) to MaxRAF (size %d): required %d reactions to be spontaneous: %s", result.getMaxCAFSize(), result.getMaxRAFSize(),
-                        result.getSpontaneousReactions().size(), Basic.toString(result.getSpontaneousReactions(), ", "));
+                        result.getSpontaneousReactions().size(), StringUtils.toString(result.getSpontaneousReactions(), ", "));
                 NotificationManager.showInformation(String.format("Greedily grew MaxCAF (size %d) to MaxRAF (size %d): required %d reactions to be spontaneous", result.getMaxCAFSize(), result.getMaxRAFSize(),
                         result.getSpontaneousReactions().size()));
             }

@@ -40,6 +40,7 @@ import jloda.fx.util.ColorSchemeManager;
 import jloda.fx.util.SelectionEffect;
 import jloda.graph.*;
 import jloda.util.Basic;
+import jloda.util.IteratorUtils;
 import jloda.util.Pair;
 import jloda.util.Triplet;
 
@@ -93,36 +94,36 @@ public class MoleculeFlowAnimation {
                             Thread.sleep(Math.round(nextGaussian(random, 200, 20, true)));
                             count++;
                             for (Node v : Basic.randomize(foodNodes, random)) {
-                                for (Edge e : Basic.randomize(v.adjacentEdges(), random)) {
-                                    if (e.getInfo() == EdgeType.Reactant || e.getInfo() == EdgeType.ReactantReversible || e.getInfo() == EdgeType.Catalyst) {
-                                        final String label = ((MoleculeType) e.getSource().getInfo()).getName();
-                                        Platform.runLater(() -> animateEdge(e, false, label, edge2totalCount, edge2currentCount, edge2Group, world));
-                                        break;
-                                    } else if (e.getInfo() == EdgeType.ProductReversible) {
-                                        final String label = ((MoleculeType) e.getTarget().getInfo()).getName();
-                                        Platform.runLater(() -> animateEdge(e, true, label, edge2totalCount, edge2currentCount, edge2Group, world));
-                                        break;
-                                    }
-                                }
+								for (Edge e : IteratorUtils.randomize(v.adjacentEdges(), random)) {
+									if (e.getInfo() == EdgeType.Reactant || e.getInfo() == EdgeType.ReactantReversible || e.getInfo() == EdgeType.Catalyst) {
+										final String label = ((MoleculeType) e.getSource().getInfo()).getName();
+										Platform.runLater(() -> animateEdge(e, false, label, edge2totalCount, edge2currentCount, edge2Group, world));
+										break;
+									} else if (e.getInfo() == EdgeType.ProductReversible) {
+										final String label = ((MoleculeType) e.getTarget().getInfo()).getName();
+										Platform.runLater(() -> animateEdge(e, true, label, edge2totalCount, edge2currentCount, edge2Group, world));
+										break;
+									}
+								}
                             }
                             // in a pseudo RAF, need to pump molecules into none-food nodes, as well, to get things going
                             if (getModel() == Model.PseudoRAF && count == getUncatalyzedOrInhibitedThreshold()) {
                                 count = 0;
 
                                 loop:
-                                for (Node v : Basic.randomize(graph.nodes(), random)) {
-                                    if (!foodNodes.contains(v) && v.getInfo() instanceof MoleculeType) {
-                                        for (Edge e : Basic.randomize(v.adjacentEdges(), random)) {
-                                            if (e.getInfo() == EdgeType.Reactant || e.getInfo() == EdgeType.ReactantReversible || e.getInfo() == EdgeType.Catalyst) {
-                                                final Set<Pair<Edge, Boolean>> history;
-                                                final String label = ((MoleculeType) e.getSource().getInfo()).getName();
-                                                Platform.runLater(() -> animateEdge(e, false, label, edge2totalCount, edge2currentCount, edge2Group, world));
-                                                break loop;
-                                            } else if (e.getInfo() == EdgeType.ProductReversible) {
-                                                final String label = ((MoleculeType) e.getTarget().getInfo()).getName();
-                                                Platform.runLater(() -> animateEdge(e, true, label, edge2totalCount, edge2currentCount, edge2Group, world));
-                                                break loop;
-                                            }
+								for (Node v : IteratorUtils.randomize(graph.nodes(), random)) {
+									if (!foodNodes.contains(v) && v.getInfo() instanceof MoleculeType) {
+										for (Edge e : IteratorUtils.randomize(v.adjacentEdges(), random)) {
+											if (e.getInfo() == EdgeType.Reactant || e.getInfo() == EdgeType.ReactantReversible || e.getInfo() == EdgeType.Catalyst) {
+												final Set<Pair<Edge, Boolean>> history;
+												final String label = ((MoleculeType) e.getSource().getInfo()).getName();
+												Platform.runLater(() -> animateEdge(e, false, label, edge2totalCount, edge2currentCount, edge2Group, world));
+												break loop;
+											} else if (e.getInfo() == EdgeType.ProductReversible) {
+												final String label = ((MoleculeType) e.getTarget().getInfo()).getName();
+												Platform.runLater(() -> animateEdge(e, true, label, edge2totalCount, edge2currentCount, edge2Group, world));
+												break loop;
+											}
                                         }
                                     }
                                 }
@@ -305,18 +306,18 @@ public class MoleculeFlowAnimation {
                 buf.append(((MoleculeType) f.getSource().getInfo()).getName());
             }
             final ArrayList<Triplet<Edge, Boolean, String>> result = new ArrayList<>();
-            for (Edge f : Basic.randomize(v.outEdges(), random)) {
-                return new ArrayList<>(Collections.singletonList(new Triplet<>(f, false, buf.toString())));
-            }
+			for (Edge f : IteratorUtils.randomize(v.outEdges(), random)) {
+				return new ArrayList<>(Collections.singletonList(new Triplet<>(f, false, buf.toString())));
+			}
             return result;
         } else if (v.getInfo() instanceof MoleculeType) {
-            for (Edge f : Basic.randomize(v.adjacentEdges(), random)) {
-                if (f.getInfo() == EdgeType.Reactant || f.getInfo() == EdgeType.ReactantReversible || f.getInfo() == EdgeType.Catalyst || (isAnimateInhibitions() && f.getInfo() == EdgeType.Inhibitor)) {
-                    return new ArrayList<>(Collections.singletonList(new Triplet<>(f, false, ((MoleculeType) f.getSource().getInfo()).getName())));
-                } else if (f.getInfo() == EdgeType.ProductReversible) {
-                    return new ArrayList<>(Collections.singletonList(new Triplet<>(f, true, ((MoleculeType) f.getTarget().getInfo()).getName())));
-                }
-            }
+			for (Edge f : IteratorUtils.randomize(v.adjacentEdges(), random)) {
+				if (f.getInfo() == EdgeType.Reactant || f.getInfo() == EdgeType.ReactantReversible || f.getInfo() == EdgeType.Catalyst || (isAnimateInhibitions() && f.getInfo() == EdgeType.Inhibitor)) {
+					return new ArrayList<>(Collections.singletonList(new Triplet<>(f, false, ((MoleculeType) f.getSource().getInfo()).getName())));
+				} else if (f.getInfo() == EdgeType.ProductReversible) {
+					return new ArrayList<>(Collections.singletonList(new Triplet<>(f, true, ((MoleculeType) f.getTarget().getInfo()).getName())));
+				}
+			}
         }
         return emptyList;
     }

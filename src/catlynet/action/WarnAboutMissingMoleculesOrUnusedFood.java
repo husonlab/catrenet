@@ -27,6 +27,7 @@ import catlynet.window.MainWindowController;
 import jloda.fx.util.AService;
 import jloda.fx.window.NotificationManager;
 import jloda.util.Basic;
+import jloda.util.StringUtils;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -55,14 +56,14 @@ public class WarnAboutMissingMoleculesOrUnusedFood {
         });
         aService.setOnSucceeded(c -> {
             if (aService.getValue().getMissingCatalysts().size() > 0) {
-                final String message1 = "There are " + aService.getValue().getMissingCatalysts().size() + " catalysts that are never provided or produced: " + Basic.toString(aService.getValue().getMissingCatalysts(), ", ") + ".";
+				final String message1 = "There are " + aService.getValue().getMissingCatalysts().size() + " catalysts that are never provided or produced: " + StringUtils.toString(aService.getValue().getMissingCatalysts(), ", ") + ".";
                 NotificationManager.showWarning(message1);
                 controller.getLogTextArea().setText(controller.getLogTextArea().getText() + "\n\n" + message1);
 
             }
 
             if (aService.getValue().getUnusedFood().size() > 0) {
-                String message2 = "There are " + aService.getValue().getUnusedFood().size() + " food items that are never used: " + Basic.toString(aService.getValue().getUnusedFood(), ", ") + ".";
+				String message2 = "There are " + aService.getValue().getUnusedFood().size() + " food items that are never used: " + StringUtils.toString(aService.getValue().getUnusedFood(), ", ") + ".";
                 NotificationManager.showWarning(message2);
                 controller.getLogTextArea().setText(controller.getLogTextArea().getText() + "\n\n" + message2);
             }

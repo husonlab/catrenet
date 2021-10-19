@@ -32,6 +32,7 @@ import javafx.scene.control.TextArea;
 import jloda.fx.util.AService;
 import jloda.fx.window.NotificationManager;
 import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.Triplet;
 
 /**
@@ -78,7 +79,7 @@ public class RunAlgorithm {
 
         service.runningProperty().addListener(runningListener);
 
-        service.setOnRunning(c -> service.getProgressListener().setTasks(Basic.fromCamelCase(Basic.getShortName(algorithm.getClass())), ""));
+		service.setOnRunning(c -> service.getProgressListener().setTasks(StringUtils.fromCamelCase(Basic.getShortName(algorithm.getClass())), ""));
 
         service.setOnSucceeded(c -> {
             final Triplet<ReactionSystem, String, String> triplet = service.getValue();
@@ -103,14 +104,14 @@ public class RunAlgorithm {
 
                 if (infoLine1 != null && infoLine2 != null) {
                     //final String text="# " + headLine + ":\n# " + infoLine1 + "\n# " + infoLine2 + "\n\n" + ModelIO.toString(result, false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation());
-                    final String text = "# " + headLine + ":\n# " + infoLine1 + "\n# " + infoLine2 + "\n\n" + Basic.toString(result.getReactionNames(), "\n");
+					final String text = "# " + headLine + ":\n# " + infoLine1 + "\n# " + infoLine2 + "\n\n" + StringUtils.toString(result.getReactionNames(), "\n");
                     textArea.setText(text);
                     window.getLogStream().println("\n\n" + headLine);
                     window.getLogStream().println(infoLine1);
                     window.getLogStream().println(infoLine2);
                 } else {
                     //final String text= "# " + headLine + "\n\n" + ModelIO.toString(result, false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation());
-                    final String text = "# " + headLine + "\n\n" + Basic.toString(result.getReactionNames(), "\n");
+					final String text = "# " + headLine + "\n\n" + StringUtils.toString(result.getReactionNames(), "\n");
                     textArea.setText(text);
                     window.getLogStream().println("\n" + headLine);
                 }

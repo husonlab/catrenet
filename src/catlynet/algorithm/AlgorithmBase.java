@@ -21,7 +21,7 @@ package catlynet.algorithm;
 
 import catlynet.model.ReactionSystem;
 import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
 
 /**
  * computes a new reaction system

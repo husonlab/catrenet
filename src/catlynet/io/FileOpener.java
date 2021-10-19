@@ -29,8 +29,9 @@ import catlynet.window.MainWindow;
 import jloda.fx.util.RecentFilesManager;
 import jloda.fx.window.MainWindowManager;
 import jloda.fx.window.NotificationManager;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.Pair;
+import jloda.util.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -61,13 +62,13 @@ public class FileOpener implements Consumer<String> {
 
             if (ImportWimsFormat.isInWimsFormat(fileName)) {
                 inputLines = ImportWimsFormat.importToString(fileName);
-                notation = ReactionNotation.detectNotation(inputLines.subList(0, 10));
-                window.getDocument().setFileName(Basic.getFileWithNewUniqueName(Basic.replaceFileSuffix(fileName, ".crs")).getPath());
-                window.getDocument().setDirty(true);
+				notation = ReactionNotation.detectNotation(inputLines.subList(0, 10));
+				window.getDocument().setFileName(FileUtils.getFileWithNewUniqueName(FileUtils.replaceFileSuffix(fileName, ".crs")).getPath());
+				window.getDocument().setDirty(true);
             } else {
-                inputLines = Basic.getLinesFromFile(fileName);
-                window.getDocument().setFileName(fileName);
-                final String[] lines = Basic.getFirstLinesFromFile(new File(fileName), 10);
+				inputLines = FileUtils.getLinesFromFile(fileName);
+				window.getDocument().setFileName(fileName);
+				final String[] lines = FileUtils.getFirstLinesFromFile(new File(fileName), 10);
                 if (lines == null)
                     throw new IOException("Can't read file: " + fileName);
                 notation = ReactionNotation.detectNotation(Arrays.asList(lines));
@@ -77,17 +78,17 @@ public class FileOpener implements Consumer<String> {
                 throw new IOException("Couldn't detect 'full', 'sparse' or 'tabbed' file format");
             }
 
-            try (BufferedReader r = new BufferedReader(new StringReader(Basic.toString(inputLines, "\n")))) {
-                reactionSystem.clear();
-                final String leadingComments = ModelIO.read(window.getInputReactionSystem(), r, notation.getFirst());
+			try (BufferedReader r = new BufferedReader(new StringReader(StringUtils.toString(inputLines, "\n")))) {
+				reactionSystem.clear();
+				final String leadingComments = ModelIO.read(window.getInputReactionSystem(), r, notation.getFirst());
 
-                window.getController().getInputTextArea().setText((leadingComments.length() > 0 ? leadingComments + "\n" : "") + ModelIO.toString(window.getInputReactionSystem(), false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
-                final String food = ModelIO.getFoodString(window.getInputReactionSystem(), window.getDocument().getReactionNotation());
+				window.getController().getInputTextArea().setText((leadingComments.length() > 0 ? leadingComments + "\n" : "") + ModelIO.toString(window.getInputReactionSystem(), false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
+				final String food = ModelIO.getFoodString(window.getInputReactionSystem(), window.getDocument().getReactionNotation());
 
-                window.getController().getInputFoodTextArea().setText(food);
+				window.getController().getInputFoodTextArea().setText(food);
 
-                final String infoString = "Read " + reactionSystem.size() + " reactions" + (reactionSystem.getNumberOfTwoWayReactions() > 0 ? "(" + reactionSystem.getNumberOfTwoWayReactions() + " two-way)" : "")
-                        + " and " + reactionSystem.getFoods().size() + " food items from file: " + fileName;
+				final String infoString = "Read " + reactionSystem.size() + " reactions" + (reactionSystem.getNumberOfTwoWayReactions() > 0 ? "(" + reactionSystem.getNumberOfTwoWayReactions() + " two-way)" : "")
+										  + " and " + reactionSystem.getFoods().size() + " food items from file: " + fileName;
 
                 NotificationManager.showInformation(infoString);
 
@@ -102,9 +103,9 @@ public class FileOpener implements Consumer<String> {
         } catch (Exception e) {
             if (false) { // here we need to drop the text into a window and highlight the error
                 try {
-                    final ArrayList<String> inputLines = Basic.getLinesFromFile(fileName);
-                    window.getController().getInputTextArea().setText(Basic.toString(inputLines, "\n"));
-                } catch (IOException ignored) {
+					final ArrayList<String> inputLines = FileUtils.getLinesFromFile(fileName);
+					window.getController().getInputTextArea().setText(StringUtils.toString(inputLines, "\n"));
+				} catch (IOException ignored) {
                 }
             }
             NotificationManager.showError("Open file '" + fileName + "' failed: " + e.getMessage());

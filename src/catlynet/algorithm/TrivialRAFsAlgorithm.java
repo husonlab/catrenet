@@ -22,7 +22,7 @@ package catlynet.algorithm;
 import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
 import jloda.util.Basic;
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
 
 import java.util.stream.Collectors;
 

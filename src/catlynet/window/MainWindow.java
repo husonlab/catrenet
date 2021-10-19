@@ -35,12 +35,12 @@ import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 import jloda.fx.undo.UndoManager;
 import jloda.fx.util.ExtendedFXMLLoader;
+import jloda.fx.util.FileOpenManager;
 import jloda.fx.util.MemoryUsage;
 import jloda.fx.util.PrintStreamToTextArea;
 import jloda.fx.window.IMainWindow;
 import jloda.fx.window.MainWindowManager;
-import jloda.util.Basic;
-import jloda.util.FileOpenManager;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
 
 import java.io.PrintStream;
@@ -127,7 +127,7 @@ public class MainWindow implements IMainWindow {
             if (document.getFileName() == null)
                 getStage().setTitle("Untitled - " + ProgramProperties.getProgramName());
             else
-                getStage().setTitle(Basic.getFileNameWithoutPath(document.getFileName()) + (document.isDirty() ? "*" : "") + " - " + ProgramProperties.getProgramName());
+                getStage().setTitle(FileUtils.getFileNameWithoutPath(document.getFileName()) + (document.isDirty() ? "*" : "") + " - " + ProgramProperties.getProgramName());
         });
         document.fileNameProperty().addListener(listener);
 

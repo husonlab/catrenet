@@ -28,8 +28,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.scene.control.TextArea;
 import jloda.fx.util.AService;
 import jloda.fx.window.NotificationManager;
-import jloda.util.Basic;
 import jloda.util.Pair;
+import jloda.util.StringUtils;
 
 import java.util.*;
 
@@ -77,7 +77,7 @@ public class MultiRunAlgorithm {
                 final StringBuilder buf = new StringBuilder();
                 int count = 0;
                 for (Pair<ReactionSystem, Integer> pair : results) {
-                    final String algorithmName = Basic.fromCamelCase(algorithm.getClass().getSimpleName()).replaceAll("Algorithm", "");
+					final String algorithmName = StringUtils.fromCamelCase(algorithm.getClass().getSimpleName()).replaceAll("Algorithm", "");
                     buf.append(String.format("# %s %d has %d reactions (and was seen %d/%d times)\n\n", algorithmName, ++count, pair.getFirst().size(), pair.getSecond(), numberOfRuns));
                     buf.append(ModelIO.toString(pair.getFirst(), false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
                     buf.append("\n");

@@ -48,6 +48,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import jloda.fx.control.ZoomableScrollPane;
 import jloda.fx.util.BasicFX;
+import jloda.fx.util.FileOpenManager;
 import jloda.fx.util.Print;
 import jloda.fx.util.RecentFilesManager;
 import jloda.fx.window.MainWindowManager;
@@ -55,8 +56,8 @@ import jloda.fx.window.NotificationManager;
 import jloda.fx.window.SplashScreen;
 import jloda.fx.window.WindowGeometry;
 import jloda.util.Basic;
-import jloda.util.FileOpenManager;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 
 import java.time.Duration;
 import java.util.Optional;
@@ -185,7 +186,7 @@ public class ControlBindings {
             if (controller.getVisualizationTab().getTabPane().isFocused() && controller.getVisualizationTab().isSelected()) {
                 final ClipboardContent content = new ClipboardContent();
                 if (graphView.getNodeSelection().size() > 0)
-                    content.putString(Basic.toString(graphView.getSelectedLabels(), "\n"));
+                    content.putString(StringUtils.toString(graphView.getSelectedLabels(), "\n"));
                 content.putImage(controller.getVisualizationScrollPane().getContent().snapshot(null, null));
                 Clipboard.getSystemClipboard().setContent(content);
             }
@@ -530,7 +531,7 @@ public class ControlBindings {
         graphTypeButtonGroup.selectToggle(new RadioMenuItem());
 
         controller.getGraphTypeLabel().setText("");
-        graphView.graphTypeProperty().addListener((c, o, n) -> controller.getGraphTypeLabel().setText(Basic.capitalizeFirstLetter(Basic.fromCamelCase(n.name()))));
+        graphView.graphTypeProperty().addListener((c, o, n) -> controller.getGraphTypeLabel().setText(StringUtils.capitalizeFirstLetter(StringUtils.fromCamelCase(n.name()))));
 
         controller.getFullGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> {
                     graphView.setGraphType(ReactionGraphView.Type.fullGraph);

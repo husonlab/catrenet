@@ -24,7 +24,7 @@ import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
 
 import java.util.*;
 

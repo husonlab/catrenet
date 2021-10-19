@@ -24,10 +24,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import jloda.fx.util.RecentFilesManager;
 import jloda.fx.util.TextFileFilter;
-import jloda.util.Basic;
-import jloda.util.FileLineIterator;
-import jloda.util.IOExceptionWithLineNumber;
-import jloda.util.ProgramProperties;
+import jloda.util.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,7 +62,7 @@ public class ImportWimsFormat {
      * @return true, if in Wim's format
      */
     public static boolean isInWimsFormat(String fileName) {
-        final String line = Basic.getFirstLineFromFile(new File(fileName));
+		final String line = FileUtils.getFirstLineFromFile(new File(fileName));
         return line != null && line.startsWith("<meta-data>");
     }
 
@@ -102,18 +99,18 @@ public class ImportWimsFormat {
                     else {
                         switch (part) {
                             case "<meta-data>": {
-                                switch (Basic.getFirstWord(line)) {
-                                    case "nrMolecules":
-                                        nrMolecules = Basic.parseInt(Basic.getLastWord(line));
-                                        lineNrMolecules = it.getLineNumber();
-                                        break;
-                                    case "nrFoodSet":
-                                        nrFoodSet = Basic.parseInt(Basic.getLastWord(line));
-                                        lineNrFoodSet = it.getLineNumber();
-                                        break;
-                                    case "nrReactions":
-                                        nrReactions = Basic.parseInt(Basic.getLastWord(line));
-                                        lineReactions = it.getLineNumber();
+								switch (StringUtils.getFirstWord(line)) {
+									case "nrMolecules":
+										nrMolecules = Basic.parseInt(StringUtils.getLastWord(line));
+										lineNrMolecules = it.getLineNumber();
+										break;
+									case "nrFoodSet":
+										nrFoodSet = Basic.parseInt(StringUtils.getLastWord(line));
+										lineNrFoodSet = it.getLineNumber();
+										break;
+									case "nrReactions":
+										nrReactions = Basic.parseInt(StringUtils.getLastWord(line));
+										lineReactions = it.getLineNumber();
                                         break;
                                 }
                                 break;
@@ -128,7 +125,7 @@ public class ImportWimsFormat {
                                     throw new IOExceptionWithLineNumber(it.getLineNumber(), "Wim's format: <food> contains duplicate item: " + line);
                                 else
                                     foodSet.add(line);
-                                food.add(Basic.getLastWord(line));
+								food.add(StringUtils.getLastWord(line));
                                 break;
                             }
                             case "<reactions>": {
@@ -160,9 +157,9 @@ public class ImportWimsFormat {
         output.add("# Reactions: " + reactions.size());
         output.add("");
         output.addAll(reactions);
-        output.add("");
-        output.add("F: " + Basic.toString(food, ", "));
-        output.add("# EOF");
+		output.add("");
+		output.add("F: " + StringUtils.toString(food, ", "));
+		output.add("# EOF");
 
         return output;
     }

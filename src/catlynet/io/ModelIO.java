@@ -26,6 +26,7 @@ import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
 import jloda.util.Basic;
 import jloda.util.IOExceptionWithLineNumber;
+import jloda.util.StringUtils;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -163,7 +164,7 @@ public class ModelIO {
      */
     public static String getFoodString(ReactionSystem reactionSystem, ReactionNotation reactionNotation) {
         try (StringWriter w = new StringWriter()) {
-            w.write(Basic.toString(reactionSystem.getFoods(), reactionNotation == ReactionNotation.Full ? ", " : " "));
+			w.write(StringUtils.toString(reactionSystem.getFoods(), reactionNotation == ReactionNotation.Full ? ", " : " "));
             return w.toString();
         } catch (IOException ex) {
             return "";
@@ -186,14 +187,14 @@ public class ModelIO {
         }
 
         if (reactionNotation == ReactionNotation.Tabbed)
-            return String.format("%s\t%s %s %s\t%s%s",
-                    reaction.getName(), Basic.toString(reaction.getReactants(), " + "),
-                    arrow, Basic.toString(reaction.getProducts(), " + "), reaction.getCatalysts(),
-                    (reaction.getInhibitions().size() == 0 ? "" : "\t" + Basic.toString(reaction.getInhibitions(), " ")));
+			return String.format("%s\t%s %s %s\t%s%s",
+					reaction.getName(), StringUtils.toString(reaction.getReactants(), " + "),
+					arrow, StringUtils.toString(reaction.getProducts(), " + "), reaction.getCatalysts(),
+					(reaction.getInhibitions().size() == 0 ? "" : "\t" + StringUtils.toString(reaction.getInhibitions(), " ")));
         else
-            return String.format("%s : %s [%s]%s%s %s",
-                    reaction.getName(), Basic.toString(reaction.getReactants(), " + "), (reactionNotation == ReactionNotation.Full ? reaction.getCatalysts() : reaction.getCatalysts().replaceAll("\\s+,\\s+", " ")),
-                    (reaction.getInhibitions().size() == 0 ? " " : " {" + Basic.toString(reaction.getInhibitions(), reactionNotation == ReactionNotation.Full ? "," : " ") + "} "),
-                    arrow, Basic.toString(reaction.getProducts(), " + "));
+			return String.format("%s : %s [%s]%s%s %s",
+					reaction.getName(), StringUtils.toString(reaction.getReactants(), " + "), (reactionNotation == ReactionNotation.Full ? reaction.getCatalysts() : reaction.getCatalysts().replaceAll("\\s+,\\s+", " ")),
+					(reaction.getInhibitions().size() == 0 ? " " : " {" + StringUtils.toString(reaction.getInhibitions(), reactionNotation == ReactionNotation.Full ? "," : " ") + "} "),
+					arrow, StringUtils.toString(reaction.getProducts(), " + "));
     }
 }

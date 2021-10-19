@@ -19,7 +19,7 @@
 
 package catlynet.model;
 
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -27,7 +27,7 @@ import java.util.TreeSet;
 
 public class DisjunctiveNormalForm {
     public static String compute(String expression) {
-        final String result = Basic.toString(recurse(expression.replaceAll("\\s+", ",")), ",");
+		final String result = StringUtils.toString(recurse(expression.replaceAll("\\s+", ",")), ",");
         return result;
     }
 

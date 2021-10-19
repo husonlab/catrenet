@@ -30,10 +30,10 @@ import catlynet.window.MainWindowController;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.WeakChangeListener;
 import jloda.fx.util.AService;
-import jloda.util.Basic;
 import jloda.util.CanceledException;
-import jloda.util.ProgressSilent;
 import jloda.util.Single;
+import jloda.util.StringUtils;
+import jloda.util.progress.ProgressSilent;
 
 import java.util.Collection;
 import java.util.TreeSet;
@@ -58,7 +58,7 @@ public class ComputeNecessarilySpontaneousInRAF {
 
         service.setOnSucceeded(c -> {
             final String output = String.format("Necessarily spontaneous reactions (%d): %s\n",
-                    service.getValue().size(), Basic.toString(service.getValue(), ", "));
+                    service.getValue().size(), StringUtils.toString(service.getValue(), ", "));
             controller.getLogTextArea().setText(controller.getLogTextArea().getText() + "\nMaxRAF: " + output);
             window.getController().getLogTab().getTabPane().getSelectionModel().select(window.getController().getLogTab());
         });
@@ -84,13 +84,13 @@ public class ComputeNecessarilySpontaneousInRAF {
                     if (r.getDirection() == Reaction.Direction.forward || r.getDirection() == Reaction.Direction.both) {
                         final Reaction modified = new Reaction(r.getName() + (r.getDirection() == Reaction.Direction.both ? "/+" : ""), r);
                         modified.setDirection(Reaction.Direction.forward);
-                        modified.getReactants().addAll(MoleculeType.valuesOf(Basic.split(and.getName(), '&')));
+                        modified.getReactants().addAll(MoleculeType.valuesOf(StringUtils.split(and.getName(), '&')));
                         input.getReactions().add(modified);
                     }
                     if (r.getDirection() == Reaction.Direction.reverse || r.getDirection() == Reaction.Direction.both) {
                         final Reaction modified = new Reaction(r.getName() + (r.getDirection() == Reaction.Direction.both ? "/-" : ""), r);
                         modified.setDirection(Reaction.Direction.reverse);
-                        modified.getProducts().addAll(MoleculeType.valuesOf(Basic.split(and.getName(), '&')));
+                        modified.getProducts().addAll(MoleculeType.valuesOf(StringUtils.split(and.getName(), '&')));
                         input.getReactions().add(modified);
                     }
                 }

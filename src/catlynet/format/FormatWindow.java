@@ -32,7 +32,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import jloda.fx.util.ExtendedFXMLLoader;
 import jloda.fx.window.MainWindowManager;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
 
 public class FormatWindow {
@@ -90,8 +90,8 @@ public class FormatWindow {
         stage.setX(mainWindow.getStage().getX() + 150);
         stage.setY(mainWindow.getStage().getY() + 150);
 
-        stage.setTitle(title + " - " + Basic.getFileNameWithoutPath(mainWindow.getDocument().getFileName()) + " - " + Version.NAME);
-        stage.show();
+		stage.setTitle(title + " - " + FileUtils.getFileNameWithoutPath(mainWindow.getDocument().getFileName()) + " - " + Version.NAME);
+		stage.show();
 
         // ensures that window can't be resized too small:
         Platform.runLater(() -> {
