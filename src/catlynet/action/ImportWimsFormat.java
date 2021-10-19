@@ -101,16 +101,16 @@ public class ImportWimsFormat {
                             case "<meta-data>": {
 								switch (StringUtils.getFirstWord(line)) {
 									case "nrMolecules":
-										nrMolecules = Basic.parseInt(StringUtils.getLastWord(line));
-										lineNrMolecules = it.getLineNumber();
+										nrMolecules = NumberUtils.parseInt(StringUtils.getLastWord(line));
+                                        lineNrMolecules = it.getLineNumber();
 										break;
 									case "nrFoodSet":
-										nrFoodSet = Basic.parseInt(StringUtils.getLastWord(line));
-										lineNrFoodSet = it.getLineNumber();
+                                        nrFoodSet = NumberUtils.parseInt(StringUtils.getLastWord(line));
+                                        lineNrFoodSet = it.getLineNumber();
 										break;
 									case "nrReactions":
-										nrReactions = Basic.parseInt(StringUtils.getLastWord(line));
-										lineReactions = it.getLineNumber();
+                                        nrReactions = NumberUtils.parseInt(StringUtils.getLastWord(line));
+                                        lineReactions = it.getLineNumber();
                                         break;
                                 }
                                 break;

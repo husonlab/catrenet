@@ -20,7 +20,7 @@
 package catlynet.model;
 
 import jloda.fx.window.NotificationManager;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.StringUtils;
 
 import java.io.IOException;
@@ -204,16 +204,16 @@ public class Reaction implements Comparable<Reaction> {
 
         final Reaction reaction = new Reaction(reactionName);
 
-        if (Arrays.stream(reactants).allMatch(Basic::isDouble)) { // all tokens look like numbers, don't allow coefficients
+        if (Arrays.stream(reactants).allMatch(NumberUtils::isDouble)) { // all tokens look like numbers, don't allow coefficients
             reaction.getReactants().addAll(MoleculeType.valuesOf(reactants));
         } else { // some tokens are not numbers, assume this is mix of coefficients and reactants
             int coefficient = -1;
             for (String token : reactants) {
-                if (Basic.isInteger(token)) {
+                if (NumberUtils.isInteger(token)) {
                     if (coefficient == -1)
-                        coefficient = Basic.parseInt(token);
+                        coefficient = NumberUtils.parseInt(token);
                     else
-						throw new IOException("Can't distinguish between coefficients and reactant names : " + StringUtils.toString(reactants, " "));
+                        throw new IOException("Can't distinguish between coefficients and reactant names : " + StringUtils.toString(reactants, " "));
                 } else {
                     if (coefficient == -1 || coefficient > 0)
                         reaction.getReactants().add(MoleculeType.valueOf(token));
@@ -226,23 +226,23 @@ public class Reaction implements Comparable<Reaction> {
                     }
                     coefficient = -1;
                 }
-                if (coefficient == -1 && Basic.isInteger(token))
-                    coefficient = Basic.parseInt(token);
+                if (coefficient == -1 && NumberUtils.isInteger(token))
+                    coefficient = NumberUtils.parseInt(token);
             }
             if (coefficient != -1)
 				throw new IOException("Can't distinguish between coefficients and reactant names : " + StringUtils.toString(reactants, " "));
         }
 
-        if (Arrays.stream(products).allMatch(Basic::isDouble)) { // all tokens look like numbers, don't allow coefficients
+        if (Arrays.stream(products).allMatch(NumberUtils::isDouble)) { // all tokens look like numbers, don't allow coefficients
             reaction.getProducts().addAll(MoleculeType.valuesOf(products));
         } else { // some tokens are not numbers, assume this is mix of coefficients and reactants
             int coefficient = -1;
             for (String token : products) {
-                if (Basic.isInteger(token)) {
+                if (NumberUtils.isInteger(token)) {
                     if (coefficient == -1)
-                        coefficient = Basic.parseInt(token);
+                        coefficient = NumberUtils.parseInt(token);
                     else
-						throw new IOException("Can't distinguish between coefficients and product names : " + StringUtils.toString(products, " "));
+                        throw new IOException("Can't distinguish between coefficients and product names : " + StringUtils.toString(products, " "));
                 } else {
                     if (coefficient == -1 || coefficient > 0)
                         reaction.getProducts().add(MoleculeType.valueOf(token));
@@ -255,8 +255,8 @@ public class Reaction implements Comparable<Reaction> {
                     }
                     coefficient = -1;
                 }
-                if (coefficient == -1 && Basic.isInteger(token))
-                    coefficient = Basic.parseInt(token);
+                if (coefficient == -1 && NumberUtils.isInteger(token))
+                    coefficient = NumberUtils.parseInt(token);
             }
             if (coefficient != -1)
 				throw new IOException("Can't distinguish between coefficients and product names : " + StringUtils.toString(products, " "));

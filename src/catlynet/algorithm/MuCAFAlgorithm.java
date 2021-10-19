@@ -22,8 +22,8 @@ package catlynet.algorithm;
 import catlynet.model.MoleculeType;
 import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
-import jloda.util.Basic;
 import jloda.util.CanceledException;
+import jloda.util.CollectionUtils;
 import jloda.util.progress.ProgressListener;
 
 import java.util.*;
@@ -51,8 +51,8 @@ public class MuCAFAlgorithm extends AlgorithmBase {
         final ReactionSystem result = new ReactionSystem();
         result.setName(Name);
 
-        final ArrayList<Reaction> inputReactions = Basic.randomize(input.getReactions(), new Random());
-        final Set<MoleculeType> inputFood = new TreeSet<>(input.getFoods());
+		final ArrayList<Reaction> inputReactions = CollectionUtils.randomize(input.getReactions(), new Random());
+		final Set<MoleculeType> inputFood = new TreeSet<>(input.getFoods());
 
         final ArrayList<Set<MoleculeType>> molecules = new ArrayList<>();
         final ArrayList<Set<Reaction>> reactions = new ArrayList<>();
@@ -68,17 +68,17 @@ public class MuCAFAlgorithm extends AlgorithmBase {
             i++;
 
             Reaction anUninhibitedReaction = null;
-            for (Reaction reaction : Basic.difference(inputReactions, reactions.get(i - 1))) {
-                if (reaction.isCatalyzedAndUninhibitedAndHasAllReactants(molecules.get(i - 1), molecules.get(i - 1), inhibitions.get(i - 1), reaction.getDirection())) {
-                    anUninhibitedReaction = reaction;
-                    break;
-                }
-            }
+			for (Reaction reaction : CollectionUtils.difference(inputReactions, reactions.get(i - 1))) {
+				if (reaction.isCatalyzedAndUninhibitedAndHasAllReactants(molecules.get(i - 1), molecules.get(i - 1), inhibitions.get(i - 1), reaction.getDirection())) {
+					anUninhibitedReaction = reaction;
+					break;
+				}
+			}
 
             if (anUninhibitedReaction != null) {
-                reactions.add(i, Basic.union(reactions.get(i - 1), Collections.singleton(anUninhibitedReaction)));
-                molecules.add(i, Utilities.addAllMentionedProducts(molecules.get(i - 1), reactions.get(i)));
-                inhibitions.add(i, Basic.union(inhibitions.get(i - 1), anUninhibitedReaction.getInhibitions()));
+				reactions.add(i, CollectionUtils.union(reactions.get(i - 1), Collections.singleton(anUninhibitedReaction)));
+				molecules.add(i, Utilities.addAllMentionedProducts(molecules.get(i - 1), reactions.get(i)));
+				inhibitions.add(i, CollectionUtils.union(inhibitions.get(i - 1), anUninhibitedReaction.getInhibitions()));
             } else
                 break;
             progress.setProgress(reactions.size());

@@ -29,7 +29,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.Stage;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.ProgramProperties;
 
 import java.util.Optional;
@@ -51,9 +51,9 @@ public class RunMuCAFMultipleTimes {
 
         result.ifPresent(name -> inputString.set(result.get()));
 
-        if (Basic.isInteger(inputString.get()) && Basic.parseInt(inputString.get()) > 0) {
+        if (NumberUtils.isInteger(inputString.get()) && NumberUtils.parseInt(inputString.get()) > 0) {
             final TextArea textArea = window.getTabManager().getTextArea(MuCAFAlgorithm.Name);
-            MultiRunAlgorithm.apply(window, window.getInputReactionSystem(), new MuCAFAlgorithm(), textArea, Basic.parseInt(inputString.get()), runningListener);
+            MultiRunAlgorithm.apply(window, window.getInputReactionSystem(), new MuCAFAlgorithm(), textArea, NumberUtils.parseInt(inputString.get()), runningListener);
         }
     }
 }

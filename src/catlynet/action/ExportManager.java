@@ -32,7 +32,7 @@ import javafx.stage.FileChooser;
 import jloda.fx.util.RecentFilesManager;
 import jloda.fx.util.TextFileFilter;
 import jloda.fx.window.NotificationManager;
-import jloda.util.Basic;
+import jloda.util.CollectionUtils;
 import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
@@ -160,7 +160,7 @@ public class ExportManager {
             }
         });
 
-        output.getFoods().addAll(Basic.intersection(window.getInputReactionSystem().getFoods(), food));
+        output.getFoods().addAll(CollectionUtils.intersection(window.getInputReactionSystem().getFoods(), food));
 
         if (output.getReactions().size() > 0) {
             ExportManager.exportDialog(window, "selected", output);

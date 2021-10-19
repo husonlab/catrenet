@@ -26,7 +26,7 @@ import catlynet.window.MainWindow;
 import catlynet.window.MainWindowController;
 import jloda.fx.util.AService;
 import jloda.fx.window.NotificationManager;
-import jloda.util.Basic;
+import jloda.util.CollectionUtils;
 import jloda.util.StringUtils;
 
 import java.util.Collection;
@@ -52,7 +52,7 @@ public class WarnAboutMissingMoleculesOrUnusedFood {
 
             missingCatalysts.removeAll(foodAndProducts);
 
-            return new Result(missingCatalysts, Basic.difference(inputReactions.getFoods(), inputReactions.computeMentionedFoods(inputReactions.getFoods())));
+			return new Result(missingCatalysts, CollectionUtils.difference(inputReactions.getFoods(), inputReactions.computeMentionedFoods(inputReactions.getFoods())));
         });
         aService.setOnSucceeded(c -> {
             if (aService.getValue().getMissingCatalysts().size() > 0) {

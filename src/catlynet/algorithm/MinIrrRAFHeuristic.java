@@ -23,8 +23,8 @@ import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import jloda.util.Basic;
 import jloda.util.CanceledException;
+import jloda.util.CollectionUtils;
 import jloda.util.Single;
 import jloda.util.progress.ProgressListener;
 import jloda.util.progress.ProgressSilent;
@@ -68,17 +68,17 @@ public class MinIrrRAFHeuristic extends AlgorithmBase {
 
         final Single<Integer> bestSize = new Single<>(maxRAF.size());
 
-        final Optional<ReactionSystem> smallestRAF = seeds.parallelStream().map(seed -> Basic.randomize(reactions, seed)).map(ordering -> {
-            ReactionSystem work = maxRAF.shallowCopy();
-            for (Reaction r : ordering) {
-                work.getReactions().remove(r);
-                try {
-                    progress.checkForCancel();
-                    ReactionSystem next = new MaxRAFAlgorithm().apply(work, new ProgressSilent());
-                    if (next.size() > 0 && next.size() <= work.size()) {
-                        work = next;
-                        synchronized (bestSize) {
-                            if (next.size() < bestSize.get()) {
+		final Optional<ReactionSystem> smallestRAF = seeds.parallelStream().map(seed -> CollectionUtils.randomize(reactions, seed)).map(ordering -> {
+			ReactionSystem work = maxRAF.shallowCopy();
+			for (Reaction r : ordering) {
+				work.getReactions().remove(r);
+				try {
+					progress.checkForCancel();
+					ReactionSystem next = new MaxRAFAlgorithm().apply(work, new ProgressSilent());
+					if (next.size() > 0 && next.size() <= work.size()) {
+						work = next;
+						synchronized (bestSize) {
+							if (next.size() < bestSize.get()) {
                                 bestSize.set(next.size());
                                 progress.setSubtask("" + bestSize.get());
                             }

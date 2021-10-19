@@ -39,7 +39,7 @@ import javafx.util.Duration;
 import jloda.fx.util.ColorSchemeManager;
 import jloda.fx.util.SelectionEffect;
 import jloda.graph.*;
-import jloda.util.Basic;
+import jloda.util.CollectionUtils;
 import jloda.util.IteratorUtils;
 import jloda.util.Pair;
 import jloda.util.Triplet;
@@ -93,17 +93,17 @@ public class MoleculeFlowAnimation {
                         while (!isCancelled()) {
                             Thread.sleep(Math.round(nextGaussian(random, 200, 20, true)));
                             count++;
-                            for (Node v : Basic.randomize(foodNodes, random)) {
-								for (Edge e : IteratorUtils.randomize(v.adjacentEdges(), random)) {
-									if (e.getInfo() == EdgeType.Reactant || e.getInfo() == EdgeType.ReactantReversible || e.getInfo() == EdgeType.Catalyst) {
-										final String label = ((MoleculeType) e.getSource().getInfo()).getName();
-										Platform.runLater(() -> animateEdge(e, false, label, edge2totalCount, edge2currentCount, edge2Group, world));
-										break;
-									} else if (e.getInfo() == EdgeType.ProductReversible) {
-										final String label = ((MoleculeType) e.getTarget().getInfo()).getName();
-										Platform.runLater(() -> animateEdge(e, true, label, edge2totalCount, edge2currentCount, edge2Group, world));
-										break;
-									}
+                            for (Node v : CollectionUtils.randomize(foodNodes, random)) {
+                                for (Edge e : IteratorUtils.randomize(v.adjacentEdges(), random)) {
+                                    if (e.getInfo() == EdgeType.Reactant || e.getInfo() == EdgeType.ReactantReversible || e.getInfo() == EdgeType.Catalyst) {
+                                        final String label = ((MoleculeType) e.getSource().getInfo()).getName();
+                                        Platform.runLater(() -> animateEdge(e, false, label, edge2totalCount, edge2currentCount, edge2Group, world));
+                                        break;
+                                    } else if (e.getInfo() == EdgeType.ProductReversible) {
+                                        final String label = ((MoleculeType) e.getTarget().getInfo()).getName();
+                                        Platform.runLater(() -> animateEdge(e, true, label, edge2totalCount, edge2currentCount, edge2Group, world));
+                                        break;
+                                    }
 								}
                             }
                             // in a pseudo RAF, need to pump molecules into none-food nodes, as well, to get things going

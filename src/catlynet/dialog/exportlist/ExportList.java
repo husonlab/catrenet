@@ -32,7 +32,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import jloda.fx.util.ExtendedFXMLLoader;
-import jloda.util.Basic;
+import jloda.util.CollectionUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 
@@ -74,8 +74,8 @@ public class ExportList {
         controller.getReactionsTextArea().textProperty().addListener((InvalidationListener) c -> {
 			final Set<String> set = new HashSet<>(StringUtils.getLinesFromString(controller.getReactionsTextArea().getText()));
 			final int total = window.getInputReactionSystem().size();
-            reactionNames.clear();
-            reactionNames.addAll(Basic.intersection(set, inputReactions.getReactionNames()));
+			reactionNames.clear();
+			reactionNames.addAll(CollectionUtils.intersection(set, inputReactions.getReactionNames()));
             final int found = reactionNames.size();
             final int unknown = set.size() - found;
             controller.getMessageLabel().setText(unknown == 0 ? String.format("%,d of %,d", found, total) : String.format("%,d of %,d (%d unknown)", found, total, unknown));

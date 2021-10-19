@@ -56,6 +56,7 @@ import jloda.fx.window.NotificationManager;
 import jloda.fx.window.SplashScreen;
 import jloda.fx.window.WindowGeometry;
 import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 
@@ -578,8 +579,8 @@ public class ControlBindings {
             });
 
             final Optional<String> result = dialog.showAndWait();
-            if (result.isPresent() && Basic.isInteger(result.get())) {
-                graphView.setEmbeddingIterations(Math.max(10, Basic.parseInt(result.get())));
+            if (result.isPresent() && NumberUtils.isInteger(result.get())) {
+                graphView.setEmbeddingIterations(Math.max(10, NumberUtils.parseInt(result.get())));
             }
         });
 

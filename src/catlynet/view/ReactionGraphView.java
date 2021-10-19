@@ -43,6 +43,7 @@ import jloda.graph.algorithms.ConnectedComponents;
 import jloda.graph.algorithms.FruchtermanReingoldLayout;
 import jloda.graph.fmm.MultiComponents;
 import jloda.util.APoint2D;
+import jloda.util.IteratorUtils;
 
 import java.io.PrintStream;
 import java.util.Arrays;

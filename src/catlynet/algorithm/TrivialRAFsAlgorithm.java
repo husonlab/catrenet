@@ -21,7 +21,7 @@ package catlynet.algorithm;
 
 import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
-import jloda.util.Basic;
+import jloda.util.CollectionUtils;
 import jloda.util.progress.ProgressListener;
 
 import java.util.stream.Collectors;
@@ -51,9 +51,9 @@ public class TrivialRAFsAlgorithm extends AlgorithmBase {
         result.getReactions().addAll(
                 input.getReactions().parallelStream()
                         .filter(r -> ((r.getDirection() == Reaction.Direction.forward || r.getDirection() == Reaction.Direction.both) &&
-                                r.isCatalyzedAndUninhibitedAndHasAllReactants(input.getFoods(), Basic.union(input.getFoods(), r.getProducts()), input.getFoods(), Reaction.Direction.forward))
-                                || ((r.getDirection() == Reaction.Direction.reverse || r.getDirection() == Reaction.Direction.both) &&
-                                r.isCatalyzedAndUninhibitedAndHasAllReactants(input.getFoods(), Basic.union(input.getFoods(), r.getReactants()), input.getFoods(), Reaction.Direction.reverse)))
+									  r.isCatalyzedAndUninhibitedAndHasAllReactants(input.getFoods(), CollectionUtils.union(input.getFoods(), r.getProducts()), input.getFoods(), Reaction.Direction.forward))
+									 || ((r.getDirection() == Reaction.Direction.reverse || r.getDirection() == Reaction.Direction.both) &&
+										 r.isCatalyzedAndUninhibitedAndHasAllReactants(input.getFoods(), CollectionUtils.union(input.getFoods(), r.getReactants()), input.getFoods(), Reaction.Direction.reverse)))
                         .collect(Collectors.toList()));
         result.getFoods().setAll(result.computeMentionedFoods(input.getFoods()));
         return result;
