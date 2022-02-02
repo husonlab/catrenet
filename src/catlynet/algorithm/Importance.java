@@ -39,8 +39,6 @@ public class Importance {
     /**
      * computes food importance
      *
-     * @param inputSystem
-     * @param algorithm
      * @return list of food, importance pairs, in order of decreasing importance (percent difference between model size and model size without given food item)
      */
     public static ArrayList<Pair<MoleculeType, Float>> computeFoodImportance(ReactionSystem inputSystem, ReactionSystem originalResult, AlgorithmBase algorithm, ProgressListener progress) throws CanceledException {
@@ -70,8 +68,6 @@ public class Importance {
     /**
      * computes reaction importance
      *
-     * @param inputSystem
-     * @param algorithm
      * @return list of reaction, importance pairs, in order of decreasing importance (difference between model size and model size without given reaction)
      */
     public static ArrayList<Pair<Reaction, Float>> computeReactionImportance(ReactionSystem inputSystem, ReactionSystem originalResult, AlgorithmBase algorithm, ProgressListener progress) throws CanceledException {
@@ -108,7 +104,6 @@ public class Importance {
     /**
      * pretty print food importance
      *
-     * @param foodImportance
      * @return food importance string
      */
     public static String toStringFoodImportance(ArrayList<Pair<MoleculeType, Float>> foodImportance) {
@@ -129,7 +124,6 @@ public class Importance {
     /**
      * pretty print reaction importance
      *
-     * @param reactionImportance
      * @return food importance string
      */
     public static String toStringReactionImportance(ArrayList<Pair<Reaction, Float>> reactionImportance) {

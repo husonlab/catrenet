@@ -34,7 +34,6 @@ public class SaveBeforeClosingDialog {
     /**
      * ask whether to save before closing
      *
-     * @param mainWindow
      * @return true if doesn't need saving or saved, false else
      */
     public static Result apply(MainWindow mainWindow) {

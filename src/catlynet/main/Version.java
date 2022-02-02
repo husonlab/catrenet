@@ -20,6 +20,6 @@
 package catlynet.main;
 
 public class Version {
-    static public String NAME = "CatlyNet";
-    static public String SHORT_DESCRIPTION = "CatlyNet (version 0.3.1_beta, built 18 Dec 2020)";
+    static public final String NAME = "CatlyNet";
+    static public final String SHORT_DESCRIPTION = "CatlyNet (version 0.3.1_beta, built 18 Dec 2020)";
 }

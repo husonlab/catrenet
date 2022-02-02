@@ -36,7 +36,6 @@ public class MoleculeType implements Comparable<MoleculeType> {
     /**
      * creates the named molecule
      *
-     * @param name
      * @return molecule
      */
     public static MoleculeType valueOf(String name) {
@@ -66,7 +65,6 @@ public class MoleculeType implements Comparable<MoleculeType> {
     /**
      * create molecule types from a list of names
      *
-     * @param names
      * @return types
      */
     public static Collection<MoleculeType> valuesOf(String[] names) {

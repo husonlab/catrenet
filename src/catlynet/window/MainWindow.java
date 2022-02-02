@@ -70,7 +70,7 @@ public class MainWindow implements IMainWindow {
     private final Document document = new Document();
 
     private final BooleanProperty hasFoodInput = new SimpleBooleanProperty(false);
-    private BooleanProperty hasReactionsInput = new SimpleBooleanProperty(false);
+    private final BooleanProperty hasReactionsInput = new SimpleBooleanProperty(false);
     private final BooleanProperty empty = new SimpleBooleanProperty();
 
     /**

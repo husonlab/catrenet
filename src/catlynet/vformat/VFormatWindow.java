@@ -42,8 +42,7 @@ public class VFormatWindow {
     /**
      * construct the format dialog for the given window
      *
-     * @param mainWindow
-     */
+	 */
     public VFormatWindow(MainWindow mainWindow) {
         final ExtendedFXMLLoader<VFormatWindowController> extendedFXMLLoader = new ExtendedFXMLLoader<>(this.getClass());
         Parent root = extendedFXMLLoader.getRoot();
@@ -122,9 +121,7 @@ public class VFormatWindow {
             controller.getInhibitionEdgesLineWidthCBox().setValue(edgeView.getInhibitionEdgeWidth());
         }
 
-        controller.getCancelButton().setOnAction(e -> {
-            stage.hide();
-        });
+		controller.getCancelButton().setOnAction(e -> stage.hide());
 
         controller.getApplyButton().setOnAction(e -> {
             stage.hide();

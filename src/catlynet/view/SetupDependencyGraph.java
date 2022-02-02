@@ -40,10 +40,7 @@ public class SetupDependencyGraph {
     /**
      * apply
      *
-     * @param reactionGraph
-     * @param reactionSystem
-     * @param useCatalysts
-     */
+	 */
     public static void apply(Graph reactionGraph, ReactionSystem reactionSystem, boolean useCatalysts) {
         final Map<Reaction, Node> reactionNodeMap = new HashMap<>();
 
@@ -59,15 +56,15 @@ public class SetupDependencyGraph {
                     final Set<MoleculeType> nonFoodProducts = new HashSet<>();
                     if (z == 0) {
                         if (r1.getDirection() == Reaction.Direction.forward || r1.getDirection() == Reaction.Direction.both) {
-                            nonFoodProducts.addAll(r1.getProducts());
-                            nonFoodProducts.removeAll(reactionSystem.getFoods());
+							nonFoodProducts.addAll(r1.getProducts());
+							reactionSystem.getFoods().forEach(nonFoodProducts::remove);
                         } else
                             continue;
                     } else // z==1
                     {
                         if (r1.getDirection() == Reaction.Direction.reverse || r1.getDirection() == Reaction.Direction.both) {
-                            nonFoodProducts.addAll(r1.getReactants());
-                            nonFoodProducts.removeAll(reactionSystem.getFoods());
+							nonFoodProducts.addAll(r1.getReactants());
+							reactionSystem.getFoods().forEach(nonFoodProducts::remove);
                         } else
                             continue;
                     }

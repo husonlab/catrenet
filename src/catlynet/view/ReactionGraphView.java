@@ -98,8 +98,7 @@ public class ReactionGraphView {
     /**
      * construct a graph view for the given system
      *
-     * @param reactionSystem
-     */
+	 */
     public ReactionGraphView(ReactionSystem reactionSystem, MainWindowController controller, PrintStream logStream) {
         this.reactionSystem = reactionSystem;
         this.controller = controller;
@@ -267,8 +266,6 @@ public class ReactionGraphView {
     /**
      * set up the graph view
      *
-     * @param graph
-     * @param coordinates
      * @return graph view
      */
     private Collection<? extends javafx.scene.Node> setupGraphView(ReactionSystem reactionSystem, Graph graph, NodeArray<NodeView> node2view, EdgeArray<EdgeView> edge2view, NodeArray<APoint2D<?>> coordinates) {
@@ -304,9 +301,7 @@ public class ReactionGraphView {
     /**
      * setup mouse interaction
      *
-     * @param mouseTarget
-     * @param nodeToMove
-     */
+	 */
     public void setupMouseInteraction(javafx.scene.Node mouseTarget, javafx.scene.Node nodeToMove, Node v, Edge e) {
         mouseTarget.setCursor(Cursor.CROSSHAIR);
 
@@ -423,7 +418,6 @@ public class ReactionGraphView {
     /**
      * find a path in a group
      *
-     * @param group
      * @return path, if found
      */
     static Path getPath(Group group) {

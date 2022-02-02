@@ -73,10 +73,6 @@ public class MoleculeFlowAnimation {
     /**
      * setup molecule flow simulation
      *
-     * @param graph
-     * @param foodNodes
-     * @param edge2Group
-     * @param world
      */
     public MoleculeFlowAnimation(Graph graph, NodeSet foodNodes, EdgeArray<EdgeView> edge2Group, Group world) {
         final EdgeIntArray edge2totalCount = new EdgeIntArray(graph);
@@ -158,11 +154,6 @@ public class MoleculeFlowAnimation {
     /**
      * animate an edge
      *
-     * @param edge
-     * @param edge2totalCount
-     * @param edge2currentCount
-     * @param edge2view
-     * @param world
      */
     private void animateEdge(Edge edge, boolean reverse, String label, EdgeIntArray edge2totalCount, EdgeIntArray edge2currentCount, EdgeArray<EdgeView> edge2view, Group world) {
         if (edge.getOwner() == null || edge2currentCount.getInt(edge) >= 10)
@@ -223,8 +214,6 @@ public class MoleculeFlowAnimation {
     /**
      * compute all edges ready to fire
      *
-     * @param v
-     * @param edge2count
      * @return edges ready to fire
      */
     private ArrayList<Triplet<Edge, Boolean, String>> computeEdgesReadyToFire(Edge e, Node v, EdgeIntArray edge2count) {

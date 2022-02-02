@@ -22,7 +22,6 @@ package catlynet.dialog.exportlist;
 import catlynet.action.ExportManager;
 import catlynet.model.ReactionSystem;
 import catlynet.window.MainWindow;
-import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
@@ -50,8 +49,7 @@ public class ExportList {
     /**
      * constructor
      *
-     * @param window
-     */
+	 */
     public ExportList(MainWindow window) {
         final ExtendedFXMLLoader<ExportListController> extendedFXMLLoader = new ExtendedFXMLLoader<>(this.getClass());
         final ExportListController controller = extendedFXMLLoader.getController();
@@ -71,15 +69,15 @@ public class ExportList {
 
         final ReactionSystem inputReactions = window.getInputReactionSystem();
 
-        controller.getReactionsTextArea().textProperty().addListener((InvalidationListener) c -> {
+		controller.getReactionsTextArea().textProperty().addListener(c -> {
 			final Set<String> set = new HashSet<>(StringUtils.getLinesFromString(controller.getReactionsTextArea().getText()));
 			final int total = window.getInputReactionSystem().size();
 			reactionNames.clear();
 			reactionNames.addAll(CollectionUtils.intersection(set, inputReactions.getReactionNames()));
-            final int found = reactionNames.size();
-            final int unknown = set.size() - found;
-            controller.getMessageLabel().setText(unknown == 0 ? String.format("%,d of %,d", found, total) : String.format("%,d of %,d (%d unknown)", found, total, unknown));
-        });
+			final int found = reactionNames.size();
+			final int unknown = set.size() - found;
+			controller.getMessageLabel().setText(unknown == 0 ? String.format("%,d of %,d", found, total) : String.format("%,d of %,d (%d unknown)", found, total, unknown));
+		});
 
         final ToggleGroup toggleGroup = new ToggleGroup();
         toggleGroup.getToggles().addAll(controller.getKeepRadioButton(), controller.getRemoveRadioButton());

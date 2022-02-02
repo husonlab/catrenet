@@ -58,7 +58,6 @@ public class ImportWimsFormat {
     /**
      * does this file require importing?
      *
-     * @param fileName
      * @return true, if in Wim's format
      */
     public static boolean isInWimsFormat(String fileName) {
@@ -69,10 +68,8 @@ public class ImportWimsFormat {
     /**
      * import into CRS format and return as lines
      *
-     * @param fileName
      * @return name of new file
-     * @throws IOException
-     */
+	 */
     public static ArrayList<String> importToString(String fileName) throws IOException {
         final ArrayList<String> food = new ArrayList<>();
         final Set<String> foodSet = new HashSet<>();

@@ -43,8 +43,7 @@ public class FormatWindow {
     /**
      * construct the format dialog for the given window
      *
-     * @param mainWindow
-     */
+	 */
     public FormatWindow(MainWindow mainWindow) {
         final ExtendedFXMLLoader<FormatWindowController> extendedFXMLLoader = new ExtendedFXMLLoader<>(this.getClass());
         Parent root = extendedFXMLLoader.getRoot();

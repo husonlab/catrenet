@@ -39,9 +39,7 @@ public class TextTab {
     /**
      * create a text tab
      *
-     * @param reactionSystemName
-     * @return tab, vbox and text area
-     */
+	 */
     public TextTab(String reactionSystemName) {
         this.reactionSystemName = reactionSystemName;
         final ExtendedFXMLLoader<TextTabController> extendedFXMLLoader = new ExtendedFXMLLoader<>(TextTab.class);

@@ -66,8 +66,7 @@ public class ExportManager {
     /**
      * add or replace an export menu item
      *
-     * @param reactions
-     */
+	 */
     public void addOrReplace(ReactionSystem reactions) {
         final String reactionName = reactions.getName();
         final Menu exportMenu = window.getController().getExportMenu();
@@ -92,10 +91,7 @@ public class ExportManager {
     /**
      * export a system of reactions
      *
-     * @param window
-     * @param reactionName
-     * @param reactions
-     */
+	 */
     public static void exportDialog(MainWindow window, String reactionName, ReactionSystem reactions) {
         final FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Export File - " + ProgramProperties.getProgramVersion());

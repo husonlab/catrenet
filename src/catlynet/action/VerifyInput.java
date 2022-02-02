@@ -38,7 +38,6 @@ public class VerifyInput {
     /**
      * verfies the correctness the current input food set and reactions
      *
-     * @param window
      * @return true, if successful
      */
     public static boolean verify(MainWindow window) {

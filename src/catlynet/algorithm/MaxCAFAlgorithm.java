@@ -45,7 +45,6 @@ public class MaxCAFAlgorithm extends AlgorithmBase {
     /**
      * computes a CAF
      *
-     * @param input
      * @return result
      */
     public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException {

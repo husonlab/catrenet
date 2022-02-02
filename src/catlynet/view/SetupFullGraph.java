@@ -42,13 +42,7 @@ public class SetupFullGraph {
     /**
      * setup
      *
-     * @param reactionGraph
-     * @param reactionSystem
-     * @param foodNodes
-     * @param molecule2node
-     * @param suppressCatalystEdges
-     * @param useMultiCopyFoodNodes
-     */
+	 */
     public static void apply(Graph reactionGraph, ReactionSystem reactionSystem, NodeSet foodNodes, final Map<MoleculeType, Node> molecule2node, boolean suppressCatalystEdges, boolean useMultiCopyFoodNodes) {
         for (Reaction reaction : reactionSystem.getReactions()) {
             final Node reactionNode = reactionGraph.newNode(reaction);
@@ -120,10 +114,6 @@ public class SetupFullGraph {
     /**
      * gets the node to use for a given molecule
      *
-     * @param reactionGraph
-     * @param reactionSystem
-     * @param molecule
-     * @param molecule2node
      * @param multiCopyFoodNodes - if set, creates a new none for every usage of a food node
      * @return node
      */

@@ -41,7 +41,6 @@ public class ModelIO {
     /**
      * parse a one line description of food
      *
-     * @param aLine
      * @return food
      */
     public static ArrayList<MoleculeType> parseFood(String aLine) {
@@ -73,10 +72,8 @@ public class ModelIO {
     /**
      * read reactions and foods
      *
-     * @param r
      * @return leading comments
-     * @throws IOException
-     */
+	 */
     public static String read(ReactionSystem reactionSystem, Reader r, ReactionNotation reactionNotation) throws IOException {
         final Set<String> reactionNames = new HashSet<>();
         final Set<Reaction> auxReactions = new HashSet<>();
@@ -122,8 +119,6 @@ public class ModelIO {
     /**
      * write model as string
      *
-     * @param reactionSystem
-     * @param includeFood
      * @return string
      */
     public static String toString(ReactionSystem reactionSystem, boolean includeFood, ReactionNotation reactionNotation, ArrowNotation arrowNotation) {
@@ -139,11 +134,8 @@ public class ModelIO {
     /**
      * write model
      *
-     * @param reactionSystem
-     * @param w
      * @param includeFood    include food line
-     * @throws IOException
-     */
+	 */
     public static void write(ReactionSystem reactionSystem, Writer w, boolean includeFood, ReactionNotation reactionNotation, ArrowNotation arrowNotation) throws IOException {
         if (includeFood) {
             w.write("Food: " + getFoodString(reactionSystem, reactionNotation) + "\n\n");
@@ -158,8 +150,6 @@ public class ModelIO {
     /**
      * get the food string
      *
-     * @param reactionSystem
-     * @param reactionNotation
      * @return food string
      */
     public static String getFoodString(ReactionSystem reactionSystem, ReactionNotation reactionNotation) {

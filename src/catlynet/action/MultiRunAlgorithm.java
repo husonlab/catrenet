@@ -41,10 +41,7 @@ public class MultiRunAlgorithm {
     /**
      * run an algorithm, return the resulting model and write to text area
      *
-     * @param window
-     * @param algorithm
-     * @param textArea
-     */
+	 */
     public static void apply(MainWindow window, final ReactionSystem inputReactions, AlgorithmBase algorithm, TextArea textArea, int numberOfRuns, ChangeListener<Boolean> runningListener) {
         final MainWindowController controller = window.getController();
 

@@ -35,18 +35,18 @@ import java.util.concurrent.Executors;
  * Daniel Huson, 5.2018
  */
 public class CheckForUpdate {
-    public static String programURL = "http://software-ab.informatik.uni-tuebingen.de/download/catlynet";
-    public static String applicationId = "1691242391";
+	public static final String programURL = "https://software-ab.informatik.uni-tuebingen.de/download/catlynet";
+	public static final String applicationId = "1691242391";
 
-    /**
-     * check for update, download and install, if present
-     */
-    public static void apply() {
-        try {
-            final ApplicationDisplayMode applicationDisplayMode = ProgramProperties.isUseGUI() ? ApplicationDisplayMode.GUI : ApplicationDisplayMode.CONSOLE;
-            final UpdateDescriptor updateDescriptor = UpdateChecker.getUpdateDescriptor(programURL + "/updates.xml", applicationDisplayMode);
-            final UpdateDescriptorEntry possibleUpdate = updateDescriptor.getPossibleUpdateEntry();
-            if (possibleUpdate == null) {
+	/**
+	 * check for update, download and install, if present
+	 */
+	public static void apply() {
+		try {
+			final ApplicationDisplayMode applicationDisplayMode = ProgramProperties.isUseGUI() ? ApplicationDisplayMode.GUI : ApplicationDisplayMode.CONSOLE;
+			final UpdateDescriptor updateDescriptor = UpdateChecker.getUpdateDescriptor(programURL + "/updates.xml", applicationDisplayMode);
+			final UpdateDescriptorEntry possibleUpdate = updateDescriptor.getPossibleUpdateEntry();
+			if (possibleUpdate == null) {
                 NotificationManager.showInformation("Installed version is up-to-date");
             } else {
                 if (!ProgramProperties.isUseGUI()) {

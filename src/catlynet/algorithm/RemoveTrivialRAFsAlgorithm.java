@@ -45,10 +45,7 @@ public class RemoveTrivialRAFsAlgorithm extends AlgorithmBase {
     /**
      * remove all trivial RAFs
      *
-     * @param input
-     * @param progress
-     * @throws CanceledException
-     */
+	 */
     public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException {
         progress.setTasks("Remove all trivial RAFs", "");
 

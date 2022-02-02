@@ -38,8 +38,6 @@ public abstract class AlgorithmBase {
     /**
      * run the algorithm
      *
-     * @param input
-     * @param progress
      * @return output
      */
     abstract public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException;

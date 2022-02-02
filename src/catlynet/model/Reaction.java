@@ -51,8 +51,7 @@ public class Reaction implements Comparable<Reaction> {
     /**
      * constructor
      *
-     * @param name
-     */
+	 */
     public Reaction(String name) {
         this.name = name;
     }
@@ -60,8 +59,7 @@ public class Reaction implements Comparable<Reaction> {
     /**
      * copy constructor
      *
-     * @param src
-     */
+	 */
     public Reaction(Reaction src) {
         this(src.getName());
         reactants.addAll(src.getReactants());
@@ -75,8 +73,7 @@ public class Reaction implements Comparable<Reaction> {
     /**
      * copy constructor
      *
-     * @param src
-     */
+	 */
     public Reaction(String name, Reaction src) {
         this(name);
         reactants.addAll(src.getReactants());
@@ -126,10 +123,8 @@ public class Reaction implements Comparable<Reaction> {
      * Products can be separated by white space or +
      * Catalysts can be separated by white space or , (for or), or all can be separated by & (for 'and')
      *
-     * @param line
      * @return the reaction
-     * @throws IOException
-     */
+	 */
     public static Reaction parse(String line, final Set<Reaction> auxReactions, boolean tabbedFormat) throws IOException {
         line = line.replaceAll("->", "=>").replaceAll("<-", "<=");
 

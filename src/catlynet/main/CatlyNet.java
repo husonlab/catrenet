@@ -59,7 +59,6 @@ public class CatlyNet extends Application {
     /**
      * main
      *
-     * @param args
      */
     public static void main(String[] args) throws CanceledException, UsageException {
         Basic.restoreSystemOut(System.err); // send system out to system err
@@ -81,7 +80,7 @@ public class CatlyNet extends Application {
         } catch (Throwable th) {
             //catch any exceptions and the like that propagate up to the top level
             if (!th.getMessage().startsWith("Help")) {
-                System.err.println("Fatal error:" + "\n" + th.toString());
+                System.err.println("Fatal error:" + "\n" + th);
                 Basic.caught(th);
             }
             System.exit(1);

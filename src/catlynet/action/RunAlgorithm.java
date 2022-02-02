@@ -43,10 +43,7 @@ public class RunAlgorithm {
     /**
      * run an algorithm, return the resulting model and write to text area
      *
-     * @param window
-     * @param algorithm
-     * @param updateWorkingInputTextArea
-     */
+	 */
     public static void apply(MainWindow window, final ReactionSystem inputReactions, AlgorithmBase algorithm, ChangeListener<Boolean> runningListener, boolean updateWorkingInputTextArea) {
         final MainWindowController controller = window.getController();
 

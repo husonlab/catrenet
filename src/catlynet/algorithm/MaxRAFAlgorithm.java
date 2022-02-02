@@ -46,7 +46,6 @@ public class MaxRAFAlgorithm extends AlgorithmBase {
      * computes the RAF.
      * Ignore all inhibitions.
      *
-     * @param input
      * @returns result, empty, it none exists
      */
     public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException {

@@ -175,16 +175,6 @@ public class EdgeView extends Group {
     /**
      * apply the path representing an edge
      *
-     * @param ax
-     * @param ay
-     * @param ex
-     * @param ey
-     * @param moveToA
-     * @param lineToB
-     * @param quadCurveToD
-     * @param lineToE
-     * @param arrowHead
-     * @param clockwise
      * @return center point
      */
     private static Point2D updatePath(double ax, double ay, double ex, double ey, Point2D center, MoveTo moveToA, LineTo lineToB, QuadCurveTo quadCurveToD, LineTo lineToE, EdgeType edgeType, Shape arrowHead, boolean clockwise) {
@@ -255,7 +245,6 @@ public class EdgeView extends Group {
      * is this edge the second of two edges that both connect the same two nodes?
      * (If so, will flip its bend)
      *
-     * @param edge
      * @return true, if second of two edges
      */
     public static boolean isSecondOfTwoEdges(Edge edge) {

@@ -75,12 +75,7 @@ public class NodeView {
     /**
      * constructor
      *
-     * @param graphView
-     * @param food
-     * @param v
-     * @param x
-     * @param y
-     */
+	 */
     public NodeView(ReactionGraphView graphView, Collection<MoleculeType> food, Node v, double x, double y) {
         this.v = v;
 

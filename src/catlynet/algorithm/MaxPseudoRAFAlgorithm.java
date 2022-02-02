@@ -45,7 +45,6 @@ public class MaxPseudoRAFAlgorithm extends AlgorithmBase {
     /**
      * computes a pseudo-RAF
      *
-     * @param input
      * @return result
      */
     public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException {

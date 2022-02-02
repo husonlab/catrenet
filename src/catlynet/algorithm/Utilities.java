@@ -36,7 +36,6 @@ public class Utilities {
      * add molecules mentioned as products to the given list of existing molecules
      *
      * @param molecules existing molecules
-     * @param reactions
      * @return extended food set
      */
     public static Set<MoleculeType> addAllMentionedProducts(Collection<MoleculeType> molecules, Collection<Reaction> reactions) {
@@ -51,7 +50,6 @@ public class Utilities {
      * gets the closure of the set of molecules with respect to the set of reactions, ignoring catalysts and inhibitors
      *
      * @param molecules existing molecules
-     * @param reactions
      * @return extended food set
      */
     public static Set<MoleculeType> computeClosure(Collection<MoleculeType> molecules, Collection<Reaction> reactions) {
@@ -72,8 +70,6 @@ public class Utilities {
     /**
      * filter reactions to only keep those that can be run given the current food
      *
-     * @param food
-     * @param reactions
      * @return filtered reactions
      */
     public static Set<Reaction> filterReactions(Collection<MoleculeType> food, Collection<Reaction> reactions) {

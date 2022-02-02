@@ -42,9 +42,7 @@ public class GreedilyGrowMaxCAF2MaxRAF {
     /**
      * tries to greedily grow a maxCAF to a maxRAF
      *
-     * @param window
-     * @param inputReactionSystem
-     */
+	 */
     public static void apply(MainWindow window, ReactionSystem inputReactionSystem, ChangeListener<Boolean> runningListener) {
 
         final AService<Result> service = new AService<>(window.getController().getStatusFlowPane());
@@ -124,20 +122,20 @@ public class GreedilyGrowMaxCAF2MaxRAF {
 
     }
 
-    private static class Result {
-        private int maxCAFSize;
-        private int maxRAFSize;
-        private Collection<String> spontaneousReactions;
+	private static class Result {
+		private final int maxCAFSize;
+		private final int maxRAFSize;
+		private final Collection<String> spontaneousReactions;
 
-        public Result(int maxCAFSize, int maxRAFSize, Collection<String> spontaneousReactions) {
-            this.maxCAFSize = maxCAFSize;
-            this.maxRAFSize = maxRAFSize;
-            this.spontaneousReactions = spontaneousReactions;
-        }
+		public Result(int maxCAFSize, int maxRAFSize, Collection<String> spontaneousReactions) {
+			this.maxCAFSize = maxCAFSize;
+			this.maxRAFSize = maxRAFSize;
+			this.spontaneousReactions = spontaneousReactions;
+		}
 
-        public int getMaxCAFSize() {
-            return maxCAFSize;
-        }
+		public int getMaxCAFSize() {
+			return maxCAFSize;
+		}
 
         public int getMaxRAFSize() {
             return maxRAFSize;

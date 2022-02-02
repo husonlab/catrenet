@@ -1,5 +1,5 @@
 # CatlyNet
-<img src="https://github.com/danielhuson/catlynet/blob/master/src/catlynet/resources/images/splash.png" width="600"/>
+<img src="https://github.com/danielhuson/catlynet/blob/master/src/catlynet/resources/images/splash.png" alt="Splash" width="600"/>
 
 CatlyNet is a program for working with autocatalytic networks. It is written in Java (12) and uses JavaFX. The program implements a fast and exact algorithm for calculating (maximal) RAFs, CAFs, and pseudo-RAFs from any set of catalysed 'reactions' and a given 'food' set.  These three notions are formalizations of the concept of a 'collectively autocatalytic set' originally introduced by Stuart Kauffman. 
 
@@ -22,5 +22,5 @@ One click installers for MacOS, Windows and Linux are available [here](http://ab
 ## Animation
 We are working on animations to visualize different concepts, see this example:
 
-<img src="https://github.com/danielhuson/catlynet/blob/master/artwork/animation.gif" width="600"/>
+<img src="https://github.com/danielhuson/catlynet/blob/master/artwork/animation.gif" alt="Animation" width="600"/>
 

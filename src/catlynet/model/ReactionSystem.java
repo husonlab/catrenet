@@ -98,8 +98,7 @@ public class ReactionSystem {
     /**
      * sets this to a shallow copy of that
      *
-     * @param that
-     */
+	 */
     public void shallowCopy(ReactionSystem that) {
         clear();
         setName(that.getName());
@@ -184,8 +183,7 @@ public class ReactionSystem {
     /**
      * gets all mentioned molecule types
      *
-     * @return
-     */
+	 */
     public Set<MoleculeType> getFoodAndReactantAndProductMolecules() {
         final Set<MoleculeType> moleculeTypes = new TreeSet<>(getFoods());
         for (Reaction reaction : getReactions()) {

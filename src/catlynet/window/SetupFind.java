@@ -37,8 +37,7 @@ public class SetupFind {
     /**
      * setup the find dialog
      *
-     * @param window
-     */
+	 */
     static void apply(MainWindow window) {
         final MainWindowController controller = window.getController();
 

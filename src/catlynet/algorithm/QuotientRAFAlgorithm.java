@@ -46,10 +46,7 @@ public class QuotientRAFAlgorithm extends AlgorithmBase {
     /**
      * compute the quotient max RAF
      *
-     * @param input
-     * @param progress
-     * @throws CanceledException
-     */
+	 */
     public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException {
         progress.setTasks("Compute quotient RAF", "");
         progress.setMaximum(3);

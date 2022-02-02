@@ -40,10 +40,7 @@ public class Save {
     /**
      * save file
      *
-     * @param file
-     * @param window
-     * @throws IOException
-     */
+	 */
     public static void apply(File file, MainWindow window, ReactionSystem reactionSystem) throws IOException {
         try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
             ModelIO.write(reactionSystem, w, true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation());
@@ -53,7 +50,6 @@ public class Save {
     /**
      * show save dialog
      *
-     * @param window
      * @return true, if saved
      */
     public static boolean showSaveDialog(MainWindow window) {

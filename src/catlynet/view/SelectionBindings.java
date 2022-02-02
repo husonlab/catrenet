@@ -48,9 +48,7 @@ public class SelectionBindings {
     /**
      * setup
      *
-     * @param window
-     * @param controller
-     */
+	 */
     public static void setup(MainWindow window, MainWindowController controller) {
         final ReactionGraphView view = window.getReactionGraphView();
 
@@ -170,15 +168,7 @@ public class SelectionBindings {
     /**
      * select a given subset of nodes and/or edges
      *
-     * @param reactionSystem
-     * @param view
-     * @param nodes
-     * @param edges
-     * @param food
-     * @param reactions
-     * @param molecules
-     * @param deselectNonMatched
-     */
+	 */
     private static void select(ReactionSystem reactionSystem, ReactionGraphView view, boolean nodes, boolean edges, boolean food, boolean reactions, boolean molecules, boolean deselectNonMatched) {
         for (Node v : view.getReactionGraph().nodes()) {
             if (nodes || (reactions && v.getInfo() instanceof Reaction)
@@ -197,9 +187,7 @@ public class SelectionBindings {
     /**
      * select subgraph associated with given (sub) model
      *
-     * @param view
-     * @param subReactionSystem
-     */
+	 */
     private static void selectForAlgorithm(ReactionGraphView view, ReactionSystem subReactionSystem) {
         final Set<MoleculeType> molecules = subReactionSystem.getFoodAndReactantAndProductMolecules();
 
