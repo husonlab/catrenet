@@ -410,7 +410,7 @@ public class ControlBindings {
             });
 
             final Pane visualizationContentPane = new StackPane(graphView.getWorld());
-            visualizationContentPane.setStyle("-fx-background-color: white;");
+            visualizationContentPane.getStyleClass().add("viewer-background");
             scrollPane.setContent(visualizationContentPane);
 
             visualizationContentPane.setOnContextMenuRequested(e -> controller.getVisualizationTabContextMenu().show(visualizationContentPane, e.getScreenX(), e.getScreenY()));

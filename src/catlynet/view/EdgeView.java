@@ -56,38 +56,13 @@ public class EdgeView extends Group {
     public EdgeView(ReactionGraphView graphView, Edge e, ReadOnlyDoubleProperty aX, ReadOnlyDoubleProperty aY, ReadOnlyDoubleProperty bX, ReadOnlyDoubleProperty bY, EdgeType edgeType) {
         final Shape arrowHead;
         switch (edgeType) {
-            default:
-            case Catalyst: {
-                arrowHead = new Polyline(-5, -3, 5, 0, -5, 3);
-                break;
-            }
-            case Dependency:
-            case Reactant: {
-                arrowHead = new Polygon(-5, -3, 5, 0, -5, 3);
-                arrowHead.setFill(Color.WHITE);
-                break;
-            }
-            case ReactantReversible: {
-                arrowHead = new Polygon(-6, 0, 0, 4, 6, 0, 0, -4);
-                arrowHead.setFill(Color.WHITE);
-                break;
-            }
-            case Product: {
-                arrowHead = new Polygon(-5, -3, 5, 0, -5, 3);
-                arrowHead.setFill(Color.LIGHTGREY);
-                break;
-            }
-            case ProductReversible: {
-                arrowHead = new Polygon(-6, 0, 0, 4, 6, 0, 0, -4);
-                arrowHead.setFill(Color.LIGHTGREY);
-                break;
-            }
-            case Inhibitor: {
-                arrowHead = new Polyline(0, -5, 0, 5);
-                break;
-            }
+            default -> arrowHead = new Polyline(-5, -3, 5, 0, -5, 3);
+            case Dependency, Reactant, Product -> arrowHead = new Polygon(-5, -3, 5, 0, -5, 3);
+            case ReactantReversible -> arrowHead = new Polygon(-6, 0, 0, 4, 6, 0, 0, -4);
+            case ProductReversible -> arrowHead = new Polygon(-6, 0, 0, 4, 6, 0, 0, -4);
+            case Inhibitor -> arrowHead = new Polyline(0, -5, 0, 5);
         }
-        arrowHead.setStroke(Color.BLACK);
+        arrowHead.getStyleClass().add("graph-node"); // yes, graph-node
 
         final MoveTo moveToA = new MoveTo();
 
@@ -130,6 +105,8 @@ public class EdgeView extends Group {
 
         final Path path = new Path(moveToA, lineToB, quadCurveToD, lineToE);
         path.setStrokeWidth(2);
+        path.getStyleClass().add("graph-edge");
+
 
         graphView.setupMouseInteraction(path, circleShape, null, e);
 

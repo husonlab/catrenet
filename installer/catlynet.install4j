@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="8.0.4" transformSequenceNumber="8">
+<install4j version="9.0.5" transformSequenceNumber="9">
   <directoryPresets config="../../javafx-jmods" />
   <application name="CatlyNet" applicationId="3801-6361-6203-7564" mediaDir="../../../builds" shortName="CatlyNet" publisher="Daniel Huson and Mike Steel" publisherWeb="http://www.husonlab.org/catlynet" version="0.0.0_beta" allPathsRelative="true" macVolumeId="b8c0a1154e563a9a" javaMinVersion="11">
     <codeSigning macEnabled="true" macPkcs12File="../../../../etc/application.p12" windowsEnabled="true" windowsPkcs12File="../../../../etc/windows.pfx" />
-    <jreBundles jdkProviderId="AdoptOpenJDK" release="openjdk14/jdk-14.0.1+7">
+    <jreBundles jdkProviderId="Zulu" release="17/17.0.2">
       <modules />
     </jreBundles>
   </application>
-  <files>
+  <files preserveSymlinks="false">
     <mountPoints>
       <mountPoint id="1691242167" location="jars" />
       <mountPoint id="1691243203" location="jars2" />
@@ -899,11 +899,19 @@ return true;</property>
           <group id="1691242655" beanClass="com.install4j.runtime.beans.groups.VerticalFormComponentGroup" useExternalParametrization="true" externalParametrizationName="Customize banner image" externalParametrizationMode="include">
             <serializedBean>
               <property name="backgroundColor">
-                <object class="java.awt.Color">
-                  <int>255</int>
-                  <int>255</int>
-                  <int>255</int>
-                  <int>255</int>
+                <object class="com.install4j.runtime.beans.LightOrDarkColor">
+                  <object class="java.awt.Color">
+                    <int>255</int>
+                    <int>255</int>
+                    <int>255</int>
+                    <int>255</int>
+                  </object>
+                  <object class="java.awt.Color">
+                    <int>49</int>
+                    <int>52</int>
+                    <int>53</int>
+                    <int>255</int>
+                  </object>
                 </object>
               </property>
               <property name="borderSides">
@@ -912,11 +920,19 @@ return true;</property>
                 </object>
               </property>
               <property name="imageEdgeBackgroundColor">
-                <object class="java.awt.Color">
-                  <int>25</int>
-                  <int>143</int>
-                  <int>220</int>
-                  <int>255</int>
+                <object class="com.install4j.runtime.beans.LightOrDarkColor">
+                  <object class="java.awt.Color">
+                    <int>25</int>
+                    <int>143</int>
+                    <int>220</int>
+                    <int>255</int>
+                  </object>
+                  <object class="java.awt.Color">
+                    <int>0</int>
+                    <int>74</int>
+                    <int>151</int>
+                    <int>255</int>
+                  </object>
                 </object>
               </property>
               <property name="imageEdgeBorder" type="boolean" value="true" />
@@ -970,11 +986,19 @@ return true;</property>
               <group id="1691242662" beanClass="com.install4j.runtime.beans.groups.VerticalFormComponentGroup" useExternalParametrization="true" externalParametrizationName="Customize title bar" externalParametrizationMode="include">
                 <serializedBean>
                   <property name="backgroundColor">
-                    <object class="java.awt.Color">
-                      <int>255</int>
-                      <int>255</int>
-                      <int>255</int>
-                      <int>255</int>
+                    <object class="com.install4j.runtime.beans.LightOrDarkColor">
+                      <object class="java.awt.Color">
+                        <int>255</int>
+                        <int>255</int>
+                        <int>255</int>
+                        <int>255</int>
+                      </object>
+                      <object class="java.awt.Color">
+                        <int>49</int>
+                        <int>52</int>
+                        <int>53</int>
+                        <int>255</int>
+                      </object>
                     </object>
                   </property>
                   <property name="borderSides">
@@ -1077,7 +1101,7 @@ return true;</property>
     </styles>
   </installerGui>
   <mediaSets>
-    <unixInstaller name="Unix Installer" id="1691242146" installDir="catlynet" overridePrincipalLanguage="true">
+    <unixInstaller name="Unix Installer" id="1691242146" installDir="catlynet" overridePrincipalLanguage="true" require64BitVm="true">
       <exclude>
         <entry location="openjfx/macos" />
         <entry location="openjfx/windows-x64" />
@@ -1085,13 +1109,8 @@ return true;</property>
       <variables>
         <variable name="jfxlib" value="openjfx/linux/lib" />
       </variables>
-      <jreBundle jreBundleSource="generated">
-        <modules>
-          <jmodDirectory location="../../javafx-jmods/unix" />
-        </modules>
-      </jreBundle>
     </unixInstaller>
-    <macosFolder name="Mac OS X Folder" id="1691242165" installDir="CatlyNet" overridePrincipalLanguage="true" compressDmg="true" signLaunchers="true">
+    <macosFolder name="Mac OS X Folder" id="1691242165" installDir="CatlyNet" overridePrincipalLanguage="true" architecture="universal" compressDmg="true" signLaunchers="true">
       <exclude>
         <entry location="openjfx/unix" />
         <entry location="openjfx/windows-x64" />
@@ -1099,11 +1118,7 @@ return true;</property>
       <variables>
         <variable name="jfxlib" value="openjfx/osx/lib" />
       </variables>
-      <jreBundle jreBundleSource="generated" includedJre="macosx-amd64-12.0.1">
-        <modules>
-          <jmodDirectory location="../../javafx-jmods/macos" />
-        </modules>
-      </jreBundle>
+      <jreBundle includedJre="macosx-amd64-12.0.1" />
     </macosFolder>
     <windows name="Windows64bit" id="1691242288" installDir="CatlyNet" overridePrincipalLanguage="true">
       <overriddenPrincipalLanguage id="409" />
@@ -1115,14 +1130,10 @@ return true;</property>
       <variables>
         <variable name="jfxlib" value="openjfx/windows/lib" />
       </variables>
-      <jreBundle jreBundleSource="generated" includedJre="windows-amd64-12.0.1" installOnlyIfNecessary="true">
-        <modules>
-          <jmodDirectory location="../../javafx-jmods/windows" />
-        </modules>
-      </jreBundle>
+      <jreBundle includedJre="windows-amd64-12.0.1" installOnlyIfNecessary="true" />
     </windows>
   </mediaSets>
-  <buildIds>
+  <buildIds buildAll="false">
     <mediaSet refId="1691242165" />
   </buildIds>
   <buildOptions disableSigning="true" disableNotarization="true" />

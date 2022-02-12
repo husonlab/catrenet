@@ -23,8 +23,6 @@ import catlynet.model.MoleculeType;
 import catlynet.model.Reaction;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
@@ -42,8 +40,6 @@ import java.util.Collection;
  */
 public class NodeView {
     public enum NodeStyle {Square, Circle, BoldSquare, BoldCircle}
-
-    final private static Background labelBackground = new Background(new BackgroundFill(Color.WHITE.deriveColor(1, 1, 1, 0.7), null, null));
 
     private final Node v;
     private final Shape shape;
@@ -85,7 +81,7 @@ public class NodeView {
             text.setLayoutX(getReactionNodeSize() + 2);
             text.setLayoutY(-ReactionGraphView.getFont().getSize() / 2);
             graphView.setupMouseInteraction(text, text, v, null);
-            text.setBackground(labelBackground);
+           // text.setBackground(labelBackground);
         } else if (v.getInfo() instanceof MoleculeType) {
             if (food.contains((MoleculeType) v.getInfo()))
                 shape = createShape(getFoodNodeShape(), getFoodNodeSize(), getFoodNodeFillColor());
@@ -95,7 +91,7 @@ public class NodeView {
             text.setLayoutX(getFoodNodeSize() + 2);
             text.setLayoutY(-ReactionGraphView.getFont().getSize() / 2);
             graphView.setupMouseInteraction(text, text, v, null);
-            text.setBackground(labelBackground);
+            // text.setBackground(labelBackground);
         } else if (v.getInfo() instanceof ReactionGraphView.AndNode) {
             shape = createShape(getAndNodeShape(), getAndNodeSize(), getAndNodeFillColor());
             shape.setStrokeWidth(1);
@@ -110,23 +106,23 @@ public class NodeView {
         } else {
             System.err.println("Unsupported node type: " + v.getInfo());
             shape = new CircleShape(10);
-            shape.setStroke(Color.BLACK);
             shape.setFill(Color.RED);
             shape.setStrokeWidth(2);
 
             text = new Label(((Reaction) v.getInfo()).getName());
             text.setLayoutX(10);
             graphView.setupMouseInteraction(text, text, v, null);
-            text.setBackground(labelBackground);
+            // text.setBackground(labelBackground);
         }
 
+        shape.getStyleClass().add("graph-node-hollow");
         shape.setTranslateX(x);
         shape.setTranslateY(y);
         graphView.setupMouseInteraction(shape, shape, v, null);
 
         // setupMouseInteraction(text, shape, v, null);
         text.setFont(ReactionGraphView.getFont());
-        text.getStyleClass().remove("label");
+        text.getStyleClass().add("above-label");
         text.translateXProperty().bind(shape.translateXProperty());
         text.translateYProperty().bind(shape.translateYProperty());
 
@@ -174,8 +170,9 @@ public class NodeView {
             case Circle:
                 shape = new CircleShape(size);
         }
-        shape.setStroke(Color.BLACK);
-        shape.setFill(fillColor);
+        shape.getStyleClass().add("graph-node");
+        if (fillColor != Color.WHITE)
+            shape.setFill(fillColor);
         shape.setStrokeWidth(strokeWidth);
         shape.setUserData(nodeStyle);
         return shape;
