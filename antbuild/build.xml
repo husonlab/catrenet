@@ -18,9 +18,6 @@
 -->
 	<project name="CatlyNet" default="jar" basedir=".">
 
-	<property name="ant.build.javac.source" value="13"/>
-	<property name="ant.build.javac.target" value="13"/>
-
 
 
     <property name="jfxDir" value="../../javafx/lib"/>
@@ -70,7 +67,8 @@
     </target>
 
     <target name="compile" depends="copy_resources">
-        <javac includeantruntime="false"
+	    <javac source="16" target="16"
+	    	includeantruntime="false"
                srcdir="../antbuild/src/catlynet"
                destdir="${buildModulesDir}/catlynet"
                debug="on"
