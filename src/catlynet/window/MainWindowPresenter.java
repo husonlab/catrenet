@@ -1,5 +1,5 @@
 /*
- * ControlBindings.java Copyright (C) 2022 Daniel H. Huson
+ * MainWindowPresenter.java Copyright (C) 2022 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -67,7 +67,7 @@ import java.util.Optional;
  * setup all control bindings
  * Daniel Huson, 7.2019
  */
-public class ControlBindings {
+public class MainWindowPresenter {
     private static boolean computeImportance = false;
 
     private static Stage vFormatWindowStage = null;

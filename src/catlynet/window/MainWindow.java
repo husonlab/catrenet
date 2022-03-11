@@ -56,7 +56,6 @@ public class MainWindow implements IMainWindow {
     private final Parent root;
     private final FlowPane statusPane;
 
-
     private final ReactionGraphView reactionGraphView;
 
     private final PrintStream logStream;
@@ -135,7 +134,7 @@ public class MainWindow implements IMainWindow {
 
         getStage().titleProperty().addListener((e) -> MainWindowManager.getInstance().fireChanged());
 
-        ControlBindings.setup(this);
+        MainWindowPresenter.setup(this);
 
         final MemoryUsage memoryUsage = MemoryUsage.getInstance();
         controller.getMemoryUsageLabel().textProperty().bind(memoryUsage.memoryUsageStringProperty());
