@@ -115,12 +115,13 @@ public class MainWindow implements IMainWindow {
         this.stage = stage;
         stage.getIcons().addAll(ProgramProperties.getProgramIconsFX());
 
-        final Scene scene = new Scene(root, width, height);
+        final var scene = new Scene(root);
 
         stage.setScene(scene);
-        stage.sizeToScene();
         stage.setX(screenX);
         stage.setY(screenY);
+        stage.setWidth(width);
+        stage.setHeight(height);
 
         final InvalidationListener listener = ((e) -> {
             if (document.getFileName() == null)
