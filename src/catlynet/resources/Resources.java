@@ -1,5 +1,5 @@
 /*
- * Version.java Copyright (C) 2022 Daniel H. Huson
+ * Resources.java Copyright (C) 2022 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -17,9 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package catlynet.main;
+package catlynet.resources;
 
-public class Version {
-    static public final String NAME = "CatlyNet";
-	static public final String SHORT_DESCRIPTION = "CatlyNet (version 0.5.0, built 17 Sep 2022)";
+public class Resources {
 }

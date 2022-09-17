@@ -21,7 +21,12 @@ package catlynet.algorithm;
 
 import catlynet.model.ReactionSystem;
 import jloda.util.CanceledException;
+import jloda.util.PluginClassLoader;
+import jloda.util.StringUtils;
 import jloda.util.progress.ProgressListener;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * computes a new reaction system
@@ -41,4 +46,32 @@ public abstract class AlgorithmBase {
      * @return output
      */
     abstract public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException;
+
+    /**
+     * list all known algorithms
+     *
+     * @return names of all known algorithms
+     */
+    public static Collection<String> listAllAlgorithms() {
+        var list = new ArrayList<String>();
+        for (var algorithm : PluginClassLoader.getInstances(AlgorithmBase.class, "catlynet.algorithm")) {
+            list.add(StringUtils.toCamelCase(algorithm.getName()));
+        }
+
+        return list;
+    }
+
+    /**
+     * get algorithm by name
+     *
+     * @param name
+     * @return algorithm
+     */
+    public static AlgorithmBase getAlgorithmByName(String name) {
+        for (var algorithm : PluginClassLoader.getInstances(AlgorithmBase.class, "catlynet.algorithm")) {
+            if (name.equalsIgnoreCase(StringUtils.toCamelCase(algorithm.getName())))
+                return algorithm;
+        }
+        return null;
+    }
 }

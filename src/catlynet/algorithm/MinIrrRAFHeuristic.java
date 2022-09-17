@@ -19,7 +19,6 @@
 
 package catlynet.algorithm;
 
-import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -31,7 +30,6 @@ import jloda.util.progress.ProgressSilent;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Optional;
 
 /**
  * heuristically tries to compute a minimum irreducible RAD
@@ -58,27 +56,27 @@ public class MinIrrRAFHeuristic extends AlgorithmBase {
         progress.setMaximum(getNumberOfRandomInsertionOrders());
         progress.setProgress(0);
 
-        final ReactionSystem maxRAF = new MaxRAFAlgorithm().apply(input, new ProgressSilent());
-        final ArrayList<Reaction> reactions = new ArrayList<>(maxRAF.getReactions());
+        final var maxRAF = new MaxRAFAlgorithm().apply(input, new ProgressSilent());
+        final var reactions = new ArrayList<>(maxRAF.getReactions());
 
-        final ArrayList<Integer> seeds = new ArrayList<>();
-        for (int i = 0; i < getNumberOfRandomInsertionOrders(); i++) {
+        final var seeds = new ArrayList<Integer>();
+        for (var i = 0; i < getNumberOfRandomInsertionOrders(); i++) {
             seeds.add(123 * i); // different seeds
         }
 
-        final Single<Integer> bestSize = new Single<>(maxRAF.size());
+        final var bestSize = new Single<>(maxRAF.size());
 
-		final Optional<ReactionSystem> smallestRAF = seeds.parallelStream().map(seed -> CollectionUtils.randomize(reactions, seed)).map(ordering -> {
-			ReactionSystem work = maxRAF.shallowCopy();
-			for (Reaction r : ordering) {
-				work.getReactions().remove(r);
-				try {
-					progress.checkForCancel();
-					ReactionSystem next = new MaxRAFAlgorithm().apply(work, new ProgressSilent());
-					if (next.size() > 0 && next.size() <= work.size()) {
-						work = next;
-						synchronized (bestSize) {
-							if (next.size() < bestSize.get()) {
+        final var smallestRAF = seeds.parallelStream().map(seed -> CollectionUtils.randomize(reactions, seed)).map(ordering -> {
+            var work = maxRAF.shallowCopy();
+            for (var r : ordering) {
+                work.getReactions().remove(r);
+                try {
+                    progress.checkForCancel();
+                    var next = new MaxRAFAlgorithm().apply(work, new ProgressSilent());
+                    if (next.size() > 0 && next.size() <= work.size()) {
+                        work = next;
+                        synchronized (bestSize) {
+                            if (next.size() < bestSize.get()) {
                                 bestSize.set(next.size());
                                 progress.setSubtask("" + bestSize.get());
                             }
@@ -97,7 +95,7 @@ public class MinIrrRAFHeuristic extends AlgorithmBase {
             return work;
         }).filter(r -> r != null && r.size() > 0).min(Comparator.comparingInt(ReactionSystem::size));
 
-        final ReactionSystem result = smallestRAF.orElseGet(maxRAF::shallowCopy);
+        final var result = smallestRAF.orElseGet(maxRAF::shallowCopy);
         result.getFoods().setAll(result.computeMentionedFoods(input.getFoods()));
 
         result.setName(Name);

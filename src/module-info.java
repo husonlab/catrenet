@@ -11,6 +11,9 @@ module catlynet {
     exports catlynet.model;
     exports catlynet.view;
     exports catlynet.action;
+    exports catlynet.tools;
+
+    opens catlynet.algorithm;
 
     opens catlynet.tab;
     opens catlynet.window;
