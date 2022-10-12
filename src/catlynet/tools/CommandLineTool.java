@@ -21,6 +21,7 @@ package catlynet.tools;
 
 import catlynet.action.ImportWimsFormat;
 import catlynet.algorithm.AlgorithmBase;
+import catlynet.algorithm.MinIrrRAFHeuristic;
 import catlynet.format.ArrowNotation;
 import catlynet.format.ReactionNotation;
 import catlynet.io.ModelIO;
@@ -30,7 +31,10 @@ import jloda.swing.util.ResourceManager;
 import jloda.util.*;
 import jloda.util.progress.ProgressPercentage;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -69,11 +73,15 @@ public class CommandLineTool {
 
 		var algorithmName = options.getOptionMandatory("-c", "compute", "The computation to perform", allAlgorithms, "");
 
-		var inputFile = options.getOptionMandatory("-i", "input", "Input file (.gz, stdin ok)", "");
-		var outputFile = options.getOption("-o", "output", "Output file (.gz, stdout ok)", "stdout");
+		var inputFile = options.getOptionMandatory("-i", "input", "Input file (stdin ok)", "");
+		var outputFile = options.getOption("-o", "output", "Output file (stdout ok)", "stdout");
 		var reactionNotation = StringUtils.valueOfIgnoreCase(ReactionNotation.class, options.getOption("-rn", "reactionNotation", "Output reaction notation", ReactionNotation.values(), ReactionNotation.Full.name()));
 		var arrowNotation = StringUtils.valueOfIgnoreCase(ArrowNotation.class, options.getOption("-an", "arrowNotation", "Output arrow notation", ArrowNotation.values(), ArrowNotation.UsesMinus.name()));
 
+		var numberRandomizedInsertionOrders = (new MinIrrRAFHeuristic()).getNumberOfRandomInsertionOrders();
+		if (algorithmName.equals(StringUtils.toCamelCase(MinIrrRAFHeuristic.Name)) || options.isDoHelp()) {
+			numberRandomizedInsertionOrders = options.getOption("-r", "runs", "Number of randomized runs for algorithm " + StringUtils.toCamelCase(MinIrrRAFHeuristic.Name), numberRandomizedInsertionOrders);
+		}
 		options.comment(ArgsOptions.OTHER);
 		final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file", catlynet.main.CatlyNet.getDefaultPropertiesFile());
 		options.done();
@@ -90,10 +98,28 @@ public class CommandLineTool {
 		if (algorithm == null)
 			throw new IOException("Algorithm not found: " + algorithmName);
 
-		var outputSystem = algorithm.apply(inputSystem, new ProgressPercentage("Running", algorithmName));
+		if (algorithm instanceof MinIrrRAFHeuristic irrRAFHeuristic) {
+			irrRAFHeuristic.setNumberOfRandomInsertionOrders(numberRandomizedInsertionOrders);
+			var outputSystems = irrRAFHeuristic.applyAllSmallest(inputSystem, new ProgressPercentage("Running", algorithmName));
 
-		try (Writer w = FileUtils.getOutputWriterPossiblyZIPorGZIP(outputFile)) {
-			ModelIO.write(outputSystem, w, true, reactionNotation, arrowNotation);
+			if (!outputFile.equalsIgnoreCase("stdout"))
+				System.err.println("Writing file: " + outputFile);
+
+			try (var w = FileUtils.getOutputWriterPossiblyZIPorGZIP(outputFile)) {
+				for (var outputSystem : outputSystems) {
+					ModelIO.write(outputSystem, w, true, reactionNotation, arrowNotation);
+					w.write("\n");
+				}
+			}
+		} else {
+			var outputSystem = algorithm.apply(inputSystem, new ProgressPercentage("Running", algorithmName));
+
+			if (!outputFile.equalsIgnoreCase("stdout"))
+				System.err.println("Writing file: " + outputFile);
+
+			try (var w = FileUtils.getOutputWriterPossiblyZIPorGZIP(outputFile)) {
+				ModelIO.write(outputSystem, w, true, reactionNotation, arrowNotation);
+			}
 		}
 	}
 
@@ -106,7 +132,7 @@ public class CommandLineTool {
 			notation = ReactionNotation.detectNotation(inputLines.subList(0, 10));
 		} else {
 			inputLines = FileUtils.getLinesFromFile(fileName);
-			final String[] lines = FileUtils.getFirstLinesFromFile(new File(fileName), 10);
+			final var lines = FileUtils.getFirstLinesFromFile(new File(fileName), 10);
 			if (lines == null)
 				throw new IOException("Can't read file: " + fileName);
 			notation = ReactionNotation.detectNotation(Arrays.asList(lines));

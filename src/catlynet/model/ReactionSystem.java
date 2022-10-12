@@ -24,6 +24,7 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import jloda.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -222,14 +223,26 @@ public class ReactionSystem {
         final Reaction old = getReaction(name);
         if (old == null)
             throw new IllegalArgumentException("no such reaction: " + name);
-        getReactions().remove(old);
-        getReactions().add(reaction);
-    }
+		getReactions().remove(old);
+		getReactions().add(reaction);
+	}
 
-    public ReactionSystem sorted() {
-        final ReactionSystem reactionSystem = new ReactionSystem(getName());
-        reactionSystem.getFoods().addAll(new TreeSet<>(getFoods()));
-        reactionSystem.getReactions().addAll(new TreeSet<>(getReactions()));
-        return reactionSystem;
-    }
+	public ReactionSystem sorted() {
+		final ReactionSystem reactionSystem = new ReactionSystem(getName());
+		reactionSystem.getFoods().addAll(new TreeSet<>(getFoods()));
+		reactionSystem.getReactions().addAll(new TreeSet<>(getReactions()));
+		return reactionSystem;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof ReactionSystem that)) return false;
+		return CollectionUtils.equalsAsSets(this.getFoods(), that.getFoods()) && CollectionUtils.equalsAsSets(this.getReactions(), that.getReactions());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(reactions, foods);
+	}
 }

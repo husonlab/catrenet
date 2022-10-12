@@ -29,10 +29,9 @@ import jloda.util.progress.ProgressListener;
 import jloda.util.progress.ProgressSilent;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 
 /**
- * heuristically tries to compute a minimum irreducible RAD
+ * heuristically tries to compute a minimum irreducible RAF
  * Daniel Huson, 3.2020
  * Based on notes by Mike Steel
  */
@@ -53,6 +52,16 @@ public class MinIrrRAFHeuristic extends AlgorithmBase {
      * @return irr RAF or null
      */
     public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException {
+        return applyAllSmallest(input, progress).get(0);
+    }
+
+    /**
+     * heuristically tries to compute a minimum irreducible RAD
+     *
+     * @param input - unexpanded catalytic reaction system
+     * @return irr RAF or null
+     */
+    public ArrayList<ReactionSystem> applyAllSmallest(ReactionSystem input, ProgressListener progress) throws CanceledException {
         progress.setMaximum(getNumberOfRandomInsertionOrders());
         progress.setProgress(0);
 
@@ -64,9 +73,10 @@ public class MinIrrRAFHeuristic extends AlgorithmBase {
             seeds.add(123 * i); // different seeds
         }
 
+        final var best = new ArrayList<ReactionSystem>();
         final var bestSize = new Single<>(maxRAF.size());
-
-        final var smallestRAF = seeds.parallelStream().map(seed -> CollectionUtils.randomize(reactions, seed)).map(ordering -> {
+        for (var seed : seeds) {
+            var ordering = CollectionUtils.randomize(reactions, seed);
             var work = maxRAF.shallowCopy();
             for (var r : ordering) {
                 work.getReactions().remove(r);
@@ -75,11 +85,13 @@ public class MinIrrRAFHeuristic extends AlgorithmBase {
                     var next = new MaxRAFAlgorithm().apply(work, new ProgressSilent());
                     if (next.size() > 0 && next.size() <= work.size()) {
                         work = next;
-                        synchronized (bestSize) {
-                            if (next.size() < bestSize.get()) {
-                                bestSize.set(next.size());
-                                progress.setSubtask("" + bestSize.get());
-                            }
+                        if (next.size() < bestSize.get()) {
+                            best.clear();
+                            bestSize.set(next.size());
+                            progress.setSubtask("" + bestSize.get());
+                        }
+                        if (next.size() == bestSize.get() && best.stream().noneMatch(a -> CollectionUtils.equalsAsSets(next.getReactions(), a.getReactions()))) {
+                            best.add(next);
                         }
                         if (bestSize.get() == 1)
                             break;
@@ -88,18 +100,10 @@ public class MinIrrRAFHeuristic extends AlgorithmBase {
                 } catch (CanceledException ignored) {
                 }
             }
-            try {
-                progress.incrementProgress();
-            } catch (CanceledException ignored) {
-            }
-            return work;
-        }).filter(r -> r != null && r.size() > 0).min(Comparator.comparingInt(ReactionSystem::size));
-
-        final var result = smallestRAF.orElseGet(maxRAF::shallowCopy);
-        result.getFoods().setAll(result.computeMentionedFoods(input.getFoods()));
-
-        result.setName(Name);
-        return result;
+        }
+        if (best.size() == 0)
+            best.add(maxRAF.shallowCopy());
+        return best;
     }
 
     public int getNumberOfRandomInsertionOrders() {
