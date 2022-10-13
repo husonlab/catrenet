@@ -28,8 +28,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import jloda.fx.util.ExtendedFXMLLoader;
+import jloda.fx.util.ProgramProperties;
 import jloda.fx.window.MainWindowManager;
-import jloda.util.ProgramProperties;
 
 import java.util.Arrays;
 import java.util.List;

@@ -30,7 +30,6 @@ import jloda.fx.window.SplashScreen;
 import jloda.fx.window.WindowGeometry;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
-import jloda.util.ProgramProperties;
 import jloda.util.UsageException;
 
 import java.io.File;

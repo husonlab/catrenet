@@ -34,14 +34,10 @@ import javafx.scene.Scene;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 import jloda.fx.undo.UndoManager;
-import jloda.fx.util.ExtendedFXMLLoader;
-import jloda.fx.util.FileOpenManager;
-import jloda.fx.util.MemoryUsage;
-import jloda.fx.util.PrintStreamToTextArea;
+import jloda.fx.util.*;
 import jloda.fx.window.IMainWindow;
 import jloda.fx.window.MainWindowManager;
 import jloda.util.FileUtils;
-import jloda.util.ProgramProperties;
 
 import java.io.PrintStream;
 import java.util.Collections;

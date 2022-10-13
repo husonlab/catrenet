@@ -31,9 +31,9 @@ import javafx.scene.control.ToggleGroup;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import jloda.fx.util.ExtendedFXMLLoader;
+import jloda.fx.util.ProgramProperties;
 import jloda.fx.window.MainWindowManager;
 import jloda.util.FileUtils;
-import jloda.util.ProgramProperties;
 
 public class FormatWindow {
     public static final String title = "Node and Edge Format";

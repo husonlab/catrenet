@@ -29,8 +29,8 @@ import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import jloda.fx.shapes.CircleShape;
 import jloda.fx.shapes.SquareShape;
+import jloda.fx.util.ProgramProperties;
 import jloda.graph.Node;
-import jloda.util.ProgramProperties;
 
 import java.util.Collection;
 

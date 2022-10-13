@@ -28,8 +28,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import jloda.fx.shapes.CircleShape;
 import jloda.fx.util.GeometryUtilsFX;
+import jloda.fx.util.ProgramProperties;
 import jloda.graph.Edge;
-import jloda.util.ProgramProperties;
 
 /**
  * edge view

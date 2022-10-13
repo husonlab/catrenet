@@ -27,7 +27,7 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
-import jloda.util.ProgramProperties;
+import jloda.fx.util.ProgramProperties;
 
 import java.util.TreeSet;
 

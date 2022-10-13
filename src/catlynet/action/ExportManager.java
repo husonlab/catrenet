@@ -29,12 +29,12 @@ import catlynet.view.ReactionGraphView;
 import catlynet.window.MainWindow;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
+import jloda.fx.util.ProgramProperties;
 import jloda.fx.util.RecentFilesManager;
 import jloda.fx.util.TextFileFilter;
 import jloda.fx.window.NotificationManager;
 import jloda.util.CollectionUtils;
 import jloda.util.FileUtils;
-import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 
 import java.io.File;

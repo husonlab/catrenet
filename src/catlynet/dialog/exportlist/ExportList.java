@@ -31,8 +31,8 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import jloda.fx.util.ExtendedFXMLLoader;
+import jloda.fx.util.ProgramProperties;
 import jloda.util.CollectionUtils;
-import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 
 import java.util.HashSet;

@@ -29,8 +29,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.Stage;
+import jloda.fx.util.ProgramProperties;
 import jloda.util.NumberUtils;
-import jloda.util.ProgramProperties;
 
 import java.util.Optional;
 

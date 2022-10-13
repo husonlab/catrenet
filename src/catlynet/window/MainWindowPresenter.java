@@ -47,17 +47,13 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import jloda.fx.control.ZoomableScrollPane;
-import jloda.fx.util.BasicFX;
-import jloda.fx.util.FileOpenManager;
-import jloda.fx.util.Print;
-import jloda.fx.util.RecentFilesManager;
+import jloda.fx.util.*;
 import jloda.fx.window.MainWindowManager;
 import jloda.fx.window.NotificationManager;
 import jloda.fx.window.SplashScreen;
 import jloda.fx.window.WindowGeometry;
 import jloda.util.Basic;
 import jloda.util.NumberUtils;
-import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 
 import java.time.Duration;
