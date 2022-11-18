@@ -15,8 +15,8 @@
       <mountPoint id="1691242167" location="jars" />
       <mountPoint id="1691243203" location="jars2" />
       <mountPoint id="1691242153" location="Examples" />
-      <mountPoint id="675425072" />
       <mountPoint id="1691243204" location="tools" />
+      <mountPoint id="675425072" />
     </mountPoints>
     <entries>
       <dirEntry mountPoint="1691242167" file="../jars" subDirectory="jars" excludeSuffixes=".DS_Store">
@@ -33,8 +33,8 @@
       </dirEntry>
       <fileEntry mountPoint="1691243203" file="../jars/i4jruntime.jar" />
       <dirEntry mountPoint="1691242153" file="../examples" subDirectory="examples" />
-      <fileEntry mountPoint="675425072" file="./License.txt" overrideFileMode="true" overrideOverwriteMode="true" overrideUninstallMode="true" />
       <fileEntry mountPoint="1691243204" file="../tools/catlynet-tool" fileMode="755" overrideFileMode="true" />
+      <fileEntry mountPoint="675425072" file="./License.txt" overrideFileMode="true" overrideOverwriteMode="true" overrideUninstallMode="true" />
     </entries>
     <components>
       <component name="CatlyNet" id="1691242194" changeable="false">
@@ -1150,7 +1150,7 @@ return true;</property>
     </windows>
   </mediaSets>
   <buildIds buildAll="false">
-    <mediaSet refId="1691242146" />
+    <mediaSet refId="1691242165" />
   </buildIds>
   <buildOptions disableSigning="true" disableNotarization="true" />
 </install4j>
