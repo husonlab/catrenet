@@ -17,7 +17,7 @@ Hordijk, W. and Steel, M. (2017). [Chasing the tail: The emergence of autocataly
 
 
 ## Installers
-One click installers for MacOS, Windows and Linux are available [here](http://ab.inf.uni-tuebingen.de/data/software/catlynet/download/welcome.html). 
+One click installers for MacOS, Windows and Linux are available [here](http://ab.cs.uni-tuebingen.de/data/software/catlynet/download/welcome.html). 
 
 ## Animation
 We are working on animations to visualize different concepts, see this example:
