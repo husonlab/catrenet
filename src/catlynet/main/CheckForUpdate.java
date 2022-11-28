@@ -35,7 +35,7 @@ import java.util.concurrent.Executors;
  * Daniel Huson, 5.2018
  */
 public class CheckForUpdate {
-	public static final String programURL = "https://software-ab.informatik.uni-tuebingen.de/download/catlynet";
+	public static final String programURL = "https://oftware-ab.cs.uni-tuebingen.de/download/catlynet";
 	public static final String applicationId = "1691242391";
 
 	/**
