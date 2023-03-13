@@ -41,8 +41,7 @@ import java.util.stream.StreamSupport;
 public class SetupFullGraph {
     /**
      * setup
-     *
-	 */
+     */
     public static void apply(Graph reactionGraph, ReactionSystem reactionSystem, NodeSet foodNodes, final Map<MoleculeType, Node> molecule2node, boolean suppressCatalystEdges, boolean useMultiCopyFoodNodes) {
         for (Reaction reaction : reactionSystem.getReactions()) {
             final Node reactionNode = reactionGraph.newNode(reaction);

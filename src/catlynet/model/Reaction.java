@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static catlynet.io.ModelIO.FORMAL_FOOD;
+
 /**
  * a reaction
  * Daniel Huson, 6.2019
@@ -145,65 +147,75 @@ public class Reaction implements Comparable<Reaction> {
             }
         }
 
-        final int colonPos = line.indexOf(':');
-        final int openSquareBracket = line.indexOf('[');
-        final int closeSquareBracket = line.indexOf(']');
+        final var colonPos = line.indexOf(':');
+        if (colonPos == -1)
+            throw new IOException("Can't parse reaction: " + line);
 
-        final int openCurlyBracket = line.indexOf("{");
-        final int closeCurlyBracket = line.indexOf("}");
+        final var openSquareBracket = line.indexOf('[');
+        if (openSquareBracket != -1 && openSquareBracket < colonPos)
+            throw new IOException("Can't parse reaction: " + line);
 
+        final var closeSquareBracket = line.indexOf(']');
+
+        if ((openSquareBracket == -1 && closeSquareBracket != -1) || (openSquareBracket != -1 && closeSquareBracket < openSquareBracket))
+            throw new IOException("Can't parse reaction: " + line);
+
+        final var openCurlyBracket = line.indexOf("{");
+        final var closeCurlyBracket = line.indexOf("}");
+
+        final int startArrow;
         final int endArrow;
 
         final Reaction.Direction direction;
         {
             if (line.indexOf("<=>") > 0) {
                 direction = Direction.both;
-                endArrow = line.indexOf("<=>") + 2;
+                startArrow = line.indexOf("<=>");
+                endArrow = startArrow + 2;
             } else if (line.indexOf("=>") > 0) {
                 direction = Direction.forward;
-                endArrow = line.indexOf("=>") + 1;
+                startArrow = line.indexOf("=>");
+                endArrow = startArrow + 1;
             } else if (line.indexOf("<=") > 0) {
                 direction = Direction.reverse;
-                endArrow = line.indexOf("<=") + 1;
+                startArrow = line.indexOf("<=");
+                endArrow = startArrow + 1;
             } else
                 throw new IOException("Can't parse reaction: " + line);
         }
 
-        if (!(colonPos > 0 && openSquareBracket > colonPos && closeSquareBracket > openSquareBracket))
-            throw new IOException("Can't parse reaction: " + line);
+        final var reactionName = line.substring(0, colonPos).trim();
 
-        final String reactionName = line.substring(0, colonPos).trim();
+        var endOfReactants = (openSquareBracket != -1 ? openSquareBracket : startArrow);
+        final var reactants = StringUtils.trimAll(line.substring(colonPos + 1, endOfReactants).trim().split("[+\\s]+"));
 
-		final String[] reactants = StringUtils.trimAll(line.substring(colonPos + 1, openSquareBracket).trim().split("[+\\s]+"));
-
-        final String catalysts = line.substring(openSquareBracket + 1, closeSquareBracket).trim()
+        final var catalysts = (openSquareBracket == -1 ? FORMAL_FOOD.getName() : line.substring(openSquareBracket + 1, closeSquareBracket).trim()
                 .replaceAll("\\|", ",")
                 .replaceAll("\\*", "&")
                 .replaceAll("\\s*\\(\\s*", "(")
                 .replaceAll("\\s*\\)\\s*", ")")
                 .replaceAll("\\s*&\\s*", "&")
                 .replaceAll("\\s*,\\s*", ",")
-                .replaceAll("\\s+", ",");
-
+                .replaceAll("\\s+", ","));
 
         final String[] inhibitors;
         if (openCurlyBracket != -1 && closeCurlyBracket != -1) {
-            final String inhibitorsString = line.substring(openCurlyBracket + 1, closeCurlyBracket).trim().replaceAll(",", " ");
+            final var inhibitorsString = line.substring(openCurlyBracket + 1, closeCurlyBracket).trim().replaceAll(",", " ");
 			inhibitors = StringUtils.trimAll(inhibitorsString.split("\\s+"));
         } else if ((openCurlyBracket >= 0) != (closeCurlyBracket >= 0))
             throw new IOException("Can't parse reaction: " + line);
         else
             inhibitors = new String[0];
 
-		final String[] products = StringUtils.trimAll(line.substring(endArrow + 1).trim().split("[+\\s]+"));
+        final var products = StringUtils.trimAll(line.substring(endArrow + 1).trim().split("[+\\s]+"));
 
-        final Reaction reaction = new Reaction(reactionName);
+        final var reaction = new Reaction(reactionName);
 
         if (Arrays.stream(reactants).allMatch(NumberUtils::isDouble)) { // all tokens look like numbers, don't allow coefficients
             reaction.getReactants().addAll(MoleculeType.valuesOf(reactants));
         } else { // some tokens are not numbers, assume this is mix of coefficients and reactants
-            int coefficient = -1;
-            for (String token : reactants) {
+            var coefficient = -1;
+            for (var token : reactants) {
                 if (NumberUtils.isInteger(token)) {
                     if (coefficient == -1)
                         coefficient = NumberUtils.parseInt(token);
@@ -231,8 +243,8 @@ public class Reaction implements Comparable<Reaction> {
         if (Arrays.stream(products).allMatch(NumberUtils::isDouble)) { // all tokens look like numbers, don't allow coefficients
             reaction.getProducts().addAll(MoleculeType.valuesOf(products));
         } else { // some tokens are not numbers, assume this is mix of coefficients and reactants
-            int coefficient = -1;
-            for (String token : products) {
+            var coefficient = -1;
+            for (var token : products) {
                 if (NumberUtils.isInteger(token)) {
                     if (coefficient == -1)
                         coefficient = NumberUtils.parseInt(token);
@@ -298,9 +310,9 @@ public class Reaction implements Comparable<Reaction> {
     }
 
     public Set<MoleculeType> getCatalystConjunctions() {
-        final Set<MoleculeType> set = new TreeSet<>();
-        final String dnf = DisjunctiveNormalForm.compute(getCatalysts());
-        for (String part : dnf.split(",")) {
+        final var set = new TreeSet<MoleculeType>();
+        final var dnf = DisjunctiveNormalForm.compute(getCatalysts());
+        for (var part : dnf.split(",")) {
             set.add(MoleculeType.valueOf(part));
         }
         return set;
@@ -330,8 +342,7 @@ public class Reaction implements Comparable<Reaction> {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Reaction)) return false;
-        Reaction reaction = (Reaction) o;
+        if (!(o instanceof Reaction reaction)) return false;
         return name.equals(reaction.name) &&
                 reactants.equals(reaction.reactants) &&
                 products.equals(reaction.products) &&

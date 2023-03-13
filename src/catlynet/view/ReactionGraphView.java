@@ -52,6 +52,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static catlynet.io.ModelIO.FORMAL_FOOD;
+
 /**
  * maintains the visualization of a model
  * Daniel Huson, 7.2019
@@ -71,12 +73,14 @@ public class ReactionGraphView {
     private final ItemSelectionModel<Node> nodeSelection = new ItemSelectionModel<>();
     private final ItemSelectionModel<Edge> edgeSelection = new ItemSelectionModel<>();
 
-    private final ObjectProperty<Color> inhibitionEdgeColor = new SimpleObjectProperty<>(Color.LIGHTGREY);
+    private final ObjectProperty<Color> inhibitionEdgeColor = new SimpleObjectProperty<>(this, "inhibitionEdgeColor", Color.LIGHTGREY);
 
-    private final BooleanProperty suppressCatalystEdges = new SimpleBooleanProperty(false);
-    private final BooleanProperty useMultiCopyFoodNodes = new SimpleBooleanProperty(false);
+    private final BooleanProperty suppressFormalFood = new SimpleBooleanProperty(this, "suppressFormalFood", false);
 
-    private final IntegerProperty embeddingIterations = new SimpleIntegerProperty(1000);
+    private final BooleanProperty suppressCatalystEdges = new SimpleBooleanProperty(this, "suppressCatalystEdges", false);
+    private final BooleanProperty useMultiCopyFoodNodes = new SimpleBooleanProperty(this, "useMultiCopyFoodNodes", false);
+
+    private final IntegerProperty embeddingIterations = new SimpleIntegerProperty(this, "embeddingIterations", 1000);
 
     private final MainWindowController controller;
 
@@ -166,6 +170,7 @@ public class ReactionGraphView {
         moleculeFlowAnimation.animateInhibitionsProperty().addListener((c, o, n) -> inhibitionEdgeColor.set(n ? Color.BLACK : Color.LIGHTGREY));
 
         graphType.addListener(c -> update());
+        suppressFormalFood.addListener(c -> update());
         suppressCatalystEdges.addListener(c -> update());
         useMultiCopyFoodNodes.addListener(c -> update());
     }
@@ -183,8 +188,17 @@ public class ReactionGraphView {
             SetupDependencyGraph.apply(reactionGraph, reactionSystem, true);
         else if (getGraphType() == Type.reactantDependencyGraph)
             SetupDependencyGraph.apply(reactionGraph, reactionSystem, false);
-        else
+        else {
             SetupFullGraph.apply(reactionGraph, reactionSystem, foodNodes, molecule2node, isSuppressCatalystEdges(), isUseMultiCopyFoodNodes());
+            if (isSuppressFormalFood()) {
+                for (var v : reactionGraph.nodes()) {
+                    if (v.getInfo() instanceof MoleculeType moleculeType && moleculeType.equals(FORMAL_FOOD)) {
+                        reactionGraph.deleteNode(v);
+                        break;
+                    }
+                }
+            }
+        }
 
         final int numberOfConnectedComponts = ConnectedComponents.count(reactionGraph);
         if (numberOfConnectedComponts > 1)
@@ -482,6 +496,18 @@ public class ReactionGraphView {
 
     public ReadOnlyBooleanProperty emptyProperty() {
         return empty;
+    }
+
+    public boolean isSuppressFormalFood() {
+        return suppressFormalFood.get();
+    }
+
+    public BooleanProperty suppressFormalFoodProperty() {
+        return suppressFormalFood;
+    }
+
+    public void setSuppressFormalFood(boolean suppressFormalFood) {
+        this.suppressFormalFood.set(suppressFormalFood);
     }
 
     public boolean isSuppressCatalystEdges() {

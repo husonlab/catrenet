@@ -26,6 +26,7 @@ import catlynet.format.FormatWindow;
 import catlynet.io.Save;
 import catlynet.io.SaveBeforeClosingDialog;
 import catlynet.main.CheckForUpdate;
+import catlynet.model.MoleculeType;
 import catlynet.tab.TabManager;
 import catlynet.tab.TextTab;
 import catlynet.vformat.VFormatWindow;
@@ -58,6 +59,8 @@ import jloda.util.StringUtils;
 
 import java.time.Duration;
 import java.util.Optional;
+
+import static catlynet.io.ModelIO.FORMAL_FOOD;
 
 /**
  * setup all control bindings
@@ -557,6 +560,13 @@ public class MainWindowPresenter {
         });
         controller.getSuppressCatalystEdgesMenuItem().disableProperty().bind(disableFullGraphItems);
 
+        controller.getSuppressFormalFoodMenuItem().selectedProperty().addListener((c, o, n) -> {
+            graphView.setSuppressFormalFood(n);
+            controller.getVisualizationTab().getTabPane().getSelectionModel().select(controller.getVisualizationTab());
+        });
+        controller.getSuppressFormalFoodMenuItem().disableProperty().bind(controller.getSuppressCatalystEdgesMenuItem().selectedProperty().or(Bindings.createBooleanBinding(() -> !window.getInputReactionSystem().getFoods().contains(FORMAL_FOOD), window.getInputReactionSystem().getFoods())));
+
+
         controller.getUseMultiCopyFoodNodesMenuItem().selectedProperty().addListener((c, o, n) ->
         {
             graphView.setUseMultiCopyFoodNodes(n);
@@ -584,7 +594,12 @@ public class MainWindowPresenter {
         controller.getComputeImportanceCheckMenuItem().selectedProperty().addListener((c, o, n) -> computeImportance = n);
 
         window.getInputReactionSystem().sizeProperty().addListener((c, o, n) -> controller.getInputReactionsSizeLabel().setText(String.format("%,d", n.intValue())));
-        window.getInputReactionSystem().foodSizeProperty().addListener((c, o, n) -> controller.getInputFoodSizeLabel().setText(String.format("%,d", n.intValue())));
+        window.getInputReactionSystem().foodSizeProperty().addListener((c, o, n) -> {
+            if (window.getInputReactionSystem().getFoods().contains(MoleculeType.valueOf("$")))
+                controller.getInputFoodSizeLabel().setText(String.format("%,d (plus the formal item '$')", n.intValue() - 1));
+            else
+                controller.getInputFoodSizeLabel().setText(String.format("%,d", n.intValue()));
+        });
 
         controller.getUseDarkThemeCheckMenuItem().selectedProperty().bindBidirectional(MainWindowManager.useDarkThemeProperty());
 

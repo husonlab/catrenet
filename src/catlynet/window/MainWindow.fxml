@@ -25,8 +25,8 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.input.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane prefHeight="500.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/15.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="catlynet.window.MainWindowController">
+<BorderPane prefHeight="500.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="catlynet.window.MainWindowController">
     <top>
         <VBox BorderPane.alignment="CENTER">
             <children>
@@ -246,13 +246,13 @@
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="increaseFontSizeMenuItem" text="Increase Font Size">
                                     <accelerator>
-                                        <KeyCodeCombination alt="UP" code="PLUS" control="UP" meta="UP" shift="UP"
+                                        <KeyCodeCombination alt="UP" code="ADD" control="UP" meta="UP" shift="UP"
                                                             shortcut="DOWN"/>
                                     </accelerator>
                                 </MenuItem>
                                 <MenuItem fx:id="decreaseFontSizeMenuItem" text="Decrease Font Size">
                                     <accelerator>
-                                        <KeyCodeCombination alt="UP" code="MINUS" control="UP" meta="UP" shift="UP"
+                                        <KeyCodeCombination alt="UP" code="SLASH" control="UP" meta="UP" shift="UP"
                                                             shortcut="DOWN"/>
                                     </accelerator>
                                 </MenuItem>
@@ -290,6 +290,8 @@
                                 <RadioMenuItem fx:id="reactantDependencyRadioMenuItem" mnemonicParsing="false"
                                                text="Reactant Dependency Graph"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
+                                <CheckMenuItem fx:id="suppressFormalFoodMenuItem" mnemonicParsing="false"
+                                               text="Suppress Formal Food Item"/>
                                 <CheckMenuItem fx:id="suppressCatalystEdgesMenuItem" mnemonicParsing="false"
                                                text="Suppress Catalyst Edges"/>
                                 <CheckMenuItem fx:id="useMultiCopyFoodNodesMenuItem" mnemonicParsing="false"

@@ -263,6 +263,9 @@ public class MainWindowController {
 	private CheckMenuItem suppressCatalystEdgesMenuItem;
 
 	@FXML
+	private CheckMenuItem suppressFormalFoodMenuItem;
+
+	@FXML
 	private CheckMenuItem useMultiCopyFoodNodesMenuItem;
 
 	@FXML
@@ -377,7 +380,7 @@ public class MainWindowController {
 	@FXML
 	void initialize() {
 		increaseFontSizeMenuItem.setAccelerator(new KeyCharacterCombination("+", KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_ANY));
-		decreaseFontSizeMenuItem.setAccelerator(new KeyCharacterCombination("-", KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_ANY));
+		decreaseFontSizeMenuItem.setAccelerator(new KeyCharacterCombination("/", KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_ANY));
 
 		// if we are running on MacOS, put the specific menu items in the right places
 		if (ProgramProperties.isMacOS()) {
@@ -725,6 +728,10 @@ public class MainWindowController {
 
 	public CheckMenuItem getSuppressCatalystEdgesMenuItem() {
 		return suppressCatalystEdgesMenuItem;
+	}
+
+	public CheckMenuItem getSuppressFormalFoodMenuItem() {
+		return suppressFormalFoodMenuItem;
 	}
 
 	public CheckMenuItem getUseMultiCopyFoodNodesMenuItem() {
