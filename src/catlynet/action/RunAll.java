@@ -59,6 +59,8 @@ public class RunAll {
                 RunAlgorithm.apply(window, inputReactions, new MuCAFAlgorithm(), runningListener, false);
                 RunAlgorithm.apply(window, inputReactions, new URAFAlgorithm(), runningListener, false);
             }
+
+            ComputeReactionDependencies.run(window);
         }
     }
 }

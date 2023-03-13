@@ -89,16 +89,22 @@ public class Reaction implements Comparable<Reaction> {
     public boolean isCatalyzedAndUninhibitedAndHasAllReactants(Collection<MoleculeType> food, Direction direction) {
         return (((direction == Direction.forward || direction == Direction.both) && (getDirection() == Direction.forward || getDirection() == Direction.both) && food.containsAll(getReactants()))
                 || ((direction == Direction.reverse || direction == Direction.both) && (getDirection() == Direction.reverse || getDirection() == Direction.both) && food.containsAll(getProducts())))
-                && (getCatalysts().length() == 0 || getCatalystConjunctions().stream().map(m -> MoleculeType.valuesOf(m.getName().split("&"))).anyMatch(food::containsAll))
-                && (getInhibitions().size() == 0 || getInhibitions().stream().noneMatch(food::contains));
+               && (getCatalysts().length() == 0 || getCatalystConjunctions().stream().map(m -> MoleculeType.valuesOf(m.getName().split("&"))).anyMatch(food::containsAll))
+               && (getInhibitions().size() == 0 || getInhibitions().stream().noneMatch(food::contains));
     }
 
     public boolean isCatalyzedAndUninhibitedAndHasAllReactants(Collection<MoleculeType> foodForReactants, Collection<MoleculeType> foodForCatalysts, Collection<MoleculeType> foodForInhibitors, Direction direction) {
         return (((direction == Direction.forward || direction == Direction.both) && (getDirection() == Direction.forward || getDirection() == Direction.both) && foodForReactants.containsAll(getReactants()))
                 || ((direction == Direction.reverse || direction == Direction.both) && (getDirection() == Direction.reverse || getDirection() == Direction.both) && foodForReactants.containsAll(getProducts())))
-                && (getCatalysts().length() == 0 || getCatalystConjunctions().stream().map(m -> MoleculeType.valuesOf(m.getName().split("&"))).anyMatch(foodForCatalysts::containsAll))
-                && (getInhibitions().size() == 0 || getInhibitions().stream().noneMatch(foodForReactants::contains));
+               && (getCatalysts().length() == 0 || getCatalystConjunctions().stream().map(m -> MoleculeType.valuesOf(m.getName().split("&"))).anyMatch(foodForCatalysts::containsAll))
+               && (getInhibitions().size() == 0 || getInhibitions().stream().noneMatch(foodForReactants::contains));
     }
+
+    public boolean isHasAllReactants(Collection<MoleculeType> food, Direction direction) {
+        return (((direction == Direction.forward || direction == Direction.both) && (getDirection() == Direction.forward || getDirection() == Direction.both) && food.containsAll(getReactants()))
+                || ((direction == Direction.reverse || direction == Direction.both) && (getDirection() == Direction.reverse || getDirection() == Direction.both) && food.containsAll(getProducts())));
+    }
+
 
     public Set<MoleculeType> getInhibitions() {
         return inhibitions;

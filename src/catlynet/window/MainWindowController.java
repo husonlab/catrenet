@@ -200,6 +200,8 @@ public class MainWindowController {
 	@FXML
 	private MenuItem greedyGrowMenuItem;
 
+	@FXML
+	private MenuItem reactionDependenciesMenuItem;
 
 	@FXML
 	private CheckMenuItem computeImportanceCheckMenuItem;
@@ -644,6 +646,10 @@ public class MainWindowController {
 
 	public MenuItem getGreedyGrowMenuItem() {
 		return greedyGrowMenuItem;
+	}
+
+	public MenuItem getReactionDependenciesMenuItem() {
+		return reactionDependenciesMenuItem;
 	}
 
 	public CheckMenuItem getComputeImportanceCheckMenuItem() {

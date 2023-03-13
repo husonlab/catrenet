@@ -349,6 +349,9 @@
                                 <MenuItem fx:id="greedyGrowMenuItem" mnemonicParsing="false"
                                           text="Greedily Grow MaxCAF to MaxRAF"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem fx:id="reactionDependenciesMenuItem" mnemonicParsing="false"
+                                          text="Compute Reaction Dependencies"/>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
                                 <Menu mnemonicParsing="false" text="Options">
                                     <items>
                                         <CheckMenuItem fx:id="computeImportanceCheckMenuItem" mnemonicParsing="false"

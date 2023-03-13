@@ -22,9 +22,7 @@ package catlynet.algorithm;
 import catlynet.model.MoleculeType;
 import catlynet.model.Reaction;
 
-import java.util.Collection;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -61,7 +59,6 @@ public class Utilities {
                     filter(r -> allMolecules.containsAll(r.getReactants())).map(Reaction::getProducts).flatMap(Collection::stream).collect(Collectors.toList()));
             allMolecules.addAll(reactions.stream().filter(r -> r.getDirection() == Reaction.Direction.reverse || r.getDirection() == Reaction.Direction.both).
                     filter(r -> allMolecules.containsAll(r.getProducts())).map(Reaction::getReactants).flatMap(Collection::stream).collect(Collectors.toList()));
-
         }
         while (allMolecules.size() > size);
         return allMolecules;
@@ -74,5 +71,30 @@ public class Utilities {
      */
     public static Set<Reaction> filterReactions(Collection<MoleculeType> food, Collection<Reaction> reactions) {
         return reactions.stream().filter(r -> r.isCatalyzedAndUninhibitedAndHasAllReactants(food, r.getDirection())).collect(Collectors.toSet());
+    }
+
+    /**
+     * for a given food set and set of reactions, returns all reactions that are F-generated (ignoring catalysts and inhibitors
+     *
+     * @param foods     the food set
+     * @param reactions the input reactions
+     * @return the F-generated reactions
+     */
+    public static List<Reaction> computeFGenerated(List<MoleculeType> foods, List<Reaction> reactions) {
+        var availableFood = new HashSet<>(foods);
+        var availableReactions = new ArrayList<>(reactions);
+        var closure = new ArrayList<Reaction>();
+        while (true) {
+            var toAdd = availableReactions.stream().filter(r -> r.isHasAllReactants(availableFood, r.getDirection())).collect(Collectors.toList());
+            if (toAdd.size() > 0) {
+                closure.addAll(toAdd);
+                for (var r : toAdd) {
+                    availableFood.addAll(r.getProducts());
+                }
+                availableReactions.removeAll(toAdd);
+            } else
+                break;
+        }
+        return closure;
     }
 }

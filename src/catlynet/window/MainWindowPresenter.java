@@ -355,6 +355,10 @@ public class MainWindowPresenter {
         controller.getGreedyGrowMenuItem().setOnAction(e -> GreedilyGrowMaxCAF2MaxRAF.apply(window, window.getInputReactionSystem(), runningListener));
         controller.getGreedyGrowMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
+        controller.getReactionDependenciesMenuItem().setOnAction(e -> ComputeReactionDependencies.run(window));
+        controller.getReactionDependenciesMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
+
+
         controller.getRunMenuItem().setOnAction(e -> {
             RunAll.apply(window, runningListener);
             ComputeGraph.apply(window, controller);
