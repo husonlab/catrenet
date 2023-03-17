@@ -21,12 +21,14 @@ package catlynet.view;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import jloda.fx.shapes.CircleShape;
+import jloda.fx.util.BasicFX;
 import jloda.fx.util.GeometryUtilsFX;
 import jloda.fx.util.ProgramProperties;
 import jloda.graph.Edge;
@@ -56,11 +58,11 @@ public class EdgeView extends Group {
     public EdgeView(ReactionGraphView graphView, Edge e, ReadOnlyDoubleProperty aX, ReadOnlyDoubleProperty aY, ReadOnlyDoubleProperty bX, ReadOnlyDoubleProperty bY, EdgeType edgeType) {
         final Shape arrowHead;
         switch (edgeType) {
-            default -> arrowHead = new Polyline(-5, -3, 5, 0, -5, 3);
-            case Dependency, Reactant, Product -> arrowHead = new Polygon(-5, -3, 5, 0, -5, 3);
-            case ReactantReversible -> arrowHead = new Polygon(-6, 0, 0, 4, 6, 0, 0, -4);
-            case ProductReversible -> arrowHead = new Polygon(-6, 0, 0, 4, 6, 0, 0, -4);
-            case Inhibitor -> arrowHead = new Polyline(0, -5, 0, 5);
+            default -> arrowHead = new Polyline(-7, -5, 7, 0, -7, 5);
+            case Association, Reactant, Product -> arrowHead = new Polygon(-7, -5, 7, 0, -7, 5);
+            case ReactantReversible -> arrowHead = new Polygon(-8, 0, 0, 6, 8, 0, 0, -6);
+            case ProductReversible -> arrowHead = new Polygon(-8, 0, 0, 6, 8, 0, 0, -6);
+            case Inhibitor -> arrowHead = new Polyline(0, -7, 0, 7);
         }
         arrowHead.getStyleClass().add("graph-node"); // yes, graph-node
 
@@ -107,9 +109,7 @@ public class EdgeView extends Group {
         path.setStrokeWidth(2);
         path.getStyleClass().add("graph-edge");
 
-
         graphView.setupMouseInteraction(path, circleShape, null, e);
-
 
         switch (edgeType) {
             case Catalyst: {
@@ -270,5 +270,14 @@ public class EdgeView extends Group {
 
     public static EdgeView createNullEdgeView() {
         return new EdgeView();
+    }
+
+    public boolean intersectsInScene(Bounds sceneBounds) {
+        for (var part : BasicFX.getAllRecursively(this, Shape.class)) {
+            var bounds = part.sceneToLocal(sceneBounds);
+            if (part.intersects(bounds))
+                return true;
+        }
+        return false;
     }
 }

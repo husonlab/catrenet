@@ -345,15 +345,42 @@ public class Reaction implements Comparable<Reaction> {
         productCoefficient.put(product, coefficient);
     }
 
+    public Iterable<Reaction> allAsForward() {
+        return () -> (switch (getDirection()) {
+            case forward -> List.of(Reaction.this);
+            case reverse -> {
+                var reverse = new Reaction(Reaction.this.name + "-");
+                reverse.setCatalysts(getCatalysts());
+                reverse.getInhibitions().addAll(getInhibitions());
+                reverse.getProducts().addAll(getReactants());
+                reverse.getReactants().addAll(getProducts());
+                yield List.of(reverse);
+            }
+            case both -> {
+                var forward = new Reaction(Reaction.this.name + "+");
+                forward.setCatalysts(getCatalysts());
+                forward.getInhibitions().addAll(getInhibitions());
+                forward.getProducts().addAll(getProducts());
+                forward.getReactants().addAll(getReactants());
+                var reverse = new Reaction(Reaction.this.name + "-");
+                reverse.setCatalysts(getCatalysts());
+                reverse.getInhibitions().addAll(getInhibitions());
+                reverse.getProducts().addAll(getReactants());
+                reverse.getReactants().addAll(getProducts());
+                yield List.of(forward, reverse);
+            }
+        }).iterator();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Reaction reaction)) return false;
         return name.equals(reaction.name) &&
-                reactants.equals(reaction.reactants) &&
-                products.equals(reaction.products) &&
-                catalysts.equals(reaction.catalysts) &&
-                inhibitions.equals(reaction.inhibitions) &&
+               reactants.equals(reaction.reactants) &&
+               products.equals(reaction.products) &&
+               catalysts.equals(reaction.catalysts) &&
+               inhibitions.equals(reaction.inhibitions) &&
                 reactantCoefficient.equals(reaction.reactantCoefficient) &&
                 productCoefficient.equals(reaction.productCoefficient) &&
                 direction == reaction.direction;

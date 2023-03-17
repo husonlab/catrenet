@@ -27,6 +27,7 @@ import jloda.fx.window.NotificationManager;
 import jloda.graph.Graph;
 import jloda.graph.Node;
 import jloda.util.CanceledException;
+import jloda.util.StringUtils;
 import jloda.util.progress.ProgressListener;
 
 import java.util.HashMap;
@@ -36,39 +37,66 @@ import java.util.HashMap;
  * Daniel Huson and Mike Steel, 3.2023
  */
 public class ComputeReactionDependencies {
+	/**
+	 * computes the graph of strict reaction dependencies. There is an edge from p to r if p is required to produce
+	 * one of the reactants of r
+	 *
+	 * @param progress            progress
+	 * @param inputReactionSystem input reactions
+	 * @return graph containing all reactions and
+	 * @throws CanceledException
+	 */
 	public static Graph apply(ProgressListener progress, ReactionSystem inputReactionSystem) throws CanceledException {
 		progress.setTasks("Computing reaction dependencies", "F-generated set");
 		var reactions = Utilities.computeFGenerated(inputReactionSystem.getFoods(), inputReactionSystem.getReactions());
 		var one = MoleculeType.valueOf("!!!");
 		var graph = new Graph();
 		var nameNodeMap = new HashMap<String, Node>();
+		for (var r : reactions) {
+			nameNodeMap.put(r.getName(), graph.newNode(r.getName()));
+		}
 		progress.setSubtask("all pairs");
 		progress.setMaximum(reactions.size());
 		progress.setProgress(0L);
-		for (var i = 0; i < reactions.size(); i++) {
-			var r = reactions.get(i);
-			r.getReactants().add(one);
-			for (var j = i + 1; j < reactions.size(); j++) {
-				var s = reactions.get(j);
-				s.getProducts().add(one);
-				var generatedSize = Utilities.computeFGenerated(inputReactionSystem.getFoods(), reactions).size();
-				if (generatedSize < reactions.size()) {
-					var rNode = nameNodeMap.computeIfAbsent(r.getName(), k -> graph.newNode(r.getName()));
-					var sNode = nameNodeMap.computeIfAbsent(s.getName(), k -> graph.newNode(s.getName()));
-					graph.newEdge(rNode, sNode);
+		for (int i = 0; i < reactions.size(); i++) {
+			var r0 = reactions.get(i);
+			for (int j = 0; j < reactions.size(); j++) {
+				if (j != i) {
+					var s0 = reactions.get(j);
+					var ok = true;
+					doubleLoop:
+					for (var r : r0.allAsForward()) {
+						reactions.set(i, r);
+						try {
+							r.getReactants().add(one);
+							for (var s : s0.allAsForward()) {
+								reactions.set(j, s);
+								try {
+									s.getProducts().add(one);
+									var generatedSize = Utilities.computeFGenerated(inputReactionSystem.getFoods(), reactions).size();
+									if (generatedSize == reactions.size()) {
+										ok = false;
+										break doubleLoop;
+									}
+								} finally {
+									reactions.set(j, s0);
+								}
+							}
+						} finally {
+							reactions.set(i, r0);
+						}
+					}
+
+					if (ok) {
+						var rNode = nameNodeMap.get(r0.getName());
+						var sNode = nameNodeMap.get(s0.getName());
+						graph.newEdge(rNode, sNode);
+					}
 				}
-				s.getProducts().remove(one);
 			}
-			r.getReactants().remove(one);
 			progress.incrementProgress();
 		}
 		progress.reportTaskCompleted();
-		if (false) {
-			System.err.println("Dependencies:");
-			for (var e : graph.edges()) {
-				System.err.println(e.getSource().getInfo() + " < " + e.getTarget().getInfo());
-			}
-		}
 		return graph;
 	}
 
@@ -88,9 +116,8 @@ public class ComputeReactionDependencies {
 			final var textArea = mainWindow.getTabManager().getTextArea("Dependencies");
 			var buf = new StringBuilder();
 			buf.append("# Dependencies:\n");
-			for (var e : graph.edges()) {
-				buf.append(e.getSource().getInfo()).append(" < ").append(e.getTarget().getInfo()).append("\n");
-			}
+			var lines = graph.edgeStream().map(e -> e.getSource().getInfo() + " -> " + e.getTarget().getInfo()).sorted().toList();
+			buf.append(StringUtils.toString(lines, "\n"));
 			textArea.setText(buf.toString());
 		});
 	}

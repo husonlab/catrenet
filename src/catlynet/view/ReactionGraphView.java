@@ -61,7 +61,7 @@ import static catlynet.io.ModelIO.FORMAL_FOOD;
 public class ReactionGraphView {
     private final static ObjectProperty<Font> font = new SimpleObjectProperty<>(Font.font("Helvetica", 12));
 
-    public enum Type {fullGraph, dependencyGraph, reactantDependencyGraph}
+    public enum Type {fullGraph, assocationGraph, reactantAssociationGraph}
 
     private final ObjectProperty<Type> graphType = new SimpleObjectProperty<>();
 
@@ -184,10 +184,10 @@ public class ReactionGraphView {
         //System.err.println("Updating graph");
         final Map<MoleculeType, Node> molecule2node = new HashMap<>();
 
-        if (getGraphType() == Type.dependencyGraph)
-            SetupDependencyGraph.apply(reactionGraph, reactionSystem, true);
-        else if (getGraphType() == Type.reactantDependencyGraph)
-            SetupDependencyGraph.apply(reactionGraph, reactionSystem, false);
+        if (getGraphType() == Type.assocationGraph)
+            SetupAssocationalGraph.apply(reactionGraph, reactionSystem, true);
+        else if (getGraphType() == Type.reactantAssociationGraph)
+            SetupAssocationalGraph.apply(reactionGraph, reactionSystem, false);
         else {
             SetupFullGraph.apply(reactionGraph, reactionSystem, foodNodes, molecule2node, isSuppressCatalystEdges(), isUseMultiCopyFoodNodes());
             if (isSuppressFormalFood()) {
@@ -247,6 +247,7 @@ public class ReactionGraphView {
         service.setOnSucceeded((e) -> {
             world.getChildren().setAll(setupGraphView(reactionSystem, reactionGraph, node2view, edge2view, service.getValue()));
             empty.set(reactionGraph.getNumberOfNodes() == 0);
+            ImproveLabelLayout.apply(this);
         });
         service.start();
     }
@@ -560,5 +561,13 @@ public class ReactionGraphView {
 
     public void setGraphType(Type graphType) {
         this.graphType.set(graphType);
+    }
+
+    public NodeArray<NodeView> getNode2view() {
+        return node2view;
+    }
+
+    public EdgeArray<EdgeView> getEdge2view() {
+        return edge2view;
     }
 }

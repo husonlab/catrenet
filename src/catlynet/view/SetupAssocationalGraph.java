@@ -1,5 +1,5 @@
 /*
- * SetupDependencyGraph.java Copyright (C) 2022 Daniel H. Huson
+ * SetupAssocationalGraph.java Copyright (C) 2022 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -33,20 +33,19 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * setup up the  dependency graph
+ * setup up the  association graph
  * Daniel HUson, 2.2020
  */
-public class SetupDependencyGraph {
-    /**
-     * apply
-     *
+public class SetupAssocationalGraph {
+	/**
+	 * apply
 	 */
-    public static void apply(Graph reactionGraph, ReactionSystem reactionSystem, boolean useCatalysts) {
-        final Map<Reaction, Node> reactionNodeMap = new HashMap<>();
+	public static void apply(Graph reactionGraph, ReactionSystem reactionSystem, boolean useCatalysts) {
+		final Map<Reaction, Node> reactionNodeMap = new HashMap<>();
 
-        reactionSystem.getReactions().forEach(r -> reactionNodeMap.put(r, reactionGraph.newNode(r)));
+		reactionSystem.getReactions().forEach(r -> reactionNodeMap.put(r, reactionGraph.newNode(r)));
 
-        reactionSystem.getReactions().forEach(r1 -> {
+		reactionSystem.getReactions().forEach(r1 -> {
             final Node v = reactionNodeMap.get(r1);
 
             reactionSystem.getReactions().stream().filter(r2 -> r2 != r1).forEach(r2 -> {
@@ -75,14 +74,14 @@ public class SetupDependencyGraph {
 
                         if ((r2.getDirection() == Reaction.Direction.forward || r2.getDirection() == Reaction.Direction.both) &&
 							(CollectionUtils.intersects(nonFoodProducts, r2.getReactants()) || (useCatalysts && (CollectionUtils.intersects(nonFoodProducts, catalysts)) || CollectionUtils.intersects(nonFoodProducts, r2.getInhibitions())))
-							&& v.getEdgeTo(w) == null) {
-                            reactionGraph.newEdge(v, w, EdgeType.Dependency);
-                        } else if ((r2.getDirection() == Reaction.Direction.reverse || r2.getDirection() == Reaction.Direction.both) &&
+							&& v != null && v.getEdgeTo(w) == null) {
+							reactionGraph.newEdge(v, w, EdgeType.Association);
+						} else if ((r2.getDirection() == Reaction.Direction.reverse || r2.getDirection() == Reaction.Direction.both) &&
 								   (CollectionUtils.intersects(nonFoodProducts, r2.getProducts()) || (useCatalysts && (CollectionUtils.intersects(nonFoodProducts, catalysts)) || CollectionUtils.intersects(nonFoodProducts, r2.getInhibitions())))
 								   && v.getEdgeTo(w) == null) {
-                            reactionGraph.newEdge(v, w, EdgeType.Dependency);
-                        }
-                    }
+							reactionGraph.newEdge(v, w, EdgeType.Association);
+						}
+					}
                 }
             });
         });

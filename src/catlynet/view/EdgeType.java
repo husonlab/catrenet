@@ -23,4 +23,4 @@ package catlynet.view;
  * edge type in reaction graph
  * Daniel Huson, 7.2019
  */
-public enum EdgeType {Reactant, Product, ReactantReversible, ProductReversible, Catalyst, Inhibitor, Dependency}
+public enum EdgeType {Reactant, Product, ReactantReversible, ProductReversible, Catalyst, Inhibitor, Association}

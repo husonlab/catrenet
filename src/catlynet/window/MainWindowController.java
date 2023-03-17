@@ -256,10 +256,10 @@ public class MainWindowController {
 	private RadioMenuItem fullGraphRadioMenuItem;
 
 	@FXML
-	private RadioMenuItem dependencyGraphRadioMenuItem;
+	private RadioMenuItem assocationGraphRadioMenuItem;
 
 	@FXML
-	private RadioMenuItem reactantDependencyRadioMenuItem;
+	private RadioMenuItem reactantAssocationaRadioMenuItem;
 
 	@FXML
 	private CheckMenuItem suppressCatalystEdgesMenuItem;
@@ -724,12 +724,12 @@ public class MainWindowController {
 		return fullGraphRadioMenuItem;
 	}
 
-	public RadioMenuItem getDependencyGraphRadioMenuItem() {
-		return dependencyGraphRadioMenuItem;
+	public RadioMenuItem getAssocationGraphRadioMenuItem() {
+		return assocationGraphRadioMenuItem;
 	}
 
-	public RadioMenuItem getReactantDependencyGraphRadioMenuItem() {
-		return reactantDependencyRadioMenuItem;
+	public RadioMenuItem getReactantAssociationGraphRadioMenuItem() {
+		return reactantAssocationaRadioMenuItem;
 	}
 
 	public CheckMenuItem getSuppressCatalystEdgesMenuItem() {
