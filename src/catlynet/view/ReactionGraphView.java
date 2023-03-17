@@ -185,9 +185,9 @@ public class ReactionGraphView {
         final Map<MoleculeType, Node> molecule2node = new HashMap<>();
 
         if (getGraphType() == Type.assocationGraph)
-            SetupAssocationalGraph.apply(reactionGraph, reactionSystem, true);
+            SetupAssocationGraph.apply(reactionGraph, reactionSystem, true);
         else if (getGraphType() == Type.reactantAssociationGraph)
-            SetupAssocationalGraph.apply(reactionGraph, reactionSystem, false);
+            SetupAssocationGraph.apply(reactionGraph, reactionSystem, false);
         else {
             SetupFullGraph.apply(reactionGraph, reactionSystem, foodNodes, molecule2node, isSuppressCatalystEdges(), isUseMultiCopyFoodNodes());
             if (isSuppressFormalFood()) {

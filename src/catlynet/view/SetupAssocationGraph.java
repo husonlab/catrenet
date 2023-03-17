@@ -1,5 +1,5 @@
 /*
- * SetupAssocationalGraph.java Copyright (C) 2022 Daniel H. Huson
+ * SetupAssocationGraph.java Copyright (C) 2022 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -36,7 +36,7 @@ import java.util.Set;
  * setup up the  association graph
  * Daniel HUson, 2.2020
  */
-public class SetupAssocationalGraph {
+public class SetupAssocationGraph {
 	/**
 	 * apply
 	 */
@@ -46,7 +46,7 @@ public class SetupAssocationalGraph {
 		reactionSystem.getReactions().forEach(r -> reactionNodeMap.put(r, reactionGraph.newNode(r)));
 
 		reactionSystem.getReactions().forEach(r1 -> {
-            final Node v = reactionNodeMap.get(r1);
+			final Node v = reactionNodeMap.get(r1);
 
             reactionSystem.getReactions().stream().filter(r2 -> r2 != r1).forEach(r2 -> {
                 final Node w = reactionNodeMap.get(r2);
