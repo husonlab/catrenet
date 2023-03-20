@@ -83,28 +83,28 @@ public class Reaction implements Comparable<Reaction> {
         catalysts = src.getCatalysts();
         inhibitions.addAll(src.getInhibitions());
         direction = src.getDirection();
+        productCoefficient.putAll(src.productCoefficient);
     }
 
 
     public boolean isCatalyzedAndUninhibitedAndHasAllReactants(Collection<MoleculeType> food, Direction direction) {
-        return (((direction == Direction.forward || direction == Direction.both) && (getDirection() == Direction.forward || getDirection() == Direction.both) && food.containsAll(getReactants()))
-                || ((direction == Direction.reverse || direction == Direction.both) && (getDirection() == Direction.reverse || getDirection() == Direction.both) && food.containsAll(getProducts())))
+        return (((direction == Direction.forward || direction == Direction.both) && food.containsAll(getReactants()))
+                || ((direction == Direction.reverse || direction == Direction.both) && food.containsAll(getProducts())))
                && (getCatalysts().length() == 0 || getCatalystConjunctions().stream().map(m -> MoleculeType.valuesOf(m.getName().split("&"))).anyMatch(food::containsAll))
                && (getInhibitions().size() == 0 || getInhibitions().stream().noneMatch(food::contains));
     }
 
     public boolean isCatalyzedAndUninhibitedAndHasAllReactants(Collection<MoleculeType> foodForReactants, Collection<MoleculeType> foodForCatalysts, Collection<MoleculeType> foodForInhibitors, Direction direction) {
-        return (((direction == Direction.forward || direction == Direction.both) && (getDirection() == Direction.forward || getDirection() == Direction.both) && foodForReactants.containsAll(getReactants()))
-                || ((direction == Direction.reverse || direction == Direction.both) && (getDirection() == Direction.reverse || getDirection() == Direction.both) && foodForReactants.containsAll(getProducts())))
+        return (((direction == Direction.forward || direction == Direction.both) && foodForReactants.containsAll(getReactants()))
+                || ((direction == Direction.reverse || direction == Direction.both) && foodForReactants.containsAll(getProducts())))
                && (getCatalysts().length() == 0 || getCatalystConjunctions().stream().map(m -> MoleculeType.valuesOf(m.getName().split("&"))).anyMatch(foodForCatalysts::containsAll))
                && (getInhibitions().size() == 0 || getInhibitions().stream().noneMatch(foodForReactants::contains));
     }
 
     public boolean isHasAllReactants(Collection<MoleculeType> food, Direction direction) {
-        return (((direction == Direction.forward || direction == Direction.both) && (getDirection() == Direction.forward || getDirection() == Direction.both) && food.containsAll(getReactants()))
-                || ((direction == Direction.reverse || direction == Direction.both) && (getDirection() == Direction.reverse || getDirection() == Direction.both) && food.containsAll(getProducts())));
+        return (((direction == Direction.forward || direction == Direction.both) && food.containsAll(getReactants()))
+                || ((direction == Direction.reverse || direction == Direction.both) && food.containsAll(getProducts())));
     }
-
 
     public Set<MoleculeType> getInhibitions() {
         return inhibitions;
@@ -345,31 +345,32 @@ public class Reaction implements Comparable<Reaction> {
         productCoefficient.put(product, coefficient);
     }
 
-    public Iterable<Reaction> allAsForward() {
-        return () -> (switch (getDirection()) {
-            case forward -> List.of(Reaction.this);
+    public List<Reaction> allAsForward() {
+        return switch (getDirection()) {
+            case forward -> {
+                var forward = new Reaction(Reaction.this.name, this);
+                yield List.of(forward);
+            }
             case reverse -> {
-                var reverse = new Reaction(Reaction.this.name + "-");
-                reverse.setCatalysts(getCatalysts());
-                reverse.getInhibitions().addAll(getInhibitions());
-                reverse.getProducts().addAll(getReactants());
-                reverse.getReactants().addAll(getProducts());
+                var reverse = new Reaction(Reaction.this.name, this);
+                reverse.swapReactantsAndProducts();
                 yield List.of(reverse);
             }
             case both -> {
-                var forward = new Reaction(Reaction.this.name + "+");
-                forward.setCatalysts(getCatalysts());
-                forward.getInhibitions().addAll(getInhibitions());
-                forward.getProducts().addAll(getProducts());
-                forward.getReactants().addAll(getReactants());
-                var reverse = new Reaction(Reaction.this.name + "-");
-                reverse.setCatalysts(getCatalysts());
-                reverse.getInhibitions().addAll(getInhibitions());
-                reverse.getProducts().addAll(getReactants());
-                reverse.getReactants().addAll(getProducts());
+                var forward = new Reaction(Reaction.this.name + "[+]", this);
+                var reverse = new Reaction(Reaction.this.name + "[-]", this);
+                reverse.swapReactantsAndProducts();
                 yield List.of(forward, reverse);
             }
-        }).iterator();
+        };
+    }
+
+    private void swapReactantsAndProducts() {
+        var products = new ArrayList<>(getProducts());
+        getProducts().clear();
+        getProducts().addAll(getReactants());
+        getReactants().clear();
+        getReactants().addAll(products);
     }
 
     @Override

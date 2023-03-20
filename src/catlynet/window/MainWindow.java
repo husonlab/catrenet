@@ -83,7 +83,7 @@ public class MainWindow implements IMainWindow {
 
             statusPane = controller.getStatusFlowPane();
 
-            reactionGraphView = new ReactionGraphView(getInputReactionSystem(), controller, getLogStream());
+            reactionGraphView = new ReactionGraphView(getDocument(), controller, getLogStream());
         }
 
         exportManager = new ExportManager(this);

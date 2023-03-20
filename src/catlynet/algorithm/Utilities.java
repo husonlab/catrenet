@@ -89,7 +89,18 @@ public class Utilities {
             if (toAdd.size() > 0) {
                 closure.addAll(toAdd);
                 for (var r : toAdd) {
-                    availableFood.addAll(r.getProducts());
+                    availableFood.addAll(switch (r.getDirection()) {
+                        case forward -> r.getProducts();
+                        case reverse -> r.getReactants();
+                        case both -> {
+                            var result = new ArrayList<MoleculeType>();
+                            if (availableFood.containsAll(r.getReactants()))
+                                result.addAll(r.getProducts());
+                            if (availableFood.containsAll(r.getProducts()))
+                                result.addAll(r.getReactants());
+                            yield result;
+                        }
+                    });
                 }
                 availableReactions.removeAll(toAdd);
             } else

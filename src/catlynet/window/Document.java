@@ -28,6 +28,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
 import jloda.fx.util.ProgramProperties;
+import jloda.graph.Graph;
 
 import java.util.TreeSet;
 
@@ -38,6 +39,9 @@ public class Document {
 
     private final ObservableMap<String, ReactionSystem> reactionSystems = FXCollections.observableHashMap();
     private final ObservableSet<String> definedSystems = FXCollections.observableSet(new TreeSet<>());
+
+    private final ObjectProperty<Graph> reactionDependencyGraph = new SimpleObjectProperty<>(this, "reactionDependencyGraph");
+    private final ObjectProperty<Graph> moleculeDependencyGraph = new SimpleObjectProperty<>(this, "moleculeDependencyGraph");
 
     private final ObjectProperty<ReactionNotation> reactionNotation = new SimpleObjectProperty<>(ReactionNotation.valueOfIgnoreCase(ProgramProperties.get("ReactionNotation", "Sparse")));
     private final ObjectProperty<ArrowNotation> arrowNotation = new SimpleObjectProperty<>(ArrowNotation.valueOfLabel(ProgramProperties.get("ArrowNotation", "=>")));
@@ -127,5 +131,29 @@ public class Document {
 
     public ObservableSet<String> getDefinedSystems() {
         return new ReadOnlySetWrapper<>(definedSystems);
+    }
+
+    public Graph getReactionDependencyGraph() {
+        return reactionDependencyGraph.get();
+    }
+
+    public ObjectProperty<Graph> reactionDependencyGraphProperty() {
+        return reactionDependencyGraph;
+    }
+
+    public void setReactionDependencyGraph(Graph reactionDependencyGraph) {
+        this.reactionDependencyGraph.set(reactionDependencyGraph);
+    }
+
+    public Graph getMoleculeDependencyGraph() {
+        return moleculeDependencyGraph.get();
+    }
+
+    public ObjectProperty<Graph> moleculeDependencyGraphProperty() {
+        return moleculeDependencyGraph;
+    }
+
+    public void setMoleculeDependencyGraph(Graph moleculeDependencyGraph) {
+        this.moleculeDependencyGraph.set(moleculeDependencyGraph);
     }
 }

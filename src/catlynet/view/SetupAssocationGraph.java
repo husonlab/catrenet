@@ -29,39 +29,37 @@ import jloda.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * setup up the  association graph
- * Daniel HUson, 2.2020
+ * Daniel Huson, 2.2020
  */
 public class SetupAssocationGraph {
 	/**
 	 * apply
 	 */
 	public static void apply(Graph reactionGraph, ReactionSystem reactionSystem, boolean useCatalysts) {
-		final Map<Reaction, Node> reactionNodeMap = new HashMap<>();
+		final var reactionNodeMap = new HashMap<Reaction, Node>();
 
 		reactionSystem.getReactions().forEach(r -> reactionNodeMap.put(r, reactionGraph.newNode(r)));
 
 		reactionSystem.getReactions().forEach(r1 -> {
-			final Node v = reactionNodeMap.get(r1);
+			final var v = reactionNodeMap.get(r1);
 
-            reactionSystem.getReactions().stream().filter(r2 -> r2 != r1).forEach(r2 -> {
-                final Node w = reactionNodeMap.get(r2);
+			reactionSystem.getReactions().stream().filter(r2 -> r2 != r1).forEach(r2 -> {
+				final var w = reactionNodeMap.get(r2);
 
-                for (int z = 0; z <= 1; z++) { // try forward, then reverse
-                    final Set<MoleculeType> nonFoodProducts = new HashSet<>();
-                    if (z == 0) {
-                        if (r1.getDirection() == Reaction.Direction.forward || r1.getDirection() == Reaction.Direction.both) {
+				for (var z = 0; z <= 1; z++) { // try forward, then reverse
+					final var nonFoodProducts = new HashSet<MoleculeType>();
+					if (z == 0) {
+						if (r1.getDirection() == Reaction.Direction.forward || r1.getDirection() == Reaction.Direction.both) {
 							nonFoodProducts.addAll(r1.getProducts());
 							reactionSystem.getFoods().forEach(nonFoodProducts::remove);
-                        } else
-                            continue;
-                    } else // z==1
-                    {
-                        if (r1.getDirection() == Reaction.Direction.reverse || r1.getDirection() == Reaction.Direction.both) {
+						} else
+							continue;
+					} else // z==1
+					{
+						if (r1.getDirection() == Reaction.Direction.reverse || r1.getDirection() == Reaction.Direction.both) {
 							nonFoodProducts.addAll(r1.getReactants());
 							reactionSystem.getFoods().forEach(nonFoodProducts::remove);
                         } else
@@ -69,12 +67,12 @@ public class SetupAssocationGraph {
                     }
 
                     if (nonFoodProducts.size() > 0) {
-                        final Set<MoleculeType> catalysts = new HashSet<>();
+						final var catalysts = new HashSet<MoleculeType>();
 						r2.getCatalystConjunctions().forEach(c -> catalysts.addAll(MoleculeType.valuesOf(StringUtils.split(c.getName(), '&'))));
 
-                        if ((r2.getDirection() == Reaction.Direction.forward || r2.getDirection() == Reaction.Direction.both) &&
+						if ((r2.getDirection() == Reaction.Direction.forward || r2.getDirection() == Reaction.Direction.both) &&
 							(CollectionUtils.intersects(nonFoodProducts, r2.getReactants()) || (useCatalysts && (CollectionUtils.intersects(nonFoodProducts, catalysts)) || CollectionUtils.intersects(nonFoodProducts, r2.getInhibitions())))
-							&& v != null && v.getEdgeTo(w) == null) {
+							&& v.getEdgeTo(w) == null) {
 							reactionGraph.newEdge(v, w, EdgeType.Association);
 						} else if ((r2.getDirection() == Reaction.Direction.reverse || r2.getDirection() == Reaction.Direction.both) &&
 								   (CollectionUtils.intersects(nonFoodProducts, r2.getProducts()) || (useCatalysts && (CollectionUtils.intersects(nonFoodProducts, catalysts)) || CollectionUtils.intersects(nonFoodProducts, r2.getInhibitions())))

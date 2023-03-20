@@ -60,7 +60,13 @@ public class RunAll {
                 RunAlgorithm.apply(window, inputReactions, new URAFAlgorithm(), runningListener, false);
             }
 
-            ComputeReactionDependencies.run(window);
+            window.getDocument().setReactionDependencyGraph(null);
+            if (window.getInputReactionSystem().getReactions().size() <= 100) {
+                ComputeReactionDependencies.run(window);
+            } else
+                System.err.println("Too many reactions, not automatically computing reaction dependency graph");
+            window.getDocument().setMoleculeDependencyGraph(null);
+            ComputeMoleculeDependencies.run(window);
         }
     }
 }

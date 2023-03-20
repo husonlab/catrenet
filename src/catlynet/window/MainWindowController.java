@@ -204,6 +204,9 @@ public class MainWindowController {
 	private MenuItem reactionDependenciesMenuItem;
 
 	@FXML
+	private MenuItem moleculeDependenciesMenuItem;
+
+	@FXML
 	private CheckMenuItem computeImportanceCheckMenuItem;
 
 	@FXML
@@ -256,10 +259,16 @@ public class MainWindowController {
 	private RadioMenuItem fullGraphRadioMenuItem;
 
 	@FXML
-	private RadioMenuItem assocationGraphRadioMenuItem;
+	private RadioMenuItem reactionDependencyGraphRadioMenuItem;
 
 	@FXML
-	private RadioMenuItem reactantAssocationaRadioMenuItem;
+	private RadioMenuItem moleculeDependencyGraphRadioMenuItem;
+
+	@FXML
+	private RadioMenuItem associationGraphRadioMenuItem;
+
+	@FXML
+	private RadioMenuItem reactantAssociationRadioMenuItem;
 
 	@FXML
 	private CheckMenuItem suppressCatalystEdgesMenuItem;
@@ -652,6 +661,10 @@ public class MainWindowController {
 		return reactionDependenciesMenuItem;
 	}
 
+	public MenuItem getMoleculeDependenciesMenuItem() {
+		return moleculeDependenciesMenuItem;
+	}
+
 	public CheckMenuItem getComputeImportanceCheckMenuItem() {
 		return computeImportanceCheckMenuItem;
 	}
@@ -724,12 +737,20 @@ public class MainWindowController {
 		return fullGraphRadioMenuItem;
 	}
 
-	public RadioMenuItem getAssocationGraphRadioMenuItem() {
-		return assocationGraphRadioMenuItem;
+	public RadioMenuItem getReactionDependencyGraphRadioMenuItem() {
+		return reactionDependencyGraphRadioMenuItem;
 	}
 
-	public RadioMenuItem getReactantAssociationGraphRadioMenuItem() {
-		return reactantAssocationaRadioMenuItem;
+	public RadioMenuItem getMoleculeDependencyGraphRadioMenuItem() {
+		return moleculeDependencyGraphRadioMenuItem;
+	}
+
+	public RadioMenuItem getAssociationGraphRadioMenuItem() {
+		return associationGraphRadioMenuItem;
+	}
+
+	public RadioMenuItem getReactantAssociationRadioMenuItem() {
+		return reactantAssociationRadioMenuItem;
 	}
 
 	public CheckMenuItem getSuppressCatalystEdgesMenuItem() {

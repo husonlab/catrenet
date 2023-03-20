@@ -20,17 +20,22 @@
 package catlynet.algorithm;
 
 import catlynet.model.MoleculeType;
+import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
+import catlynet.view.EdgeType;
 import catlynet.window.MainWindow;
 import jloda.fx.util.AService;
 import jloda.fx.window.NotificationManager;
 import jloda.graph.Graph;
 import jloda.graph.Node;
+import jloda.util.Basic;
 import jloda.util.CanceledException;
+import jloda.util.ExecuteInParallel;
 import jloda.util.StringUtils;
 import jloda.util.progress.ProgressListener;
 
-import java.util.HashMap;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * computes the graph of dependencies between all food-set generated reactions
@@ -46,14 +51,159 @@ public class ComputeReactionDependencies {
 	 * @return graph containing all reactions and
 	 * @throws CanceledException
 	 */
-	public static Graph apply(ProgressListener progress, ReactionSystem inputReactionSystem) throws CanceledException {
+	public static Graph apply(ProgressListener progress, ReactionSystem inputReactionSystem, Graph graph0) throws CanceledException {
+		var allFood = inputReactionSystem.getFoods();
+		var allReactions = new ArrayList<Reaction>();
+		for (var r : inputReactionSystem.getReactions()) {
+			allReactions.addAll(r.allAsForward());
+		}
+
+		var levelReactionsMap = new TreeMap<Integer, Collection<Reaction>>();
+		var levelMoleculesMap = new TreeMap<Integer, Collection<MoleculeType>>();
+		levelMoleculesMap.put(-1, allFood);
+
+		var levels = 0;
+
+		progress.setTasks("Computing reaction dependencies", "Computing levels");
+		var maxProgress = allReactions.size();
+		progress.setMaximum(maxProgress);
+		progress.setProgress(0);
+
+		var availableMolecules = new HashSet<>(allFood);
+		var availableReactions = new ArrayList<>(allReactions);
+		while (availableReactions.size() > 0) {
+			var additionalReactions = new HashSet<Reaction>();
+			var additionalMolecules = new HashSet<MoleculeType>();
+			for (var r : availableReactions) {
+				if (availableMolecules.containsAll(r.getReactants())) {
+					additionalReactions.add(r);
+					additionalMolecules.addAll(r.getProducts());
+				}
+			}
+			if (additionalReactions.size() == 0)
+				break;
+			availableMolecules.addAll(additionalMolecules);
+			levelReactionsMap.put(levels, additionalReactions);
+			additionalMolecules.addAll(levelMoleculesMap.get(levels - 1));
+			levelMoleculesMap.put(levels, additionalMolecules);
+			availableReactions.removeAll(additionalReactions);
+			levels++;
+			progress.setProgress(maxProgress - availableReactions.size());
+		}
+
+		System.err.println("Levels: " + levels);
+
+		progress.setTasks("Computing reaction dependencies", "");
+		progress.setMaximum(levels);
+		progress.setProgress(0);
+
+		var graph = (graph0 != null ? graph0 : new Graph());
+		graph.clear();
+
+		var nameNodeMap = new HashMap<String, Node>();
+		for (var r : allReactions) {
+			nameNodeMap.put(r.getName(), graph.newNode(r));
+		}
+		var one = MoleculeType.valueOf("!!!");
+
+		for (var k0 = 1; k0 < levels; k0++) {
+			var k = k0;
+			progress.setSubtask("%d of %d levels".formatted(k, levels - 1));
+
+			try {
+				ExecuteInParallel.apply(levelReactionsMap.get(k),
+						s -> {
+							var allReactionsBetween = new HashSet<Reaction>();
+							s.getProducts().add(one);
+							var ancestors = new HashSet<Node>();
+							for (var i = k - 1; i >= 0; i--) {
+								allReactionsBetween.addAll(levelReactionsMap.get(i));
+								for (var r : levelReactionsMap.get(i)) {
+									if (!ancestors.contains(nameNodeMap.get(r.getName()))) {
+										var r1 = new Reaction(r.getName(), r);
+										r1.getReactants().add(one);
+										var foodSet = levelMoleculesMap.get(i - 1);
+										if (!isFoodGenerated(foodSet, allReactionsBetween, r1, r, s)) {
+											var rNode = nameNodeMap.get(r.getName());
+											var sNode = nameNodeMap.get(s.getName());
+											synchronized (graph) {
+												graph.newEdge(rNode, sNode, EdgeType.Association);
+											}
+											collectAllAncestors(rNode, ancestors);
+										}
+										//r.getReactants().remove(one);
+									}
+								}
+								progress.checkForCancel();
+							}
+							s.getProducts().remove(one);
+						}, 15 /*ProgramExecutorService.getNumberOfCoresToUse()*/, progress);
+			} catch (Exception ignored) {
+			}
+
+			try {
+				progress.checkForCancel();
+			} catch (CanceledException ex) {
+				Basic.caught(ex);
+				throw ex;
+			}
+		}
+		progress.reportTaskCompleted();
+		return graph;
+	}
+
+	public static boolean isFoodGenerated(Collection<MoleculeType> food, Collection<Reaction> reactions, Reaction add, Reaction ignore, Reaction reaction) {
+		var availableFood = new HashSet<>(food);
+		var availableReactions = new ArrayList<>(reactions);
+		availableReactions.add(add);
+		availableReactions.add(reaction);
+		while (true) {
+			var generated = availableReactions.stream().filter(r -> r != ignore).filter(r -> r.isHasAllReactants(availableFood, r.getDirection())).collect(Collectors.toList());
+			if (generated.size() > 0) {
+				if (generated.contains(reaction))
+					return true;
+				for (var r : generated) {
+					availableFood.addAll(r.getProducts());
+				}
+				availableReactions.removeAll(generated);
+			} else
+				break;
+		}
+		return false;
+	}
+
+	public static void collectAllAncestors(Node v, Set<Node> ancestors) {
+		var stack = new Stack<Node>();
+		stack.push(v);
+		while (stack.size() > 0) {
+			v = stack.pop();
+			if (!ancestors.contains(v)) {
+				ancestors.add(v);
+				v.parents().forEach(stack::push);
+			}
+		}
+	}
+
+	/**
+	 * computes the graph of strict reaction dependencies. There is an edge from p to r if p is required to produce
+	 * one of the reactants of r
+	 *
+	 * @param progress            progress
+	 * @param inputReactionSystem input reactions
+	 * @return graph containing all reactions and
+	 * @throws CanceledException
+	 */
+	public static Graph applyOld(ProgressListener progress, ReactionSystem inputReactionSystem, Graph graph) throws CanceledException {
 		progress.setTasks("Computing reaction dependencies", "F-generated set");
 		var reactions = Utilities.computeFGenerated(inputReactionSystem.getFoods(), inputReactionSystem.getReactions());
 		var one = MoleculeType.valueOf("!!!");
-		var graph = new Graph();
+		if (graph == null)
+			graph = new Graph();
+		else
+			graph.clear();
 		var nameNodeMap = new HashMap<String, Node>();
 		for (var r : reactions) {
-			nameNodeMap.put(r.getName(), graph.newNode(r.getName()));
+			nameNodeMap.put(r.getName(), graph.newNode(r));
 		}
 		progress.setSubtask("all pairs");
 		progress.setMaximum(reactions.size());
@@ -90,7 +240,7 @@ public class ComputeReactionDependencies {
 					if (ok) {
 						var rNode = nameNodeMap.get(r0.getName());
 						var sNode = nameNodeMap.get(s0.getName());
-						graph.newEdge(rNode, sNode);
+						graph.newEdge(rNode, sNode, EdgeType.Association);
 					}
 				}
 			}
@@ -106,19 +256,23 @@ public class ComputeReactionDependencies {
 	 * @param mainWindow
 	 */
 	public static void run(MainWindow mainWindow) {
-
 		var service = new AService<Graph>(mainWindow.getStatusPane());
-		service.setCallable(() -> apply(service.getProgressListener(), mainWindow.getInputReactionSystem()));
-		service.restart();
+		service.setCallable(() -> apply(service.getProgressListener(), mainWindow.getInputReactionSystem(), null));
+		service.setOnScheduled(e -> mainWindow.getDocument().setReactionDependencyGraph(null));
 		service.setOnFailed(e -> NotificationManager.showError(service.getException().getMessage()));
+		service.setOnCancelled(e -> NotificationManager.showWarning("User canceled compute dependencies"));
 		service.setOnSucceeded(a -> {
 			var graph = service.getValue();
+			mainWindow.getDocument().setReactionDependencyGraph(graph);
 			final var textArea = mainWindow.getTabManager().getTextArea("Dependencies");
 			var buf = new StringBuilder();
-			buf.append("# Dependencies:\n");
+			buf.append("# Earliest reactions (%,d):%n".formatted(graph.nodeStream().filter(v -> v.getInDegree() == 0 && v.getOutDegree() > 0).count()));
+			buf.append(StringUtils.toString(new TreeSet<>(graph.nodeStream().filter(v -> v.getInDegree() == 0 && v.getOutDegree() > 0).map(v -> v.getInfo().toString()).toList()), "\n")).append("\n");
+			buf.append("# Dependencies (%,d):%n".formatted(graph.getNumberOfEdges()));
 			var lines = graph.edgeStream().map(e -> e.getSource().getInfo() + " -> " + e.getTarget().getInfo()).sorted().toList();
 			buf.append(StringUtils.toString(lines, "\n"));
 			textArea.setText(buf.toString());
 		});
+		service.restart();
 	}
 }

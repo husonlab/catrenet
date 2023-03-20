@@ -21,6 +21,7 @@ package catlynet.view;
 
 import catlynet.model.MoleculeType;
 import catlynet.model.ReactionSystem;
+import catlynet.window.Document;
 import catlynet.window.MainWindowController;
 import javafx.beans.property.*;
 import javafx.collections.ListChangeListener;
@@ -61,7 +62,7 @@ import static catlynet.io.ModelIO.FORMAL_FOOD;
 public class ReactionGraphView {
     private final static ObjectProperty<Font> font = new SimpleObjectProperty<>(Font.font("Helvetica", 12));
 
-    public enum Type {fullGraph, assocationGraph, reactantAssociationGraph}
+    public enum Type {fullGraph, associationGraph, reactantAssociationGraph, reactionDependencyGraph, moleculeDependencyGraph}
 
     private final ObjectProperty<Type> graphType = new SimpleObjectProperty<>();
 
@@ -91,6 +92,8 @@ public class ReactionGraphView {
     static class AndNode {
     }
 
+    private final Document document;
+
     private final ReactionSystem reactionSystem;
 
     private final Group world;
@@ -101,10 +104,10 @@ public class ReactionGraphView {
 
     /**
      * construct a graph view for the given system
-     *
-	 */
-    public ReactionGraphView(ReactionSystem reactionSystem, MainWindowController controller, PrintStream logStream) {
-        this.reactionSystem = reactionSystem;
+     */
+    public ReactionGraphView(Document document, MainWindowController controller, PrintStream logStream) {
+        this.document = document;
+        this.reactionSystem = document.getInputReactionSystem();
         this.controller = controller;
         this.world = new Group();
         this.logStream = logStream;
@@ -184,36 +187,49 @@ public class ReactionGraphView {
         //System.err.println("Updating graph");
         final Map<MoleculeType, Node> molecule2node = new HashMap<>();
 
-        if (getGraphType() == Type.assocationGraph)
-            SetupAssocationGraph.apply(reactionGraph, reactionSystem, true);
-        else if (getGraphType() == Type.reactantAssociationGraph)
-            SetupAssocationGraph.apply(reactionGraph, reactionSystem, false);
-        else {
-            SetupFullGraph.apply(reactionGraph, reactionSystem, foodNodes, molecule2node, isSuppressCatalystEdges(), isUseMultiCopyFoodNodes());
-            if (isSuppressFormalFood()) {
-                for (var v : reactionGraph.nodes()) {
-                    if (v.getInfo() instanceof MoleculeType moleculeType && moleculeType.equals(FORMAL_FOOD)) {
-                        reactionGraph.deleteNode(v);
-                        break;
+        if (getGraphType() != null) {
+            switch (getGraphType()) {
+                case associationGraph -> SetupAssocationGraph.apply(reactionGraph, reactionSystem, true);
+                case reactantAssociationGraph -> SetupAssocationGraph.apply(reactionGraph, reactionSystem, false);
+                case reactionDependencyGraph -> {
+                    reactionGraph.clear();
+                    if (document.getReactionDependencyGraph() != null)
+                        reactionGraph.copy(document.getReactionDependencyGraph());
+                }
+                case moleculeDependencyGraph -> {
+                    reactionGraph.clear();
+                    if (document.getMoleculeDependencyGraph() != null)
+                        reactionGraph.copy(document.getMoleculeDependencyGraph());
+                }
+
+                case fullGraph -> {
+                    SetupFullGraph.apply(reactionGraph, reactionSystem, foodNodes, molecule2node, isSuppressCatalystEdges(), isUseMultiCopyFoodNodes());
+                    if (isSuppressFormalFood()) {
+                        for (var v : reactionGraph.nodes()) {
+                            if (v.getInfo() instanceof MoleculeType moleculeType && moleculeType.equals(FORMAL_FOOD)) {
+                                reactionGraph.deleteNode(v);
+                                break;
+                            }
+                        }
                     }
                 }
             }
         }
 
-        final int numberOfConnectedComponts = ConnectedComponents.count(reactionGraph);
+        final var numberOfConnectedComponts = ConnectedComponents.count(reactionGraph);
         if (numberOfConnectedComponts > 1)
             logStream.printf("Reaction graph has %d connected components%n", numberOfConnectedComponts);
 
-        final AService<NodeArray<APoint2D<?>>> service = new AService<>(controller.getStatusFlowPane());
+        final var service = new AService<NodeArray<APoint2D<?>>>(controller.getStatusFlowPane());
 
-        final NodeArray<APoint2D<?>> result = new NodeArray<>(reactionGraph);
+        final var result = new NodeArray<APoint2D<?>>(reactionGraph);
 
         service.setCallable(() -> {
             var maxWidth = Math.max(600, controller.getVisualizationScrollPane().getViewportBounds().getWidth() - 100);
             if (true)
                 MultiComponents.apply(null, 0.9 * maxWidth, maxWidth, 80, 80, reactionGraph, e -> 1d, (v, p) -> result.put(v, new APoint2D<>(p.getX(), p.getY(), v)));
             else {
-                final FruchtermanReingoldLayout layout = new FruchtermanReingoldLayout(reactionGraph);
+                final var layout = new FruchtermanReingoldLayout(reactionGraph);
                 layout.apply(getEmbeddingIterations(), result, service.getProgressListener(), ProgramExecutorService.getNumberOfCoresToUse());
             }
             return result;
@@ -290,7 +306,7 @@ public class ReactionGraphView {
         final Group labels = new Group();
 
         graph.nodeStream().forEach(v -> {
-            final NodeView nv = new NodeView(this, reactionSystem.getFoods(), v, coordinates.get(v).getX(), coordinates.get(v).getY());
+            final var nv = new NodeView(this, reactionSystem.getFoods(), v, coordinates.get(v).getX(), coordinates.get(v).getY());
             nv.getLabel().setStyle(getNodeLabelStyle());
             node2view.put(v, nv);
             spacers.getChildren().add(nv.getSpacer());
@@ -299,12 +315,12 @@ public class ReactionGraphView {
         });
 
         for (Edge edge : graph.edges()) {
-            final EdgeType edgeType = (EdgeType) edge.getInfo();
+            final var edgeType = (EdgeType) edge.getInfo();
 
-            final Shape sourceShape = node2view.get(edge.getSource()).getShape();
-            final Shape targetShape = node2view.get(edge.getTarget()).getShape();
+            final var sourceShape = node2view.get(edge.getSource()).getShape();
+            final var targetShape = node2view.get(edge.getTarget()).getShape();
 
-            final EdgeView edgeView = new EdgeView(this, edge, sourceShape.translateXProperty(), sourceShape.translateYProperty(), targetShape.translateXProperty(), targetShape.translateYProperty(), edgeType);
+            final var edgeView = new EdgeView(this, edge, sourceShape.translateXProperty(), sourceShape.translateYProperty(), targetShape.translateXProperty(), targetShape.translateYProperty(), edgeType);
 
             edges.getChildren().add(edgeView);
             edge2view.put(edge, edgeView);
@@ -320,8 +336,8 @@ public class ReactionGraphView {
     public void setupMouseInteraction(javafx.scene.Node mouseTarget, javafx.scene.Node nodeToMove, Node v, Edge e) {
         mouseTarget.setCursor(Cursor.CROSSHAIR);
 
-        final double[] mouseDown = new double[2];
-        final boolean[] moved = {false};
+        final var mouseDown = new double[2];
+        final var moved = new boolean[]{false};
 
         mouseTarget.setOnMousePressed(c -> {
             mouseDown[0] = c.getSceneX();
@@ -331,11 +347,11 @@ public class ReactionGraphView {
         });
 
         mouseTarget.setOnMouseDragged(c -> {
-            final double mouseX = c.getSceneX();
-            final double mouseY = c.getSceneY();
+            final var mouseX = c.getSceneX();
+            final var mouseY = c.getSceneY();
 
             if (v != null && !nodeToMove.translateXProperty().isBound()) {
-                for (Node w : nodeSelection.getSelectedItems()) {
+                for (var w : nodeSelection.getSelectedItems()) {
                     node2view.get(w).translate(mouseX - mouseDown[0], mouseY - mouseDown[1]);
                 }
             } else {
@@ -387,7 +403,6 @@ public class ReactionGraphView {
                         else
                             edgeSelection.select(e);
                     }
-
                 }
             }
         });
@@ -399,12 +414,12 @@ public class ReactionGraphView {
                     edgeSelection.selectItems(IteratorUtils.asList(v.adjacentEdges()));
                 }
             } else if (c.getClickCount() == 3) {
-                final NodeSet nodes = new NodeSet(reactionGraph);
+                final var nodes = new NodeSet(reactionGraph);
                 ConnectedComponents.collect(v, nodes);
                 nodeSelection.selectItems(nodes);
-                final EdgeSet edges = new EdgeSet(reactionGraph);
-                for (Node p : nodes) {
-                    for (Edge f : p.adjacentEdges()) {
+                final var edges = new EdgeSet(reactionGraph);
+                for (var p : nodes) {
+                    for (var f : p.adjacentEdges()) {
                         if (nodes.contains(f.getOpposite(p)))
                             edges.add(f);
                     }
@@ -437,8 +452,8 @@ public class ReactionGraphView {
      */
     static Path getPath(Group group) {
         for (javafx.scene.Node child : group.getChildren()) {
-            if (child instanceof Path)
-                return (Path) child;
+            if (child instanceof Path path)
+                return path;
         }
         return null;
     }
@@ -476,13 +491,13 @@ public class ReactionGraphView {
     }
 
     public Rectangle2D getBBox() {
-        double minX = Double.MAX_VALUE;
-        double minY = Double.MAX_VALUE;
-        double maxX = Double.MIN_VALUE;
-        double maxY = Double.MIN_VALUE;
+        var minX = Double.MAX_VALUE;
+        var minY = Double.MAX_VALUE;
+        var maxX = Double.MIN_VALUE;
+        var maxY = Double.MIN_VALUE;
 
         for (Node v : reactionGraph.nodes()) {
-            final Shape shape = node2view.get(v).getShape();
+            final var shape = node2view.get(v).getShape();
             minX = Math.min(minX, shape.getTranslateX());
             minY = Math.min(minY, shape.getTranslateY());
             maxX = Math.max(maxX, shape.getTranslateY());

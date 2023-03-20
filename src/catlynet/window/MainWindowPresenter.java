@@ -80,7 +80,7 @@ public class MainWindowPresenter {
 
         final BooleanProperty disableGraphItems = new SimpleBooleanProperty(true);
         final BooleanProperty disableFullGraphItems = new SimpleBooleanProperty(true);
-        disableFullGraphItems.bind(disableGraphItems.or(graphView.graphTypeProperty().isEqualTo(ReactionGraphView.Type.assocationGraph)
+        disableFullGraphItems.bind(disableGraphItems.or(graphView.graphTypeProperty().isEqualTo(ReactionGraphView.Type.associationGraph)
                         .or(graphView.graphTypeProperty().isEqualTo(ReactionGraphView.Type.reactantAssociationGraph)))
                 .or(window.getReactionGraphView().getMoleculeFlowAnimation().playingProperty()));
 
@@ -358,6 +358,8 @@ public class MainWindowPresenter {
         controller.getReactionDependenciesMenuItem().setOnAction(e -> ComputeReactionDependencies.run(window));
         controller.getReactionDependenciesMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
+        controller.getMoleculeDependenciesMenuItem().setOnAction(e -> ComputeMoleculeDependencies.run(window));
+        controller.getMoleculeDependenciesMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
         controller.getRunMenuItem().setOnAction(e -> {
             RunAll.apply(window, runningListener);
@@ -530,7 +532,7 @@ public class MainWindowPresenter {
 
         final RadioMenuItem noGraphTypeSet = new RadioMenuItem();
         final ToggleGroup graphTypeButtonGroup = new ToggleGroup();
-        graphTypeButtonGroup.getToggles().addAll(controller.getFullGraphRadioMenuItem(), controller.getAssocationGraphRadioMenuItem(), controller.getReactantAssociationGraphRadioMenuItem(), noGraphTypeSet);
+        graphTypeButtonGroup.getToggles().addAll(controller.getFullGraphRadioMenuItem(), controller.getReactantAssociationRadioMenuItem(), controller.getAssociationGraphRadioMenuItem(), controller.getReactantAssociationRadioMenuItem(), noGraphTypeSet);
 
         graphTypeButtonGroup.selectToggle(new RadioMenuItem());
 
@@ -544,19 +546,30 @@ public class MainWindowPresenter {
         );
         controller.getFullGraphRadioMenuItem().disableProperty().bind(controller.getRunMenuItem().disableProperty().or(window.getReactionGraphView().getMoleculeFlowAnimation().playingProperty()));
 
-        controller.getAssocationGraphRadioMenuItem().selectedProperty().addListener((c, o, n) ->
-        {
-            graphView.setGraphType(ReactionGraphView.Type.assocationGraph);
+        controller.getReactionDependencyGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> {
+            graphView.setGraphType(ReactionGraphView.Type.reactionDependencyGraph);
             controller.getVisualizationTab().getTabPane().getSelectionModel().select(controller.getVisualizationTab());
         });
-        controller.getAssocationGraphRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty());
+        controller.getReactionDependencyGraphRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty().or(window.getDocument().reactionDependencyGraphProperty().isNull()));
 
-        controller.getReactantAssociationGraphRadioMenuItem().selectedProperty().addListener((c, o, n) ->
-        {
+        controller.getMoleculeDependencyGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> {
+            graphView.setGraphType(ReactionGraphView.Type.moleculeDependencyGraph);
+            controller.getVisualizationTab().getTabPane().getSelectionModel().select(controller.getVisualizationTab());
+        });
+        controller.getMoleculeDependencyGraphRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty().or(window.getDocument().moleculeDependencyGraphProperty().isNull()));
+
+
+        controller.getAssociationGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> {
+            graphView.setGraphType(ReactionGraphView.Type.associationGraph);
+            controller.getVisualizationTab().getTabPane().getSelectionModel().select(controller.getVisualizationTab());
+        });
+        controller.getAssociationGraphRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty());
+
+        controller.getReactantAssociationRadioMenuItem().selectedProperty().addListener((c, o, n) -> {
             graphView.setGraphType(ReactionGraphView.Type.reactantAssociationGraph);
             controller.getVisualizationTab().getTabPane().getSelectionModel().select(controller.getVisualizationTab());
         });
-        controller.getReactantAssociationGraphRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty());
+        controller.getReactantAssociationRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty());
 
         controller.getSuppressCatalystEdgesMenuItem().selectedProperty().addListener((c, o, n) -> {
             graphView.setSuppressCatalystEdges(n);
