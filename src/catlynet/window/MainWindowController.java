@@ -42,6 +42,13 @@ import java.util.ResourceBundle;
 public class MainWindowController {
 
 	@FXML
+	private ToggleButton wrapFoodTextToggle;
+
+	@FXML
+	private ToggleButton wrapReactionsTextToggle;
+
+
+	@FXML
 	private ResourceBundle resources;
 
 	@FXML
@@ -160,6 +167,9 @@ public class MainWindowController {
 
 	@FXML
 	private MenuItem runRAFMenuItem;
+
+	@FXML
+	private MenuItem runStrictlyAutocatalyticRAFMenuItem;
 
 	@FXML
 	private MenuItem runPseudoRAFMenuItem;
@@ -390,6 +400,10 @@ public class MainWindowController {
 
 	@FXML
 	void initialize() {
+		wrapFoodTextToggle.selectedProperty().bindBidirectional(inputFoodTextArea.wrapTextProperty());
+		wrapFoodTextToggle.setSelected(true);
+		wrapReactionsTextToggle.selectedProperty().bindBidirectional(inputTextArea.wrapTextProperty());
+
 		increaseFontSizeMenuItem.setAccelerator(new KeyCharacterCombination("+", KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_ANY));
 		decreaseFontSizeMenuItem.setAccelerator(new KeyCharacterCombination("/", KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_ANY));
 
@@ -603,6 +617,10 @@ public class MainWindowController {
 
 	public MenuItem getRunRAFMenuItem() {
 		return runRAFMenuItem;
+	}
+
+	public MenuItem getRunStrictlyAutocatalyticRAFMenuItem() {
+		return runStrictlyAutocatalyticRAFMenuItem;
 	}
 
 	public MenuItem getRunPseudoRAFMenuItem() {

@@ -173,6 +173,7 @@ public class MoleculeFlowAnimation {
                 final Color color = colorScheme.get(Math.abs(label.hashCode()) % colorScheme.size());
                 circle.setFill(color);
                 circle.setStroke(((Color) circle.getFill()).darker());
+                circle.setMouseTransparent(true);
                 movingPart = circle;
             }
 

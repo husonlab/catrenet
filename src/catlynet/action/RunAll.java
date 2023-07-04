@@ -51,6 +51,7 @@ public class RunAll {
 
             RunAlgorithm.apply(window, inputReactions, new MaxCAFAlgorithm(), runningListener, true);
             RunAlgorithm.apply(window, inputReactions, new MaxRAFAlgorithm(), runningListener, false);
+            RunAlgorithm.apply(window, inputReactions, new StrictlyAutocatalyticMaxRAFAlgorithm(), runningListener, false);
             RunAlgorithm.apply(window, inputReactions, new MaxPseudoRAFAlgorithm(), runningListener, false);
             RunAlgorithm.apply(window, inputReactions, new TrivialCAFsAlgorithm(), runningListener, false);
             RunAlgorithm.apply(window, inputReactions, new TrivialRAFsAlgorithm(), runningListener, false);

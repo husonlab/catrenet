@@ -174,8 +174,6 @@ public class MainWindowPresenter {
             }
         });
 
-        controller.getInputFoodTextArea().setWrapText(true);
-
         // cut, copy, paste and undo/redo all implemented by TextArea controls
 
         controller.getCutMenuItem().setOnAction(e -> {
@@ -266,6 +264,13 @@ public class MainWindowPresenter {
             }
         });
         controller.getRunRAFMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()));
+
+        controller.getRunStrictlyAutocatalyticRAFMenuItem().setOnAction(e -> {
+            if (VerifyInput.verify(window)) {
+                RunAlgorithm.apply(window, window.getInputReactionSystem(), new StrictlyAutocatalyticMaxRAFAlgorithm(), runningListener, true);
+            }
+        });
+        controller.getRunStrictlyAutocatalyticRAFMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
         controller.getRunCAFMenuItem().setOnAction(e -> {
             if (VerifyInput.verify(window)) {

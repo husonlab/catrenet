@@ -59,7 +59,6 @@ public class WarnAboutMissingMoleculesOrUnusedFood {
 				final String message1 = "There are " + aService.getValue().getMissingCatalysts().size() + " catalysts that are never provided or produced: " + StringUtils.toString(aService.getValue().getMissingCatalysts(), ", ") + ".";
                 NotificationManager.showWarning(message1);
                 controller.getLogTextArea().setText(controller.getLogTextArea().getText() + "\n\n" + message1);
-
             }
 
             if (aService.getValue().getUnusedFood().size() > 0) {
