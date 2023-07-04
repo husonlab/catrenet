@@ -94,7 +94,7 @@ public class CatlyNet extends Application {
 
     protected static void parseArguments(String[] args) throws CanceledException, UsageException {
         final var options = new ArgsOptions(args, CatlyNet.class, Version.NAME + " - Auto catalytic networks");
-        options.setAuthors("Daniel H. Huson, with Mike A. Steel");
+        options.setAuthors("Daniel H. Huson and Mike A. Steel");
         options.setLicense(ProgramProperties.getProgramLicence());
         options.setVersion(ProgramProperties.getProgramVersion());
 

@@ -19,14 +19,10 @@
 
 package catlynet.algorithm;
 
-import catlynet.model.MoleculeType;
-import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
 import jloda.util.CanceledException;
 import jloda.util.SetUtils;
 import jloda.util.progress.ProgressListener;
-
-import java.util.Set;
 
 /**
  * computes a canonical uninhibited RAF (U RAF)
@@ -48,26 +44,26 @@ public class URAFAlgorithm extends AlgorithmBase {
      * @return U RAF or empty set
      */
     public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException {
-        ReactionSystem result = new ReactionSystem();
+        var result = new ReactionSystem();
         result.setName(Name);
 
         // 1. Compute R'= maxRAF(X, R, C, \emptyset, F) for input Q
 
         progress.setSubtask("MaxRAF R1");
-        final ReactionSystem R1 = new MaxRAFAlgorithm().apply(input, progress); // this algorithm ignores all inhibitions
+        var R1 = new MaxRAFAlgorithm().apply(input, progress); // this algorithm ignores all inhibitions
 
         // 2. If R' == emptyset return nil, else let R'' be the subset of reaction r\in  R' for which r is not inhibited by the product of any reaction  in R' or by any element of the foodset.
         if (R1.size() == 0)
             return result;
 
-        final Set<MoleculeType> foodSetAndProductions = Utilities.addAllMentionedProducts(R1.getFoods(), R1.getReactions());
+        var foodSetAndProductions = Utilities.addAllMentionedProducts(R1.getFoods(), R1.getReactions());
         // final Set<MoleculeType> foodSetAndProductions=computeClosure(R1.getFoods(),R1.getReactions());
 
         progress.setSubtask("Setup R2");
         progress.setMaximum(R1.getReactions().size());
-        final ReactionSystem R2 = new ReactionSystem("R2");
+        var R2 = new ReactionSystem("R2");
         R2.getFoods().setAll(R1.getFoods());
-        for (Reaction reaction : R1.getReactions()) {
+        for (var reaction : R1.getReactions()) {
             if (!SetUtils.intersect(reaction.getInhibitions(), foodSetAndProductions))
                 R2.getReactions().add(reaction);
             progress.incrementProgress();
