@@ -24,7 +24,6 @@ import catlynet.action.NewWindow;
 import catlynet.action.VerifyInput;
 import catlynet.format.ArrowNotation;
 import catlynet.format.ReactionNotation;
-import catlynet.model.ReactionSystem;
 import catlynet.window.MainWindow;
 import jloda.fx.util.RecentFilesManager;
 import jloda.fx.window.MainWindowManager;
@@ -49,11 +48,11 @@ public class FileOpener implements Consumer<String> {
 
     @Override
     public void accept(String fileName) {
-        MainWindow window = (MainWindow) MainWindowManager.getInstance().getLastFocusedMainWindow();
+        var window = (MainWindow) MainWindowManager.getInstance().getLastFocusedMainWindow();
         if (window == null || !window.isEmpty())
             window = NewWindow.apply();
 
-        final ReactionSystem reactionSystem = window.getInputReactionSystem();
+		var reactionSystem = window.getInputReactionSystem();
 
         try {
             final ArrayList<String> inputLines;
@@ -68,7 +67,7 @@ public class FileOpener implements Consumer<String> {
             } else {
 				inputLines = FileUtils.getLinesFromFile(fileName);
 				window.getDocument().setFileName(fileName);
-				final String[] lines = FileUtils.getFirstLinesFromFile(new File(fileName), 10);
+				var lines = FileUtils.getFirstLinesFromFile(new File(fileName), 10);
                 if (lines == null)
                     throw new IOException("Can't read file: " + fileName);
                 notation = ReactionNotation.detectNotation(Arrays.asList(lines));
@@ -78,17 +77,17 @@ public class FileOpener implements Consumer<String> {
                 throw new IOException("Couldn't detect 'full', 'sparse' or 'tabbed' file format");
             }
 
-			try (BufferedReader r = new BufferedReader(new StringReader(StringUtils.toString(inputLines, "\n")))) {
+			try (var r = new BufferedReader(new StringReader(StringUtils.toString(inputLines, "\n")))) {
 				reactionSystem.clear();
-				final String leadingComments = ModelIO.read(window.getInputReactionSystem(), r, notation.getFirst());
+				var leadingComments = ModelIO.read(window.getInputReactionSystem(), r, notation.getFirst());
 
 				window.getController().getInputTextArea().setText((leadingComments.length() > 0 ? leadingComments + "\n" : "") + ModelIO.toString(window.getInputReactionSystem(), false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
-				final String food = ModelIO.getFoodString(window.getInputReactionSystem(), window.getDocument().getReactionNotation());
+				var food = ModelIO.getFoodString(window.getInputReactionSystem(), window.getDocument().getReactionNotation());
 
 				window.getController().getInputFoodTextArea().setText(food);
 
-				final String infoString = "Read " + reactionSystem.size() + " reactions" + (reactionSystem.getNumberOfTwoWayReactions() > 0 ? "(" + reactionSystem.getNumberOfTwoWayReactions() + " two-way)" : "")
-										  + " and " + reactionSystem.getFoods().size() + " food items from file: " + fileName;
+				var infoString = "Read " + reactionSystem.size() + " reactions" + (reactionSystem.getNumberOfTwoWayReactions() > 0 ? "(" + reactionSystem.getNumberOfTwoWayReactions() + " two-way)" : "")
+								 + " and " + reactionSystem.getFoods().size() + " food items from file: " + fileName;
 
                 NotificationManager.showInformation(infoString);
 
@@ -103,7 +102,7 @@ public class FileOpener implements Consumer<String> {
         } catch (Exception e) {
             if (false) { // here we need to drop the text into a window and highlight the error
                 try {
-					final ArrayList<String> inputLines = FileUtils.getLinesFromFile(fileName);
+					var inputLines = FileUtils.getLinesFromFile(fileName);
 					window.getController().getInputTextArea().setText(StringUtils.toString(inputLines, "\n"));
 				} catch (IOException ignored) {
                 }

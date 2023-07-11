@@ -257,6 +257,22 @@
                                     </accelerator>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
+                                <Menu mnemonicParsing="false" text="List">
+                                    <items>
+                                        <MenuItem fx:id="listFoodMenuItem" mnemonicParsing="false" text="Food"/>
+                                        <MenuItem fx:id="listReactionsMenuItem" mnemonicParsing="false"
+                                                  text="Reactions"/>
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <MenuItem fx:id="listReactantsMenuItem" mnemonicParsing="false"
+                                                  text="Reactants"/>
+                                        <MenuItem fx:id="listProductsMenuItem" mnemonicParsing="false" text="Products"/>
+                                        <MenuItem fx:id="listCatalystsMenuItem" mnemonicParsing="false"
+                                                  text="Catalysts"/>
+                                        <MenuItem fx:id="listInhibitorsMenuItem" mnemonicParsing="false"
+                                                  text="Inhibitors"/>
+                                    </items>
+                                </Menu>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="zoomInMenuItem" text="Zoom In">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="UP" control="UP" meta="UP" shift="UP"
@@ -469,12 +485,11 @@
                                                             <items>
                                                                 <ToggleButton fx:id="wrapFoodTextToggle"
                                                                               contentDisplay="GRAPHIC_ONLY"
-                                                                              layoutX="98.0"
-                                                                              layoutY="11.0" maxHeight="18.0"
-                                                                              maxWidth="18.0" minHeight="18.0"
-                                                                              minWidth="18.0" mnemonicParsing="false"
-                                                                              prefHeight="18.0" prefWidth="18.0"
-                                                                              selected="false"
+                                                                              layoutX="98.0" layoutY="11.0"
+                                                                              maxHeight="18.0" maxWidth="18.0"
+                                                                              minHeight="18.0" minWidth="18.0"
+                                                                              mnemonicParsing="false" prefHeight="18.0"
+                                                                              prefWidth="18.0" selected="false"
                                                                               style="-fx-border-style: none;"
                                                                               text="Wrap">
                                                                     <font>
@@ -522,12 +537,11 @@
                                                             <items>
                                                                 <ToggleButton fx:id="wrapReactionsTextToggle"
                                                                               contentDisplay="GRAPHIC_ONLY"
-                                                                              layoutX="98.0"
-                                                                              layoutY="11.0" maxHeight="18.0"
-                                                                              maxWidth="18.0" minHeight="18.0"
-                                                                              minWidth="18.0" mnemonicParsing="false"
-                                                                              prefHeight="18.0" prefWidth="18.0"
-                                                                              selected="false"
+                                                                              layoutX="98.0" layoutY="11.0"
+                                                                              maxHeight="18.0" maxWidth="18.0"
+                                                                              minHeight="18.0" minWidth="18.0"
+                                                                              mnemonicParsing="false" prefHeight="18.0"
+                                                                              prefWidth="18.0" selected="false"
                                                                               style="-fx-border-style: none;"
                                                                               text="Wrap">
                                                                     <font>

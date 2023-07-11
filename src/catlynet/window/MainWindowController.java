@@ -243,6 +243,23 @@ public class MainWindowController {
 	@FXML
 	private MenuItem decreaseFontSizeMenuItem;
 
+	@FXML
+	private MenuItem listCatalystsMenuItem;
+
+	@FXML
+	private MenuItem listInhibitorsMenuItem;
+
+	@FXML
+	private MenuItem listProductsMenuItem;
+
+	@FXML
+	private MenuItem listReactantsMenuItem;
+
+	@FXML
+	private MenuItem listReactionsMenuItem;
+
+	@FXML
+	private MenuItem listFoodMenuItem;
 
 	@FXML
 	private MenuItem zoomInMenuItem;
@@ -922,5 +939,29 @@ public class MainWindowController {
 
 	public CheckMenuItem getUseDarkThemeCheckMenuItem() {
 		return useDarkThemeCheckMenuItem;
+	}
+
+	public MenuItem getListCatalystsMenuItem() {
+		return listCatalystsMenuItem;
+	}
+
+	public MenuItem getListInhibitorsMenuItem() {
+		return listInhibitorsMenuItem;
+	}
+
+	public MenuItem getListProductsMenuItem() {
+		return listProductsMenuItem;
+	}
+
+	public MenuItem getListReactantsMenuItem() {
+		return listReactantsMenuItem;
+	}
+
+	public MenuItem getListReactionsMenuItem() {
+		return listReactionsMenuItem;
+	}
+
+	public MenuItem getListFoodMenuItem() {
+		return listFoodMenuItem;
 	}
 }

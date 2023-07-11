@@ -27,6 +27,7 @@ import catlynet.io.Save;
 import catlynet.io.SaveBeforeClosingDialog;
 import catlynet.main.CheckForUpdate;
 import catlynet.model.MoleculeType;
+import catlynet.model.ReactionSystem;
 import catlynet.tab.TabManager;
 import catlynet.tab.TextTab;
 import catlynet.vformat.VFormatWindow;
@@ -58,7 +59,9 @@ import jloda.util.NumberUtils;
 import jloda.util.StringUtils;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Optional;
+import java.util.TreeSet;
 
 import static catlynet.io.ModelIO.FORMAL_FOOD;
 
@@ -627,6 +630,26 @@ public class MainWindowPresenter {
 
         SetupFind.apply(window);
 
+        selectLogTab(controller);
+
+
+        controller.getListFoodMenuItem().setOnAction(e -> reportList(window.getInputReactionSystem(), "Food", controller));
+        controller.getListFoodMenuItem().disableProperty().bind(controller.getRunMenuItem().disableProperty());
+
+        controller.getListReactionsMenuItem().setOnAction(e -> reportList(window.getInputReactionSystem(), "Reactions", controller));
+        controller.getListReactionsMenuItem().disableProperty().bind(controller.getRunMenuItem().disableProperty());
+        controller.getListReactantsMenuItem().setOnAction(e -> reportList(window.getInputReactionSystem(), "Reactants", controller));
+        controller.getListReactantsMenuItem().disableProperty().bind(controller.getRunMenuItem().disableProperty());
+        controller.getListProductsMenuItem().setOnAction(e -> reportList(window.getInputReactionSystem(), "Products", controller));
+        controller.getListProductsMenuItem().disableProperty().bind(controller.getRunMenuItem().disableProperty());
+        controller.getListCatalystsMenuItem().setOnAction(e -> reportList(window.getInputReactionSystem(), "Catalysts", controller));
+        controller.getListCatalystsMenuItem().disableProperty().bind(controller.getRunMenuItem().disableProperty());
+        controller.getListInhibitorsMenuItem().setOnAction(e -> reportList(window.getInputReactionSystem(), "Inhibitors", controller));
+        controller.getListInhibitorsMenuItem().disableProperty().bind(controller.getRunMenuItem().disableProperty());
+
+    }
+
+    public static void selectLogTab(MainWindowController controller) {
         Platform.runLater(() -> controller.getLogTab().getTabPane().getSelectionModel().select(controller.getLogTab()));
     }
 
@@ -659,5 +682,75 @@ public class MainWindowPresenter {
                 controller.getWrapTextMenuItem().selectedProperty().unbindBidirectional(textArea.wrapTextProperty());
             }
         };
+    }
+
+    public static void reportList(ReactionSystem reactionSystem, String what, MainWindowController controller) {
+        var textArea = controller.getLogTextArea();
+        var lines = new ArrayList<String>();
+        switch (what) {
+            case "Food" -> {
+                for (var molecule : reactionSystem.getFoods()) {
+                    lines.add(molecule.getName());
+                }
+            }
+            case "Reactions" -> {
+                for (var reaction : reactionSystem.getReactions()) {
+                    lines.add(reaction.getName());
+                }
+            }
+            case "Reactants" -> {
+                var set = new TreeSet<MoleculeType>();
+                for (var reaction : reactionSystem.getReactions()) {
+                    switch (reaction.getDirection()) {
+                        case forward -> set.addAll(reaction.getReactants());
+                        case reverse -> set.addAll(reaction.getProducts());
+                        case both -> {
+                            set.addAll(reaction.getReactants());
+                            set.addAll(reaction.getProducts());
+                        }
+                    }
+                }
+                for (var molecule : set) {
+                    lines.add(molecule.getName());
+                }
+            }
+            case "Products" -> {
+                var set = new TreeSet<MoleculeType>();
+                for (var reaction : reactionSystem.getReactions()) {
+                    switch (reaction.getDirection()) {
+                        case forward -> set.addAll(reaction.getProducts());
+                        case reverse -> set.addAll(reaction.getReactants());
+                        case both -> {
+                            set.addAll(reaction.getProducts());
+                            set.addAll(reaction.getReactants());
+                        }
+                    }
+                }
+                for (var molecule : set) {
+                    lines.add(molecule.getName());
+                }
+            }
+            case "Catalysts" -> {
+                var set = new TreeSet<MoleculeType>();
+                for (var reaction : reactionSystem.getReactions()) {
+                    set.addAll(reaction.getCatalystElements());
+                }
+                for (var molecule : set) {
+                    lines.add(molecule.getName());
+                }
+            }
+            case "Inhibitors" -> {
+                var set = new TreeSet<MoleculeType>();
+                for (var molecule : reactionSystem.getReactions()) {
+                    set.addAll(molecule.getInhibitions());
+                }
+                for (var molecule : set) {
+                    lines.add(molecule.getName());
+                }
+            }
+        }
+        textArea.setText(textArea.getText() + "%n%nList %s (%,d):%n".formatted(what, lines.size()) + StringUtils.toString(lines, "\n"));
+        selectLogTab(controller);
+        Platform.runLater(() -> textArea.setScrollTop(Double.MAX_VALUE));
     }
 }

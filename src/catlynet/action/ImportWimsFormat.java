@@ -30,7 +30,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
 
 /**
  * imports data in Wim's format
@@ -71,61 +70,62 @@ public class ImportWimsFormat {
      * @return name of new file
 	 */
     public static ArrayList<String> importToString(String fileName) throws IOException {
-        final ArrayList<String> food = new ArrayList<>();
-        final Set<String> foodSet = new HashSet<>();
-        final ArrayList<String> reactions = new ArrayList<>();
-        final Set<String> reactionsSet = new HashSet<>();
+        final var food = new ArrayList<String>();
+        final var foodSet = new HashSet<String>();
+        final var reactions = new ArrayList<String>();
+        final var reactionsSet = new HashSet<String>();
 
-        try (FileLineIterator it = new FileLineIterator(fileName)) {
-            String part = "";
-            int nrMolecules = -1;
-            int nrFoodSet = -1;
-            int nrReactions = -1;
+        try (var it = new FileLineIterator(fileName)) {
+            var part = "";
+            var nrMolecules = -1;
+            var nrFoodSet = -1;
+            var nrReactions = -1;
 
-            int moleculesFound = 0;
+            var moleculesFound = 0;
 
-            long lineNrMolecules = 0;
-            long lineNrFoodSet = 0;
-            long lineReactions = 0;
+            var lineNrMolecules = 0L;
+            var lineNrFoodSet = 0L;
+            var lineReactions = 0L;
 
             while (it.hasNext()) {
-                final String line = it.next().trim();
+                final var line = it.next().trim();
                 if (line.length() > 0) {
                     if (line.startsWith("<") && line.endsWith(">"))
                         part = line;
                     else {
                         switch (part) {
-                            case "<meta-data>": {
-								switch (StringUtils.getFirstWord(line)) {
-									case "nrMolecules":
-										nrMolecules = NumberUtils.parseInt(StringUtils.getLastWord(line));
+                            case "<meta-data>" -> {
+                                switch (StringUtils.getFirstWord(line)) {
+                                    case "nrMolecules" -> {
+                                        nrMolecules = NumberUtils.parseInt(StringUtils.getLastWord(line));
                                         lineNrMolecules = it.getLineNumber();
-										break;
-									case "nrFoodSet":
+                                    }
+                                    case "nrFoodSet" -> {
                                         nrFoodSet = NumberUtils.parseInt(StringUtils.getLastWord(line));
                                         lineNrFoodSet = it.getLineNumber();
-										break;
-									case "nrReactions":
+                                    }
+                                    case "nrReactions" -> {
                                         nrReactions = NumberUtils.parseInt(StringUtils.getLastWord(line));
                                         lineReactions = it.getLineNumber();
-                                        break;
+                                    }
                                 }
-                                break;
                             }
-                            case "<molecules>": {
+                            case "<molecules>" -> {
                                 moleculesFound++;
                                 // skip all molecules
-                                break;
                             }
-                            case "<food set>": {
-                                if (foodSet.contains(line))
-                                    throw new IOExceptionWithLineNumber(it.getLineNumber(), "Wim's format: <food> contains duplicate item: " + line);
-                                else
-                                    foodSet.add(line);
-								food.add(StringUtils.getLastWord(line));
-                                break;
+                            case "<food set>" -> {
+                                var items = line.trim().split("[;\t]");
+                                if (items.length > 0) {
+                                    var foodItem = items[items.length - 1].trim();
+                                    if (foodSet.contains(foodItem))
+                                        throw new IOExceptionWithLineNumber(it.getLineNumber(), "Wim's format: <food> contains duplicate item: " + foodItem);
+                                    else
+                                        foodSet.add(foodItem);
+                                    food.add(foodItem);
+                                }
                             }
-                            case "<reactions>": {
+                            case "<reactions>" -> {
                                 if (reactionsSet.contains(line))
                                     throw new IOExceptionWithLineNumber(it.getLineNumber(), "Wim's format: <reactions> contains duplicate item: " + line);
                                 else
@@ -148,7 +148,7 @@ public class ImportWimsFormat {
                 throw new IOExceptionWithLineNumber(lineReactions, String.format("Wim's format: Expected nrReactions=%d reactions, found %d", nrReactions, reactions.size()));
             }
         }
-        final ArrayList<String> output = new ArrayList<>();
+        final var output = new ArrayList<String>();
         output.add("# Imported from file: " + fileName);
         output.add("# Food: " + food.size());
         output.add("# Reactions: " + reactions.size());
