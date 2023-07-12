@@ -26,8 +26,8 @@ import catlynet.format.ArrowNotation;
 import catlynet.format.ReactionNotation;
 import catlynet.io.ModelIO;
 import catlynet.model.ReactionSystem;
-import jloda.swing.util.ArgsOptions;
-import jloda.swing.util.ResourceManager;
+import jloda.fx.util.ArgsOptions;
+import jloda.fx.util.ResourceManagerFX;
 import jloda.util.*;
 import jloda.util.progress.ProgressPercentage;
 
@@ -44,7 +44,7 @@ public class CommandLineTool {
 	 */
 	public static void main(String[] args) {
 		try {
-			ResourceManager.insertResourceRoot(catlynet.resources.Resources.class);
+			ResourceManagerFX.addResourceRoot(catlynet.resources.Resources.class, "catlynet.resources");
 			ProgramProperties.setProgramName(CommandLineTool.class.getSimpleName());
 			ProgramProperties.setProgramVersion(catlynet.main.Version.SHORT_DESCRIPTION);
 

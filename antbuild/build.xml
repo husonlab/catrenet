@@ -21,27 +21,21 @@
 
 
     <property name="jfxDir" value="/Users/huson/lib/javafx/lib"/>
-    <property name="jlodaAntDir" value="../../jloda/antbuild"/>
     <property name="buildSrcDir" value="../antbuild/src"/>
     <property name="buildModulesDir" value="../antbuild/modules"/>
 
     <path id="build.classpath">
         <fileset dir="../../catlynet/jars" includes="*.jar"/>
-        <fileset dir="${jlodaAntDir}" includes="jloda.jar"/>
     </path>
 
     <path id="build.modulepath">
-        <fileset dir="../../jloda/jars" includes="*.jar"/>
         <fileset dir="../../catlynet/jars" includes="*.jar"/>
         <fileset dir="${jfxDir}" includes="*.jar"/>
-        <fileset dir="../antbuild" includes="jloda.jar"/>
     </path>
 
     <path id="run.modulepath">
-        <fileset dir="../../jloda/jars" includes="*.jar"/>
         <fileset dir="../../catlynet/jars" includes="*.jar"/>
         <fileset dir="${jfxDir}" includes="*.jar"/>
-        <fileset dir="../antbuild" includes="jloda.jar"/>
         <fileset dir="../antbuild" includes="catlynet.jar"/>
     </path>
 
@@ -50,11 +44,7 @@
         <mkdir dir="${buildModulesDir}/catlynet"/>
     </target>
 
-    <target name="jloda" depends="init">
-        <ant antfile="${jlodaAntDir}/build.xml" target="jar"/>
-    </target>
-
-    <target name="copy_sources" depends="jloda">
+    <target name="copy_sources" depends="init">
         <copy todir="${buildSrcDir}/catlynet">
             <fileset dir="../../catlynet/src"/>
         </copy>
@@ -98,7 +88,6 @@
         <delete dir="${buildModulesDir}" includeEmptyDirs="true"/>
         <delete dir="${buildSrcDir}" includeEmptyDirs="true"/>
         <delete file="catlynet.jar"/>
-        <delete file="jloda.jar"/>
     </target>
 
 </project>

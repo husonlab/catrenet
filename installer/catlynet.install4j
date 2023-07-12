@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="10.0.3" transformSequenceNumber="10">
-  <directoryPresets config="../tools/catlynet-tool" />
+<install4j version="10.0.6" transformSequenceNumber="10">
+  <directoryPresets config="../src/catlynet/resources/icons" />
   <application name="CatlyNet" applicationId="3801-6361-6203-7564" mediaDir="../../../builds" shortName="CatlyNet" publisher="Daniel Huson and Mike Steel" publisherWeb="http://www.husonlab.org/catlynet" version="0.0.0_beta" allPathsRelative="true" macVolumeId="b8c0a1154e563a9a" javaMinVersion="11">
     <variables>
       <variable name="renderingVMOption" />
@@ -25,12 +25,6 @@
         </exclude>
       </dirEntry>
       <fileEntry mountPoint="1691242167" file="../antbuild/catlynet.jar" />
-      <fileEntry mountPoint="1691242167" file="../antbuild/jloda.jar" />
-      <dirEntry mountPoint="1691242167" file="../../jloda/jars" subDirectory="jars">
-        <exclude>
-          <entry location=".DS_Store" />
-        </exclude>
-      </dirEntry>
       <fileEntry mountPoint="1691243203" file="../jars/i4jruntime.jar" />
       <dirEntry mountPoint="1691242153" file="../examples" subDirectory="examples" />
       <fileEntry mountPoint="1691243204" file="../tools/catlynet-tool" fileMode="755" overrideFileMode="true" />
@@ -68,11 +62,7 @@
         </modulePath>
       </java>
       <iconImageFiles>
-        <file path="../src/catlynet/resources/icons/CatlyNet-16.png" />
-        <file path="../src/catlynet/resources/icons/CatlyNet-32.png" />
-        <file path="../src/catlynet/resources/icons/CatlyNet-48.png" />
-        <file path="../src/catlynet/resources/icons/CatlyNet-64.png" />
-        <file path="../src/catlynet/resources/icons/CatlyNet-128.png" />
+        <file path="../src/catlynet/resources/icons/CatlyNet-512.png" />
       </iconImageFiles>
     </launcher>
   </launchers>

@@ -82,7 +82,7 @@ public class MainWindowController {
 	private Menu recentFilesMenu;
 
 	@FXML
-	private MenuItem saveMenItem;
+	private MenuItem saveMenuItem;
 
 	@FXML
 	private MenuItem pageSetupMenuItem;
@@ -328,6 +328,12 @@ public class MainWindowController {
 	private ToolBar mainToolBar;
 
 	@FXML
+	private MenuButton recentMenuButton;
+
+	@FXML
+	private MenuButton exportMenuButton;
+
+	@FXML
 	private Button runButton;
 
 	@FXML
@@ -520,8 +526,8 @@ public class MainWindowController {
 		return recentFilesMenu;
 	}
 
-	public MenuItem getSaveMenItem() {
-		return saveMenItem;
+	public MenuItem getSaveMenuItem() {
+		return saveMenuItem;
 	}
 
 	public MenuItem getPageSetupMenuItem() {
@@ -963,5 +969,13 @@ public class MainWindowController {
 
 	public MenuItem getListFoodMenuItem() {
 		return listFoodMenuItem;
+	}
+
+	public MenuButton getRecentMenuButton() {
+		return recentMenuButton;
+	}
+
+	public MenuButton getExportMenuButton() {
+		return exportMenuButton;
 	}
 }

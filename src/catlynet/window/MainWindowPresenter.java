@@ -36,6 +36,7 @@ import catlynet.view.NodeView;
 import catlynet.view.ReactionGraphView;
 import catlynet.view.SelectionBindings;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
@@ -130,6 +131,7 @@ public class MainWindowPresenter {
 
         controller.getOpenMenuItem().setOnAction(FileOpenManager.createOpenFileEventHandler(window.getStage()));
 
+
         controller.getImportMenuItem().setOnAction(c -> ImportWimsFormat.apply(window.getStage()));
 
         controller.getExportSelectedNodesMenuItem().setOnAction(c -> ExportManager.exportNodes(window));
@@ -143,7 +145,36 @@ public class MainWindowPresenter {
         controller.getExportListOfReactionsMenuItem().disableProperty().bind(window.getInputReactionSystem().sizeProperty().isEqualTo(0));
 
 
-        controller.getSaveMenItem().setOnAction(e -> Save.showSaveDialog(window));
+        var recentFilesInvalidationListener = (InvalidationListener) e -> {
+            controller.getRecentMenuButton().getItems().clear();
+            for (var menuItem : controller.getRecentFilesMenu().getItems()) {
+                var newMenuItem = new MenuItem(menuItem.getText());
+                newMenuItem.setOnAction(menuItem.getOnAction());
+                controller.getRecentMenuButton().getItems().add(newMenuItem);
+            }
+        };
+        recentFilesInvalidationListener.invalidated(null);
+        controller.getRecentFilesMenu().getItems().addListener(recentFilesInvalidationListener);
+        controller.getRecentFilesMenu().disableProperty().bind(Bindings.isEmpty(controller.getRecentFilesMenu().getItems()));
+
+
+        controller.getExportMenu().getItems().addListener((InvalidationListener) e -> {
+            controller.getExportMenuButton().getItems().clear();
+            var afterSeparator = false;
+            for (var menuItem : controller.getExportMenu().getItems()) {
+                if (menuItem instanceof SeparatorMenuItem)
+                    afterSeparator = true;
+                else if (afterSeparator) {
+                    var newMenuItem = new MenuItem(menuItem.getText());
+                    newMenuItem.setOnAction(menuItem.getOnAction());
+                    controller.getExportMenuButton().getItems().add(newMenuItem);
+                }
+            }
+        });
+        controller.getExportMenuButton().disableProperty().bind(Bindings.isEmpty(controller.getExportMenuButton().getItems()));
+
+
+        controller.getSaveMenuItem().setOnAction(e -> Save.showSaveDialog(window));
 
         controller.getCloseMenuItem().setOnAction(e -> {
             if (MainWindowManager.getInstance().size() > 1 && algorithmsRunning.get() > 0)

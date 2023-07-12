@@ -65,7 +65,7 @@
                                     </items>
                                 </Menu>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="saveMenItem" mnemonicParsing="false" text="Save...">
+                                <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" text="Save...">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="S" control="UP" meta="DOWN" shift="UP"
                                                             shortcut="UP"/>
@@ -428,9 +428,50 @@
                 </MenuBar>
                 <ToolBar fx:id="mainToolBar" minHeight="-Infinity" prefHeight="30.0">
                     <items>
-                        <Button fx:id="runButton" minHeight="-Infinity" mnemonicParsing="false" prefHeight="24.0"
-                                text="Run Main Algorithms"/>
+                        <MenuButton fx:id="recentMenuButton" maxHeight="-Infinity" maxWidth="-Infinity"
+                                    minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="24.0"
+                                    prefWidth="40.0">
+                            <graphic>
+                                <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/jloda/resources/icons/sun/Open24.gif"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                            <tooltip>
+                                <Tooltip text="Open a recent file"/>
+                            </tooltip>
+                        </MenuButton>
+                        <MenuButton fx:id="exportMenuButton" maxHeight="-Infinity" maxWidth="-Infinity"
+                                    minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="24.0"
+                                    prefWidth="40.0">
+                            <graphic>
+                                <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/jloda/resources/icons/sun/Export24.gif"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                            <tooltip>
+                                <Tooltip text="Export a computed reaction system"/>
+                            </tooltip>
+                        </MenuButton>
                         <Separator orientation="VERTICAL" prefHeight="200.0"/>
+
+                        <Button fx:id="runButton" minHeight="-Infinity" mnemonicParsing="false" prefHeight="24.0">
+                            <graphic>
+                                <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/jloda/resources/icons/Play.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                            <tooltip>
+                                <Tooltip text="Run all main algorithms"/>
+                            </tooltip>
+                        </Button>
+                        <Separator orientation="VERTICAL" prefHeight="200.0"/>
+
                         <Button fx:id="stopAnimationButton" minHeight="-Infinity" mnemonicParsing="false"
                                 prefHeight="24.0" text="Animation">
                             <graphic>
@@ -440,6 +481,9 @@
                                     </image>
                                 </ImageView>
                             </graphic>
+                            <tooltip>
+                                <Tooltip text="Stop an animation"/>
+                            </tooltip>
                         </Button>
                     </items>
                 </ToolBar>

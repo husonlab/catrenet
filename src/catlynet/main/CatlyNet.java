@@ -66,7 +66,7 @@ public class CatlyNet extends Application {
         Basic.startCollectionStdErr();
 
         ResourceManagerFX.addResourceRoot(CatlyNet.class, "catlynet.resources");
-        ProgramProperties.getProgramIconsFX().addAll(ResourceManagerFX.getIcons("CatlyNet-16.png", "CatlyNet-32.png", "CatlyNet-48.png", "CatlyNet-64.png", "CatlyNet-128.png"));
+        ProgramProperties.getProgramIconsFX().addAll(ResourceManagerFX.getIcons("CatlyNet-16.png", "CatlyNet-32.png", "CatlyNet-48.png", "CatlyNet-64.png", "CatlyNet-128.png", "CatlyNet-256.png", "CatlyNet-512.png"));
 
         ProgramProperties.setProgramName(Version.NAME);
         ProgramProperties.setProgramVersion(Version.SHORT_DESCRIPTION);
