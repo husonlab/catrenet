@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -101,6 +102,12 @@ public class SetupFullGraph {
                 if (reactionSystem.getFoods().contains((MoleculeType) v.getInfo()))
                     foodNodes.add(v);
 
+            }
+        }
+
+        if (useMultiCopyFoodNodes) {
+            for (var v : reactionGraph.nodeStream().filter(v -> v.getDegree() == 0).collect(Collectors.toList())) {
+                reactionGraph.deleteNode(v);
             }
         }
     }

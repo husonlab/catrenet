@@ -23,10 +23,11 @@ import catlynet.model.MoleculeType;
 import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
 import jloda.util.CanceledException;
+import jloda.util.CollectionUtils;
 import jloda.util.StringUtils;
 import jloda.util.progress.ProgressListener;
 
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * computes the partially autocatalytic Max RAF.
@@ -49,7 +50,63 @@ public class StrictlyAutocatalyticMaxRAFAlgorithm extends AlgorithmBase {
      * @returns result, empty, it none exists
      */
     public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException {
-        if (true) { // filter, then compute MaxRAF
+        if (true) {
+            final var result = new ReactionSystem();
+            result.setName(Name);
+
+            final var inputReactions = new TreeSet<>(input.getReactions());
+            final var inputFood = new TreeSet<>(input.getFoods());
+
+            if (inputReactions.size() > 0) {
+                final var reactions = new ArrayList<Set<Reaction>>();
+                final var molecules = new ArrayList<Set<MoleculeType>>();
+
+                reactions.add(0, inputReactions);
+                molecules.add(0, inputFood);
+
+                progress.setMaximum(100);
+                progress.setProgress(0);
+
+                var i = 0;
+                do {
+                    if (false) {
+                        System.err.println("i=" + i + ":");
+                        System.err.println("Molecules: " + StringUtils.toString(molecules.get(i), " "));
+                        System.err.println("Reactions: " + StringUtils.toString(reactions.get(i), " "));
+                    }
+
+                    var previousMolecules = molecules.get(i);
+                    var previousReactions = reactions.get(i);
+                    var closure = Utilities.computeClosure(previousMolecules, previousReactions);
+                    var closureWithoutFood = CollectionUtils.difference(closure, inputFood);
+
+                    i++;
+                    molecules.add(new HashSet<>());
+                    var nextMolecules = molecules.get(i);
+                    reactions.add(new HashSet<>());
+                    var nextReactions = reactions.get(i);
+                    for (var reaction : previousReactions) {
+                        if (closure.containsAll(reaction.getReactants())) {
+                            if (Arrays.stream(reaction.getCatalysts().split("[,&\\s]")).anyMatch(c -> closureWithoutFood.contains(MoleculeType.valueOf(c)))) {
+                                nextReactions.add(reaction);
+                                nextMolecules.addAll(inputFood);
+                                nextMolecules.addAll(reaction.getProducts());
+                            }
+
+                        }
+                    }
+                    progress.setProgress(Math.min(100, reactions.size()));
+                }
+                while (reactions.get(i).size() < reactions.get(i - 1).size());
+
+                if (reactions.get(i).size() > 0) {
+                    result.getReactions().setAll(reactions.get(i));
+                    result.getFoods().setAll(result.computeMentionedFoods(input.getFoods()));
+                }
+            }
+            return result;
+
+        } else {
             final var inputFood = new TreeSet<>(input.getFoods());
             final var filteredReactions = new TreeSet<Reaction>();
             for (var reaction : input.getReactions()) {
@@ -66,7 +123,6 @@ public class StrictlyAutocatalyticMaxRAFAlgorithm extends AlgorithmBase {
                         }
                     }
                     if (ok) {
-                        var newReaction = new Reaction(reaction);
                         filteredReactions.add(reaction);
                     }
                 }
@@ -78,40 +134,6 @@ public class StrictlyAutocatalyticMaxRAFAlgorithm extends AlgorithmBase {
             var maxRAF = (new MaxRAFAlgorithm()).apply(filteredSystem, progress);
             maxRAF.setName(getName());
             return maxRAF;
-        } else { // For sanity checks: compute maxRAF, then filter, then compute maxRAF again....
-            var maxRAF = (new MaxRAFAlgorithm()).apply(input, progress);
-            final var inputFood = new TreeSet<>(input.getFoods());
-            final var filteredReactions = new TreeSet<Reaction>();
-            for (var reaction : maxRAF.getReactions()) {
-                if (!inputFood.containsAll(reaction.getCatalystElements())) {
-                    var ok = false;
-                    loop:
-                    for (var cat : reaction.getCatalysts().split("[,\\s]")) {
-                        cat = cat.trim();
-                        for (var part : StringUtils.split(cat, '&')) {
-                            if (!inputFood.contains(MoleculeType.valueOf(part))) {
-                                ok = true;
-                                break loop;
-                            }
-                        }
-                    }
-                    if (ok) {
-                        var newReaction = new Reaction(reaction);
-                        filteredReactions.add(reaction);
-                    }
-                }
-            }
-            var filteredSystem = new ReactionSystem(getName() + "MaxRAF-Filter");
-            filteredSystem.getFoods().addAll(inputFood);
-            filteredSystem.getReactions().addAll(filteredReactions);
-            if (false)
-                return filteredSystem;
-            else {
-                var maxRAF2 = (new MaxRAFAlgorithm()).apply(filteredSystem, progress);
-                maxRAF2.setName(getName() + "MaxRAF-Filter-MaxRAF");
-                return maxRAF2;
-
-            }
         }
     }
 }

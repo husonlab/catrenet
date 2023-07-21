@@ -78,17 +78,17 @@ public class MainWindowPresenter {
     public static void setup(MainWindow window) {
         final ObjectProperty<javafx.scene.Node> printableNode = new SimpleObjectProperty<>();
 
-        final MainWindowController controller = window.getController();
-        final TabManager tabManager = window.getTabManager();
-        final ReactionGraphView graphView = window.getReactionGraphView();
+        final var controller = window.getController();
+        final var tabManager = window.getTabManager();
+        final var graphView = window.getReactionGraphView();
 
-        final BooleanProperty disableGraphItems = new SimpleBooleanProperty(true);
-        final BooleanProperty disableFullGraphItems = new SimpleBooleanProperty(true);
+        final var disableGraphItems = new SimpleBooleanProperty(true);
+        final var disableFullGraphItems = new SimpleBooleanProperty(true);
         disableFullGraphItems.bind(disableGraphItems.or(graphView.graphTypeProperty().isEqualTo(ReactionGraphView.Type.associationGraph)
                         .or(graphView.graphTypeProperty().isEqualTo(ReactionGraphView.Type.reactantAssociationGraph)))
                 .or(window.getReactionGraphView().getMoleculeFlowAnimation().playingProperty()));
 
-        final IntegerProperty algorithmsRunning = new SimpleIntegerProperty(0);
+        final var algorithmsRunning = new SimpleIntegerProperty(0);
         final ChangeListener<Boolean> runningListener = (c, o, n) -> {
             if (n)
                 algorithmsRunning.set(algorithmsRunning.get() + 1);
@@ -251,9 +251,13 @@ public class MainWindowPresenter {
         controller.getClearLogMenuItem().disableProperty().bind(controller.getLogTextArea().textProperty().isEmpty());
 
         controller.getComputeVisualizationMenuItem().setOnAction(c -> {
-            disableGraphItems.set(false);
-            ComputeGraph.apply(window, controller);
-            controller.getVisualizationTab().getTabPane().getSelectionModel().select(controller.getVisualizationTab());
+            if (controller.getFullGraphRadioMenuItem().getToggleGroup().getSelectedToggle() == null) {
+                controller.getFullGraphRadioMenuItem().setSelected(true);
+            } else {
+                disableGraphItems.set(false);
+                ComputeGraph.apply(window, controller);
+                controller.getVisualizationTab().getTabPane().getSelectionModel().select(controller.getVisualizationTab());
+            }
 
         });
         controller.getComputeVisualizationMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()).or(controller.getInputFoodTextArea().textProperty().isEmpty()));
@@ -569,8 +573,8 @@ public class MainWindowPresenter {
         controller.getShowNodeLabels().setOnAction(e -> ShowHideNodeLabels.apply(graphView));
         BasicFX.setupFullScreenMenuSupport(window.getStage(), controller.getFullScreenMenuItem());
 
-        final RadioMenuItem noGraphTypeSet = new RadioMenuItem();
-        final ToggleGroup graphTypeButtonGroup = new ToggleGroup();
+        final var noGraphTypeSet = new RadioMenuItem();
+        final var graphTypeButtonGroup = new ToggleGroup();
         graphTypeButtonGroup.getToggles().addAll(controller.getFullGraphRadioMenuItem(), controller.getReactantAssociationRadioMenuItem(), controller.getAssociationGraphRadioMenuItem(), controller.getReactantAssociationRadioMenuItem(), noGraphTypeSet);
 
         graphTypeButtonGroup.selectToggle(new RadioMenuItem());
@@ -579,8 +583,8 @@ public class MainWindowPresenter {
         graphView.graphTypeProperty().addListener((c, o, n) -> controller.getGraphTypeLabel().setText(StringUtils.capitalizeFirstLetter(StringUtils.fromCamelCase(n.name()))));
 
         controller.getFullGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> {
-                    graphView.setGraphType(ReactionGraphView.Type.fullGraph);
-                    controller.getVisualizationTab().getTabPane().getSelectionModel().select(controller.getVisualizationTab());
+            graphView.setGraphType(ReactionGraphView.Type.fullGraph);
+            controller.getVisualizationTab().getTabPane().getSelectionModel().select(controller.getVisualizationTab());
                 }
         );
         controller.getFullGraphRadioMenuItem().disableProperty().bind(controller.getRunMenuItem().disableProperty().or(window.getReactionGraphView().getMoleculeFlowAnimation().playingProperty()));

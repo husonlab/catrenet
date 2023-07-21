@@ -43,21 +43,21 @@ public class MaxRAFAlgorithm extends AlgorithmBase {
     }
 
     /**
-     * computes the RAF.
+     * computes the max RAF.
      * Ignore all inhibitions.
      *
      * @returns result, empty, it none exists
      */
     public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException {
-        final ReactionSystem result = new ReactionSystem();
+        final var result = new ReactionSystem();
         result.setName(Name);
 
-        final Set<Reaction> inputReactions = new TreeSet<>(input.getReactions());
-        final Set<MoleculeType> inputFood = new TreeSet<>(input.getFoods());
+        final var inputReactions = new TreeSet<>(input.getReactions());
+        final var inputFood = new TreeSet<>(input.getFoods());
 
         if (inputReactions.size() > 0) {
-            final ArrayList<Set<Reaction>> reactions = new ArrayList<>();
-            final ArrayList<Set<MoleculeType>> molecules = new ArrayList<>();
+            final var reactions = new ArrayList<Set<Reaction>>();
+            final var molecules = new ArrayList<Set<MoleculeType>>();
 
             reactions.add(0, inputReactions);
             molecules.add(0, inputFood);
@@ -65,7 +65,7 @@ public class MaxRAFAlgorithm extends AlgorithmBase {
             progress.setMaximum(100);
             progress.setProgress(0);
 
-            int i = -1;
+            var i = -1;
             do {
                 i++;
 

@@ -120,16 +120,20 @@ public class ExportManager {
                 RecentFilesManager.getInstance().insertRecentFile(selectedFile.getPath());
 
                 if (selectedFile.exists()) {
-                    final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                    alert.setTitle("Open saved file - " + ProgramProperties.getProgramName());
-                    alert.setHeaderText("Successfully exported the '" + reactionName + "' reaction system to file '" + selectedFile.getName() + "'.");
-                    alert.setContentText("Do you want to open the file in a new window?");
-
-                    final Optional<ButtonType> answer = alert.showAndWait();
-                    if (answer.isPresent() && answer.get() == ButtonType.OK) {
+                    if (true) {
                         (new FileOpener()).accept(selectedFile.getPath());
+                    } else {
+                        final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                        alert.setTitle("Open saved file - " + ProgramProperties.getProgramName());
+                        alert.setHeaderText("Successfully exported the '" + reactionName + "' reaction system to file '" + selectedFile.getName() + "'.");
+                        alert.setContentText("Do you want to open the file in a new window?");
+
+                        final Optional<ButtonType> answer = alert.showAndWait();
+                        if (answer.isPresent() && answer.get() == ButtonType.OK) {
+                            (new FileOpener()).accept(selectedFile.getPath());
+                        }
+                        alert.close();
                     }
-                    alert.close();
                 }
             } catch (IOException ex) {
                 NotificationManager.showError("Export failed: " + ex);

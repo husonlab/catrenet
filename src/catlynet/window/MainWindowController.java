@@ -28,11 +28,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import jloda.fx.control.SplittableTabPane;
 import jloda.fx.control.ZoomableScrollPane;
 import jloda.fx.util.ProgramProperties;
-import jloda.fx.window.IMainWindow;
 import jloda.fx.window.MainWindowManager;
 
 import java.net.URL;
@@ -443,7 +441,7 @@ public class MainWindowController {
 
 		// replace tabbed pane by splittable one
 
-		final ArrayList<Tab> tabs = new ArrayList<>(outputTabPane.getTabs());
+		final var tabs = new ArrayList<>(outputTabPane.getTabs());
 		outputTabPane.getTabs().clear();
 
 		outputSplittableTabPane = new SplittableTabPane();
@@ -452,12 +450,12 @@ public class MainWindowController {
 		if (outputSplittableTabPane.getTabs().size() > 0)
 			outputSplittableTabPane.getSelectionModel().select(0);
 
-		final ArrayList<MenuItem> originalWindowMenuItems = new ArrayList<>(windowMenu.getItems());
+		final var originalWindowMenuItems = new ArrayList<>(windowMenu.getItems());
 
 		final InvalidationListener invalidationListener = observable -> {
 			windowMenu.getItems().setAll(originalWindowMenuItems);
 			int count = 0;
-			for (IMainWindow mainWindow : MainWindowManager.getInstance().getMainWindows()) {
+			for (var mainWindow : MainWindowManager.getInstance().getMainWindows()) {
 				if (mainWindow.getStage() != null) {
 					final String title = mainWindow.getStage().getTitle();
 					if (title != null) {
@@ -468,8 +466,8 @@ public class MainWindowController {
 					}
 				}
 				if (MainWindowManager.getInstance().getAuxiliaryWindows(mainWindow) != null) {
-					for (Stage auxStage : MainWindowManager.getInstance().getAuxiliaryWindows(mainWindow)) {
-						final String title = auxStage.getTitle();
+					for (var auxStage : MainWindowManager.getInstance().getAuxiliaryWindows(mainWindow)) {
+						final var title = auxStage.getTitle();
 						if (title != null) {
 							final MenuItem menuItem = new MenuItem(title.replaceAll("- " + ProgramProperties.getProgramName(), ""));
 							menuItem.setOnAction((e) -> auxStage.toFront());

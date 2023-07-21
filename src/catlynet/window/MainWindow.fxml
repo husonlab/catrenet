@@ -292,32 +292,6 @@
                                     </accelerator>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="showNodeLabels" mnemonicParsing="false" text="Show/Hide Node Labels">
-                                    <accelerator>
-                                        <KeyCodeCombination alt="UP" code="L" control="UP" meta="DOWN" shift="UP"
-                                                            shortcut="UP"/>
-                                    </accelerator>
-                                </MenuItem>
-                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                <RadioMenuItem fx:id="fullGraphRadioMenuItem" mnemonicParsing="false"
-                                               text="Full Graph"/>
-                                <RadioMenuItem fx:id="associationGraphRadioMenuItem" mnemonicParsing="false"
-                                               text="Association Graph"/>
-                                <RadioMenuItem fx:id="reactantAssociationRadioMenuItem" mnemonicParsing="false"
-                                               text="Reactant Association Graph"/>
-                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                <CheckMenuItem fx:id="suppressFormalFoodMenuItem" mnemonicParsing="false"
-                                               text="Suppress Formal Food Item"/>
-                                <CheckMenuItem fx:id="suppressCatalystEdgesMenuItem" mnemonicParsing="false"
-                                               text="Suppress Catalyst Edges"/>
-                                <CheckMenuItem fx:id="useMultiCopyFoodNodesMenuItem" mnemonicParsing="false"
-                                               text="Use Multicopy Food  Nodes"/>
-                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                <RadioMenuItem fx:id="reactionDependencyGraphRadioMenuItem" mnemonicParsing="false"
-                                               text="Reaction-Dependency Graph"/>
-                                <RadioMenuItem fx:id="moleculeDependencyGraphRadioMenuItem" mnemonicParsing="false"
-                                               text="Molecule-Dependency Graph"/>
-                                <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="fullScreenMenuItem" mnemonicParsing="false" text="Enter Full Screen">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="F" control="DOWN" meta="DOWN" shift="UP"
@@ -331,14 +305,6 @@
                                 <MenuItem fx:id="runMenuItem" mnemonicParsing="false" text="Run All Main Algorithms">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="R" control="UP" meta="DOWN" shift="UP"
-                                                            shortcut="UP"/>
-                                    </accelerator>
-                                </MenuItem>
-                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="computeVisualizationMenuItem" mnemonicParsing="false"
-                                          text="Compute Visualization">
-                                    <accelerator>
-                                        <KeyCodeCombination alt="UP" code="V" control="UP" meta="DOWN" shift="DOWN"
                                                             shortcut="UP"/>
                                     </accelerator>
                                 </MenuItem>
@@ -378,18 +344,49 @@
                                           text="Greedily Grow MaxCAF to MaxRAF"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="reactionDependenciesMenuItem" mnemonicParsing="false"
-                                          text="Compute Reaction Dependency Graph"/>
+                                          text="Compute Reaction Dependencies"/>
                                 <MenuItem fx:id="moleculeDependenciesMenuItem" mnemonicParsing="false"
-                                          text="Compute Molecule Dependency Graph"/>
+                                          text="Compute Molecule Dependencies"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <Menu mnemonicParsing="false" text="Options">
-                                    <items>
-                                        <CheckMenuItem fx:id="computeImportanceCheckMenuItem" mnemonicParsing="false"
-                                                       text="Compute  Importance"/>
-                                        <MenuItem fx:id="graphEmbedderIterationsMenuItem" mnemonicParsing="false"
-                                                  text="Graph Embedder Iterations..."/>
-                                    </items>
-                                </Menu>
+                                <CheckMenuItem fx:id="computeImportanceCheckMenuItem" mnemonicParsing="false"
+                                               text="Compute  Importance"/>
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Network">
+                            <items>
+                                <MenuItem fx:id="computeVisualizationMenuItem" mnemonicParsing="false"
+                                          text="Compute Network">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="V" control="UP" meta="DOWN" shift="DOWN"
+                                                            shortcut="UP"/>
+                                    </accelerator>
+                                </MenuItem>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <RadioMenuItem fx:id="fullGraphRadioMenuItem" mnemonicParsing="false"
+                                               text="Full Network"/>
+                                <RadioMenuItem fx:id="associationGraphRadioMenuItem" mnemonicParsing="false"
+                                               text="Association Network"/>
+                                <RadioMenuItem fx:id="reactantAssociationRadioMenuItem" mnemonicParsing="false"
+                                               text="Reactant Association Network"/>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <CheckMenuItem fx:id="suppressFormalFoodMenuItem" mnemonicParsing="false"
+                                               text="Suppress Formal Food Item"/>
+                                <CheckMenuItem fx:id="suppressCatalystEdgesMenuItem" mnemonicParsing="false"
+                                               text="Suppress Catalyst Edges"/>
+                                <CheckMenuItem fx:id="useMultiCopyFoodNodesMenuItem" mnemonicParsing="false"
+                                               text="Use Multicopy Food  Nodes"/>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <RadioMenuItem fx:id="reactionDependencyGraphRadioMenuItem" mnemonicParsing="false"
+                                               text="Reaction-Dependency Network"/>
+                                <RadioMenuItem fx:id="moleculeDependencyGraphRadioMenuItem" mnemonicParsing="false"
+                                               text="Molecule-Dependency Network"/>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem fx:id="showNodeLabels" mnemonicParsing="false" text="Show/Hide Node Labels">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="L" control="UP" meta="DOWN" shift="UP"
+                                                            shortcut="UP"/>
+                                    </accelerator>
+                                </MenuItem>
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Animate">
@@ -406,6 +403,9 @@
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <CheckMenuItem fx:id="moveLabelsMenuItem" mnemonicParsing="false" text="Move Labels"/>
                                 <CheckMenuItem fx:id="useColorsMenuItem" mnemonicParsing="false" text="Use Colors"/>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem fx:id="graphEmbedderIterationsMenuItem" mnemonicParsing="false"
+                                          text="Network Embedder Iterations..."/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="stopAnimationMenuItem" mnemonicParsing="false" text="Stop Animation">
                                     <accelerator>
@@ -643,7 +643,7 @@
                                         </BorderPane>
                                     </content>
                                 </Tab>
-                                <Tab fx:id="visualizationTab" closable="false" disable="true" text="Visualization">
+                                <Tab fx:id="visualizationTab" closable="false" disable="true" text="Network">
                                     <content>
                                         <AnchorPane>
                                             <children>
