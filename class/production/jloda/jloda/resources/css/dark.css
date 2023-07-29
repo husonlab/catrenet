@@ -1,0 +1,171 @@
+/*
+ *  dark.css Copyright (C) third party
+ */
+
+
+/**
+ * a basic dark theme
+ * Adapted from: https://stackoverflow.com/questions/49159286/make-a-dark-mode-with-javafx
+ */
+.root {
+    -fx-accent: #1e74c6;
+    -fx-focus-color: -fx-accent;
+    -fx-base: rgb(60, 63, 65);
+    -fx-control-inner-background: -fx-base;
+    -fx-control-inner-background-alt: -fx-control-inner-background;
+}
+
+.label {
+    -fx-text-fill: lightgray;
+}
+
+.text-field {
+    -fx-prompt-text-fill: gray;
+}
+
+.button {
+    -fx-focus-traversable: false;
+}
+
+.button:hover {
+    -fx-text-fill: white;
+}
+
+.separator *.line {
+    -fx-background-color: #3C3C3C;
+    -fx-border-style: solid;
+    -fx-border-width: 1px;
+}
+
+.scroll-bar {
+    -fx-background-color: derive(-fx-base, 45%)
+}
+
+.scroll-pane {
+    -fx-background: rgb(43, 43, 43);
+}
+
+.button:default {
+    -fx-base: -fx-accent;
+}
+
+.tree-view {
+    -fx-selection-bar-non-focused: derive(-fx-base, 50%);
+}
+
+.table-view {
+    -fx-selection-bar-non-focused: derive(-fx-base, 50%);
+}
+
+.table-view .column-header .label {
+    -fx-alignment: CENTER_LEFT;
+    -fx-font-weight: none;
+}
+
+.list-cell:even,
+.list-cell:odd,
+.table-row-cell:even,
+.table-row-cell:odd {
+    -fx-control-inner-background: derive(-fx-base, 15%);
+}
+
+.list-cell:empty,
+.table-row-cell:empty {
+    -fx-background-color: transparent;
+}
+
+.list-cell,
+.table-row-cell {
+    -fx-border-color: transparent;
+    -fx-table-cell-border-color: transparent;
+}
+
+.rich-text-label {
+    -fx-fill: white;
+    -fx-background-color: transparent;
+}
+
+.graph-node {
+    -fx-stroke: null;
+    -fx-fill: white;
+}
+
+.graph-node-hollow {
+    -fx-stroke: white;
+    -fx-fill: -fx-base;
+}
+
+.above-label {
+    -fx-fill: white;
+    -fx-text-fill: white;
+    -fx-background-color: rgba(0, 0, 0, 0.5);
+}
+
+.graph-edge {
+    -fx-stroke: white;
+    -fx-fill: null;
+}
+
+.graph-special-edge {
+    -fx-stroke: darkorange;
+    -fx-fill: null;
+}
+
+.viewer-background {
+    -fx-background-color: rgb(43, 43, 43);
+}
+
+.paragraph-text .text {
+    -fx-fill: white;
+}
+
+.keyword {
+    -fx-fill: #CC7832 !important;
+    -fx-font-weight: bold;
+}
+
+.semicolon {
+    -fx-fill: #A9B7C6 !important;
+    -fx-font-weight: bold;
+}
+
+.paren {
+    -fx-fill: #A9B7C6 !important;
+    -fx-font-weight: bold;
+}
+
+.bracket {
+    -fx-fill: #A9B7C6 !important;
+    -fx-font-weight: bold;
+}
+
+.brace {
+    -fx-fill: #A9B7C6 !important;
+    -fx-font-weight: bold;
+}
+
+.string {
+    -fx-fill: #6A8759 !important;
+}
+
+.comment {
+    -fx-fill: darkgray !important;
+}
+
+.lineno {
+    -fx-text-fill: black !important;
+    -fx-background-color: derive(-fx-base, 50%);
+}
+
+
+.paragraph-box:has-caret {
+    -fx-background-color: #323232 !important;
+}
+
+.styled-text-area .caret {
+    -fx-stroke: white !important;
+}
+
+.chart-pie {
+    -fx-border-width: 0.5px;
+}

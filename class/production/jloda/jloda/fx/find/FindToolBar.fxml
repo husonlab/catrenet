@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ FindToolBar.fxml Copyright (C) 2022 Daniel H. Huson
+  ~
+  ~ (Some files contain contributions from other authors, who are then mentioned separately.)
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<VBox prefHeight="62.0" prefWidth="638.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="jloda.fx.find.FindToolBarController">
+    <AnchorPane fx:id="anchorPane" maxHeight="31.0" minHeight="31.0" prefHeight="31.0">
+        <ToolBar fx:id="toolBar" maxHeight="31.0" minHeight="31.0" prefHeight="31.0"
+                 style="-fx-background-color: transparent; -fx-border-style: none;" AnchorPane.bottomAnchor="0.0"
+                 AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <opaqueInsets>
+                <Insets/>
+            </opaqueInsets>
+            <ComboBox fx:id="searchComboBox" editable="true" maxHeight="25.0" maxWidth="250.0" minHeight="25.0"
+                      prefHeight="25.0" prefWidth="144.0" style="-fx-font-size: 10px;"/>
+            <Separator maxHeight="20.0" minHeight="20.0" orientation="VERTICAL" prefHeight="20.0"/>
+            <Button fx:id="findButton" alignment="CENTER" mnemonicParsing="false" text="Find">
+                <font>
+                    <Font size="10.0"/>
+                </font>
+                <opaqueInsets>
+                    <Insets/>
+                </opaqueInsets>
+            </Button>
+            <Button fx:id="nextButton" alignment="CENTER" mnemonicParsing="false" text="Next">
+                <font>
+                    <Font size="10.0"/>
+                </font>
+            </Button>
+            <Button fx:id="allButton" alignment="CENTER" mnemonicParsing="false" text="All">
+                <font>
+                    <Font size="10.0"/>
+                </font>
+            </Button>
+            <Separator layoutX="158.0" layoutY="10.0" maxHeight="20.0" minHeight="20.0" orientation="VERTICAL"
+                       prefHeight="20.0"/>
+            <Button fx:id="findFromFileButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" layoutX="243.0"
+                    layoutY="9.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="18.0"
+                    prefWidth="18.0" text="From File...">
+                <font>
+                    <Font size="10.0"/>
+                </font>
+                <graphic>
+                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@/jloda/resources/icons/sun/Open16.gif"/>
+                    </ImageView>
+                </graphic>
+                <tooltip>
+                    <Tooltip text="Load search terms from file, one per line"/>
+                </tooltip>
+            </Button>
+            <Separator fx:id="fromFileSeparator" maxHeight="20.0" minHeight="20.0" orientation="VERTICAL"
+                       prefHeight="20.0"/>
+            <CheckBox fx:id="caseSensitiveCheckBox" alignment="CENTER" mnemonicParsing="false" text="Case sensitive   ">
+                <font>
+                    <Font size="10.0"/>
+                </font>
+            </CheckBox>
+            <CheckBox fx:id="wholeWordsOnlyCheckBox" alignment="CENTER" layoutX="312.0" layoutY="15.0"
+                      mnemonicParsing="false" text="Whole words only   ">
+                <font>
+                    <Font size="10.0"/>
+                </font>
+            </CheckBox>
+            <CheckBox fx:id="regExCheckBox" alignment="CENTER" layoutX="402.0" layoutY="15.0" mnemonicParsing="false"
+                      text="RegEx">
+                <font>
+                    <Font size="10.0"/>
+                </font>
+            </CheckBox>
+            <Separator layoutX="284.0" layoutY="10.0" maxHeight="20.0" minHeight="20.0" orientation="VERTICAL"
+                       prefHeight="20.0"/>
+            <Label fx:id="label" style="-fx-text-fill: darkgray;" text="label">
+                <font>
+                    <Font size="10.0"/>
+                </font>
+            </Label>
+        </ToolBar>
+        <Button fx:id="closeButton" alignment="CENTER" maxHeight="20.0" minHeight="20.0" mnemonicParsing="false"
+                prefHeight="20.0" style="-fx-background-color: transparent; -fx-border-style: none;" text="X"
+                textAlignment="CENTER" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="15.0"
+                AnchorPane.topAnchor="5.0">
+            <font>
+                <Font size="10.0"/>
+            </font>
+            <opaqueInsets>
+                <Insets/>
+            </opaqueInsets>
+        </Button>
+    </AnchorPane>
+    <ToolBar fx:id="replaceToolBar" maxHeight="31.0" minHeight="31.0" prefHeight="31.0"
+             style="-fx-border-style: none; -fx-background-color: transparent;">
+        <opaqueInsets>
+            <Insets/>
+        </opaqueInsets>
+        <ComboBox fx:id="replaceComboBox" editable="true" maxHeight="25.0" maxWidth="250.0" minHeight="25.0"
+                  prefHeight="25.0" prefWidth="144.0" style="-fx-font-size: 10px;"/>
+        <Separator maxHeight="20.0" minHeight="20.0" orientation="VERTICAL" prefHeight="20.0"/>
+        <Button fx:id="ReplaceButton" alignment="CENTER" mnemonicParsing="false" text="Replace">
+            <font>
+                <Font size="10.0"/>
+            </font>
+            <opaqueInsets>
+                <Insets/>
+            </opaqueInsets>
+        </Button>
+        <Button fx:id="replaceAllButton" alignment="CENTER" mnemonicParsing="false" text="Replace All">
+            <font>
+                <Font size="10.0"/>
+            </font>
+        </Button>
+        <CheckBox fx:id="inSelectionOnlyCheckBox" alignment="CENTER" mnemonicParsing="false" text="In selection only">
+            <font>
+                <Font size="10.0"/>
+            </font>
+        </CheckBox>
+    </ToolBar>
+</VBox>

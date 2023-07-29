@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~  SliderHistogram.fxml Copyright (C) 2022 Daniel H. Huson
+  ~
+  ~  (Some files contain contributions from other authors, who are then mentioned separately.)
+  ~
+  ~  This program is free software: you can redistribute it and/or modify
+  ~  it under the terms of the GNU General Public License as published by
+  ~  the Free Software Foundation, either version 3 of the License, or
+  ~  (at your option) any later version.
+  ~
+  ~  This program is distributed in the hope that it will be useful,
+  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~  GNU General Public License for more details.
+  ~
+  ~  You should have received a copy of the GNU General Public License
+  ~  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane fx:id="rootPane" prefHeight="200.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="jloda.fx.control.sliderhistogram.SliderHistogramController">
+    <children>
+        <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                    AnchorPane.topAnchor="0.0">
+            <center>
+                <GridPane>
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints vgrow="SOMETIMES"/>
+                        <RowConstraints fillHeight="false" minHeight="20.0" vgrow="SOMETIMES"/>
+                    </rowConstraints>
+                    <children>
+                        <BarChart fx:id="valuesBarChart" animated="false" legendVisible="false" maxHeight="-Infinity"
+                                  minHeight="0.0"
+                                  style="-fx-bar-gap: 0; -fx-category-gap: 0; -fx-vertical-grid-lines-visible: false;">
+                            <xAxis>
+                                <CategoryAxis animated="false" side="BOTTOM" tickLabelsVisible="false"
+                                              tickMarkVisible="false"/>
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis animated="false" side="LEFT"/>
+                            </yAxis>
+                        </BarChart>
+                        <Slider fx:id="thresholdSlider" majorTickUnit="0.1" max="1.0" minorTickCount="4"
+                                showTickLabels="true" showTickMarks="true" GridPane.hgrow="NEVER" GridPane.rowIndex="1">
+                            <GridPane.margin>
+                                <Insets left="35.0" right="10.0"/>
+                            </GridPane.margin>
+                        </Slider>
+                    </children>
+                </GridPane>
+            </center>
+            <bottom>
+                <HBox alignment="CENTER_RIGHT" prefHeight="40.0" spacing="5.0" BorderPane.alignment="CENTER_RIGHT">
+                    <BorderPane.margin>
+                        <Insets top="5.0"/>
+                    </BorderPane.margin>
+                    <children>
+                        <Label alignment="CENTER_RIGHT" text="Threshold:"/>
+                        <TextField fx:id="thresholdTextField" prefColumnCount="6"/>
+                        <Label fx:id="reportLabel" layoutX="458.0" layoutY="25.0" prefWidth="140.0" text="()"/>
+                        <Button fx:id="cancelButton" cancelButton="true" minWidth="-Infinity" mnemonicParsing="false"
+                                text="Cancel"/>
+                        <Button fx:id="applyButton" defaultButton="true" minWidth="-Infinity" mnemonicParsing="false"
+                                text="Apply"/>
+                    </children>
+                    <padding>
+                        <Insets bottom="10.0" left="10.0" right="16.0" top="10.0"/>
+                    </padding>
+                </HBox>
+            </bottom>
+        </BorderPane>
+    </children>
+</AnchorPane>

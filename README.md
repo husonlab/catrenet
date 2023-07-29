@@ -15,12 +15,20 @@ Read more about autocatlyic networks and RAFs here:
 
 Hordijk, W. and Steel, M. (2017). [Chasing the tail: The emergence of autocatalytic networks. Biosystems](http://www.sciencedirect.com/science/article/pii/S030326471630274X), 152: 1-10.
 
-
 ## Installers
-One click installers for MacOS, Windows and Linux are available [here](https://software-ab.cs.uni-tuebingen.de/download/catlynet/welcome.html). 
+
+One click installers for MacOS, Windows and Linux are
+available [here](https://software-ab.cs.uni-tuebingen.de/download/catlynet/welcome.html).
 
 ## Animation
-We are working on animations to visualize different concepts, see this example:
+
+There are animations to visualize different concepts, see this example:
 
 <img src="https://github.com/danielhuson/catlynet/blob/master/artwork/animation.gif" alt="Animation" width="600"/>
 
+### Preparation for building desktop installers using install4j
+
+Before using install4j to build installers for Linux, MacOS and Windows, run the following command to build a jar and to
+copy all non-JavaFX jars into the directory target/dependency:
+
+    mvn clean package

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="10.0.6" transformSequenceNumber="10">
-  <directoryPresets config="../src/catlynet/resources/icons" />
+  <directoryPresets config="../src/main/resources/catlynet/resources/icons" />
   <application name="CatlyNet" applicationId="3801-6361-6203-7564" mediaDir="../../../builds" shortName="CatlyNet" publisher="Daniel Huson and Mike Steel" publisherWeb="http://www.husonlab.org/catlynet" version="0.0.0_beta" allPathsRelative="true" macVolumeId="b8c0a1154e563a9a" javaMinVersion="11">
     <variables>
       <variable name="renderingVMOption" />
@@ -19,13 +19,13 @@
       <mountPoint id="675425072" />
     </mountPoints>
     <entries>
-      <dirEntry mountPoint="1691242167" file="../jars" subDirectory="jars" excludeSuffixes=".DS_Store">
+      <dirEntry mountPoint="1691242167" file="../target/dependency" subDirectory="dependency">
         <exclude>
-          <entry location="i4jruntime.jar" />
+          <entry location="install4j-runtime-10.0.5.jar" />
         </exclude>
       </dirEntry>
-      <fileEntry mountPoint="1691242167" file="../antbuild/catlynet.jar" />
-      <fileEntry mountPoint="1691243203" file="../jars/i4jruntime.jar" />
+      <fileEntry mountPoint="1691242167" file="../target/catlynet-1.0-SNAPSHOT.jar" />
+      <fileEntry mountPoint="1691243203" file="../target/dependency/install4j-runtime-10.0.5.jar" />
       <dirEntry mountPoint="1691242153" file="../examples" subDirectory="examples" />
       <fileEntry mountPoint="1691243204" file="../tools/catlynet-tool" fileMode="755" overrideFileMode="true" />
       <fileEntry mountPoint="675425072" file="./License.txt" overrideFileMode="true" overrideOverwriteMode="true" overrideUninstallMode="true" />
@@ -62,7 +62,7 @@
         </modulePath>
       </java>
       <iconImageFiles>
-        <file path="../src/catlynet/resources/icons/CatlyNet-512.png" />
+        <file path="../src/main/resources/catlynet/resources/icons/CatlyNet-512.png" />
       </iconImageFiles>
     </launcher>
   </launchers>
