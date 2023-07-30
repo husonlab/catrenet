@@ -69,9 +69,11 @@ public class SetupFind {
                 controller.getNetworkScrollPane().ensureVisible(gv.getLabel(n));
             }
         });
-        final FindToolBar graphFindToolBar = new FindToolBar(window.getStage(), graphSearcher);
+        final FindToolBar networkFindToolBar = new FindToolBar(window.getStage(), graphSearcher);
 
-        controller.getNetworkVBox().getChildren().add(graphFindToolBar);
+        controller.getFindNetworkToggleButton().selectedProperty().bindBidirectional(networkFindToolBar.showFindToolBarProperty());
+
+        controller.getNetworkVBox().getChildren().add(networkFindToolBar);
 
         controller.getFindMenuItem().setOnAction((e) -> {
             if (controller.getInputFoodTextArea().isFocused())
@@ -83,7 +85,7 @@ public class SetupFind {
             else if (controller.getLogTab().isSelected() || controller.getLogTextArea().isFocused())
                 logFindToolBar.setShowFindToolBar(true);
             else if (controller.getNetworkTab().isSelected() || controller.getNetworkBorderPane().isFocused())
-                graphFindToolBar.setShowFindToolBar(true);
+                networkFindToolBar.setShowFindToolBar(true);
             else {
                 for (TextTab textTab : window.getTabManager().textTabs()) {
                     if (textTab.getTab().isSelected() || textTab.getTextArea().isFocused()) {
@@ -93,6 +95,7 @@ public class SetupFind {
                 }
             }
         });
+
 
         controller.getFindAgainMenuItem().setOnAction((e) -> {
             if (controller.getInputFoodTextArea().isFocused())
@@ -104,7 +107,7 @@ public class SetupFind {
             else if (controller.getLogTab().isSelected() || controller.getLogTextArea().isFocused())
                 logFindToolBar.findAgain();
             else if (controller.getNetworkTab().isSelected() || controller.getNetworkBorderPane().isFocused())
-                graphFindToolBar.findAgain();
+                networkFindToolBar.findAgain();
             else {
                 for (TextTab textTab : window.getTabManager().textTabs()) {
                     if (textTab.getTab().isSelected() || textTab.getTextArea().isFocused()) {

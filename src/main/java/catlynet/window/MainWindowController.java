@@ -166,7 +166,7 @@ public class MainWindowController {
 	private MenuItem runPseudoRAFMenuItem;
 
 	@FXML
-	private MenuItem runMenuItem;
+	private MenuItem runAllMenuItem;
 
 	@FXML
 	private MenuItem runMuCAFMenuItem;
@@ -325,9 +325,6 @@ public class MainWindowController {
 	private MenuButton exportMenuButton;
 
 	@FXML
-	private Button runButton;
-
-	@FXML
 	private Button stopAnimationButton;
 
 	@FXML
@@ -444,18 +441,89 @@ public class MainWindowController {
 	@FXML
 	private Button zoomOutNetworkButton;
 
+	@FXML
+	private ToggleButton findNetworkToggleButton;
+
+	@FXML
+	private MenuButton runMenuButton;
+
+	@FXML
+	private MenuItem runCAFMenuItem1;
+
+	@FXML
+	private MenuItem runRAFMenuItem1;
+
+	@FXML
+	private MenuItem runStrictlyAutocatalyticRAFMenuItem1;
+
+	@FXML
+	private MenuItem runPseudoRAFMenuItem1;
+
+	@FXML
+	private MenuItem runAllMenuItem1;
+
+	@FXML
+	private MenuItem runMuCAFMenuItem1;
+
+	@FXML
+	private MenuItem runURAFMenuItem1;
+
+	@FXML
+	private MenuItem runMinIrrRAFMenuItem1;
+
+	@FXML
+	private MenuItem runTrivialCAFsAlgorithmMenuItem1;
+
+	@FXML
+	private MenuItem runTrivialRAFsAlgorithmMenuItem1;
+
+	@FXML
+	private MenuItem runQuotientRAFMenuItem1;
+
+	@FXML
+	private MenuItem runCoreRAFMenuItem1;
+
+	@FXML
+	private MenuItem removeTrivialRAFsAlgorithmMenuItem1;
+
+	@FXML
+	private MenuItem runMuCAFMultipleTimesMenuItem1;
+
+	@FXML
+	private MenuItem spontaneousInRafMenuItem1;
+
+	@FXML
+	private MenuItem greedyGrowMenuItem1;
+
+	@FXML
+	private MenuItem reactionDependenciesMenuItem1;
+
+	@FXML
+	private MenuItem moleculeDependenciesMenuItem1;
+
+	@FXML
+	private CheckMenuItem computeImportanceCheckMenuItem1;
+
+
 	private ZoomableScrollPane zoomableScrollPane;
 
 	@FXML
 	void initialize() {
-		MaterialIcons.setIcon(recentMenuButton, "launch");
-		MaterialIcons.setIcon(runButton, "play_circle_filled");
-		MaterialIcons.setIcon(exportMenuButton, "file_upload");
-		MaterialIcons.setIcon(zoomInNetworkButton, "zoom_in");
-		MaterialIcons.setIcon(zoomOutNetworkButton, "zoom_out");
-		MaterialIcons.setIcon(exportNetworkImageButton, "file_upload");
+		{
+			MaterialIcons.setIcon(recentMenuButton, "launch");
+			MaterialIcons.setIcon(runMenuButton, "play_circle_filled");
 
+			MaterialIcons.setIcon(exportMenuButton, "file_upload");
+			MaterialIcons.setIcon(wrapFoodTextToggle, "wrap_text");
+			MaterialIcons.setIcon(wrapReactionsTextToggle, "wrap_text");
+			MaterialIcons.setIcon(findNetworkToggleButton, "search");
 
+			MaterialIcons.setIcon(computeNetworkMenuButton, "play_circle");
+			MaterialIcons.setIcon(zoomInNetworkButton, "zoom_in");
+			MaterialIcons.setIcon(zoomOutNetworkButton, "zoom_out");
+			MaterialIcons.setIcon(exportNetworkImageButton, "file_upload");
+		}
+		
 		wrapFoodTextToggle.selectedProperty().bindBidirectional(inputFoodTextArea.wrapTextProperty());
 		wrapFoodTextToggle.setSelected(true);
 		wrapReactionsTextToggle.selectedProperty().bindBidirectional(inputTextArea.wrapTextProperty());
@@ -526,7 +594,6 @@ public class MainWindowController {
 		}
 
 		{
-			MaterialIcons.setIcon(computeNetworkMenuButton, "settings");
 			computeNetworkMenuItem1.setOnAction(e -> computeNetworkMenuItem.getOnAction().handle(e));
 			computeNetworkMenuItem1.disableProperty().bind(computeNetworkMenuItem.disableProperty());
 
@@ -552,6 +619,47 @@ public class MainWindowController {
 			zoomInNetworkButton.disableProperty().bind(zoomInMenuItem.disableProperty());
 			zoomOutNetworkButton.setOnAction(e -> zoomOutMenuItem.getOnAction().handle(e));
 			zoomOutNetworkButton.disableProperty().bind(zoomOutMenuItem.disableProperty());
+
+
+			runAllMenuItem1.setOnAction(e -> runAllMenuItem.getOnAction().handle(e));
+			runCAFMenuItem1.setOnAction(e -> runCAFMenuItem.getOnAction().handle(e));
+			runRAFMenuItem1.setOnAction(e -> runRAFMenuItem.getOnAction().handle(e));
+			runStrictlyAutocatalyticRAFMenuItem1.setOnAction(e -> runStrictlyAutocatalyticRAFMenuItem.getOnAction().handle(e));
+			runPseudoRAFMenuItem1.setOnAction(e -> runPseudoRAFMenuItem.getOnAction().handle(e));
+			runMuCAFMenuItem1.setOnAction(e -> runMuCAFMenuItem.getOnAction().handle(e));
+			runURAFMenuItem1.setOnAction(e -> runURAFMenuItem.getOnAction().handle(e));
+			runMinIrrRAFMenuItem1.setOnAction(e -> runMinIrrRAFMenuItem.getOnAction().handle(e));
+			runTrivialCAFsAlgorithmMenuItem1.setOnAction(e -> runTrivialCAFsAlgorithmMenuItem.getOnAction().handle(e));
+			runTrivialRAFsAlgorithmMenuItem1.setOnAction(e -> runTrivialRAFsAlgorithmMenuItem.getOnAction().handle(e));
+			runQuotientRAFMenuItem1.setOnAction(e -> runQuotientRAFMenuItem.getOnAction().handle(e));
+			runCoreRAFMenuItem1.setOnAction(e -> runCoreRAFMenuItem.getOnAction().handle(e));
+			removeTrivialRAFsAlgorithmMenuItem1.setOnAction(e -> removeTrivialRAFsAlgorithmMenuItem.getOnAction().handle(e));
+			runMuCAFMultipleTimesMenuItem1.setOnAction(e -> runMuCAFMultipleTimesMenuItem.getOnAction().handle(e));
+			spontaneousInRafMenuItem1.setOnAction(e -> spontaneousInRafMenuItem.getOnAction().handle(e));
+			greedyGrowMenuItem1.setOnAction(e -> greedyGrowMenuItem.getOnAction());
+			reactionDependenciesMenuItem1.setOnAction(e -> reactionDependenciesMenuItem.getOnAction());
+			moleculeDependenciesMenuItem1.setOnAction(e -> moleculeDependenciesMenuItem.getOnAction());
+			computeImportanceCheckMenuItem1.setOnAction(e -> computeImportanceCheckMenuItem.getOnAction());
+
+			runAllMenuItem1.disableProperty().bindBidirectional(runAllMenuItem.disableProperty());
+			runCAFMenuItem1.disableProperty().bindBidirectional(runCAFMenuItem.disableProperty());
+			runRAFMenuItem1.disableProperty().bindBidirectional(runRAFMenuItem.disableProperty());
+			runStrictlyAutocatalyticRAFMenuItem1.disableProperty().bindBidirectional(runStrictlyAutocatalyticRAFMenuItem.disableProperty());
+			runPseudoRAFMenuItem1.disableProperty().bindBidirectional(runPseudoRAFMenuItem.disableProperty());
+			runMuCAFMenuItem1.disableProperty().bindBidirectional(runMuCAFMenuItem.disableProperty());
+			runURAFMenuItem1.disableProperty().bindBidirectional(runURAFMenuItem.disableProperty());
+			runMinIrrRAFMenuItem1.disableProperty().bindBidirectional(runMinIrrRAFMenuItem.disableProperty());
+			runTrivialCAFsAlgorithmMenuItem1.disableProperty().bindBidirectional(runTrivialCAFsAlgorithmMenuItem.disableProperty());
+			runTrivialRAFsAlgorithmMenuItem1.disableProperty().bindBidirectional(runTrivialRAFsAlgorithmMenuItem.disableProperty());
+			runQuotientRAFMenuItem1.disableProperty().bindBidirectional(runQuotientRAFMenuItem.disableProperty());
+			runCoreRAFMenuItem1.disableProperty().bindBidirectional(runCoreRAFMenuItem.disableProperty());
+			removeTrivialRAFsAlgorithmMenuItem1.disableProperty().bindBidirectional(removeTrivialRAFsAlgorithmMenuItem.disableProperty());
+			runMuCAFMultipleTimesMenuItem1.disableProperty().bindBidirectional(runMuCAFMultipleTimesMenuItem.disableProperty());
+			spontaneousInRafMenuItem1.disableProperty().bindBidirectional(spontaneousInRafMenuItem.disableProperty());
+			greedyGrowMenuItem1.disableProperty().bindBidirectional(greedyGrowMenuItem.disableProperty());
+			reactionDependenciesMenuItem1.disableProperty().bindBidirectional(reactionDependenciesMenuItem.disableProperty());
+			moleculeDependenciesMenuItem1.disableProperty().bindBidirectional(moleculeDependenciesMenuItem.disableProperty());
+			computeImportanceCheckMenuItem1.disableProperty().bindBidirectional(computeImportanceCheckMenuItem.disableProperty());
 		}
 	}
 
@@ -719,8 +827,8 @@ public class MainWindowController {
 		return runPseudoRAFMenuItem;
 	}
 
-	public MenuItem getRunMenuItem() {
-		return runMenuItem;
+	public MenuItem getRunAllMenuItem() {
+		return runAllMenuItem;
 	}
 
 	public MenuItem getRunMuCAFMenuItem() {
@@ -891,10 +999,6 @@ public class MainWindowController {
 		return mainToolBar;
 	}
 
-	public Button getRunButton() {
-		return runButton;
-	}
-
 	public Button getStopAnimationButton() {
 		return stopAnimationButton;
 	}
@@ -1054,5 +1158,9 @@ public class MainWindowController {
 
 	public StackPane getNetworkPane() {
 		return networkPane;
+	}
+
+	public ToggleButton getFindNetworkToggleButton() {
+		return findNetworkToggleButton;
 	}
 }

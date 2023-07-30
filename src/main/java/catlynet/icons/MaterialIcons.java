@@ -85,16 +85,17 @@ public class MaterialIcons {
 		var label = new Label(ch);
 		label.getStyleClass().add("icon-text");
 		label.setAlignment(Pos.CENTER);
-		label.setStyle("-fx-font-family: 'Material Icons Outlined';  -fx-font-size: 16; -fx-padding:0 3 0 3; -fx-background-color: transparent;" + (style != null ? style : ""));
+		label.setStyle("-fx-font-family: 'Material Icons Outlined'; -fx-font-size: 16; -fx-background-color: transparent;" + (style != null ? style : ""));
 		return label;
 	}
 
 	public static void setIcon(Labeled labeled, String materialIconName) {
-		setIcon(labeled, materialIconName, true);
+		setIcon(labeled, materialIconName, null, true);
 	}
 
-	public static void setIcon(Labeled labeled, String materialIconName, boolean graphicOnly) {
-		labeled.setGraphic(graphic(materialIconName));
+
+	public static void setIcon(Labeled labeled, String materialIconName, String style, boolean graphicOnly) {
+		labeled.setGraphic(graphic(materialIconName, style));
 		if (graphicOnly)
 			labeled.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
 	}

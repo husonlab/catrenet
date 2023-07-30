@@ -21,10 +21,10 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.input.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
 <BorderPane prefHeight="500.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="catlynet.window.MainWindowController">
     <top>
@@ -302,53 +302,54 @@
                         </Menu>
                         <Menu fx:id="algorithmMenu" mnemonicParsing="false" text="Algorithms">
                             <items>
-                                <MenuItem fx:id="runMenuItem" mnemonicParsing="false" text="Run All Main Algorithms">
+                                <MenuItem fx:id="runAllMenuItem1" mnemonicParsing="false" text="Run Main Algorithms">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="R" control="UP" meta="DOWN" shift="UP"
                                                             shortcut="UP"/>
                                     </accelerator>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="runCAFMenuItem" mnemonicParsing="false" text="Max CAF Algorithm"/>
-                                <MenuItem fx:id="runRAFMenuItem" mnemonicParsing="false" text="Max RAF Algorithm"/>
+                                <MenuItem fx:id="runCAFMenuItem1" mnemonicParsing="false" text="Max CAF Algorithm"/>
+                                <MenuItem fx:id="runRAFMenuItem1" mnemonicParsing="false" text="Max RAF Algorithm"/>
 
-                                <MenuItem fx:id="runPseudoRAFMenuItem" mnemonicParsing="false"
+                                <MenuItem fx:id="runPseudoRAFMenuItem1" mnemonicParsing="false"
                                           text="Max Pseudo RAF Algorithm"/>
 
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="runStrictlyAutocatalyticRAFMenuItem" mnemonicParsing="false"
+                                <MenuItem fx:id="runStrictlyAutocatalyticRAFMenuItem1" mnemonicParsing="false"
                                           text="Strictly Autocatalytic Max RAF Algorithm"/>
 
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="runTrivialCAFsAlgorithmMenuItem" mnemonicParsing="false"
+                                <MenuItem fx:id="runTrivialCAFsAlgorithmMenuItem1" mnemonicParsing="false"
                                           text="Trivial CAFs Algorithm"/>
-                                <MenuItem fx:id="runTrivialRAFsAlgorithmMenuItem" mnemonicParsing="false"
+                                <MenuItem fx:id="runTrivialRAFsAlgorithmMenuItem1" mnemonicParsing="false"
                                           text="Trivial RAFs Algorithm"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="runCoreRAFMenuItem" mnemonicParsing="false" text="Core RAF Algorithm"/>
-                                <MenuItem fx:id="runQuotientRAFMenuItem" mnemonicParsing="false"
+                                <MenuItem fx:id="runCoreRAFMenuItem1" mnemonicParsing="false"
+                                          text="Core RAF Algorithm"/>
+                                <MenuItem fx:id="runQuotientRAFMenuItem1" mnemonicParsing="false"
                                           text="Quotient RAF Algorithm"/>
-                                <MenuItem fx:id="removeTrivialRAFsAlgorithmMenuItem" mnemonicParsing="false"
+                                <MenuItem fx:id="removeTrivialRAFsAlgorithmMenuItem1" mnemonicParsing="false"
                                           text="Remove Trivial RAFs Algorithm"/>
-                                <MenuItem fx:id="runMinIrrRAFMenuItem" mnemonicParsing="false"
+                                <MenuItem fx:id="runMinIrrRAFMenuItem1" mnemonicParsing="false"
                                           text="Min Irr RAF Heuristic"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="runMuCAFMenuItem" mnemonicParsing="false" text="MU CAF Algorithm"/>
-                                <MenuItem fx:id="runURAFMenuItem" mnemonicParsing="false" text="U RAF Algorithm"/>
+                                <MenuItem fx:id="runMuCAFMenuItem1" mnemonicParsing="false" text="MU CAF Algorithm"/>
+                                <MenuItem fx:id="runURAFMenuItem1" mnemonicParsing="false" text="U RAF Algorithm"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="runMuCAFMultipleTimesMenuItem" mnemonicParsing="false"
+                                <MenuItem fx:id="runMuCAFMultipleTimesMenuItem1" mnemonicParsing="false"
                                           text="Run MU CAF Multiple Times..."/>
                                 <MenuItem fx:id="spontaneousInRafMenuItem" mnemonicParsing="false"
                                           text="Determine Necessarily Spontaneous in RAF"/>
-                                <MenuItem fx:id="greedyGrowMenuItem" mnemonicParsing="false"
+                                <MenuItem fx:id="greedyGrowMenuItem1" mnemonicParsing="false"
                                           text="Greedily Grow MaxCAF to MaxRAF"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="reactionDependenciesMenuItem" mnemonicParsing="false"
+                                <MenuItem fx:id="reactionDependenciesMenuItem1" mnemonicParsing="false"
                                           text="Compute Reaction Dependencies"/>
-                                <MenuItem fx:id="moleculeDependenciesMenuItem" mnemonicParsing="false"
+                                <MenuItem fx:id="moleculeDependenciesMenuItem1" mnemonicParsing="false"
                                           text="Compute Molecule Dependencies"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <CheckMenuItem fx:id="computeImportanceCheckMenuItem" mnemonicParsing="false"
+                                <CheckMenuItem fx:id="computeImportanceCheckMenuItem1" mnemonicParsing="false"
                                                text="Compute  Importance"/>
                             </items>
                         </Menu>
@@ -441,12 +442,58 @@
                         </MenuButton>
                         <Separator orientation="VERTICAL" prefHeight="200.0"/>
 
-                        <Button fx:id="runButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false"
-                                text="Run">
+                        <MenuButton fx:id="runMenuButton" mnemonicParsing="false" text="Run">
                             <tooltip>
-                                <Tooltip text="Run all main algorithms"/>
+                                <Tooltip text="Run algorithms"/>
                             </tooltip>
-                        </Button>
+                            <items>
+                                <MenuItem fx:id="runAllMenuItem" mnemonicParsing="false"
+                                          text="Run All Main Algorithms"/>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem fx:id="runCAFMenuItem" mnemonicParsing="false" text="Max CAF Algorithm"/>
+                                <MenuItem fx:id="runRAFMenuItem" mnemonicParsing="false" text="Max RAF Algorithm"/>
+
+                                <MenuItem fx:id="runPseudoRAFMenuItem" mnemonicParsing="false"
+                                          text="Max Pseudo RAF Algorithm"/>
+
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem fx:id="runStrictlyAutocatalyticRAFMenuItem" mnemonicParsing="false"
+                                          text="Strictly Autocatalytic Max RAF Algorithm"/>
+
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem fx:id="runTrivialCAFsAlgorithmMenuItem" mnemonicParsing="false"
+                                          text="Trivial CAFs Algorithm"/>
+                                <MenuItem fx:id="runTrivialRAFsAlgorithmMenuItem" mnemonicParsing="false"
+                                          text="Trivial RAFs Algorithm"/>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem fx:id="runCoreRAFMenuItem" mnemonicParsing="false" text="Core RAF Algorithm"/>
+                                <MenuItem fx:id="runQuotientRAFMenuItem" mnemonicParsing="false"
+                                          text="Quotient RAF Algorithm"/>
+                                <MenuItem fx:id="removeTrivialRAFsAlgorithmMenuItem" mnemonicParsing="false"
+                                          text="Remove Trivial RAFs Algorithm"/>
+                                <MenuItem fx:id="runMinIrrRAFMenuItem" mnemonicParsing="false"
+                                          text="Min Irr RAF Heuristic"/>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem fx:id="runMuCAFMenuItem" mnemonicParsing="false" text="MU CAF Algorithm"/>
+                                <MenuItem fx:id="runURAFMenuItem" mnemonicParsing="false" text="U RAF Algorithm"/>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem fx:id="runMuCAFMultipleTimesMenuItem" mnemonicParsing="false"
+                                          text="Run MU CAF Multiple Times..."/>
+                                <MenuItem fx:id="spontaneousInRafMenuItem1" mnemonicParsing="false"
+                                          text="Determine Necessarily Spontaneous in RAF"/>
+                                <MenuItem fx:id="greedyGrowMenuItem" mnemonicParsing="false"
+                                          text="Greedily Grow MaxCAF to MaxRAF"/>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem fx:id="reactionDependenciesMenuItem" mnemonicParsing="false"
+                                          text="Compute Reaction Dependencies"/>
+                                <MenuItem fx:id="moleculeDependenciesMenuItem" mnemonicParsing="false"
+                                          text="Compute Molecule Dependencies"/>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <CheckMenuItem fx:id="computeImportanceCheckMenuItem" mnemonicParsing="false"
+                                               text="Compute  Importance"/>
+
+                            </items>
+                        </MenuButton>
                     </items>
                 </ToolBar>
             </children>
@@ -483,42 +530,26 @@
                                             <children>
                                                 <VBox fx:id="foodInputVBox">
                                                     <children>
-                                                        <ToolBar maxHeight="-Infinity" minHeight="-Infinity"
-                                                                 prefHeight="26.0">
+                                                        <ToolBar>
                                                             <VBox.margin>
                                                                 <Insets/>
                                                             </VBox.margin>
                                                             <items>
-                                                                <ToggleButton fx:id="wrapFoodTextToggle"
-                                                                              contentDisplay="GRAPHIC_ONLY"
-                                                                              layoutX="98.0" layoutY="11.0"
-                                                                              maxHeight="18.0" maxWidth="18.0"
-                                                                              minHeight="18.0" minWidth="18.0"
-                                                                              mnemonicParsing="false" prefHeight="18.0"
-                                                                              prefWidth="18.0" selected="false"
+                                                                <ToggleButton fx:id="wrapFoodTextToggle" layoutX="98.0"
+                                                                              layoutY="11.0" mnemonicParsing="false"
+                                                                              selected="false"
                                                                               style="-fx-border-style: none;"
                                                                               text="Wrap">
-                                                                    <font>
-                                                                        <Font size="10.0"/>
-                                                                    </font>
-                                                                    <graphic>
-                                                                        <ImageView fitHeight="16.0" fitWidth="16.0"
-                                                                                   pickOnBounds="true"
-                                                                                   preserveRatio="true">
-                                                                            <Image smooth="false"
-                                                                                   url="@/jloda/resources/icons/WrapText32.png"/>
-                                                                        </ImageView>
-                                                                    </graphic>
                                                                     <tooltip>
                                                                         <Tooltip text="Wrap lines"/>
                                                                     </tooltip>
                                                                 </ToggleButton>
                                                                 <Label maxHeight="-Infinity" minHeight="-Infinity"
                                                                        prefHeight="26.0" text="Input food set:"/>
-                                                                <Label fx:id="inputFoodSizeLabel" text="size"
+                                                                <Label fx:id="inputFoodSizeLabel" text="0"
                                                                        textFill="LIGHTGRAY">
                                                                     <padding>
-                                                                        <Insets left="10.0"/>
+                                                                        <Insets left="3.0"/>
                                                                     </padding>
                                                                 </Label>
                                                             </items>
@@ -538,38 +569,22 @@
                                             <children>
                                                 <VBox fx:id="reactionsInputVBox">
                                                     <children>
-                                                        <ToolBar maxHeight="-Infinity" minHeight="-Infinity"
-                                                                 prefHeight="26.0">
+                                                        <ToolBar>
                                                             <items>
                                                                 <ToggleButton fx:id="wrapReactionsTextToggle"
-                                                                              contentDisplay="GRAPHIC_ONLY"
                                                                               layoutX="98.0" layoutY="11.0"
-                                                                              maxHeight="18.0" maxWidth="18.0"
-                                                                              minHeight="18.0" minWidth="18.0"
-                                                                              mnemonicParsing="false" prefHeight="18.0"
-                                                                              prefWidth="18.0" selected="false"
+                                                                              mnemonicParsing="false" selected="false"
                                                                               style="-fx-border-style: none;"
                                                                               text="Wrap">
-                                                                    <font>
-                                                                        <Font size="10.0"/>
-                                                                    </font>
-                                                                    <graphic>
-                                                                        <ImageView fitHeight="16.0" fitWidth="16.0"
-                                                                                   pickOnBounds="true"
-                                                                                   preserveRatio="true">
-                                                                            <Image smooth="false"
-                                                                                   url="@/jloda/resources/icons/WrapText32.png"/>
-                                                                        </ImageView>
-                                                                    </graphic>
                                                                     <tooltip>
                                                                         <Tooltip text="Wrap lines"/>
                                                                     </tooltip>
                                                                 </ToggleButton>
                                                                 <Label text="Input catalyic reactions:"/>
-                                                                <Label fx:id="inputReactionsSizeLabel" text="size"
+                                                                <Label fx:id="inputReactionsSizeLabel" text="0"
                                                                        textFill="LIGHTGRAY">
                                                                     <padding>
-                                                                        <Insets left="10.0"/>
+                                                                        <Insets left="3.0"/>
                                                                     </padding>
                                                                 </Label>
                                                             </items>
@@ -613,6 +628,14 @@
                                                     <children>
                                                         <ToolBar minHeight="-Infinity">
                                                             <items>
+                                                                <ToggleButton fx:id="findNetworkToggleButton"
+                                                                              mnemonicParsing="false" text="Find...">
+                                                                    <tooltip>
+                                                                        <Tooltip text="Show or hide find tool bar"/>
+                                                                    </tooltip>
+                                                                </ToggleButton>
+                                                                <Separator layoutX="207.0" layoutY="10.0"
+                                                                           orientation="VERTICAL"/>
                                                                 <Button fx:id="zoomInNetworkButton"
                                                                         mnemonicParsing="false" text="Zoom In">
                                                                     <tooltip>
@@ -634,18 +657,6 @@
                                                                 </Button>
                                                                 <MenuButton fx:id="computeNetworkMenuButton"
                                                                             mnemonicParsing="false" text="Compute">
-                                                                    <graphic>
-                                                                        <ImageView fitHeight="16.0" fitWidth="16.0"
-                                                                                   pickOnBounds="true"
-                                                                                   preserveRatio="true">
-                                                                            <image>
-                                                                                <Image url="@/jloda/resources/icons/sun/Refresh24.gif"/>
-                                                                            </image>
-                                                                        </ImageView>
-                                                                    </graphic>
-                                                                    <tooltip>
-                                                                        <Tooltip text="(Re)compute network"/>
-                                                                    </tooltip>
                                                                     <items>
                                                                         <MenuItem fx:id="computeNetworkMenuItem1"
                                                                                   mnemonicParsing="false"
