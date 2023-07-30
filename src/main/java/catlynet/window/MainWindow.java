@@ -112,7 +112,7 @@ public class MainWindow implements IMainWindow {
         stage.getIcons().addAll(ProgramProperties.getProgramIconsFX());
 
         final var scene = new Scene(root);
-        scene.getStylesheets().add("white_pane.css");
+        scene.getStylesheets().add("jloda/resources/css/white_pane.css");
 
         stage.setScene(scene);
         stage.setX(screenX);

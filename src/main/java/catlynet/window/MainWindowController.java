@@ -19,6 +19,7 @@
 
 package catlynet.window;
 
+import catlynet.icons.MaterialIcons;
 import javafx.beans.InvalidationListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -33,9 +34,7 @@ import jloda.fx.control.ZoomableScrollPane;
 import jloda.fx.util.ProgramProperties;
 import jloda.fx.window.MainWindowManager;
 
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.ResourceBundle;
 
 public class MainWindowController {
 
@@ -45,12 +44,6 @@ public class MainWindowController {
 	@FXML
 	private ToggleButton wrapReactionsTextToggle;
 
-
-	@FXML
-	private ResourceBundle resources;
-
-	@FXML
-	private URL location;
 
 	@FXML
 	private MenuBar menuBar;
@@ -385,7 +378,7 @@ public class MainWindowController {
 	private VBox networkVBox;
 
 	@FXML
-	private ScrollPane networkScrollPane;
+	private StackPane networkPane;
 
 	@FXML
 	private ContextMenu networkContextMenu;
@@ -417,17 +410,52 @@ public class MainWindowController {
 	@FXML
 	private CheckMenuItem useDarkThemeCheckMenuItem;
 
-
 	@FXML
 	private Button exportNetworkImageButton;
 
 	@FXML
-	private Button computeNetworkButton;
+	private MenuItem computeNetworkMenuItem1;
+
+	@FXML
+	private RadioMenuItem fullGraphRadioMenuItem1;
+	@FXML
+	private RadioMenuItem associationGraphRadioMenuItem1;
+	@FXML
+	private RadioMenuItem reactantAssociationRadioMenuItem1;
+	@FXML
+	private CheckMenuItem suppressFormalFoodMenuItem1;
+	@FXML
+	private CheckMenuItem suppressCatalystEdgesMenuItem1;
+	@FXML
+	private CheckMenuItem useMultiCopyFoodNodesMenuItem1;
+	@FXML
+	private RadioMenuItem reactionDependencyGraphRadioMenuItem1;
+	@FXML
+	private RadioMenuItem moleculeDependencyGraphRadioMenuItem1;
+	@FXML
+	private MenuItem showNodeLabels1;
+
+	@FXML
+	private MenuButton computeNetworkMenuButton;
+
+	@FXML
+	private Button zoomInNetworkButton;
+
+	@FXML
+	private Button zoomOutNetworkButton;
 
 	private ZoomableScrollPane zoomableScrollPane;
 
 	@FXML
 	void initialize() {
+		MaterialIcons.setIcon(recentMenuButton, "launch");
+		MaterialIcons.setIcon(runButton, "play_circle_filled");
+		MaterialIcons.setIcon(exportMenuButton, "file_upload");
+		MaterialIcons.setIcon(zoomInNetworkButton, "zoom_in");
+		MaterialIcons.setIcon(zoomOutNetworkButton, "zoom_out");
+		MaterialIcons.setIcon(exportNetworkImageButton, "file_upload");
+
+
 		wrapFoodTextToggle.selectedProperty().bindBidirectional(inputFoodTextArea.wrapTextProperty());
 		wrapFoodTextToggle.setSelected(true);
 		wrapReactionsTextToggle.selectedProperty().bindBidirectional(inputTextArea.wrapTextProperty());
@@ -487,8 +515,44 @@ public class MainWindowController {
 		MainWindowManager.getInstance().changedProperty().addListener(invalidationListener);
 		invalidationListener.invalidated(null);
 
-		zoomableScrollPane = new ZoomableScrollPane(null);
-		networkBorderPane.setCenter(zoomableScrollPane);
+
+		{
+			var stackPane = new StackPane();
+			zoomableScrollPane = new ZoomableScrollPane(stackPane);
+			networkPane.getChildren().add(zoomableScrollPane);
+			networkPane = stackPane;
+			if (false) networkPane.setPadding(new javafx.geometry.Insets(100));
+			networkPane.getStyleClass().add("viewer-background");
+		}
+
+		{
+			MaterialIcons.setIcon(computeNetworkMenuButton, "settings");
+			computeNetworkMenuItem1.setOnAction(e -> computeNetworkMenuItem.getOnAction().handle(e));
+			computeNetworkMenuItem1.disableProperty().bind(computeNetworkMenuItem.disableProperty());
+
+			fullGraphRadioMenuItem1.disableProperty().bindBidirectional(fullGraphRadioMenuItem.disableProperty());
+			associationGraphRadioMenuItem1.disableProperty().bindBidirectional(associationGraphRadioMenuItem.disableProperty());
+			reactantAssociationRadioMenuItem1.disableProperty().bindBidirectional(reactantAssociationRadioMenuItem.disableProperty());
+			suppressFormalFoodMenuItem1.disableProperty().bindBidirectional(suppressFormalFoodMenuItem.disableProperty());
+			suppressCatalystEdgesMenuItem1.disableProperty().bindBidirectional(suppressCatalystEdgesMenuItem.disableProperty());
+			useMultiCopyFoodNodesMenuItem1.disableProperty().bindBidirectional(useMultiCopyFoodNodesMenuItem.disableProperty());
+			reactionDependencyGraphRadioMenuItem1.disableProperty().bindBidirectional(reactionDependencyGraphRadioMenuItem.disableProperty());
+			moleculeDependencyGraphRadioMenuItem1.disableProperty().bindBidirectional(moleculeDependenciesMenuItem.disableProperty());
+			showNodeLabels1.disableProperty().bindBidirectional(showNodeLabels.disableProperty());
+			fullGraphRadioMenuItem1.selectedProperty().bindBidirectional(fullGraphRadioMenuItem.selectedProperty());
+			associationGraphRadioMenuItem1.selectedProperty().bindBidirectional(associationGraphRadioMenuItem.selectedProperty());
+			reactantAssociationRadioMenuItem1.selectedProperty().bindBidirectional(reactantAssociationRadioMenuItem.selectedProperty());
+			suppressFormalFoodMenuItem1.selectedProperty().bindBidirectional(suppressFormalFoodMenuItem.selectedProperty());
+			suppressCatalystEdgesMenuItem1.selectedProperty().bindBidirectional(suppressCatalystEdgesMenuItem.selectedProperty());
+			useMultiCopyFoodNodesMenuItem1.selectedProperty().bindBidirectional(useMultiCopyFoodNodesMenuItem.selectedProperty());
+			reactionDependencyGraphRadioMenuItem1.selectedProperty().bindBidirectional(reactionDependencyGraphRadioMenuItem.selectedProperty());
+			moleculeDependencyGraphRadioMenuItem1.selectedProperty().bindBidirectional(moleculeDependencyGraphRadioMenuItem.selectedProperty());
+
+			zoomInNetworkButton.setOnAction(e -> zoomInMenuItem.getOnAction().handle(e));
+			zoomInNetworkButton.disableProperty().bind(zoomInMenuItem.disableProperty());
+			zoomOutNetworkButton.setOnAction(e -> zoomOutMenuItem.getOnAction().handle(e));
+			zoomOutNetworkButton.disableProperty().bind(zoomOutMenuItem.disableProperty());
+		}
 	}
 
 	private SplittableTabPane outputSplittableTabPane;
@@ -988,7 +1052,7 @@ public class MainWindowController {
 		return exportNetworkImageButton;
 	}
 
-	public Button getComputeNetworkButton() {
-		return computeNetworkButton;
+	public StackPane getNetworkPane() {
+		return networkPane;
 	}
 }

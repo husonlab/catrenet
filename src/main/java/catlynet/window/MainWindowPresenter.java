@@ -47,7 +47,6 @@ import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import jloda.fx.control.ZoomableScrollPane;
 import jloda.fx.dialog.ExportImageDialog;
@@ -263,8 +262,6 @@ public class MainWindowPresenter {
         });
         controller.getComputeNetworkMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()).or(controller.getInputFoodTextArea().textProperty().isEmpty()));
 
-        controller.getComputeNetworkButton().setOnAction(controller.getComputeNetworkMenuItem().getOnAction());
-        controller.getComputeNetworkButton().disableProperty().bind(controller.getComputeNetworkMenuItem().disableProperty());
         disableGraphItems.addListener((c, o, n) -> {
             if (n)
                 graphView.getMoleculeFlowAnimation().setPlaying(false);
@@ -467,16 +464,14 @@ public class MainWindowPresenter {
                 }
             });
 
-            final Pane networkContentPane = new StackPane(graphView.getWorld());
-            networkContentPane.setPadding(new javafx.geometry.Insets(100));
-            networkContentPane.getStyleClass().add("viewer-background");
-            scrollPane.setContent(networkContentPane);
+            final Pane networkPane = controller.getNetworkPane();
+            networkPane.getChildren().add(graphView.getWorld());
 
-            networkContentPane.setOnContextMenuRequested(e -> controller.getNetworkTabContextMenu().show(networkContentPane, e.getScreenX(), e.getScreenY()));
+            networkPane.setOnContextMenuRequested(e -> controller.getNetworkTabContextMenu().show(networkPane, e.getScreenX(), e.getScreenY()));
 
-            networkContentPane.minWidthProperty().bind(Bindings.createDoubleBinding(() ->
+            networkPane.minWidthProperty().bind(Bindings.createDoubleBinding(() ->
                     scrollPane.getViewportBounds().getWidth(), scrollPane.viewportBoundsProperty()).subtract(20));
-            networkContentPane.minHeightProperty().bind(Bindings.createDoubleBinding(() ->
+            networkPane.minHeightProperty().bind(Bindings.createDoubleBinding(() ->
                     scrollPane.getViewportBounds().getHeight(), scrollPane.viewportBoundsProperty()).subtract(20));
 
             controller.getZoomInMenuItem().setOnAction(c -> scrollPane.zoomBy(1.1, 1.1));
@@ -504,7 +499,7 @@ public class MainWindowPresenter {
             // controller.getStatusFlowPane().prefHeightProperty().addListener((c,o,n)->System.err.println("PH changed: "+o+" -> "+n));
             // controller.getStatusFlowPane().heightProperty().addListener((c,o,n)->System.err.println("H changed: "+o+" -> "+n));
 
-            networkContentPane.focusedProperty().addListener((c, o, n) -> {
+            networkPane.focusedProperty().addListener((c, o, n) -> {
                 if (n)
                     printableNode.set(scrollPane.getContent());
             });
@@ -513,7 +508,7 @@ public class MainWindowPresenter {
                     printableNode.set(scrollPane.getContent());
             });
 
-            networkContentPane.setOnMousePressed(e -> {
+            networkPane.setOnMousePressed(e -> {
                 if (e.getClickCount() == 2) {
                     graphView.getNodeSelection().clearSelection();
                     graphView.getEdgeSelection().clearSelection();

@@ -7,23 +7,25 @@ module catlynet {
     exports catlynet.algorithm;
     exports catlynet.main;
     exports catlynet.tab;
-    exports catlynet.window;
-    exports catlynet.model;
-    exports catlynet.view;
-    exports catlynet.action;
-    exports catlynet.tools;
+	exports catlynet.window;
+	exports catlynet.model;
+	exports catlynet.view;
+	exports catlynet.action;
+	exports catlynet.tools;
 
-    opens catlynet.algorithm;
+	opens catlynet.algorithm;
 
-    opens catlynet.tab;
-    opens catlynet.window;
-    opens catlynet.format;
-    opens catlynet.vformat;
+	opens catlynet.tab;
+	opens catlynet.window;
+	opens catlynet.icons;
 
-    opens catlynet.dialog.exportlist;
+	opens catlynet.format;
+	opens catlynet.vformat;
 
-    opens catlynet.resources.images;
-    opens catlynet.resources.icons;
+	opens catlynet.dialog.exportlist;
 
-    exports catlynet;
+	opens catlynet.resources.images;
+	opens catlynet.resources.icons;
+
+	exports catlynet;
 }

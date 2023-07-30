@@ -428,29 +428,13 @@
                 <ToolBar fx:id="mainToolBar" minHeight="-Infinity" prefHeight="30.0">
                     <items>
                         <MenuButton fx:id="recentMenuButton" maxHeight="-Infinity" maxWidth="-Infinity"
-                                    minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="24.0"
-                                    prefWidth="40.0">
-                            <graphic>
-                                <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image url="@/jloda/resources/icons/sun/Open24.gif"/>
-                                    </image>
-                                </ImageView>
-                            </graphic>
+                                    minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" text="Recent">
                             <tooltip>
                                 <Tooltip text="Open a recent file"/>
                             </tooltip>
                         </MenuButton>
                         <MenuButton fx:id="exportMenuButton" maxHeight="-Infinity" maxWidth="-Infinity"
-                                    minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="24.0"
-                                    prefWidth="40.0">
-                            <graphic>
-                                <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image url="@/jloda/resources/icons/sun/Export24.gif"/>
-                                    </image>
-                                </ImageView>
-                            </graphic>
+                                    minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" text="Export">
                             <tooltip>
                                 <Tooltip text="Export a computed reaction system"/>
                             </tooltip>
@@ -458,14 +442,7 @@
                         <Separator orientation="VERTICAL" prefHeight="200.0"/>
 
                         <Button fx:id="runButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false"
-                                prefHeight="24.0" prefWidth="24.0">
-                            <graphic>
-                                <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image url="@/jloda/resources/icons/Play.png"/>
-                                    </image>
-                                </ImageView>
-                            </graphic>
+                                text="Run">
                             <tooltip>
                                 <Tooltip text="Run all main algorithms"/>
                             </tooltip>
@@ -634,35 +611,29 @@
                                             <top>
                                                 <VBox fx:id="networkVBox" BorderPane.alignment="CENTER">
                                                     <children>
-                                                        <ToolBar minHeight="-Infinity" prefHeight="30.0">
+                                                        <ToolBar minHeight="-Infinity">
                                                             <items>
+                                                                <Button fx:id="zoomInNetworkButton"
+                                                                        mnemonicParsing="false" text="Zoom In">
+                                                                    <tooltip>
+                                                                        <Tooltip text="Zoom in"/>
+                                                                    </tooltip>
+                                                                </Button>
+                                                                <Button fx:id="zoomOutNetworkButton"
+                                                                        mnemonicParsing="false" text="Zoom Out">
+                                                                    <tooltip>
+                                                                        <Tooltip text="Zoom out"/>
+                                                                    </tooltip>
+                                                                </Button>
+                                                                <Separator orientation="VERTICAL"/>
                                                                 <Button fx:id="exportNetworkImageButton"
-                                                                        contentDisplay="GRAPHIC_ONLY"
-                                                                        minHeight="-Infinity" minWidth="-Infinity"
-                                                                        mnemonicParsing="false" prefHeight="24.0"
-                                                                        prefWidth="24.0" text="Export...">
+                                                                        mnemonicParsing="false" text="Export...">
                                                                     <tooltip>
                                                                         <Tooltip text="Export image"/>
                                                                     </tooltip>
-                                                                    <graphic>
-                                                                        <ImageView fitHeight="16.0" fitWidth="16.0"
-                                                                                   pickOnBounds="true"
-                                                                                   preserveRatio="true">
-                                                                            <image>
-                                                                                <Image url="@/jloda/resources/icons/sun/Export24.gif"/>
-                                                                            </image>
-                                                                        </ImageView>
-                                                                    </graphic>
                                                                 </Button>
-                                                                <Button fx:id="computeNetworkButton"
-                                                                        contentDisplay="GRAPHIC_ONLY" layoutX="10.0"
-                                                                        layoutY="8.0" minHeight="-Infinity"
-                                                                        minWidth="-Infinity" mnemonicParsing="false"
-                                                                        prefHeight="24.0" prefWidth="24.0"
-                                                                        text="Update">
-                                                                    <tooltip>
-                                                                        <Tooltip text="Recompute network"/>
-                                                                    </tooltip>
+                                                                <MenuButton fx:id="computeNetworkMenuButton"
+                                                                            mnemonicParsing="false" text="Compute">
                                                                     <graphic>
                                                                         <ImageView fitHeight="16.0" fitWidth="16.0"
                                                                                    pickOnBounds="true"
@@ -672,12 +643,58 @@
                                                                             </image>
                                                                         </ImageView>
                                                                     </graphic>
-                                                                </Button>
-                                                                <Separator orientation="VERTICAL" prefHeight="200.0"/>
+                                                                    <tooltip>
+                                                                        <Tooltip text="(Re)compute network"/>
+                                                                    </tooltip>
+                                                                    <items>
+                                                                        <MenuItem fx:id="computeNetworkMenuItem1"
+                                                                                  mnemonicParsing="false"
+                                                                                  text="Recompute"/>
+                                                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                                                        <RadioMenuItem fx:id="fullGraphRadioMenuItem1"
+                                                                                       mnemonicParsing="false"
+                                                                                       text="Full Network"/>
+                                                                        <RadioMenuItem
+                                                                                fx:id="associationGraphRadioMenuItem1"
+                                                                                mnemonicParsing="false"
+                                                                                text="Association Network"/>
+                                                                        <RadioMenuItem
+                                                                                fx:id="reactantAssociationRadioMenuItem1"
+                                                                                mnemonicParsing="false"
+                                                                                text="Reactant Association Network"/>
+                                                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                                                        <CheckMenuItem
+                                                                                fx:id="suppressFormalFoodMenuItem1"
+                                                                                mnemonicParsing="false"
+                                                                                text="Suppress Formal Food Item"/>
+                                                                        <CheckMenuItem
+                                                                                fx:id="suppressCatalystEdgesMenuItem1"
+                                                                                mnemonicParsing="false"
+                                                                                text="Suppress Catalyst Edges"/>
+                                                                        <CheckMenuItem
+                                                                                fx:id="useMultiCopyFoodNodesMenuItem1"
+                                                                                mnemonicParsing="false"
+                                                                                text="Use Multicopy Food  Nodes"/>
+                                                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                                                        <RadioMenuItem
+                                                                                fx:id="reactionDependencyGraphRadioMenuItem1"
+                                                                                mnemonicParsing="false"
+                                                                                text="Reaction-Dependency Network"/>
+                                                                        <RadioMenuItem
+                                                                                fx:id="moleculeDependencyGraphRadioMenuItem1"
+                                                                                mnemonicParsing="false"
+                                                                                text="Molecule-Dependency Network"/>
+                                                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                                                        <MenuItem fx:id="showNodeLabels1"
+                                                                                  mnemonicParsing="false"
+                                                                                  text="Show/Hide Node Labels">
+                                                                        </MenuItem>
+                                                                    </items>
+                                                                </MenuButton>
+                                                                <Separator orientation="VERTICAL"/>
 
                                                                 <Button fx:id="stopAnimationButton"
-                                                                        minHeight="-Infinity" mnemonicParsing="false"
-                                                                        prefHeight="24.0" text="Animation">
+                                                                        mnemonicParsing="false" text="Animation">
                                                                     <graphic>
                                                                         <ImageView fitHeight="16.0" fitWidth="16.0"
                                                                                    pickOnBounds="true"
@@ -699,11 +716,10 @@
                                             <center>
                                                 <AnchorPane BorderPane.alignment="CENTER">
                                                     <children>
-                                                        <ScrollPane fx:id="networkScrollPane"
-                                                                    AnchorPane.bottomAnchor="0.0"
-                                                                    AnchorPane.leftAnchor="0.0"
-                                                                    AnchorPane.rightAnchor="0.0"
-                                                                    AnchorPane.topAnchor="0.0"/>
+                                                        <StackPane fx:id="networkPane" AnchorPane.bottomAnchor="0.0"
+                                                                   AnchorPane.leftAnchor="0.0"
+                                                                   AnchorPane.rightAnchor="0.0"
+                                                                   AnchorPane.topAnchor="0.0"/>
                                                         <Label fx:id="graphTypeLabel" text="Label" textAlignment="RIGHT"
                                                                AnchorPane.rightAnchor="30.0"
                                                                AnchorPane.topAnchor="5.0"/>
