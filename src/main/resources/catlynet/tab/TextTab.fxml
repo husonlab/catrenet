@@ -19,12 +19,10 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
-<TabPane fx:id="tabPane" prefHeight="500.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.111"
+<TabPane fx:id="tabPane" prefHeight="500.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18"
          xmlns:fx="http://javafx.com/fxml/1" fx:controller="catlynet.tab.TextTabController">
     <tabs>
         <Tab fx:id="tab" closable="false" disable="false" text="Tab">
@@ -35,7 +33,18 @@
                                   wrapText="true"/>
                     </center>
                     <top>
-                        <VBox fx:id="vbox" minHeight="4.0" BorderPane.alignment="CENTER"/>
+                        <VBox fx:id="vbox" minHeight="4.0" BorderPane.alignment="CENTER">
+                            <children>
+                                <ToolBar prefHeight="40.0" prefWidth="200.0">
+                                    <items>
+                                        <ToggleButton fx:id="wrapButton" layoutX="10.0" layoutY="12.0"
+                                                      mnemonicParsing="false" text="Wrap"/>
+                                        <ToggleButton fx:id="findToggleButton" mnemonicParsing="false" text="FInd..."/>
+                                        <Button fx:id="exportButton" mnemonicParsing="false" text="Export"/>
+                                    </items>
+                                </ToolBar>
+                            </children>
+                        </VBox>
                     </top>
                 </BorderPane>
             </content>

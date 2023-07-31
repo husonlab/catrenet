@@ -21,8 +21,11 @@ package catlynet.window;
 
 import catlynet.icons.MaterialIcons;
 import javafx.beans.InvalidationListener;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.KeyCharacterCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
@@ -40,7 +43,6 @@ public class MainWindowController {
 
 	@FXML
 	private ToggleButton wrapReactionsTextToggle;
-
 
 	@FXML
 	private MenuBar menuBar;
@@ -143,6 +145,39 @@ public class MainWindowController {
 
 	@FXML
 	private MenuItem selectFromPreviousWindowMenuItem;
+
+	@FXML
+	private MenuItem selectAllMenuItem1;
+
+	@FXML
+	private MenuItem selectNoneMenuItem1;
+
+	@FXML
+	private MenuItem selectInvertedMenuItem1;
+
+	@FXML
+	private MenuItem selectNodesMenuItem1;
+
+	@FXML
+	private MenuItem selectEdgesMenuItem1;
+
+	@FXML
+	private Menu selectReactionSystemMenu1;
+
+	@FXML
+	private MenuItem selectFoodMenuItem1;
+
+	@FXML
+	private MenuItem selectMoleculesMenuItem1;
+
+	@FXML
+	private MenuItem selectReactionsMenuItem1;
+
+	@FXML
+	private MenuItem selectConnectedComponentMenuItem1;
+
+	@FXML
+	private MenuItem selectFromPreviousWindowMenuItem1;
 
 	@FXML
 	private Menu algorithmMenu;
@@ -528,6 +563,27 @@ public class MainWindowController {
 	@FXML
 	private MenuItem graphEmbedderIterationsMenuItem;
 
+	@FXML
+	private ToggleButton findWorkingReactionsToggleButton;
+
+	@FXML
+	private ToggleButton wrapWorkingReactionsToggleButton;
+
+	@FXML
+	private Button exportWorkingReactionsButton;
+
+	@FXML
+	private ToggleButton findLogToggleButton;
+
+	@FXML
+	private ToggleButton wrapLogToggleButton;
+
+	@FXML
+	private Button exportLogButton;
+
+	@FXML
+	private MenuButton selectNetworkMenuButton;
+
 
 	private ZoomableScrollPane zoomableScrollPane;
 
@@ -547,7 +603,33 @@ public class MainWindowController {
 			MaterialIcons.setIcon(stopAnimationButton, "close", null, false);
 			MaterialIcons.setIcon(zoomInNetworkButton, "zoom_in");
 			MaterialIcons.setIcon(zoomOutNetworkButton, "zoom_out");
-			MaterialIcons.setIcon(exportNetworkImageButton, "file_upload");
+			MaterialIcons.setIcon(exportNetworkImageButton, "ios_share");
+
+			MaterialIcons.setIcon(findWorkingReactionsToggleButton, "search");
+			MaterialIcons.setIcon(exportWorkingReactionsButton, "ios_share");
+			MaterialIcons.setIcon(wrapWorkingReactionsToggleButton, "wrap_text");
+
+			MaterialIcons.setIcon(findLogToggleButton, "search");
+			MaterialIcons.setIcon(exportLogButton, "ios_share");
+			MaterialIcons.setIcon(wrapLogToggleButton, "wrap_text");
+
+			MaterialIcons.setIcon(selectNetworkMenuButton, "checklist_rtl");
+		}
+
+		{
+			wrapWorkingReactionsToggleButton.selectedProperty().bindBidirectional(workingReactionsTextArea.wrapTextProperty());
+			exportWorkingReactionsButton.setOnAction(e -> {
+				var content = new ClipboardContent();
+				content.putString(workingReactionsTextArea.getText());
+				Clipboard.getSystemClipboard().setContent(content);
+			});
+
+			wrapLogToggleButton.selectedProperty().bindBidirectional(logTextArea.wrapTextProperty());
+			exportLogButton.setOnAction(e -> {
+				var content = new ClipboardContent();
+				content.putString(logTextArea.getText());
+				Clipboard.getSystemClipboard().setContent(content);
+			});
 		}
 
 		wrapFoodTextToggle.selectedProperty().bindBidirectional(inputFoodTextArea.wrapTextProperty());
@@ -703,6 +785,31 @@ public class MainWindowController {
 			moveLabelsMenuItem1.disableProperty().bindBidirectional(moveLabelsMenuItem.disableProperty());
 			useColorsMenuItem1.disableProperty().bindBidirectional(useColorsMenuItem.disableProperty());
 			graphEmbedderIterationsMenuItem1.disableProperty().bindBidirectional(graphEmbedderIterationsMenuItem.disableProperty());
+
+			selectAllMenuItem1.setOnAction(e -> selectAllMenuItem.getOnAction().handle(e));
+			selectNoneMenuItem1.setOnAction(e -> selectNoneMenuItem.getOnAction().handle(e));
+			selectInvertedMenuItem1.setOnAction(e -> selectInvertedMenuItem.getOnAction().handle(e));
+			selectNodesMenuItem1.setOnAction(e -> selectNodesMenuItem.getOnAction().handle(e));
+			selectEdgesMenuItem1.setOnAction(e -> selectEdgesMenuItem.getOnAction().handle(e));
+			selectFoodMenuItem1.setOnAction(e -> selectFoodMenuItem.getOnAction().handle(e));
+			selectMoleculesMenuItem1.setOnAction(e -> selectMoleculesMenuItem.getOnAction().handle(e));
+			selectReactionsMenuItem1.setOnAction(e -> selectReactionsMenuItem.getOnAction().handle(e));
+			selectConnectedComponentMenuItem1.setOnAction(e -> selectConnectedComponentMenuItem.getOnAction().handle(e));
+			selectFromPreviousWindowMenuItem1.setOnAction(e -> selectFromPreviousWindowMenuItem.getOnAction().handle(e));
+
+			selectAllMenuItem1.disableProperty().bindBidirectional(selectAllMenuItem.disableProperty());
+			selectNoneMenuItem1.disableProperty().bindBidirectional(selectNoneMenuItem.disableProperty());
+			selectInvertedMenuItem1.disableProperty().bindBidirectional(selectInvertedMenuItem.disableProperty());
+			selectNodesMenuItem1.disableProperty().bindBidirectional(selectNodesMenuItem.disableProperty());
+			selectEdgesMenuItem1.disableProperty().bindBidirectional(selectEdgesMenuItem.disableProperty());
+			selectReactionSystemMenu1.disableProperty().bindBidirectional(selectReactionSystemMenu.disableProperty());
+			selectFoodMenuItem1.disableProperty().bindBidirectional(selectFoodMenuItem.disableProperty());
+			selectMoleculesMenuItem1.disableProperty().bindBidirectional(selectMoleculesMenuItem.disableProperty());
+			selectReactionsMenuItem1.disableProperty().bindBidirectional(selectReactionsMenuItem.disableProperty());
+			selectConnectedComponentMenuItem1.disableProperty().bindBidirectional(selectConnectedComponentMenuItem.disableProperty());
+			selectFromPreviousWindowMenuItem1.disableProperty().bindBidirectional(selectFromPreviousWindowMenuItem.disableProperty());
+
+			selectReactionSystemMenu.disableProperty().bind(Bindings.isEmpty(selectReactionSystemMenu.getItems()));
 		}
 	}
 
@@ -1130,7 +1237,6 @@ public class MainWindowController {
 		return logVBox;
 	}
 
-
 	public SplittableTabPane getOutputTabPane() {
 		return outputSplittableTabPane;
 	}
@@ -1209,5 +1315,13 @@ public class MainWindowController {
 
 	public MenuButton getAnimateNetworkMenuButton() {
 		return animateNetworkMenuButton;
+	}
+
+	public ToggleButton getFindWorkingReactionsToggleButton() {
+		return findWorkingReactionsToggleButton;
+	}
+
+	public ToggleButton getFindLogToggleButton() {
+		return findLogToggleButton;
 	}
 }

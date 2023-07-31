@@ -20,10 +20,11 @@
 package catlynet.tab;
 
 
+import catlynet.icons.MaterialIcons;
 import javafx.fxml.FXML;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.VBox;
 
 public class TextTabController {
@@ -41,8 +42,28 @@ public class TextTabController {
     private VBox vbox;
 
     @FXML
+    private ToggleButton wrapButton;
+
+    @FXML
+    private ToggleButton findToggleButton;
+
+    @FXML
+    private Button exportButton;
+
+    @FXML
     void initialize() {
+        MaterialIcons.setIcon(findToggleButton, "search");
+        MaterialIcons.setIcon(exportButton, "ios_share");
+        MaterialIcons.setIcon(wrapButton, "wrap_text");
+
         tabPane.getTabs().remove(tab);
+
+        wrapButton.selectedProperty().bindBidirectional(textArea.wrapTextProperty());
+        exportButton.setOnAction(e -> {
+            var content = new ClipboardContent();
+            content.putString(textArea.getText());
+            Clipboard.getSystemClipboard().setContent(content);
+        });
     }
 
     public Tab getTab() {
@@ -55,5 +76,13 @@ public class TextTabController {
 
     public VBox getVbox() {
         return vbox;
+    }
+
+    public ToggleButton getFindToggleButton() {
+        return findToggleButton;
+    }
+
+    public Button getExportButton() {
+        return exportButton;
     }
 }

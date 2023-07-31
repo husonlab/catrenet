@@ -35,6 +35,7 @@ public class TextTab {
     final private VBox vBox;
     final private TextArea textArea;
     private FindToolBar findToolBar;
+    private final TextTabController controller;
 
     /**
      * create a text tab
@@ -43,7 +44,7 @@ public class TextTab {
     public TextTab(String reactionSystemName) {
         this.reactionSystemName = reactionSystemName;
         final ExtendedFXMLLoader<TextTabController> extendedFXMLLoader = new ExtendedFXMLLoader<>(TextTab.class);
-        final TextTabController controller = extendedFXMLLoader.getController();
+        controller = extendedFXMLLoader.getController();
 
         tab = controller.getTab();
         tab.setText(reactionSystemName);
@@ -51,6 +52,7 @@ public class TextTab {
         vBox = controller.getVbox();
         textArea = controller.getTextArea();
         tab.setUserData(this);
+        tab.setClosable(true);
 
         tab.disableProperty().bind(textArea.textProperty().isEmpty());
     }
@@ -79,6 +81,10 @@ public class TextTab {
         if (findToolBar != null)
             vBox.getChildren().add(findToolBar);
         this.findToolBar = findToolBar;
+    }
+
+    public TextTabController getController() {
+        return controller;
     }
 
     @Override

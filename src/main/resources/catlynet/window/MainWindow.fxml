@@ -167,68 +167,68 @@
                         </Menu>
                         <Menu mnemonicParsing="false" text="Select">
                             <items>
-                                <MenuItem fx:id="selectAllMenuItem" mnemonicParsing="false" text="All">
+                                <MenuItem fx:id="selectAllMenuItem1" mnemonicParsing="false" text="All">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="A" control="UP" meta="DOWN" shift="UP"
                                                             shortcut="UP"/>
                                     </accelerator>
                                 </MenuItem>
-                                <MenuItem fx:id="selectNoneMenuItem" mnemonicParsing="false" text="None">
+                                <MenuItem fx:id="selectNoneMenuItem1" mnemonicParsing="false" text="None">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="A" control="UP" meta="DOWN" shift="DOWN"
                                                             shortcut="UP"/>
                                     </accelerator>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="selectInvertedMenuItem" mnemonicParsing="false" text="Invert">
+                                <MenuItem fx:id="selectInvertedMenuItem1" mnemonicParsing="false" text="Invert">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="I" control="UP" meta="UP" shift="UP"
                                                             shortcut="DOWN"/>
                                     </accelerator>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="selectNodesMenuItem" mnemonicParsing="false" text="Nodes">
+                                <MenuItem fx:id="selectNodesMenuItem1" mnemonicParsing="false" text="Nodes">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="N" control="UP" meta="UP" shift="DOWN"
                                                             shortcut="DOWN"/>
                                     </accelerator>
                                 </MenuItem>
-                                <MenuItem fx:id="selectEdgesMenuItem" mnemonicParsing="false" text="Edges">
+                                <MenuItem fx:id="selectEdgesMenuItem1" mnemonicParsing="false" text="Edges">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="E" control="UP" meta="UP" shift="DOWN"
                                                             shortcut="DOWN"/>
                                     </accelerator>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <Menu fx:id="selectReactionSystemMenu" mnemonicParsing="false" text="Reaction System"/>
+                                <Menu fx:id="selectReactionSystemMenu1" mnemonicParsing="false" text="Reaction System"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="selectFoodMenuItem" mnemonicParsing="false" text="Food">
+                                <MenuItem fx:id="selectFoodMenuItem1" mnemonicParsing="false" text="Food">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="F" control="UP" meta="UP" shift="DOWN"
                                                             shortcut="DOWN"/>
                                     </accelerator>
                                 </MenuItem>
-                                <MenuItem fx:id="selectMoleculesMenuItem" mnemonicParsing="false" text="Molecules">
+                                <MenuItem fx:id="selectMoleculesMenuItem1" mnemonicParsing="false" text="Molecules">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="M" control="UP" meta="UP" shift="DOWN"
                                                             shortcut="DOWN"/>
                                     </accelerator>
                                 </MenuItem>
-                                <MenuItem fx:id="selectReactionsMenuItem" mnemonicParsing="false" text="Reactions">
+                                <MenuItem fx:id="selectReactionsMenuItem1" mnemonicParsing="false" text="Reactions">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="R" control="UP" meta="UP" shift="DOWN"
                                                             shortcut="DOWN"/>
                                     </accelerator>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="selectConnectedComponentMenuItem" mnemonicParsing="false"
+                                <MenuItem fx:id="selectConnectedComponentMenuItem1" mnemonicParsing="false"
                                           text="Connected Component">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="R" control="UP" meta="UP" shift="DOWN"
                                                             shortcut="DOWN"/>
                                     </accelerator>
                                 </MenuItem>
-                                <MenuItem fx:id="selectFromPreviousWindowMenuItem" mnemonicParsing="false"
+                                <MenuItem fx:id="selectFromPreviousWindowMenuItem1" mnemonicParsing="false"
                                           text="From Previous Window">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="P" control="UP" meta="UP" shift="UP"
@@ -608,12 +608,25 @@
                                         <BorderPane>
                                             <center>
                                                 <TextArea fx:id="workingReactionsTextArea" editable="false"
-                                                          prefHeight="200.0" prefWidth="200.0"
                                                           promptText="Working input" wrapText="true"/>
                                             </center>
                                             <top>
                                                 <VBox fx:id="workingReactionsVBox" minHeight="4.0"
-                                                      BorderPane.alignment="CENTER"/>
+                                                      BorderPane.alignment="CENTER">
+                                                    <children>
+                                                        <ToolBar>
+                                                            <items>
+                                                                <ToggleButton fx:id="wrapWorkingReactionsToggleButton"
+                                                                              layoutX="10.0" layoutY="12.0"
+                                                                              mnemonicParsing="false" text="Wrap"/>
+                                                                <ToggleButton fx:id="findWorkingReactionsToggleButton"
+                                                                              mnemonicParsing="false" text="FInd..."/>
+                                                                <Button fx:id="exportWorkingReactionsButton"
+                                                                        mnemonicParsing="false" text="Export"/>
+                                                            </items>
+                                                        </ToolBar>
+                                                    </children>
+                                                </VBox>
                                             </top>
                                         </BorderPane>
                                     </content>
@@ -624,7 +637,7 @@
                                             <top>
                                                 <VBox fx:id="networkVBox" BorderPane.alignment="CENTER">
                                                     <children>
-                                                        <ToolBar minHeight="-Infinity">
+                                                        <ToolBar>
                                                             <items>
                                                                 <ToggleButton fx:id="findNetworkToggleButton"
                                                                               mnemonicParsing="false" text="Find...">
@@ -647,12 +660,6 @@
                                                                     </tooltip>
                                                                 </Button>
                                                                 <Separator orientation="VERTICAL"/>
-                                                                <Button fx:id="exportNetworkImageButton"
-                                                                        mnemonicParsing="false" text="Export...">
-                                                                    <tooltip>
-                                                                        <Tooltip text="Export image"/>
-                                                                    </tooltip>
-                                                                </Button>
                                                                 <MenuButton fx:id="computeNetworkMenuButton"
                                                                             mnemonicParsing="false" text="Compute">
                                                                     <items>
@@ -700,51 +707,97 @@
                                                                         </MenuItem>
                                                                     </items>
                                                                 </MenuButton>
-                                                                <Separator orientation="VERTICAL"/>
-                                                                <HBox fx:id="animateHBox">
-                                                                    <children>
-                                                                        <MenuButton fx:id="animateNetworkMenuButton"
-                                                                                    mnemonicParsing="false"
-                                                                                    text="Animate">
-                                                                            <items>
-                                                                                <CheckMenuItem
-                                                                                        fx:id="animateCAFCheckMenuItem"
-                                                                                        mnemonicParsing="false"
-                                                                                        text="Animate CAF"/>
-                                                                                <CheckMenuItem
-                                                                                        fx:id="animateRAFCheckMenuItem"
-                                                                                        mnemonicParsing="false"
-                                                                                        text="Animate RAF"/>
-                                                                                <CheckMenuItem
-                                                                                        fx:id="animateMaxRAFCheckMenuItem"
-                                                                                        mnemonicParsing="false"
-                                                                                        text="Animate Pseudo RAF"/>
-                                                                                <SeparatorMenuItem
-                                                                                        mnemonicParsing="false"/>
-                                                                                <CheckMenuItem
-                                                                                        fx:id="animateInhibitionsMenuItem"
-                                                                                        mnemonicParsing="false"
-                                                                                        text="Animate Inhibitions"/>
-                                                                                <SeparatorMenuItem
-                                                                                        mnemonicParsing="false"/>
-                                                                                <CheckMenuItem
-                                                                                        fx:id="moveLabelsMenuItem"
-                                                                                        mnemonicParsing="false"
-                                                                                        text="Move Labels"/>
-                                                                                <CheckMenuItem fx:id="useColorsMenuItem"
-                                                                                               mnemonicParsing="false"
-                                                                                               text="Use Colors"/>
-                                                                                <SeparatorMenuItem
-                                                                                        mnemonicParsing="false"/>
-                                                                                <MenuItem
-                                                                                        fx:id="graphEmbedderIterationsMenuItem"
-                                                                                        mnemonicParsing="false"
-                                                                                        text="Network Embedder Iterations..."/>
 
-                                                                            </items>
-                                                                        </MenuButton>
-                                                                    </children>
-                                                                </HBox>
+                                                                <MenuButton fx:id="selectNetworkMenuButton"
+                                                                            mnemonicParsing="false" text="Select">
+                                                                    <items>
+                                                                        <MenuItem fx:id="selectAllMenuItem"
+                                                                                  mnemonicParsing="false" text="All">
+                                                                        </MenuItem>
+                                                                        <MenuItem fx:id="selectNoneMenuItem"
+                                                                                  mnemonicParsing="false" text="None">
+                                                                        </MenuItem>
+                                                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                                                        <MenuItem fx:id="selectInvertedMenuItem"
+                                                                                  mnemonicParsing="false" text="Invert">
+                                                                        </MenuItem>
+                                                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                                                        <MenuItem fx:id="selectNodesMenuItem"
+                                                                                  mnemonicParsing="false" text="Nodes">
+                                                                        </MenuItem>
+                                                                        <MenuItem fx:id="selectEdgesMenuItem"
+                                                                                  mnemonicParsing="false" text="Edges">
+                                                                        </MenuItem>
+                                                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                                                        <Menu fx:id="selectReactionSystemMenu"
+                                                                              mnemonicParsing="false"
+                                                                              text="Reaction System"/>
+                                                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                                                        <MenuItem fx:id="selectFoodMenuItem"
+                                                                                  mnemonicParsing="false" text="Food">
+                                                                        </MenuItem>
+                                                                        <MenuItem fx:id="selectMoleculesMenuItem"
+                                                                                  mnemonicParsing="false"
+                                                                                  text="Molecules">
+                                                                        </MenuItem>
+                                                                        <MenuItem fx:id="selectReactionsMenuItem"
+                                                                                  mnemonicParsing="false"
+                                                                                  text="Reactions">
+                                                                        </MenuItem>
+                                                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                                                        <MenuItem
+                                                                                fx:id="selectConnectedComponentMenuItem"
+                                                                                mnemonicParsing="false"
+                                                                                text="Connected Component">
+                                                                        </MenuItem>
+                                                                        <MenuItem
+                                                                                fx:id="selectFromPreviousWindowMenuItem"
+                                                                                mnemonicParsing="false"
+                                                                                text="From Previous Window">
+                                                                        </MenuItem>
+                                                                    </items>
+                                                                </MenuButton>
+                                                                <Separator orientation="VERTICAL"/>
+                                                                <Button fx:id="exportNetworkImageButton"
+                                                                        mnemonicParsing="false" text="Export...">
+                                                                    <tooltip>
+                                                                        <Tooltip text="Export image"/>
+                                                                    </tooltip>
+                                                                </Button>
+                                                                <Separator orientation="VERTICAL"/>
+                                                                <MenuButton fx:id="animateNetworkMenuButton"
+                                                                            mnemonicParsing="false" text="Animate">
+                                                                    <items>
+                                                                        <CheckMenuItem fx:id="animateCAFCheckMenuItem"
+                                                                                       mnemonicParsing="false"
+                                                                                       text="Animate CAF"/>
+                                                                        <CheckMenuItem fx:id="animateRAFCheckMenuItem"
+                                                                                       mnemonicParsing="false"
+                                                                                       text="Animate RAF"/>
+                                                                        <CheckMenuItem
+                                                                                fx:id="animateMaxRAFCheckMenuItem"
+                                                                                mnemonicParsing="false"
+                                                                                text="Animate Pseudo RAF"/>
+                                                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                                                        <CheckMenuItem
+                                                                                fx:id="animateInhibitionsMenuItem"
+                                                                                mnemonicParsing="false"
+                                                                                text="Animate Inhibitions"/>
+                                                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                                                        <CheckMenuItem fx:id="moveLabelsMenuItem"
+                                                                                       mnemonicParsing="false"
+                                                                                       text="Move Labels"/>
+                                                                        <CheckMenuItem fx:id="useColorsMenuItem"
+                                                                                       mnemonicParsing="false"
+                                                                                       text="Use Colors"/>
+                                                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                                                        <MenuItem
+                                                                                fx:id="graphEmbedderIterationsMenuItem"
+                                                                                mnemonicParsing="false"
+                                                                                text="Network Embedder Iterations..."/>
+
+                                                                    </items>
+                                                                </MenuButton>
 
                                                                 <Button fx:id="stopAnimationButton"
                                                                         mnemonicParsing="false" text="Stop">
@@ -789,8 +842,8 @@
                                     <content>
                                         <BorderPane>
                                             <center>
-                                                <TextArea fx:id="logTextArea" editable="false" prefHeight="200.0"
-                                                          prefWidth="200.0" promptText="Log" wrapText="true">
+                                                <TextArea fx:id="logTextArea" editable="false" promptText="Log"
+                                                          wrapText="true">
                                                     <contextMenu>
                                                         <ContextMenu>
                                                             <items>
@@ -802,7 +855,21 @@
                                                 </TextArea>
                                             </center>
                                             <top>
-                                                <VBox fx:id="logVBox" minHeight="4.0" BorderPane.alignment="CENTER"/>
+                                                <VBox fx:id="logVBox" minHeight="4.0" BorderPane.alignment="CENTER">
+                                                    <children>
+                                                        <ToolBar>
+                                                            <items>
+                                                                <ToggleButton fx:id="wrapLogToggleButton" layoutX="10.0"
+                                                                              layoutY="12.0" mnemonicParsing="false"
+                                                                              text="Wrap"/>
+                                                                <ToggleButton fx:id="findLogToggleButton"
+                                                                              mnemonicParsing="false" text="FInd..."/>
+                                                                <Button fx:id="exportLogButton" mnemonicParsing="false"
+                                                                        text="Export"/>
+                                                            </items>
+                                                        </ToolBar>
+                                                    </children>
+                                                </VBox>
                                             </top>
                                         </BorderPane>
                                     </content>
