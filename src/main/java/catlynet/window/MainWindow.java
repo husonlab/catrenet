@@ -41,6 +41,7 @@ import jloda.util.FileUtils;
 
 import java.io.PrintStream;
 import java.util.Collections;
+import java.util.Objects;
 
 /**
  * the main window
@@ -112,7 +113,7 @@ public class MainWindow implements IMainWindow {
         stage.getIcons().addAll(ProgramProperties.getProgramIconsFX());
 
         final var scene = new Scene(root);
-        scene.getStylesheets().add("jloda/resources/css/white_pane.css");
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("mainwindow.css")).toExternalForm());
 
         stage.setScene(scene);
         stage.setX(screenX);

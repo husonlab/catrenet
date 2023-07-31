@@ -25,10 +25,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCharacterCombination;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import jloda.fx.control.SplittableTabPane;
 import jloda.fx.control.ZoomableScrollPane;
 import jloda.fx.util.ProgramProperties;
@@ -151,79 +148,79 @@ public class MainWindowController {
 	private Menu algorithmMenu;
 
 	@FXML
-	private MenuItem computeNetworkMenuItem;
+	private MenuItem computeNetworkMenuItem1;
 
 	@FXML
-	private MenuItem runCAFMenuItem;
+	private MenuItem runCAFMenuItem1;
 
 	@FXML
-	private MenuItem runRAFMenuItem;
+	private MenuItem runRAFMenuItem1;
 
 	@FXML
-	private MenuItem runStrictlyAutocatalyticRAFMenuItem;
+	private MenuItem runStrictlyAutocatalyticRAFMenuItem1;
 
 	@FXML
-	private MenuItem runPseudoRAFMenuItem;
+	private MenuItem runPseudoRAFMenuItem1;
 
 	@FXML
-	private MenuItem runAllMenuItem;
+	private MenuItem runAllMenuItem1;
 
 	@FXML
-	private MenuItem runMuCAFMenuItem;
+	private MenuItem runMuCAFMenuItem1;
 
 	@FXML
-	private MenuItem runURAFMenuItem;
+	private MenuItem runURAFMenuItem1;
 
 	@FXML
-	private MenuItem runMinIrrRAFMenuItem;
+	private MenuItem runMinIrrRAFMenuItem1;
 
 	@FXML
-	private MenuItem runTrivialCAFsAlgorithmMenuItem;
+	private MenuItem runTrivialCAFsAlgorithmMenuItem1;
 
 	@FXML
-	private MenuItem runTrivialRAFsAlgorithmMenuItem;
+	private MenuItem runTrivialRAFsAlgorithmMenuItem1;
 
 	@FXML
-	private MenuItem runQuotientRAFMenuItem;
+	private MenuItem runQuotientRAFMenuItem1;
 
 	@FXML
-	private MenuItem runCoreRAFMenuItem;
+	private MenuItem runCoreRAFMenuItem1;
 
 	@FXML
-	private MenuItem removeTrivialRAFsAlgorithmMenuItem;
+	private MenuItem removeTrivialRAFsAlgorithmMenuItem1;
 
 	@FXML
-	private MenuItem runMuCAFMultipleTimesMenuItem;
+	private MenuItem runMuCAFMultipleTimesMenuItem1;
 
 	@FXML
-	private MenuItem spontaneousInRafMenuItem;
+	private MenuItem spontaneousInRafMenuItem1;
 
 	@FXML
-	private MenuItem greedyGrowMenuItem;
+	private MenuItem greedyGrowMenuItem1;
 
 	@FXML
-	private MenuItem reactionDependenciesMenuItem;
+	private MenuItem reactionDependenciesMenuItem1;
 
 	@FXML
-	private MenuItem moleculeDependenciesMenuItem;
+	private MenuItem moleculeDependenciesMenuItem1;
 
 	@FXML
-	private CheckMenuItem computeImportanceCheckMenuItem;
+	private CheckMenuItem computeImportanceCheckMenuItem1;
 
 	@FXML
-	private MenuItem graphEmbedderIterationsMenuItem;
+	private MenuItem graphEmbedderIterationsMenuItem1;
 
 	@FXML
-	private CheckMenuItem animateCAFCheckMenuItem;
+	private CheckMenuItem animateCAFCheckMenuItem1;
 
 	@FXML
-	private CheckMenuItem animateRAFCheckMenuItem;
+	private CheckMenuItem animateRAFCheckMenuItem1;
 
 	@FXML
-	private CheckMenuItem animateMaxRAFCheckMenuItem;
+	private CheckMenuItem animateMaxRAFCheckMenuItem1;
 
 	@FXML
-	private CheckMenuItem animateInhibitionsMenuItem;
+	private CheckMenuItem animateInhibitionsMenuItem1;
 
 	@FXML
 	private MenuItem stopAnimationMenuItem;
@@ -271,37 +268,37 @@ public class MainWindowController {
 	private MenuItem showNodeAndEdgeFormatMenuItem;
 
 	@FXML
-	private MenuItem showNodeLabels;
+	private MenuItem showNodeLabels1;
 
 	@FXML
-	private RadioMenuItem fullGraphRadioMenuItem;
+	private RadioMenuItem fullGraphRadioMenuItem1;
 
 	@FXML
-	private RadioMenuItem reactionDependencyGraphRadioMenuItem;
+	private RadioMenuItem reactionDependencyGraphRadioMenuItem1;
 
 	@FXML
-	private RadioMenuItem moleculeDependencyGraphRadioMenuItem;
+	private RadioMenuItem moleculeDependencyGraphRadioMenuItem1;
 
 	@FXML
-	private RadioMenuItem associationGraphRadioMenuItem;
+	private RadioMenuItem associationGraphRadioMenuItem1;
 
 	@FXML
-	private RadioMenuItem reactantAssociationRadioMenuItem;
+	private RadioMenuItem reactantAssociationRadioMenuItem1;
 
 	@FXML
-	private CheckMenuItem suppressCatalystEdgesMenuItem;
+	private CheckMenuItem suppressCatalystEdgesMenuItem1;
 
 	@FXML
-	private CheckMenuItem suppressFormalFoodMenuItem;
+	private CheckMenuItem suppressFormalFoodMenuItem1;
 
 	@FXML
-	private CheckMenuItem useMultiCopyFoodNodesMenuItem;
+	private CheckMenuItem useMultiCopyFoodNodesMenuItem1;
 
 	@FXML
-	private CheckMenuItem moveLabelsMenuItem;
+	private CheckMenuItem moveLabelsMenuItem1;
 
 	@FXML
-	private CheckMenuItem useColorsMenuItem;
+	private CheckMenuItem useColorsMenuItem1;
 
 	@FXML
 	private MenuItem fullScreenMenuItem;
@@ -411,26 +408,26 @@ public class MainWindowController {
 	private Button exportNetworkImageButton;
 
 	@FXML
-	private MenuItem computeNetworkMenuItem1;
+	private MenuItem computeNetworkMenuItem;
 
 	@FXML
-	private RadioMenuItem fullGraphRadioMenuItem1;
+	private RadioMenuItem fullGraphRadioMenuItem;
 	@FXML
-	private RadioMenuItem associationGraphRadioMenuItem1;
+	private RadioMenuItem associationGraphRadioMenuItem;
 	@FXML
-	private RadioMenuItem reactantAssociationRadioMenuItem1;
+	private RadioMenuItem reactantAssociationRadioMenuItem;
 	@FXML
-	private CheckMenuItem suppressFormalFoodMenuItem1;
+	private CheckMenuItem suppressFormalFoodMenuItem;
 	@FXML
-	private CheckMenuItem suppressCatalystEdgesMenuItem1;
+	private CheckMenuItem suppressCatalystEdgesMenuItem;
 	@FXML
-	private CheckMenuItem useMultiCopyFoodNodesMenuItem1;
+	private CheckMenuItem useMultiCopyFoodNodesMenuItem;
 	@FXML
-	private RadioMenuItem reactionDependencyGraphRadioMenuItem1;
+	private RadioMenuItem reactionDependencyGraphRadioMenuItem;
 	@FXML
-	private RadioMenuItem moleculeDependencyGraphRadioMenuItem1;
+	private RadioMenuItem moleculeDependencyGraphRadioMenuItem;
 	@FXML
-	private MenuItem showNodeLabels1;
+	private MenuItem showNodeLabels;
 
 	@FXML
 	private MenuButton computeNetworkMenuButton;
@@ -448,61 +445,88 @@ public class MainWindowController {
 	private MenuButton runMenuButton;
 
 	@FXML
-	private MenuItem runCAFMenuItem1;
+	private MenuItem runCAFMenuItem;
 
 	@FXML
-	private MenuItem runRAFMenuItem1;
+	private MenuItem runRAFMenuItem;
 
 	@FXML
-	private MenuItem runStrictlyAutocatalyticRAFMenuItem1;
+	private MenuItem runStrictlyAutocatalyticRAFMenuItem;
 
 	@FXML
-	private MenuItem runPseudoRAFMenuItem1;
+	private MenuItem runPseudoRAFMenuItem;
 
 	@FXML
-	private MenuItem runAllMenuItem1;
+	private MenuItem runAllMenuItem;
 
 	@FXML
-	private MenuItem runMuCAFMenuItem1;
+	private MenuItem runMuCAFMenuItem;
 
 	@FXML
-	private MenuItem runURAFMenuItem1;
+	private MenuItem runURAFMenuItem;
 
 	@FXML
-	private MenuItem runMinIrrRAFMenuItem1;
+	private MenuItem runMinIrrRAFMenuItem;
 
 	@FXML
-	private MenuItem runTrivialCAFsAlgorithmMenuItem1;
+	private MenuItem runTrivialCAFsAlgorithmMenuItem;
 
 	@FXML
-	private MenuItem runTrivialRAFsAlgorithmMenuItem1;
+	private MenuItem runTrivialRAFsAlgorithmMenuItem;
 
 	@FXML
-	private MenuItem runQuotientRAFMenuItem1;
+	private MenuItem runQuotientRAFMenuItem;
 
 	@FXML
-	private MenuItem runCoreRAFMenuItem1;
+	private MenuItem runCoreRAFMenuItem;
 
 	@FXML
-	private MenuItem removeTrivialRAFsAlgorithmMenuItem1;
+	private MenuItem removeTrivialRAFsAlgorithmMenuItem;
 
 	@FXML
-	private MenuItem runMuCAFMultipleTimesMenuItem1;
+	private MenuItem runMuCAFMultipleTimesMenuItem;
 
 	@FXML
-	private MenuItem spontaneousInRafMenuItem1;
+	private MenuItem spontaneousInRafMenuItem;
 
 	@FXML
-	private MenuItem greedyGrowMenuItem1;
+	private MenuItem greedyGrowMenuItem;
 
 	@FXML
-	private MenuItem reactionDependenciesMenuItem1;
+	private MenuItem reactionDependenciesMenuItem;
 
 	@FXML
-	private MenuItem moleculeDependenciesMenuItem1;
+	private MenuItem moleculeDependenciesMenuItem;
 
 	@FXML
-	private CheckMenuItem computeImportanceCheckMenuItem1;
+	private CheckMenuItem computeImportanceCheckMenuItem;
+
+	@FXML
+	private HBox animateHBox;
+
+	@FXML
+	private MenuButton animateNetworkMenuButton;
+
+	@FXML
+	private CheckMenuItem animateCAFCheckMenuItem;
+
+	@FXML
+	private CheckMenuItem animateRAFCheckMenuItem;
+
+	@FXML
+	private CheckMenuItem animateMaxRAFCheckMenuItem;
+
+	@FXML
+	private CheckMenuItem animateInhibitionsMenuItem;
+
+	@FXML
+	private CheckMenuItem moveLabelsMenuItem;
+
+	@FXML
+	private CheckMenuItem useColorsMenuItem;
+
+	@FXML
+	private MenuItem graphEmbedderIterationsMenuItem;
 
 
 	private ZoomableScrollPane zoomableScrollPane;
@@ -518,12 +542,14 @@ public class MainWindowController {
 			MaterialIcons.setIcon(wrapReactionsTextToggle, "wrap_text");
 			MaterialIcons.setIcon(findNetworkToggleButton, "search");
 
-			MaterialIcons.setIcon(computeNetworkMenuButton, "play_circle");
+			MaterialIcons.setIcon(computeNetworkMenuButton, "tune");
+			MaterialIcons.setIcon(animateNetworkMenuButton, "play_circle");
+			MaterialIcons.setIcon(stopAnimationButton, "close", null, false);
 			MaterialIcons.setIcon(zoomInNetworkButton, "zoom_in");
 			MaterialIcons.setIcon(zoomOutNetworkButton, "zoom_out");
 			MaterialIcons.setIcon(exportNetworkImageButton, "file_upload");
 		}
-		
+
 		wrapFoodTextToggle.selectedProperty().bindBidirectional(inputFoodTextArea.wrapTextProperty());
 		wrapFoodTextToggle.setSelected(true);
 		wrapReactionsTextToggle.selectedProperty().bindBidirectional(inputTextArea.wrapTextProperty());
@@ -606,6 +632,7 @@ public class MainWindowController {
 			reactionDependencyGraphRadioMenuItem1.disableProperty().bindBidirectional(reactionDependencyGraphRadioMenuItem.disableProperty());
 			moleculeDependencyGraphRadioMenuItem1.disableProperty().bindBidirectional(moleculeDependenciesMenuItem.disableProperty());
 			showNodeLabels1.disableProperty().bindBidirectional(showNodeLabels.disableProperty());
+
 			fullGraphRadioMenuItem1.selectedProperty().bindBidirectional(fullGraphRadioMenuItem.selectedProperty());
 			associationGraphRadioMenuItem1.selectedProperty().bindBidirectional(associationGraphRadioMenuItem.selectedProperty());
 			reactantAssociationRadioMenuItem1.selectedProperty().bindBidirectional(reactantAssociationRadioMenuItem.selectedProperty());
@@ -614,12 +641,12 @@ public class MainWindowController {
 			useMultiCopyFoodNodesMenuItem1.selectedProperty().bindBidirectional(useMultiCopyFoodNodesMenuItem.selectedProperty());
 			reactionDependencyGraphRadioMenuItem1.selectedProperty().bindBidirectional(reactionDependencyGraphRadioMenuItem.selectedProperty());
 			moleculeDependencyGraphRadioMenuItem1.selectedProperty().bindBidirectional(moleculeDependencyGraphRadioMenuItem.selectedProperty());
+			showNodeLabels1.setOnAction(e -> showNodeLabels.getOnAction().handle(e));
 
 			zoomInNetworkButton.setOnAction(e -> zoomInMenuItem.getOnAction().handle(e));
 			zoomInNetworkButton.disableProperty().bind(zoomInMenuItem.disableProperty());
 			zoomOutNetworkButton.setOnAction(e -> zoomOutMenuItem.getOnAction().handle(e));
 			zoomOutNetworkButton.disableProperty().bind(zoomOutMenuItem.disableProperty());
-
 
 			runAllMenuItem1.setOnAction(e -> runAllMenuItem.getOnAction().handle(e));
 			runCAFMenuItem1.setOnAction(e -> runCAFMenuItem.getOnAction().handle(e));
@@ -636,10 +663,10 @@ public class MainWindowController {
 			removeTrivialRAFsAlgorithmMenuItem1.setOnAction(e -> removeTrivialRAFsAlgorithmMenuItem.getOnAction().handle(e));
 			runMuCAFMultipleTimesMenuItem1.setOnAction(e -> runMuCAFMultipleTimesMenuItem.getOnAction().handle(e));
 			spontaneousInRafMenuItem1.setOnAction(e -> spontaneousInRafMenuItem.getOnAction().handle(e));
-			greedyGrowMenuItem1.setOnAction(e -> greedyGrowMenuItem.getOnAction());
-			reactionDependenciesMenuItem1.setOnAction(e -> reactionDependenciesMenuItem.getOnAction());
-			moleculeDependenciesMenuItem1.setOnAction(e -> moleculeDependenciesMenuItem.getOnAction());
-			computeImportanceCheckMenuItem1.setOnAction(e -> computeImportanceCheckMenuItem.getOnAction());
+			greedyGrowMenuItem1.setOnAction(e -> greedyGrowMenuItem.getOnAction().handle(e));
+			reactionDependenciesMenuItem1.setOnAction(e -> reactionDependenciesMenuItem.getOnAction().handle(e));
+			moleculeDependenciesMenuItem1.setOnAction(e -> moleculeDependenciesMenuItem.getOnAction().handle(e));
+			computeImportanceCheckMenuItem1.setOnAction(e -> computeImportanceCheckMenuItem.getOnAction().handle(e));
 
 			runAllMenuItem1.disableProperty().bindBidirectional(runAllMenuItem.disableProperty());
 			runCAFMenuItem1.disableProperty().bindBidirectional(runCAFMenuItem.disableProperty());
@@ -660,6 +687,22 @@ public class MainWindowController {
 			reactionDependenciesMenuItem1.disableProperty().bindBidirectional(reactionDependenciesMenuItem.disableProperty());
 			moleculeDependenciesMenuItem1.disableProperty().bindBidirectional(moleculeDependenciesMenuItem.disableProperty());
 			computeImportanceCheckMenuItem1.disableProperty().bindBidirectional(computeImportanceCheckMenuItem.disableProperty());
+
+			animateCAFCheckMenuItem1.selectedProperty().bindBidirectional(animateCAFCheckMenuItem.selectedProperty());
+			animateRAFCheckMenuItem1.selectedProperty().bindBidirectional(animateRAFCheckMenuItem.selectedProperty());
+			animateMaxRAFCheckMenuItem1.selectedProperty().bindBidirectional(animateMaxRAFCheckMenuItem.selectedProperty());
+			animateInhibitionsMenuItem1.setOnAction(e -> animateInhibitionsMenuItem.getOnAction().handle(e));
+			moveLabelsMenuItem1.setOnAction(e -> moveLabelsMenuItem.getOnAction().handle(e));
+			useColorsMenuItem1.setOnAction(e -> useColorsMenuItem.getOnAction().handle(e));
+			graphEmbedderIterationsMenuItem1.setOnAction(e -> graphEmbedderIterationsMenuItem.getOnAction().handle(e));
+
+			animateCAFCheckMenuItem1.disableProperty().bindBidirectional(animateCAFCheckMenuItem.disableProperty());
+			animateRAFCheckMenuItem1.disableProperty().bindBidirectional(animateRAFCheckMenuItem.disableProperty());
+			animateMaxRAFCheckMenuItem1.disableProperty().bindBidirectional(animateMaxRAFCheckMenuItem.disableProperty());
+			animateInhibitionsMenuItem1.disableProperty().bindBidirectional(animateInhibitionsMenuItem.disableProperty());
+			moveLabelsMenuItem1.disableProperty().bindBidirectional(moveLabelsMenuItem.disableProperty());
+			useColorsMenuItem1.disableProperty().bindBidirectional(useColorsMenuItem.disableProperty());
+			graphEmbedderIterationsMenuItem1.disableProperty().bindBidirectional(graphEmbedderIterationsMenuItem.disableProperty());
 		}
 	}
 
@@ -1162,5 +1205,9 @@ public class MainWindowController {
 
 	public ToggleButton getFindNetworkToggleButton() {
 		return findNetworkToggleButton;
+	}
+
+	public MenuButton getAnimateNetworkMenuButton() {
+		return animateNetworkMenuButton;
 	}
 }

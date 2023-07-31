@@ -21,8 +21,6 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.input.*?>
 <?import javafx.scene.layout.*?>
 <BorderPane prefHeight="500.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1"
@@ -391,20 +389,20 @@
                         </Menu>
                         <Menu mnemonicParsing="false" text="Animate">
                             <items>
-                                <CheckMenuItem fx:id="animateCAFCheckMenuItem" mnemonicParsing="false"
+                                <CheckMenuItem fx:id="animateCAFCheckMenuItem1" mnemonicParsing="false"
                                                text="Animate CAF"/>
-                                <CheckMenuItem fx:id="animateRAFCheckMenuItem" mnemonicParsing="false"
+                                <CheckMenuItem fx:id="animateRAFCheckMenuItem1" mnemonicParsing="false"
                                                text="Animate RAF"/>
-                                <CheckMenuItem fx:id="animateMaxRAFCheckMenuItem" mnemonicParsing="false"
+                                <CheckMenuItem fx:id="animateMaxRAFCheckMenuItem1" mnemonicParsing="false"
                                                text="Animate Pseudo RAF"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <CheckMenuItem fx:id="animateInhibitionsMenuItem" mnemonicParsing="false"
+                                <CheckMenuItem fx:id="animateInhibitionsMenuItem1" mnemonicParsing="false"
                                                text="Animate Inhibitions"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <CheckMenuItem fx:id="moveLabelsMenuItem" mnemonicParsing="false" text="Move Labels"/>
-                                <CheckMenuItem fx:id="useColorsMenuItem" mnemonicParsing="false" text="Use Colors"/>
+                                <CheckMenuItem fx:id="moveLabelsMenuItem1" mnemonicParsing="false" text="Move Labels"/>
+                                <CheckMenuItem fx:id="useColorsMenuItem1" mnemonicParsing="false" text="Use Colors"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="graphEmbedderIterationsMenuItem" mnemonicParsing="false"
+                                <MenuItem fx:id="graphEmbedderIterationsMenuItem1" mnemonicParsing="false"
                                           text="Network Embedder Iterations..."/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="stopAnimationMenuItem" mnemonicParsing="false" text="Stop Animation">
@@ -703,18 +701,53 @@
                                                                     </items>
                                                                 </MenuButton>
                                                                 <Separator orientation="VERTICAL"/>
+                                                                <HBox fx:id="animateHBox">
+                                                                    <children>
+                                                                        <MenuButton fx:id="animateNetworkMenuButton"
+                                                                                    mnemonicParsing="false"
+                                                                                    text="Animate">
+                                                                            <items>
+                                                                                <CheckMenuItem
+                                                                                        fx:id="animateCAFCheckMenuItem"
+                                                                                        mnemonicParsing="false"
+                                                                                        text="Animate CAF"/>
+                                                                                <CheckMenuItem
+                                                                                        fx:id="animateRAFCheckMenuItem"
+                                                                                        mnemonicParsing="false"
+                                                                                        text="Animate RAF"/>
+                                                                                <CheckMenuItem
+                                                                                        fx:id="animateMaxRAFCheckMenuItem"
+                                                                                        mnemonicParsing="false"
+                                                                                        text="Animate Pseudo RAF"/>
+                                                                                <SeparatorMenuItem
+                                                                                        mnemonicParsing="false"/>
+                                                                                <CheckMenuItem
+                                                                                        fx:id="animateInhibitionsMenuItem"
+                                                                                        mnemonicParsing="false"
+                                                                                        text="Animate Inhibitions"/>
+                                                                                <SeparatorMenuItem
+                                                                                        mnemonicParsing="false"/>
+                                                                                <CheckMenuItem
+                                                                                        fx:id="moveLabelsMenuItem"
+                                                                                        mnemonicParsing="false"
+                                                                                        text="Move Labels"/>
+                                                                                <CheckMenuItem fx:id="useColorsMenuItem"
+                                                                                               mnemonicParsing="false"
+                                                                                               text="Use Colors"/>
+                                                                                <SeparatorMenuItem
+                                                                                        mnemonicParsing="false"/>
+                                                                                <MenuItem
+                                                                                        fx:id="graphEmbedderIterationsMenuItem"
+                                                                                        mnemonicParsing="false"
+                                                                                        text="Network Embedder Iterations..."/>
+
+                                                                            </items>
+                                                                        </MenuButton>
+                                                                    </children>
+                                                                </HBox>
 
                                                                 <Button fx:id="stopAnimationButton"
-                                                                        mnemonicParsing="false" text="Animation">
-                                                                    <graphic>
-                                                                        <ImageView fitHeight="16.0" fitWidth="16.0"
-                                                                                   pickOnBounds="true"
-                                                                                   preserveRatio="true">
-                                                                            <image>
-                                                                                <Image url="@/catlynet/resources/icons/Close16.gif"/>
-                                                                            </image>
-                                                                        </ImageView>
-                                                                    </graphic>
+                                                                        mnemonicParsing="false" text="Stop">
                                                                     <tooltip>
                                                                         <Tooltip text="Stop an animation"/>
                                                                     </tooltip>
