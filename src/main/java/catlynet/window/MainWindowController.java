@@ -28,7 +28,10 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.KeyCharacterCombination;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import jloda.fx.control.SplittableTabPane;
 import jloda.fx.control.ZoomableScrollPane;
 import jloda.fx.util.ProgramProperties;
@@ -196,9 +199,6 @@ public class MainWindowController {
 
 	@FXML
 	private MenuItem runPseudoRAFMenuItem1;
-
-	@FXML
-	private MenuItem runAllMenuItem1;
 
 	@FXML
 	private MenuItem runMuCAFMenuItem1;
@@ -492,9 +492,6 @@ public class MainWindowController {
 	private MenuItem runPseudoRAFMenuItem;
 
 	@FXML
-	private MenuItem runAllMenuItem;
-
-	@FXML
 	private MenuItem runMuCAFMenuItem;
 
 	@FXML
@@ -535,9 +532,6 @@ public class MainWindowController {
 
 	@FXML
 	private CheckMenuItem computeImportanceCheckMenuItem;
-
-	@FXML
-	private HBox animateHBox;
 
 	@FXML
 	private MenuButton animateNetworkMenuButton;
@@ -730,7 +724,6 @@ public class MainWindowController {
 			zoomOutNetworkButton.setOnAction(e -> zoomOutMenuItem.getOnAction().handle(e));
 			zoomOutNetworkButton.disableProperty().bind(zoomOutMenuItem.disableProperty());
 
-			runAllMenuItem1.setOnAction(e -> runAllMenuItem.getOnAction().handle(e));
 			runCAFMenuItem1.setOnAction(e -> runCAFMenuItem.getOnAction().handle(e));
 			runRAFMenuItem1.setOnAction(e -> runRAFMenuItem.getOnAction().handle(e));
 			runStrictlyAutocatalyticRAFMenuItem1.setOnAction(e -> runStrictlyAutocatalyticRAFMenuItem.getOnAction().handle(e));
@@ -748,9 +741,8 @@ public class MainWindowController {
 			greedyGrowMenuItem1.setOnAction(e -> greedyGrowMenuItem.getOnAction().handle(e));
 			reactionDependenciesMenuItem1.setOnAction(e -> reactionDependenciesMenuItem.getOnAction().handle(e));
 			moleculeDependenciesMenuItem1.setOnAction(e -> moleculeDependenciesMenuItem.getOnAction().handle(e));
-			computeImportanceCheckMenuItem1.setOnAction(e -> computeImportanceCheckMenuItem.getOnAction().handle(e));
+			computeImportanceCheckMenuItem1.selectedProperty().bindBidirectional(computeImportanceCheckMenuItem.selectedProperty());
 
-			runAllMenuItem1.disableProperty().bindBidirectional(runAllMenuItem.disableProperty());
 			runCAFMenuItem1.disableProperty().bindBidirectional(runCAFMenuItem.disableProperty());
 			runRAFMenuItem1.disableProperty().bindBidirectional(runRAFMenuItem.disableProperty());
 			runStrictlyAutocatalyticRAFMenuItem1.disableProperty().bindBidirectional(runStrictlyAutocatalyticRAFMenuItem.disableProperty());
@@ -975,10 +967,6 @@ public class MainWindowController {
 
 	public MenuItem getRunPseudoRAFMenuItem() {
 		return runPseudoRAFMenuItem;
-	}
-
-	public MenuItem getRunAllMenuItem() {
-		return runAllMenuItem;
 	}
 
 	public MenuItem getRunMuCAFMenuItem() {

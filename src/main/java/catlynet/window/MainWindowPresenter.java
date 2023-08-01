@@ -411,12 +411,9 @@ public class MainWindowPresenter {
         controller.getMoleculeDependenciesMenuItem().setOnAction(e -> ComputeMoleculeDependencies.run(window));
         controller.getMoleculeDependenciesMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
-        controller.getRunAllMenuItem().setOnAction(e -> {
-            RunAll.apply(window, runningListener);
-            ComputeGraph.apply(window, controller);
-        });
 
-        controller.getRunAllMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()));
+        var disableRunProperty = new SimpleBooleanProperty(false);
+        disableRunProperty.bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()));
 
         controller.getWorkingReactionsTab().disableProperty().bind(controller.getWorkingReactionsTextArea().textProperty().isEmpty());
 
@@ -425,7 +422,7 @@ public class MainWindowPresenter {
         controller.getCheckForUpdatesMenuItem().setOnAction(e -> CheckForUpdate.apply());
 
         MainWindowManager.getInstance().changedProperty().addListener((c, o, n) -> controller.getCheckForUpdatesMenuItem().disableProperty().set(MainWindowManager.getInstance().size() > 1
-                || (MainWindowManager.getInstance().size() == 1 && !MainWindowManager.getInstance().getMainWindow(0).isEmpty())));
+                                                                                                                                                 || (MainWindowManager.getInstance().size() == 1 && !MainWindowManager.getInstance().getMainWindow(0).isEmpty())));
 
         window.getStage().widthProperty().addListener((c, o, n) -> {
             if (!Double.isNaN(o.doubleValue()) && n.doubleValue() > 0)
@@ -595,7 +592,7 @@ public class MainWindowPresenter {
                     controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
                 }
         );
-        controller.getFullGraphRadioMenuItem().disableProperty().bind(controller.getRunAllMenuItem().disableProperty().or(window.getReactionGraphView().getMoleculeFlowAnimation().playingProperty()));
+        controller.getFullGraphRadioMenuItem().disableProperty().bind(disableRunProperty.or(window.getReactionGraphView().getMoleculeFlowAnimation().playingProperty()));
 
         controller.getReactionDependencyGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> {
             graphView.setGraphType(ReactionGraphView.Type.reactionDependencyGraph);
@@ -677,18 +674,18 @@ public class MainWindowPresenter {
 
 
         controller.getListFoodMenuItem().setOnAction(e -> reportList(window.getInputReactionSystem(), "Food", controller));
-        controller.getListFoodMenuItem().disableProperty().bind(controller.getRunAllMenuItem().disableProperty());
+        controller.getListFoodMenuItem().disableProperty().bind(disableRunProperty);
 
         controller.getListReactionsMenuItem().setOnAction(e -> reportList(window.getInputReactionSystem(), "Reactions", controller));
-        controller.getListReactionsMenuItem().disableProperty().bind(controller.getRunAllMenuItem().disableProperty());
+        controller.getListReactionsMenuItem().disableProperty().bind(disableRunProperty);
         controller.getListReactantsMenuItem().setOnAction(e -> reportList(window.getInputReactionSystem(), "Reactants", controller));
-        controller.getListReactantsMenuItem().disableProperty().bind(controller.getRunAllMenuItem().disableProperty());
+        controller.getListReactantsMenuItem().disableProperty().bind(disableRunProperty);
         controller.getListProductsMenuItem().setOnAction(e -> reportList(window.getInputReactionSystem(), "Products", controller));
-        controller.getListProductsMenuItem().disableProperty().bind(controller.getRunAllMenuItem().disableProperty());
+        controller.getListProductsMenuItem().disableProperty().bind(disableRunProperty);
         controller.getListCatalystsMenuItem().setOnAction(e -> reportList(window.getInputReactionSystem(), "Catalysts", controller));
-        controller.getListCatalystsMenuItem().disableProperty().bind(controller.getRunAllMenuItem().disableProperty());
+        controller.getListCatalystsMenuItem().disableProperty().bind(disableRunProperty);
         controller.getListInhibitorsMenuItem().setOnAction(e -> reportList(window.getInputReactionSystem(), "Inhibitors", controller));
-        controller.getListInhibitorsMenuItem().disableProperty().bind(controller.getRunAllMenuItem().disableProperty());
+        controller.getListInhibitorsMenuItem().disableProperty().bind(disableRunProperty);
 
     }
 

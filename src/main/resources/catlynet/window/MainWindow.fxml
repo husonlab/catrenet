@@ -300,15 +300,8 @@
                         </Menu>
                         <Menu fx:id="algorithmMenu" mnemonicParsing="false" text="Algorithms">
                             <items>
-                                <MenuItem fx:id="runAllMenuItem1" mnemonicParsing="false" text="Run Main Algorithms">
-                                    <accelerator>
-                                        <KeyCodeCombination alt="UP" code="R" control="UP" meta="DOWN" shift="UP"
-                                                            shortcut="UP"/>
-                                    </accelerator>
-                                </MenuItem>
-                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="runCAFMenuItem1" mnemonicParsing="false" text="Max CAF Algorithm"/>
                                 <MenuItem fx:id="runRAFMenuItem1" mnemonicParsing="false" text="Max RAF Algorithm"/>
+                                <MenuItem fx:id="runCAFMenuItem1" mnemonicParsing="false" text="Max CAF Algorithm"/>
 
                                 <MenuItem fx:id="runPseudoRAFMenuItem1" mnemonicParsing="false"
                                           text="Max Pseudo RAF Algorithm"/>
@@ -445,11 +438,8 @@
                                 <Tooltip text="Run algorithms"/>
                             </tooltip>
                             <items>
-                                <MenuItem fx:id="runAllMenuItem" mnemonicParsing="false"
-                                          text="Run All Main Algorithms"/>
-                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="runCAFMenuItem" mnemonicParsing="false" text="Max CAF Algorithm"/>
                                 <MenuItem fx:id="runRAFMenuItem" mnemonicParsing="false" text="Max RAF Algorithm"/>
+                                <MenuItem fx:id="runCAFMenuItem" mnemonicParsing="false" text="Max CAF Algorithm"/>
 
                                 <MenuItem fx:id="runPseudoRAFMenuItem" mnemonicParsing="false"
                                           text="Max Pseudo RAF Algorithm"/>
@@ -543,7 +533,7 @@
                                                                     </tooltip>
                                                                 </ToggleButton>
                                                                 <Label maxHeight="-Infinity" minHeight="-Infinity"
-                                                                       prefHeight="26.0" text="Input food set:"/>
+                                                                       prefHeight="26.0" text="Input food:"/>
                                                                 <Label fx:id="inputFoodSizeLabel" text="0"
                                                                        textFill="LIGHTGRAY">
                                                                     <padding>
@@ -578,7 +568,7 @@
                                                                         <Tooltip text="Wrap lines"/>
                                                                     </tooltip>
                                                                 </ToggleButton>
-                                                                <Label text="Input catalyic reactions:"/>
+                                                                <Label text="Input  reactions:"/>
                                                                 <Label fx:id="inputReactionsSizeLabel" text="0"
                                                                        textFill="LIGHTGRAY">
                                                                     <padding>
@@ -603,7 +593,7 @@
                     <children>
                         <TabPane fx:id="outputTabPane">
                             <tabs>
-                                <Tab fx:id="workingReactionsTab" closable="false" disable="true" text="Input">
+                                <Tab fx:id="workingReactionsTab" closable="false" disable="true" text="Parsed">
                                     <content>
                                         <BorderPane>
                                             <center>
