@@ -5,7 +5,14 @@
     <variables>
       <variable name="renderingVMOption" />
     </variables>
-    <codeSigning macEnabled="true" macPkcs12File="../../../../etc/application.p12" windowsEnabled="true" windowsPkcs12File="../../../../etc/windows.pfx" />
+    <codeSigning macEnabled="true" macPkcs12File="../../../../etc/application.p12" windowsEnabled="true" windowsPkcs12File="../../../../etc/windows.pfx">
+      <macSearchedJars>
+        <entry>jna-*</entry>
+        <entry>swt-*</entry>
+        <entry>javafx-*</entry>
+        <entry>install4j*</entry>
+      </macSearchedJars>
+    </codeSigning>
     <jreBundles jdkProviderId="Liberica" release="18/18.0.2.1+1">
       <modules />
     </jreBundles>
@@ -1142,5 +1149,4 @@ return true;</property>
   <buildIds buildAll="false">
     <mediaSet refId="1691242165" />
   </buildIds>
-  <buildOptions disableSigning="true" disableNotarization="true" />
 </install4j>

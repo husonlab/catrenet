@@ -20,6 +20,7 @@
 package catlynet.window;
 
 import catlynet.icons.MaterialIcons;
+import catlynet.util.MenuUtils;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
@@ -148,6 +149,16 @@ public class MainWindowController {
 
 	@FXML
 	private MenuItem selectFromPreviousWindowMenuItem;
+
+
+	@FXML
+	private MenuButton exportNetworkMenuButton;
+
+	@FXML
+	private MenuItem copyNetworkMenuItem;
+
+	@FXML
+	private MenuItem exportImageNetworkMenuItem;
 
 	@FXML
 	private MenuItem selectAllMenuItem1;
@@ -369,6 +380,9 @@ public class MainWindowController {
 	private SplitPane mainSplitPane;
 
 	@FXML
+	private SplitPane inputSplitPane;
+
+	@FXML
 	private VBox foodInputVBox;
 	@FXML
 	private TextArea inputFoodTextArea;
@@ -438,9 +452,6 @@ public class MainWindowController {
 
 	@FXML
 	private CheckMenuItem useDarkThemeCheckMenuItem;
-
-	@FXML
-	private Button exportNetworkImageButton;
 
 	@FXML
 	private MenuItem computeNetworkMenuItem;
@@ -579,6 +590,13 @@ public class MainWindowController {
 	private MenuButton selectNetworkMenuButton;
 
 
+	@FXML
+	private Menu listMenu;
+
+	@FXML
+	private MenuButton listLogButton;
+
+
 	private ZoomableScrollPane zoomableScrollPane;
 
 	@FXML
@@ -597,7 +615,7 @@ public class MainWindowController {
 			MaterialIcons.setIcon(stopAnimationButton, "close", null, false);
 			MaterialIcons.setIcon(zoomInNetworkButton, "zoom_in");
 			MaterialIcons.setIcon(zoomOutNetworkButton, "zoom_out");
-			MaterialIcons.setIcon(exportNetworkImageButton, "ios_share");
+			MaterialIcons.setIcon(exportNetworkMenuButton, "ios_share");
 
 			MaterialIcons.setIcon(findWorkingReactionsToggleButton, "search");
 			MaterialIcons.setIcon(exportWorkingReactionsButton, "ios_share");
@@ -608,6 +626,10 @@ public class MainWindowController {
 			MaterialIcons.setIcon(wrapLogToggleButton, "wrap_text");
 
 			MaterialIcons.setIcon(selectNetworkMenuButton, "checklist_rtl");
+
+			MaterialIcons.setIcon(listLogButton, "list");
+
+
 		}
 
 		{
@@ -624,6 +646,8 @@ public class MainWindowController {
 				content.putString(logTextArea.getText());
 				Clipboard.getSystemClipboard().setContent(content);
 			});
+
+			copyNetworkMenuItem.setOnAction(e -> copyMenuItem.getOnAction().handle(e));
 		}
 
 		wrapFoodTextToggle.selectedProperty().bindBidirectional(inputFoodTextArea.wrapTextProperty());
@@ -684,6 +708,14 @@ public class MainWindowController {
 		};
 		MainWindowManager.getInstance().changedProperty().addListener(invalidationListener);
 		invalidationListener.invalidated(null);
+
+		inputSplitPane.heightProperty().addListener((v, o, n) -> {
+			if (o != null && n != null) {
+				var newPos = inputSplitPane.getDividers().get(0).getPosition() / n.doubleValue() * o.doubleValue();
+				inputSplitPane.getDividers().get(0).setPosition(newPos);
+			}
+		});
+		inputSplitPane.getDividers().get(0).setPosition(0.2);
 
 
 		{
@@ -802,6 +834,8 @@ public class MainWindowController {
 			selectFromPreviousWindowMenuItem1.disableProperty().bindBidirectional(selectFromPreviousWindowMenuItem.disableProperty());
 
 			selectReactionSystemMenu.disableProperty().bind(Bindings.isEmpty(selectReactionSystemMenu.getItems()));
+
+			listLogButton.getItems().addAll(MenuUtils.copy(listMenu.getItems()));
 		}
 	}
 
@@ -1289,8 +1323,8 @@ public class MainWindowController {
 		return exportMenuButton;
 	}
 
-	public Button getExportNetworkImageButton() {
-		return exportNetworkImageButton;
+	public MenuItem getExportImageNetworkMenuItem() {
+		return exportImageNetworkMenuItem;
 	}
 
 	public StackPane getNetworkPane() {

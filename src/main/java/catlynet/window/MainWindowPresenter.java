@@ -487,8 +487,8 @@ public class MainWindowPresenter {
             });
             controller.getZoomToFitMenuItem().disableProperty().bind(controller.getZoomInMenuItem().disableProperty());
 
-            controller.getExportNetworkImageButton().setOnAction(e -> ExportImageDialog.show(window.getDocument().getFileName(), window.getStage(), controller.getNetworkScrollPane().getContent()));
-            controller.getExportNetworkImageButton().disableProperty().bind(disableGraphItems);
+            controller.getExportImageNetworkMenuItem().setOnAction(e -> ExportImageDialog.show(window.getDocument().getFileName(), window.getStage(), controller.getNetworkScrollPane().getContent()));
+            controller.getExportImageNetworkMenuItem().disableProperty().bind(disableGraphItems);
 
             // controller.getStatusFlowPane().prefHeightProperty().addListener((c,o,n)->System.err.println("PH changed: "+o+" -> "+n));
             // controller.getStatusFlowPane().heightProperty().addListener((c,o,n)->System.err.println("H changed: "+o+" -> "+n));

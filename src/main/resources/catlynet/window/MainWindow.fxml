@@ -255,7 +255,7 @@
                                     </accelerator>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <Menu mnemonicParsing="false" text="List">
+                                <Menu fx:id="listMenu" mnemonicParsing="false" text="List">
                                     <items>
                                         <MenuItem fx:id="listFoodMenuItem" mnemonicParsing="false" text="Food"/>
                                         <MenuItem fx:id="listReactionsMenuItem" mnemonicParsing="false"
@@ -417,73 +417,6 @@
                         </Menu>
                     </menus>
                 </MenuBar>
-                <ToolBar fx:id="mainToolBar" minHeight="-Infinity" prefHeight="30.0">
-                    <items>
-                        <MenuButton fx:id="recentMenuButton" maxHeight="-Infinity" maxWidth="-Infinity"
-                                    minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" text="Recent">
-                            <tooltip>
-                                <Tooltip text="Open a recent file"/>
-                            </tooltip>
-                        </MenuButton>
-                        <MenuButton fx:id="exportMenuButton" maxHeight="-Infinity" maxWidth="-Infinity"
-                                    minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" text="Export">
-                            <tooltip>
-                                <Tooltip text="Export a computed reaction system"/>
-                            </tooltip>
-                        </MenuButton>
-                        <Separator orientation="VERTICAL" prefHeight="200.0"/>
-
-                        <MenuButton fx:id="runMenuButton" mnemonicParsing="false" text="Run">
-                            <tooltip>
-                                <Tooltip text="Run algorithms"/>
-                            </tooltip>
-                            <items>
-                                <MenuItem fx:id="runRAFMenuItem" mnemonicParsing="false" text="Max RAF Algorithm"/>
-                                <MenuItem fx:id="runCAFMenuItem" mnemonicParsing="false" text="Max CAF Algorithm"/>
-
-                                <MenuItem fx:id="runPseudoRAFMenuItem" mnemonicParsing="false"
-                                          text="Max Pseudo RAF Algorithm"/>
-
-                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="runStrictlyAutocatalyticRAFMenuItem" mnemonicParsing="false"
-                                          text="Strictly Autocatalytic Max RAF Algorithm"/>
-
-                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="runTrivialCAFsAlgorithmMenuItem" mnemonicParsing="false"
-                                          text="Trivial CAFs Algorithm"/>
-                                <MenuItem fx:id="runTrivialRAFsAlgorithmMenuItem" mnemonicParsing="false"
-                                          text="Trivial RAFs Algorithm"/>
-                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="runCoreRAFMenuItem" mnemonicParsing="false" text="Core RAF Algorithm"/>
-                                <MenuItem fx:id="runQuotientRAFMenuItem" mnemonicParsing="false"
-                                          text="Quotient RAF Algorithm"/>
-                                <MenuItem fx:id="removeTrivialRAFsAlgorithmMenuItem" mnemonicParsing="false"
-                                          text="Remove Trivial RAFs Algorithm"/>
-                                <MenuItem fx:id="runMinIrrRAFMenuItem" mnemonicParsing="false"
-                                          text="Min Irr RAF Heuristic"/>
-                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="runMuCAFMenuItem" mnemonicParsing="false" text="MU CAF Algorithm"/>
-                                <MenuItem fx:id="runURAFMenuItem" mnemonicParsing="false" text="U RAF Algorithm"/>
-                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="runMuCAFMultipleTimesMenuItem" mnemonicParsing="false"
-                                          text="Run MU CAF Multiple Times..."/>
-                                <MenuItem fx:id="spontaneousInRafMenuItem1" mnemonicParsing="false"
-                                          text="Determine Necessarily Spontaneous in RAF"/>
-                                <MenuItem fx:id="greedyGrowMenuItem" mnemonicParsing="false"
-                                          text="Greedily Grow MaxCAF to MaxRAF"/>
-                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="reactionDependenciesMenuItem" mnemonicParsing="false"
-                                          text="Compute Reaction Dependencies"/>
-                                <MenuItem fx:id="moleculeDependenciesMenuItem" mnemonicParsing="false"
-                                          text="Compute Molecule Dependencies"/>
-                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                <CheckMenuItem fx:id="computeImportanceCheckMenuItem" mnemonicParsing="false"
-                                               text="Compute  Importance"/>
-
-                            </items>
-                        </MenuButton>
-                    </items>
-                </ToolBar>
             </children>
         </VBox>
     </top>
@@ -508,8 +441,8 @@
             <items>
                 <BorderPane>
                     <center>
-                        <SplitPane dividerPositions="0.2" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0"
-                                   BorderPane.alignment="CENTER">
+                        <SplitPane fx:id="inputSplitPane" dividerPositions="0.28518971848225216" orientation="VERTICAL"
+                                   prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
                             <items>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                     <children>
@@ -588,6 +521,76 @@
                             </items>
                         </SplitPane>
                     </center>
+                    <top>
+                        <ToolBar fx:id="mainToolBar" minHeight="-Infinity" prefHeight="30.0"
+                                 BorderPane.alignment="CENTER">
+                            <items>
+                                <MenuButton fx:id="recentMenuButton" maxHeight="-Infinity" maxWidth="-Infinity"
+                                            minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false"
+                                            text="Recent">
+                                    <tooltip>
+                                        <Tooltip text="Open a recent file"/>
+                                    </tooltip>
+                                </MenuButton>
+                                <Separator orientation="VERTICAL" prefHeight="200.0"/>
+
+                                <MenuButton fx:id="runMenuButton" mnemonicParsing="false" text="Run">
+                                    <tooltip>
+                                        <Tooltip text="Run algorithms"/>
+                                    </tooltip>
+                                    <items>
+                                        <MenuItem fx:id="runRAFMenuItem" mnemonicParsing="false"
+                                                  text="Max RAF Algorithm"/>
+                                        <MenuItem fx:id="runCAFMenuItem" mnemonicParsing="false"
+                                                  text="Max CAF Algorithm"/>
+
+                                        <MenuItem fx:id="runPseudoRAFMenuItem" mnemonicParsing="false"
+                                                  text="Max Pseudo RAF Algorithm"/>
+
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <MenuItem fx:id="runStrictlyAutocatalyticRAFMenuItem" mnemonicParsing="false"
+                                                  text="Strictly Autocatalytic Max RAF Algorithm"/>
+
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <MenuItem fx:id="runTrivialCAFsAlgorithmMenuItem" mnemonicParsing="false"
+                                                  text="Trivial CAFs Algorithm"/>
+                                        <MenuItem fx:id="runTrivialRAFsAlgorithmMenuItem" mnemonicParsing="false"
+                                                  text="Trivial RAFs Algorithm"/>
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <MenuItem fx:id="runCoreRAFMenuItem" mnemonicParsing="false"
+                                                  text="Core RAF Algorithm"/>
+                                        <MenuItem fx:id="runQuotientRAFMenuItem" mnemonicParsing="false"
+                                                  text="Quotient RAF Algorithm"/>
+                                        <MenuItem fx:id="removeTrivialRAFsAlgorithmMenuItem" mnemonicParsing="false"
+                                                  text="Remove Trivial RAFs Algorithm"/>
+                                        <MenuItem fx:id="runMinIrrRAFMenuItem" mnemonicParsing="false"
+                                                  text="Min Irr RAF Heuristic"/>
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <MenuItem fx:id="runMuCAFMenuItem" mnemonicParsing="false"
+                                                  text="MU CAF Algorithm"/>
+                                        <MenuItem fx:id="runURAFMenuItem" mnemonicParsing="false"
+                                                  text="U RAF Algorithm"/>
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <MenuItem fx:id="runMuCAFMultipleTimesMenuItem" mnemonicParsing="false"
+                                                  text="Run MU CAF Multiple Times..."/>
+                                        <MenuItem fx:id="spontaneousInRafMenuItem1" mnemonicParsing="false"
+                                                  text="Determine Necessarily Spontaneous in RAF"/>
+                                        <MenuItem fx:id="greedyGrowMenuItem" mnemonicParsing="false"
+                                                  text="Greedily Grow MaxCAF to MaxRAF"/>
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <MenuItem fx:id="reactionDependenciesMenuItem" mnemonicParsing="false"
+                                                  text="Compute Reaction Dependencies"/>
+                                        <MenuItem fx:id="moleculeDependenciesMenuItem" mnemonicParsing="false"
+                                                  text="Compute Molecule Dependencies"/>
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <CheckMenuItem fx:id="computeImportanceCheckMenuItem" mnemonicParsing="false"
+                                                       text="Compute  Importance"/>
+
+                                    </items>
+                                </MenuButton>
+                            </items>
+                        </ToolBar>
+                    </top>
                 </BorderPane>
                 <StackPane fx:id="outputPane">
                     <children>
@@ -613,6 +616,15 @@
                                                                               mnemonicParsing="false" text="FInd..."/>
                                                                 <Button fx:id="exportWorkingReactionsButton"
                                                                         mnemonicParsing="false" text="Export"/>
+                                                                <MenuButton fx:id="exportMenuButton"
+                                                                            maxHeight="-Infinity" maxWidth="-Infinity"
+                                                                            minHeight="-Infinity" minWidth="-Infinity"
+                                                                            mnemonicParsing="false" text="Export">
+                                                                    <tooltip>
+                                                                        <Tooltip
+                                                                                text="Export a computed reaction system"/>
+                                                                    </tooltip>
+                                                                </MenuButton>
                                                             </items>
                                                         </ToolBar>
                                                     </children>
@@ -748,12 +760,16 @@
                                                                     </items>
                                                                 </MenuButton>
                                                                 <Separator orientation="VERTICAL"/>
-                                                                <Button fx:id="exportNetworkImageButton"
-                                                                        mnemonicParsing="false" text="Export...">
-                                                                    <tooltip>
-                                                                        <Tooltip text="Export image"/>
-                                                                    </tooltip>
-                                                                </Button>
+                                                                <MenuButton fx:id="exportNetworkMenuButton"
+                                                                            mnemonicParsing="false" text="Export...">
+                                                                    <items>
+                                                                        <MenuItem fx:id="copyNetworkMenuItem"
+                                                                                  mnemonicParsing="false" text="Copy"/>
+                                                                        <MenuItem fx:id="exportImageNetworkMenuItem"
+                                                                                  mnemonicParsing="false"
+                                                                                  text="Export Image..."/>
+                                                                    </items>
+                                                                </MenuButton>
                                                                 <Separator orientation="VERTICAL"/>
                                                                 <MenuButton fx:id="animateNetworkMenuButton"
                                                                             mnemonicParsing="false" text="Animate">
@@ -856,6 +872,9 @@
                                                                               mnemonicParsing="false" text="FInd..."/>
                                                                 <Button fx:id="exportLogButton" mnemonicParsing="false"
                                                                         text="Export"/>
+                                                                <Separator orientation="VERTICAL"/>
+                                                                <MenuButton fx:id="listLogButton"
+                                                                            mnemonicParsing="false" text="List"/>
                                                             </items>
                                                         </ToolBar>
                                                     </children>
