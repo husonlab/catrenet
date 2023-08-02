@@ -208,6 +208,8 @@ public class MainWindowPresenter {
             }
         });
 
+        controller.getExportNetworkMenuButton().disableProperty().bind(graphView.getMoleculeFlowAnimation().playingProperty().or(graphView.emptyProperty()));
+
         // cut, copy, paste and undo/redo all implemented by TextArea controls
 
         controller.getCutMenuItem().setOnAction(e -> {

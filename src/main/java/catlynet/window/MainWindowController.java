@@ -1346,4 +1346,8 @@ public class MainWindowController {
 	public ToggleButton getFindLogToggleButton() {
 		return findLogToggleButton;
 	}
+
+	public MenuButton getExportNetworkMenuButton() {
+		return exportNetworkMenuButton;
+	}
 }
