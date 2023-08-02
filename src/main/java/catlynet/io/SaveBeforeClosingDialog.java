@@ -25,8 +25,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 
-import java.util.Optional;
-
 
 public class SaveBeforeClosingDialog {
     public enum Result {save, close, cancel}
@@ -42,17 +40,20 @@ public class SaveBeforeClosingDialog {
             return Result.close;
         } else {
             mainWindow.getStage().toFront();
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            var alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.initOwner(mainWindow.getStage());
+
             alert.setTitle("Save File Dialog");
             alert.setHeaderText("This document has unsaved changes");
             alert.setContentText("Save changes?");
-            ButtonType buttonTypeYes = new ButtonType("Yes", ButtonBar.ButtonData.YES);
-            ButtonType buttonTypeNo = new ButtonType("No", ButtonBar.ButtonData.NO);
-            ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+
+            var buttonTypeYes = new ButtonType("Yes", ButtonBar.ButtonData.YES);
+            var buttonTypeNo = new ButtonType("No", ButtonBar.ButtonData.NO);
+            var buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
             alert.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo, buttonTypeCancel);
 
-            final Optional<ButtonType> result = alert.showAndWait();
+            final var result = alert.showAndWait();
             if (result.isPresent()) {
                 if (result.get() == buttonTypeYes) {
                     return Save.showSaveDialog(mainWindow) ? Result.save : Result.close;

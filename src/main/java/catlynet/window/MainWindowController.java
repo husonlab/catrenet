@@ -21,6 +21,7 @@ package catlynet.window;
 
 import catlynet.icons.MaterialIcons;
 import catlynet.util.MenuUtils;
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
@@ -710,12 +711,20 @@ public class MainWindowController {
 		invalidationListener.invalidated(null);
 
 		inputSplitPane.heightProperty().addListener((v, o, n) -> {
-			if (o != null && n != null) {
+			if (o.doubleValue() > 0.0 && n.doubleValue() > 0.0) {
 				var newPos = inputSplitPane.getDividers().get(0).getPosition() / n.doubleValue() * o.doubleValue();
 				inputSplitPane.getDividers().get(0).setPosition(newPos);
 			}
 		});
-		inputSplitPane.getDividers().get(0).setPosition(0.2);
+		inputSplitPane.getDividers().get(0).setPosition(0.3);
+
+		mainSplitPane.widthProperty().addListener((c, o, n) -> {
+			if (o.doubleValue() > 0 && n.doubleValue() > 0) {
+				var newPos = mainSplitPane.getDividers().get(0).getPosition() / n.doubleValue() * o.doubleValue();
+				mainSplitPane.setDividerPosition(0, newPos);
+			}
+		});
+		Platform.runLater(() -> mainSplitPane.setDividerPosition(0, 200.0 / mainSplitPane.getWidth()));
 
 
 		{

@@ -426,13 +426,6 @@ public class MainWindowPresenter {
         MainWindowManager.getInstance().changedProperty().addListener((c, o, n) -> controller.getCheckForUpdatesMenuItem().disableProperty().set(MainWindowManager.getInstance().size() > 1
                                                                                                                                                  || (MainWindowManager.getInstance().size() == 1 && !MainWindowManager.getInstance().getMainWindow(0).isEmpty())));
 
-        window.getStage().widthProperty().addListener((c, o, n) -> {
-            if (!Double.isNaN(o.doubleValue()) && n.doubleValue() > 0)
-                controller.getMainSplitPane().setDividerPosition(0, controller.getMainSplitPane().getDividerPositions()[0] * o.doubleValue() / n.doubleValue());
-        });
-        if (window.getStage().getWidth() > 0)
-            controller.getMainSplitPane().setDividerPosition(0, 200.0 / window.getStage().getWidth());
-
         final DoubleProperty fontSize = new SimpleDoubleProperty(controller.getInputTextArea().getFont().getSize());
         setupFontSizeBindings(controller, tabManager, graphView, fontSize);
         controller.getIncreaseFontSizeMenuItem().setOnAction(e -> fontSize.set(fontSize.get() + 2));
