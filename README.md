@@ -1,5 +1,5 @@
 # CatlyNet
-<img src="https://github.com/danielhuson/catlynet/blob/master/src/catlynet/resources/images/splash.png" alt="Splash" width="600"/>
+<img src="https://github.com/husonlab/catlynet/blob/master/src/main/resources/catlynet/resources/images/splash.png" alt="Splash" width="600"/>
 
 CatlyNet is a program for working with autocatalytic networks. It is written in Java and uses JavaFX. The program
 implements a fast and exact algorithm for calculating (maximal) RAFs, CAFs, and pseudo-RAFs from any set of catalysed '
