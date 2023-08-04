@@ -38,7 +38,7 @@ and the maxPseudoRAF (maximal pseudo RAF) of a CRS.
 The program can display a CRS as a network, in several different ways. Moreover, it can animate the emergence of a
 maxRAF, maxCAF or maxPseudoRAF.
 
-### Algorithms and heuristics
+## Algorithms and heuristics
 
 The program provides the following calculations:
 
@@ -61,8 +61,13 @@ The program provides the following calculations:
 - Compute Reaction Dependencies
 - Compute Molecule Dependencies
 - Compute Importance
+-
 
-### Network visualizations
+### Export computed systems
+
+Any of the computed subsystems can be exported to a new file.
+
+## Network visualization
 
 The program can represent a CRS in using several different types of networks:
 
@@ -83,7 +88,7 @@ There are a several options:
 - Use Multicopy Food Nodes - select this to show each food node multiple times, to produce a less tangled network
 - Show/Hide Node Labels - select to hide node labels
 
-## Animation
+### Animation
 
 The program can animate the emergence of three types of systems:
 
@@ -101,6 +106,6 @@ There are several options:
 
 <img src="https://github.com/danielhuson/catlynet/blob/master/artwork/animation.gif" alt="Animation" width="600"/>
 
-## Export network
+### Export network
 
-The network can be exported in several different image formats, including PNG, GIF, SVG and PDF.
+The network can be exported in several image formats, including PNG, GIF, SVG and PDF.
