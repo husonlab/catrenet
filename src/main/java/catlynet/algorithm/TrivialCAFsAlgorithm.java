@@ -43,7 +43,6 @@ public class TrivialCAFsAlgorithm extends AlgorithmBase {
      * compute all reactions that can run using only the food set
      *
      * @param input - unexpanded catalytic reaction system
-     * @return irr RAF or null
      */
 
     public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException {

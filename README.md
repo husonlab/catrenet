@@ -47,21 +47,24 @@ The program provides the following calculations:
 - Max Pseudo RAF Algorithm - compute the maximal Pseudo RAF
 - Strictly Autocatalytic Max RAF Algorithm - compute a Max RAF that has the additional property that any contained
   reaction requires at least one molecule type for catalyzation that is not in the food set
-- Trivial CAFs Algorithm
-- Trivial RAFs Algorithm
-- Core RAF Algorithm
-- Quotient RAF Algorithm
-- Remove Trivial RAFs Algorithm
-- Min Irr RAF Heuristic
-- MU CAF Algorithm
-- U RAF Algorithm
-- Run MU CAF Multiple Times...
-- Determine Necessarily Spontaneous in RAF
-- Greedily Grow MaxCAF to MaxRAF
-- Compute Reaction Dependencies
-- Compute Molecule Dependencies
-- Compute Importance
--
+- Trivial CAFs Algorithm - computes all reactions that can run using only the food set
+- Trivial RAFs Algorithm - computes all reactions that can run using only the food set, where the catalyst need not be
+  in the food set if the reaction produces it
+- Core RAF Algorithm - computes the unique irreducible RAF, if it exists
+- Quotient RAF Algorithm - computes the Max RAF minus all the reactions from the Max CAF and adds all produces of the
+  Max CAF to the food set
+- Remove Trivial RAFs Algorithm - computes CRS that is obtained by removing all trivial RAFs
+- Min Irr RAF Heuristic - searches for irreducible RAFs in a heuristic fashion
+- MU CAF Algorithm - computes one maximal uninhibited CAF
+- U RAF Algorithm - computes a max RAF, removes inhibited reactions, and then recomputes the max RAF
+- Run MU CAF Multiple Times... - Runs the MU CAF algorithm multiple times, using different orderings of the input
+  reactions
+- Determine Necessarily Spontaneous in RAF - determine those reactions that must initially run uncatalyzed and then
+  beome catalyzed later
+- Greedily Grow MaxCAF to MaxRAF - ???
+- Compute Reaction Dependencies - computes the graph of dependencies between all food-set generated reactions
+- Compute Molecule Dependencies - computes the graph of dependencies between all molecules
+- Compute Importance - computes the percent difference between model size and model size without given food item
 
 ### Export computed systems
 

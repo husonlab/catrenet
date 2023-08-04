@@ -43,7 +43,6 @@ public class TrivialRAFsAlgorithm extends AlgorithmBase {
      * compute all reactions that can run using only the food set
      *
      * @param input - unexpanded catalytic reaction system
-     * @return irr RAF or null
      */
     public ReactionSystem apply(ReactionSystem input, ProgressListener progress) {
         final ReactionSystem result = new ReactionSystem(Name);
