@@ -2,7 +2,7 @@
 <img src="https://github.com/husonlab/catlynet/blob/master/src/main/resources/catlynet/resources/images/splash.png" alt="Splash" width="600"/>
 
 CatlyNet is a program for working with autocatalytic networks. It is written in Java and uses JavaFX. The program
-implements a fast and exact algorithm for calculating (maximal) RAFs, CAFs, and pseudo-RAFs from any set of catalysed
+implements fast and exact algorithms for calculating (maximal) RAFs, CAFs, and pseudo-RAFs from any set of catalysed
 'reactions' and a given 'food' set. These three notions are formalizations of the concept of a 'collectively
 autocatalytic set' originally introduced by Stuart Kauffman.
 
