@@ -83,9 +83,9 @@ There are a several options:
 
 The program can animate the emergence of three types of systems:
 
-- Animate Max RAF - in this animation, uncatalyzed reactions proceed at a low rate
-- Animate Max CAF - reactions only proceed when catalyzed
-- Animate Max Pseudo RAF - reactions proceed at a low rate, when uncatalyzed or even missing a reactant
+- Animate Max RAF - in this animation, uncatalyzed reactions proceed at a low rate, as long as all reactants are present
+- Animate Max CAF - reactions only proceed when catalyzed and all reactants are present
+- Animate Max Pseudo RAF - reactions proceed at a low rate even when uncatalyzed or missing one or more reactants
 
 There are several options:
 
