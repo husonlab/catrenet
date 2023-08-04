@@ -84,8 +84,8 @@ public class MainWindowPresenter {
 
         final var disableGraphItems = new SimpleBooleanProperty(true);
         final var disableFullGraphItems = new SimpleBooleanProperty(true);
-        disableFullGraphItems.bind(disableGraphItems.or(graphView.graphTypeProperty().isEqualTo(ReactionGraphView.Type.associationGraph)
-                        .or(graphView.graphTypeProperty().isEqualTo(ReactionGraphView.Type.reactantAssociationGraph)))
+        disableFullGraphItems.bind(disableGraphItems.or(graphView.graphTypeProperty().isEqualTo(ReactionGraphView.Type.associationNetwork)
+                        .or(graphView.graphTypeProperty().isEqualTo(ReactionGraphView.Type.reactantAssociationNetwork)))
                 .or(window.getReactionGraphView().getMoleculeFlowAnimation().playingProperty()));
 
         final var algorithmsRunning = new SimpleIntegerProperty(0);
@@ -508,7 +508,7 @@ public class MainWindowPresenter {
                 if (n) {
                     controller.getAnimateRAFCheckMenuItem().setSelected(false);
                     controller.getAnimateMaxRAFCheckMenuItem().setSelected(false);
-                    graphView.getMoleculeFlowAnimation().setModel(MoleculeFlowAnimation.Model.CAF);
+                    graphView.getMoleculeFlowAnimation().setModel(MoleculeFlowAnimation.Model.MaxCAF);
                     graphView.getMoleculeFlowAnimation().setPlaying(true);
                 } else {
                     graphView.getMoleculeFlowAnimation().setPlaying(false);
@@ -520,7 +520,7 @@ public class MainWindowPresenter {
                 if (n) {
                     controller.getAnimateCAFCheckMenuItem().setSelected(false);
                     controller.getAnimateMaxRAFCheckMenuItem().setSelected(false);
-                    graphView.getMoleculeFlowAnimation().setModel(MoleculeFlowAnimation.Model.RAF);
+                    graphView.getMoleculeFlowAnimation().setModel(MoleculeFlowAnimation.Model.MaxRAF);
                     graphView.getMoleculeFlowAnimation().setPlaying(true);
                 } else {
                     graphView.getMoleculeFlowAnimation().setPlaying(false);
@@ -532,7 +532,7 @@ public class MainWindowPresenter {
                 if (n) {
                     controller.getAnimateCAFCheckMenuItem().setSelected(false);
                     controller.getAnimateRAFCheckMenuItem().setSelected(false);
-                    graphView.getMoleculeFlowAnimation().setModel(MoleculeFlowAnimation.Model.PseudoRAF);
+                    graphView.getMoleculeFlowAnimation().setModel(MoleculeFlowAnimation.Model.MaxPseudoRAF);
                     graphView.getMoleculeFlowAnimation().setPlaying(true);
                 } else {
                     graphView.getMoleculeFlowAnimation().setPlaying(false);
@@ -553,7 +553,13 @@ public class MainWindowPresenter {
             controller.getStopAnimationButton().setVisible(false);
             controller.getStopAnimationButton().setOnAction(controller.getStopAnimationMenuItem().getOnAction());
             graphView.getMoleculeFlowAnimation().playingProperty().addListener((c, o, n) -> controller.getStopAnimationButton().setVisible(n));
-            controller.getStopAnimationButton().textProperty().bind(graphView.getMoleculeFlowAnimation().modelProperty().asString().concat(" animation"));
+            graphView.getMoleculeFlowAnimation().modelProperty().addListener((v, o, n) -> {
+                controller.getStopAnimationButton().setText(n == null ? "Stop" : StringUtils.fromCamelCase(n.name()) + " animation");
+            });
+            {
+                var model = graphView.getMoleculeFlowAnimation().getModel();
+                controller.getStopAnimationButton().setText(model == null ? "Stop" : StringUtils.fromCamelCase(model.name()) + " animation");
+            }
 
             controller.getAnimateNetworkMenuButton().disableProperty().bind(graphView.getMoleculeFlowAnimation().playingProperty());
 
@@ -583,33 +589,33 @@ public class MainWindowPresenter {
         graphView.graphTypeProperty().addListener((c, o, n) -> controller.getGraphTypeLabel().setText(StringUtils.capitalizeFirstLetter(StringUtils.fromCamelCase(n.name()))));
 
         controller.getFullGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> {
-                    graphView.setGraphType(ReactionGraphView.Type.fullGraph);
-                    controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
+            graphView.setGraphType(ReactionGraphView.Type.fullNetwork);
+            controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
                 }
         );
         controller.getFullGraphRadioMenuItem().disableProperty().bind(disableRunProperty.or(window.getReactionGraphView().getMoleculeFlowAnimation().playingProperty()));
 
         controller.getReactionDependencyGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> {
-            graphView.setGraphType(ReactionGraphView.Type.reactionDependencyGraph);
+            graphView.setGraphType(ReactionGraphView.Type.reactionDependencyNetwork);
             controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
         });
-        controller.getReactionDependencyGraphRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty().or(window.getDocument().reactionDependencyGraphProperty().isNull()));
+        controller.getReactionDependencyGraphRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty().or(window.getDocument().reactionDependencyNetworkProperty().isNull()));
 
         controller.getMoleculeDependencyGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> {
-            graphView.setGraphType(ReactionGraphView.Type.moleculeDependencyGraph);
+            graphView.setGraphType(ReactionGraphView.Type.moleculeDependencyNetwork);
             controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
         });
-        controller.getMoleculeDependencyGraphRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty().or(window.getDocument().moleculeDependencyGraphProperty().isNull()));
+        controller.getMoleculeDependencyGraphRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty().or(window.getDocument().moleculeDependencyNetworkProperty().isNull()));
 
 
         controller.getAssociationGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> {
-            graphView.setGraphType(ReactionGraphView.Type.associationGraph);
+            graphView.setGraphType(ReactionGraphView.Type.associationNetwork);
             controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
         });
         controller.getAssociationGraphRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty());
 
         controller.getReactantAssociationRadioMenuItem().selectedProperty().addListener((c, o, n) -> {
-            graphView.setGraphType(ReactionGraphView.Type.reactantAssociationGraph);
+            graphView.setGraphType(ReactionGraphView.Type.reactantAssociationNetwork);
             controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
         });
         controller.getReactantAssociationRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty());
@@ -636,8 +642,8 @@ public class MainWindowPresenter {
 
         controller.getGraphEmbedderIterationsMenuItem().setOnAction(e -> {
             TextInputDialog dialog = new TextInputDialog("" + graphView.getEmbeddingIterations());
-            dialog.setTitle("Graph Embedder Iterations Input");
-            dialog.setHeaderText("Graph Embedder Iterations Input");
+            dialog.setTitle("Network Embedder Iterations Input");
+            dialog.setHeaderText("Network Embedder Iterations Input");
             dialog.setContentText("Please enter number of iterations:");
             dialog.getEditor().textProperty().addListener((c, o, n) -> {
                 if (!n.matches("\\d*"))

@@ -69,8 +69,10 @@ public class MenuUtils {
 				targetItem = new SeparatorMenuItem();
 			} else if (sourceItem instanceof CheckMenuItem sourceCheckMenuItem) {
 				targetItem = new CheckMenuItem(sourceCheckMenuItem.getText());
+				((CheckMenuItem) targetItem).selectedProperty().bindBidirectional(sourceCheckMenuItem.selectedProperty());
 			} else if (sourceItem instanceof RadioMenuItem sourceRadioMenuItem) {
 				targetItem = new RadioMenuItem(sourceRadioMenuItem.getText());
+				((RadioMenuItem) targetItem).selectedProperty().bindBidirectional(sourceRadioMenuItem.selectedProperty());
 			} else if (sourceItem instanceof Menu sourceMenu) {
 				var subMenu = new Menu(sourceMenu.getText());
 				subMenu.getItems().addAll(copy(sourceMenu.getItems()));
@@ -78,13 +80,14 @@ public class MenuUtils {
 			} else {
 				targetItem = new MenuItem(sourceItem.getText());
 			}
-			if (targetItem instanceof Toggle targetToggle) {
-				targetToggle.selectedProperty().bindBidirectional(((Toggle) sourceItem).selectedProperty());
-			}
-			targetItem.setOnAction(sourceItem.getOnAction());
-			targetItem.onActionProperty().addListener((v, o, n) -> targetItem.setOnAction(n));
+			targetItem.setOnAction(e -> {
+				var action = sourceItem.getOnAction();
+				if (action != null)
+					action.handle(e);
+			});
 			targetItem.disableProperty().bindBidirectional(sourceItem.disableProperty());
 			result.add(targetItem);
+
 		}
 		return result;
 	}

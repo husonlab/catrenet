@@ -161,113 +161,10 @@ public class MainWindowController {
 	@FXML
 	private MenuItem exportImageNetworkMenuItem;
 
-	@FXML
-	private MenuItem selectAllMenuItem1;
-
-	@FXML
-	private MenuItem selectNoneMenuItem1;
-
-	@FXML
-	private MenuItem selectInvertedMenuItem1;
-
-	@FXML
-	private MenuItem selectNodesMenuItem1;
-
-	@FXML
-	private MenuItem selectEdgesMenuItem1;
-
-	@FXML
-	private Menu selectReactionSystemMenu1;
-
-	@FXML
-	private MenuItem selectFoodMenuItem1;
-
-	@FXML
-	private MenuItem selectMoleculesMenuItem1;
-
-	@FXML
-	private MenuItem selectReactionsMenuItem1;
-
-	@FXML
-	private MenuItem selectConnectedComponentMenuItem1;
-
-	@FXML
-	private MenuItem selectFromPreviousWindowMenuItem1;
 
 	@FXML
 	private Menu algorithmMenu;
 
-	@FXML
-	private MenuItem computeNetworkMenuItem1;
-
-	@FXML
-	private MenuItem runCAFMenuItem1;
-
-	@FXML
-	private MenuItem runRAFMenuItem1;
-
-	@FXML
-	private MenuItem runStrictlyAutocatalyticRAFMenuItem1;
-
-	@FXML
-	private MenuItem runPseudoRAFMenuItem1;
-
-	@FXML
-	private MenuItem runMuCAFMenuItem1;
-
-	@FXML
-	private MenuItem runURAFMenuItem1;
-
-	@FXML
-	private MenuItem runMinIrrRAFMenuItem1;
-
-	@FXML
-	private MenuItem runTrivialCAFsAlgorithmMenuItem1;
-
-	@FXML
-	private MenuItem runTrivialRAFsAlgorithmMenuItem1;
-
-	@FXML
-	private MenuItem runQuotientRAFMenuItem1;
-
-	@FXML
-	private MenuItem runCoreRAFMenuItem1;
-
-	@FXML
-	private MenuItem removeTrivialRAFsAlgorithmMenuItem1;
-
-	@FXML
-	private MenuItem runMuCAFMultipleTimesMenuItem1;
-
-	@FXML
-	private MenuItem spontaneousInRafMenuItem1;
-
-	@FXML
-	private MenuItem greedyGrowMenuItem1;
-
-	@FXML
-	private MenuItem reactionDependenciesMenuItem1;
-
-	@FXML
-	private MenuItem moleculeDependenciesMenuItem1;
-
-	@FXML
-	private CheckMenuItem computeImportanceCheckMenuItem1;
-
-	@FXML
-	private MenuItem graphEmbedderIterationsMenuItem1;
-
-	@FXML
-	private CheckMenuItem animateCAFCheckMenuItem1;
-
-	@FXML
-	private CheckMenuItem animateRAFCheckMenuItem1;
-
-	@FXML
-	private CheckMenuItem animateMaxRAFCheckMenuItem1;
-
-	@FXML
-	private CheckMenuItem animateInhibitionsMenuItem1;
 
 	@FXML
 	private MenuItem stopAnimationMenuItem;
@@ -313,39 +210,6 @@ public class MainWindowController {
 
 	@FXML
 	private MenuItem showNodeAndEdgeFormatMenuItem;
-
-	@FXML
-	private MenuItem showNodeLabels1;
-
-	@FXML
-	private RadioMenuItem fullGraphRadioMenuItem1;
-
-	@FXML
-	private RadioMenuItem reactionDependencyGraphRadioMenuItem1;
-
-	@FXML
-	private RadioMenuItem moleculeDependencyGraphRadioMenuItem1;
-
-	@FXML
-	private RadioMenuItem associationGraphRadioMenuItem1;
-
-	@FXML
-	private RadioMenuItem reactantAssociationRadioMenuItem1;
-
-	@FXML
-	private CheckMenuItem suppressCatalystEdgesMenuItem1;
-
-	@FXML
-	private CheckMenuItem suppressFormalFoodMenuItem1;
-
-	@FXML
-	private CheckMenuItem useMultiCopyFoodNodesMenuItem1;
-
-	@FXML
-	private CheckMenuItem moveLabelsMenuItem1;
-
-	@FXML
-	private CheckMenuItem useColorsMenuItem1;
 
 	@FXML
 	private MenuItem fullScreenMenuItem;
@@ -590,6 +454,16 @@ public class MainWindowController {
 	@FXML
 	private MenuButton selectNetworkMenuButton;
 
+	@FXML
+	private Menu networkMenu;
+
+	@FXML
+	private Menu animateMenu;
+
+
+	@FXML
+	private Menu selectMenu;
+
 
 	@FXML
 	private Menu listMenu;
@@ -737,110 +611,15 @@ public class MainWindowController {
 		}
 
 		{
-			computeNetworkMenuItem1.setOnAction(e -> computeNetworkMenuItem.getOnAction().handle(e));
-			computeNetworkMenuItem1.disableProperty().bind(computeNetworkMenuItem.disableProperty());
-
-			fullGraphRadioMenuItem1.disableProperty().bindBidirectional(fullGraphRadioMenuItem.disableProperty());
-			associationGraphRadioMenuItem1.disableProperty().bindBidirectional(associationGraphRadioMenuItem.disableProperty());
-			reactantAssociationRadioMenuItem1.disableProperty().bindBidirectional(reactantAssociationRadioMenuItem.disableProperty());
-			suppressFormalFoodMenuItem1.disableProperty().bindBidirectional(suppressFormalFoodMenuItem.disableProperty());
-			suppressCatalystEdgesMenuItem1.disableProperty().bindBidirectional(suppressCatalystEdgesMenuItem.disableProperty());
-			useMultiCopyFoodNodesMenuItem1.disableProperty().bindBidirectional(useMultiCopyFoodNodesMenuItem.disableProperty());
-			reactionDependencyGraphRadioMenuItem1.disableProperty().bindBidirectional(reactionDependencyGraphRadioMenuItem.disableProperty());
-			moleculeDependencyGraphRadioMenuItem1.disableProperty().bindBidirectional(moleculeDependenciesMenuItem.disableProperty());
-			showNodeLabels1.disableProperty().bindBidirectional(showNodeLabels.disableProperty());
-
-			fullGraphRadioMenuItem1.selectedProperty().bindBidirectional(fullGraphRadioMenuItem.selectedProperty());
-			associationGraphRadioMenuItem1.selectedProperty().bindBidirectional(associationGraphRadioMenuItem.selectedProperty());
-			reactantAssociationRadioMenuItem1.selectedProperty().bindBidirectional(reactantAssociationRadioMenuItem.selectedProperty());
-			suppressFormalFoodMenuItem1.selectedProperty().bindBidirectional(suppressFormalFoodMenuItem.selectedProperty());
-			suppressCatalystEdgesMenuItem1.selectedProperty().bindBidirectional(suppressCatalystEdgesMenuItem.selectedProperty());
-			useMultiCopyFoodNodesMenuItem1.selectedProperty().bindBidirectional(useMultiCopyFoodNodesMenuItem.selectedProperty());
-			reactionDependencyGraphRadioMenuItem1.selectedProperty().bindBidirectional(reactionDependencyGraphRadioMenuItem.selectedProperty());
-			moleculeDependencyGraphRadioMenuItem1.selectedProperty().bindBidirectional(moleculeDependencyGraphRadioMenuItem.selectedProperty());
-			showNodeLabels1.setOnAction(e -> showNodeLabels.getOnAction().handle(e));
+			computeNetworkMenuButton.getItems().addAll(MenuUtils.copy(networkMenu.getItems()));
+			runMenuButton.getItems().addAll(MenuUtils.copy(algorithmMenu.getItems()));
+			animateNetworkMenuButton.getItems().addAll(MenuUtils.copy(animateMenu.getItems()));
+			selectNetworkMenuButton.getItems().addAll(MenuUtils.copy(selectMenu.getItems()));
 
 			zoomInNetworkButton.setOnAction(e -> zoomInMenuItem.getOnAction().handle(e));
 			zoomInNetworkButton.disableProperty().bind(zoomInMenuItem.disableProperty());
 			zoomOutNetworkButton.setOnAction(e -> zoomOutMenuItem.getOnAction().handle(e));
 			zoomOutNetworkButton.disableProperty().bind(zoomOutMenuItem.disableProperty());
-
-			runCAFMenuItem1.setOnAction(e -> runCAFMenuItem.getOnAction().handle(e));
-			runRAFMenuItem1.setOnAction(e -> runRAFMenuItem.getOnAction().handle(e));
-			runStrictlyAutocatalyticRAFMenuItem1.setOnAction(e -> runStrictlyAutocatalyticRAFMenuItem.getOnAction().handle(e));
-			runPseudoRAFMenuItem1.setOnAction(e -> runPseudoRAFMenuItem.getOnAction().handle(e));
-			runMuCAFMenuItem1.setOnAction(e -> runMuCAFMenuItem.getOnAction().handle(e));
-			runURAFMenuItem1.setOnAction(e -> runURAFMenuItem.getOnAction().handle(e));
-			runMinIrrRAFMenuItem1.setOnAction(e -> runMinIrrRAFMenuItem.getOnAction().handle(e));
-			runTrivialCAFsAlgorithmMenuItem1.setOnAction(e -> runTrivialCAFsAlgorithmMenuItem.getOnAction().handle(e));
-			runTrivialRAFsAlgorithmMenuItem1.setOnAction(e -> runTrivialRAFsAlgorithmMenuItem.getOnAction().handle(e));
-			runQuotientRAFMenuItem1.setOnAction(e -> runQuotientRAFMenuItem.getOnAction().handle(e));
-			runCoreRAFMenuItem1.setOnAction(e -> runCoreRAFMenuItem.getOnAction().handle(e));
-			removeTrivialRAFsAlgorithmMenuItem1.setOnAction(e -> removeTrivialRAFsAlgorithmMenuItem.getOnAction().handle(e));
-			runMuCAFMultipleTimesMenuItem1.setOnAction(e -> runMuCAFMultipleTimesMenuItem.getOnAction().handle(e));
-			spontaneousInRafMenuItem1.setOnAction(e -> spontaneousInRafMenuItem.getOnAction().handle(e));
-			greedyGrowMenuItem1.setOnAction(e -> greedyGrowMenuItem.getOnAction().handle(e));
-			reactionDependenciesMenuItem1.setOnAction(e -> reactionDependenciesMenuItem.getOnAction().handle(e));
-			moleculeDependenciesMenuItem1.setOnAction(e -> moleculeDependenciesMenuItem.getOnAction().handle(e));
-			computeImportanceCheckMenuItem1.selectedProperty().bindBidirectional(computeImportanceCheckMenuItem.selectedProperty());
-
-			runCAFMenuItem1.disableProperty().bindBidirectional(runCAFMenuItem.disableProperty());
-			runRAFMenuItem1.disableProperty().bindBidirectional(runRAFMenuItem.disableProperty());
-			runStrictlyAutocatalyticRAFMenuItem1.disableProperty().bindBidirectional(runStrictlyAutocatalyticRAFMenuItem.disableProperty());
-			runPseudoRAFMenuItem1.disableProperty().bindBidirectional(runPseudoRAFMenuItem.disableProperty());
-			runMuCAFMenuItem1.disableProperty().bindBidirectional(runMuCAFMenuItem.disableProperty());
-			runURAFMenuItem1.disableProperty().bindBidirectional(runURAFMenuItem.disableProperty());
-			runMinIrrRAFMenuItem1.disableProperty().bindBidirectional(runMinIrrRAFMenuItem.disableProperty());
-			runTrivialCAFsAlgorithmMenuItem1.disableProperty().bindBidirectional(runTrivialCAFsAlgorithmMenuItem.disableProperty());
-			runTrivialRAFsAlgorithmMenuItem1.disableProperty().bindBidirectional(runTrivialRAFsAlgorithmMenuItem.disableProperty());
-			runQuotientRAFMenuItem1.disableProperty().bindBidirectional(runQuotientRAFMenuItem.disableProperty());
-			runCoreRAFMenuItem1.disableProperty().bindBidirectional(runCoreRAFMenuItem.disableProperty());
-			removeTrivialRAFsAlgorithmMenuItem1.disableProperty().bindBidirectional(removeTrivialRAFsAlgorithmMenuItem.disableProperty());
-			runMuCAFMultipleTimesMenuItem1.disableProperty().bindBidirectional(runMuCAFMultipleTimesMenuItem.disableProperty());
-			spontaneousInRafMenuItem1.disableProperty().bindBidirectional(spontaneousInRafMenuItem.disableProperty());
-			greedyGrowMenuItem1.disableProperty().bindBidirectional(greedyGrowMenuItem.disableProperty());
-			reactionDependenciesMenuItem1.disableProperty().bindBidirectional(reactionDependenciesMenuItem.disableProperty());
-			moleculeDependenciesMenuItem1.disableProperty().bindBidirectional(moleculeDependenciesMenuItem.disableProperty());
-			computeImportanceCheckMenuItem1.disableProperty().bindBidirectional(computeImportanceCheckMenuItem.disableProperty());
-
-			animateCAFCheckMenuItem1.selectedProperty().bindBidirectional(animateCAFCheckMenuItem.selectedProperty());
-			animateRAFCheckMenuItem1.selectedProperty().bindBidirectional(animateRAFCheckMenuItem.selectedProperty());
-			animateMaxRAFCheckMenuItem1.selectedProperty().bindBidirectional(animateMaxRAFCheckMenuItem.selectedProperty());
-			animateInhibitionsMenuItem1.setOnAction(e -> animateInhibitionsMenuItem.getOnAction().handle(e));
-			moveLabelsMenuItem1.setOnAction(e -> moveLabelsMenuItem.getOnAction().handle(e));
-			useColorsMenuItem1.setOnAction(e -> useColorsMenuItem.getOnAction().handle(e));
-			graphEmbedderIterationsMenuItem1.setOnAction(e -> graphEmbedderIterationsMenuItem.getOnAction().handle(e));
-
-			animateCAFCheckMenuItem1.disableProperty().bindBidirectional(animateCAFCheckMenuItem.disableProperty());
-			animateRAFCheckMenuItem1.disableProperty().bindBidirectional(animateRAFCheckMenuItem.disableProperty());
-			animateMaxRAFCheckMenuItem1.disableProperty().bindBidirectional(animateMaxRAFCheckMenuItem.disableProperty());
-			animateInhibitionsMenuItem1.disableProperty().bindBidirectional(animateInhibitionsMenuItem.disableProperty());
-			moveLabelsMenuItem1.disableProperty().bindBidirectional(moveLabelsMenuItem.disableProperty());
-			useColorsMenuItem1.disableProperty().bindBidirectional(useColorsMenuItem.disableProperty());
-			graphEmbedderIterationsMenuItem1.disableProperty().bindBidirectional(graphEmbedderIterationsMenuItem.disableProperty());
-
-			selectAllMenuItem1.setOnAction(e -> selectAllMenuItem.getOnAction().handle(e));
-			selectNoneMenuItem1.setOnAction(e -> selectNoneMenuItem.getOnAction().handle(e));
-			selectInvertedMenuItem1.setOnAction(e -> selectInvertedMenuItem.getOnAction().handle(e));
-			selectNodesMenuItem1.setOnAction(e -> selectNodesMenuItem.getOnAction().handle(e));
-			selectEdgesMenuItem1.setOnAction(e -> selectEdgesMenuItem.getOnAction().handle(e));
-			selectFoodMenuItem1.setOnAction(e -> selectFoodMenuItem.getOnAction().handle(e));
-			selectMoleculesMenuItem1.setOnAction(e -> selectMoleculesMenuItem.getOnAction().handle(e));
-			selectReactionsMenuItem1.setOnAction(e -> selectReactionsMenuItem.getOnAction().handle(e));
-			selectConnectedComponentMenuItem1.setOnAction(e -> selectConnectedComponentMenuItem.getOnAction().handle(e));
-			selectFromPreviousWindowMenuItem1.setOnAction(e -> selectFromPreviousWindowMenuItem.getOnAction().handle(e));
-
-			selectAllMenuItem1.disableProperty().bindBidirectional(selectAllMenuItem.disableProperty());
-			selectNoneMenuItem1.disableProperty().bindBidirectional(selectNoneMenuItem.disableProperty());
-			selectInvertedMenuItem1.disableProperty().bindBidirectional(selectInvertedMenuItem.disableProperty());
-			selectNodesMenuItem1.disableProperty().bindBidirectional(selectNodesMenuItem.disableProperty());
-			selectEdgesMenuItem1.disableProperty().bindBidirectional(selectEdgesMenuItem.disableProperty());
-			selectReactionSystemMenu1.disableProperty().bindBidirectional(selectReactionSystemMenu.disableProperty());
-			selectFoodMenuItem1.disableProperty().bindBidirectional(selectFoodMenuItem.disableProperty());
-			selectMoleculesMenuItem1.disableProperty().bindBidirectional(selectMoleculesMenuItem.disableProperty());
-			selectReactionsMenuItem1.disableProperty().bindBidirectional(selectReactionsMenuItem.disableProperty());
-			selectConnectedComponentMenuItem1.disableProperty().bindBidirectional(selectConnectedComponentMenuItem.disableProperty());
-			selectFromPreviousWindowMenuItem1.disableProperty().bindBidirectional(selectFromPreviousWindowMenuItem.disableProperty());
 
 			selectReactionSystemMenu.disableProperty().bind(Bindings.isEmpty(selectReactionSystemMenu.getItems()));
 

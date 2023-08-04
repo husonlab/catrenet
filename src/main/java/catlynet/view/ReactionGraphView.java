@@ -62,7 +62,7 @@ import static catlynet.io.ModelIO.FORMAL_FOOD;
 public class ReactionGraphView {
     private final static ObjectProperty<Font> font = new SimpleObjectProperty<>(Font.font("Helvetica", 12));
 
-    public enum Type {fullGraph, associationGraph, reactantAssociationGraph, reactionDependencyGraph, moleculeDependencyGraph}
+    public enum Type {fullNetwork, associationNetwork, reactantAssociationNetwork, reactionDependencyNetwork, moleculeDependencyNetwork}
 
     private final ObjectProperty<Type> graphType = new SimpleObjectProperty<>();
 
@@ -184,25 +184,25 @@ public class ReactionGraphView {
     public void update() {
         clear();
 
-        //System.err.println("Updating graph");
+        //System.err.println("Updating network");
         final Map<MoleculeType, Node> molecule2node = new HashMap<>();
 
         if (getGraphType() != null) {
             switch (getGraphType()) {
-                case associationGraph -> SetupAssocationGraph.apply(reactionGraph, reactionSystem, true);
-                case reactantAssociationGraph -> SetupAssocationGraph.apply(reactionGraph, reactionSystem, false);
-                case reactionDependencyGraph -> {
+                case associationNetwork -> SetupAssocationGraph.apply(reactionGraph, reactionSystem, true);
+                case reactantAssociationNetwork -> SetupAssocationGraph.apply(reactionGraph, reactionSystem, false);
+                case reactionDependencyNetwork -> {
                     reactionGraph.clear();
-                    if (document.getReactionDependencyGraph() != null)
-                        reactionGraph.copy(document.getReactionDependencyGraph());
+                    if (document.getReactionDependencyNetwork() != null)
+                        reactionGraph.copy(document.getReactionDependencyNetwork());
                 }
-                case moleculeDependencyGraph -> {
+                case moleculeDependencyNetwork -> {
                     reactionGraph.clear();
-                    if (document.getMoleculeDependencyGraph() != null)
-                        reactionGraph.copy(document.getMoleculeDependencyGraph());
+                    if (document.getMoleculeDependencyNetwork() != null)
+                        reactionGraph.copy(document.getMoleculeDependencyNetwork());
                 }
 
-                case fullGraph -> {
+                case fullNetwork -> {
                     SetupFullGraph.apply(reactionGraph, reactionSystem, foodNodes, molecule2node, isSuppressCatalystEdges(), isUseMultiCopyFoodNodes());
                     if (isSuppressFormalFood()) {
                         for (var v : reactionGraph.nodes()) {
@@ -218,7 +218,7 @@ public class ReactionGraphView {
 
         final var numberOfConnectedComponts = ConnectedComponents.count(reactionGraph);
         if (numberOfConnectedComponts > 1)
-            logStream.printf("Reaction graph has %d connected components%n", numberOfConnectedComponts);
+            logStream.printf("Reaction network has %d connected components%n", numberOfConnectedComponts);
 
         final var service = new AService<NodeArray<APoint2D<?>>>(controller.getStatusFlowPane());
 
@@ -252,10 +252,10 @@ public class ReactionGraphView {
         });
          */
 
-        service.setOnRunning(e -> service.getProgressListener().setTasks("Graph layout", ""));
-        service.setOnFailed(e -> NotificationManager.showError("Graph layout failed: " + service.getException().getMessage()));
+        service.setOnRunning(e -> service.getProgressListener().setTasks("Network layout", ""));
+        service.setOnFailed(e -> NotificationManager.showError("Network layout failed: " + service.getException().getMessage()));
         service.setOnCancelled(e -> {
-                    NotificationManager.showWarning("Graph layout CANCELED");
+                    NotificationManager.showWarning("Network layout CANCELED");
                     if (!result.isEmpty()) // use what ever has been produced
                         world.getChildren().setAll(setupGraphView(reactionSystem, reactionGraph, node2view, edge2view, service.getValue()));
                 }

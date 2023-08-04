@@ -40,8 +40,8 @@ public class Document {
     private final ObservableMap<String, ReactionSystem> reactionSystems = FXCollections.observableHashMap();
     private final ObservableSet<String> definedSystems = FXCollections.observableSet(new TreeSet<>());
 
-    private final ObjectProperty<Graph> reactionDependencyGraph = new SimpleObjectProperty<>(this, "reactionDependencyGraph");
-    private final ObjectProperty<Graph> moleculeDependencyGraph = new SimpleObjectProperty<>(this, "moleculeDependencyGraph");
+    private final ObjectProperty<Graph> reactionDependencyNetwork = new SimpleObjectProperty<>(this, "reactionDependencyNetwork");
+    private final ObjectProperty<Graph> moleculeDependencyNetwork = new SimpleObjectProperty<>(this, "moleculeDependencyNetwork");
 
     private final ObjectProperty<ReactionNotation> reactionNotation = new SimpleObjectProperty<>(ReactionNotation.valueOfIgnoreCase(ProgramProperties.get("ReactionNotation", "Sparse")));
     private final ObjectProperty<ArrowNotation> arrowNotation = new SimpleObjectProperty<>(ArrowNotation.valueOfLabel(ProgramProperties.get("ArrowNotation", "=>")));
@@ -133,27 +133,27 @@ public class Document {
         return new ReadOnlySetWrapper<>(definedSystems);
     }
 
-    public Graph getReactionDependencyGraph() {
-        return reactionDependencyGraph.get();
+    public Graph getReactionDependencyNetwork() {
+        return reactionDependencyNetwork.get();
     }
 
-    public ObjectProperty<Graph> reactionDependencyGraphProperty() {
-        return reactionDependencyGraph;
+    public ObjectProperty<Graph> reactionDependencyNetworkProperty() {
+        return reactionDependencyNetwork;
     }
 
-    public void setReactionDependencyGraph(Graph reactionDependencyGraph) {
-        this.reactionDependencyGraph.set(reactionDependencyGraph);
+    public void setReactionDependencyNetwork(Graph reactionDependencyNetwork) {
+        this.reactionDependencyNetwork.set(reactionDependencyNetwork);
     }
 
-    public Graph getMoleculeDependencyGraph() {
-        return moleculeDependencyGraph.get();
+    public Graph getMoleculeDependencyNetwork() {
+        return moleculeDependencyNetwork.get();
     }
 
-    public ObjectProperty<Graph> moleculeDependencyGraphProperty() {
-        return moleculeDependencyGraph;
+    public ObjectProperty<Graph> moleculeDependencyNetworkProperty() {
+        return moleculeDependencyNetwork;
     }
 
-    public void setMoleculeDependencyGraph(Graph moleculeDependencyGraph) {
-        this.moleculeDependencyGraph.set(moleculeDependencyGraph);
+    public void setMoleculeDependencyNetwork(Graph moleculeDependencyNetwork) {
+        this.moleculeDependencyNetwork.set(moleculeDependencyNetwork);
     }
 }

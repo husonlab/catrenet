@@ -41,13 +41,11 @@ import jloda.fx.util.SelectionEffect;
 import jloda.graph.*;
 import jloda.util.CollectionUtils;
 import jloda.util.IteratorUtils;
-import jloda.util.Pair;
 import jloda.util.Triplet;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
-import java.util.Set;
 
 /**
  * run simulation on graph
@@ -56,10 +54,10 @@ import java.util.Set;
 public class MoleculeFlowAnimation {
     static private final Random random = new Random();
 
-    public enum Model {CAF, RAF, PseudoRAF}
+    public enum Model {MaxRAF, MaxCAF, MaxPseudoRAF}
 
     private final BooleanProperty playing = new SimpleBooleanProperty(false);
-    private final ObjectProperty<Model> model = new SimpleObjectProperty<>(Model.RAF);
+    private final ObjectProperty<Model> model = new SimpleObjectProperty<>(Model.MaxRAF);
 
     private final IntegerProperty uncatalyzedOrInhibitedThreshold = new SimpleIntegerProperty(20);
 
@@ -89,37 +87,36 @@ public class MoleculeFlowAnimation {
                         while (!isCancelled()) {
                             Thread.sleep(Math.round(nextGaussian(random, 200, 20, true)));
                             count++;
-                            for (Node v : CollectionUtils.randomize(foodNodes, random)) {
-                                for (Edge e : IteratorUtils.randomize(v.adjacentEdges(), random)) {
+                            for (var v : CollectionUtils.randomize(foodNodes, random)) {
+                                for (var e : IteratorUtils.randomize(v.adjacentEdges(), random)) {
                                     if (e.getInfo() == EdgeType.Reactant || e.getInfo() == EdgeType.ReactantReversible || e.getInfo() == EdgeType.Catalyst) {
-                                        final String label = ((MoleculeType) e.getSource().getInfo()).getName();
+                                        final var label = ((MoleculeType) e.getSource().getInfo()).getName();
                                         Platform.runLater(() -> animateEdge(e, false, label, edge2totalCount, edge2currentCount, edge2Group, world));
                                         break;
                                     } else if (e.getInfo() == EdgeType.ProductReversible) {
-                                        final String label = ((MoleculeType) e.getTarget().getInfo()).getName();
+                                        final var label = ((MoleculeType) e.getTarget().getInfo()).getName();
                                         Platform.runLater(() -> animateEdge(e, true, label, edge2totalCount, edge2currentCount, edge2Group, world));
                                         break;
                                     }
-								}
+                                }
                             }
                             // in a pseudo RAF, need to pump molecules into none-food nodes, as well, to get things going
-                            if (getModel() == Model.PseudoRAF && count == getUncatalyzedOrInhibitedThreshold()) {
+                            if (getModel() == Model.MaxPseudoRAF && count == getUncatalyzedOrInhibitedThreshold()) {
                                 count = 0;
 
                                 loop:
-								for (Node v : IteratorUtils.randomize(graph.nodes(), random)) {
-									if (!foodNodes.contains(v) && v.getInfo() instanceof MoleculeType) {
-										for (Edge e : IteratorUtils.randomize(v.adjacentEdges(), random)) {
-											if (e.getInfo() == EdgeType.Reactant || e.getInfo() == EdgeType.ReactantReversible || e.getInfo() == EdgeType.Catalyst) {
-												final Set<Pair<Edge, Boolean>> history;
-												final String label = ((MoleculeType) e.getSource().getInfo()).getName();
-												Platform.runLater(() -> animateEdge(e, false, label, edge2totalCount, edge2currentCount, edge2Group, world));
-												break loop;
-											} else if (e.getInfo() == EdgeType.ProductReversible) {
-												final String label = ((MoleculeType) e.getTarget().getInfo()).getName();
-												Platform.runLater(() -> animateEdge(e, true, label, edge2totalCount, edge2currentCount, edge2Group, world));
-												break loop;
-											}
+                                for (var v : IteratorUtils.randomize(graph.nodes(), random)) {
+                                    if (!foodNodes.contains(v) && v.getInfo() instanceof MoleculeType) {
+                                        for (var e : IteratorUtils.randomize(v.adjacentEdges(), random)) {
+                                            if (e.getInfo() == EdgeType.Reactant || e.getInfo() == EdgeType.ReactantReversible || e.getInfo() == EdgeType.Catalyst) {
+                                                final var label = ((MoleculeType) e.getSource().getInfo()).getName();
+                                                Platform.runLater(() -> animateEdge(e, false, label, edge2totalCount, edge2currentCount, edge2Group, world));
+                                                break loop;
+                                            } else if (e.getInfo() == EdgeType.ProductReversible) {
+                                                final var label = ((MoleculeType) e.getTarget().getInfo()).getName();
+                                                Platform.runLater(() -> animateEdge(e, true, label, edge2totalCount, edge2currentCount, edge2Group, world));
+                                                break loop;
+                                            }
                                         }
                                     }
                                 }
@@ -233,7 +230,7 @@ public class MoleculeFlowAnimation {
             }
             // in a CAF, reaction always requires a catalyst and can never run with inhibition
             // in other cases, run at lower rate
-            final int reactantThreshold = (hasCatalyst && !hasInhibitor ? 1 : getModel() == Model.CAF ? Integer.MAX_VALUE : getUncatalyzedOrInhibitedThreshold());
+            final int reactantThreshold = (hasCatalyst && !hasInhibitor ? 1 : getModel() == Model.MaxCAF ? Integer.MAX_VALUE : getUncatalyzedOrInhibitedThreshold());
 
             if (e.getInfo() == EdgeType.Reactant) {
                 for (Edge f : v.inEdges()) {

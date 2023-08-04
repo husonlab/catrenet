@@ -124,12 +124,12 @@ public class ComputeMoleculeDependencies {
 	public static void run(MainWindow mainWindow) {
 		var service = new AService<Graph>(mainWindow.getStatusPane());
 		service.setCallable(() -> apply(service.getProgressListener(), mainWindow.getInputReactionSystem(), null));
-		service.setOnScheduled(e -> mainWindow.getDocument().setReactionDependencyGraph(null));
+		service.setOnScheduled(e -> mainWindow.getDocument().setReactionDependencyNetwork(null));
 		service.setOnFailed(e -> NotificationManager.showError(service.getException().getMessage()));
 		service.setOnCancelled(e -> NotificationManager.showWarning("User canceled compute molecule dependencies"));
 		service.setOnSucceeded(a -> {
 			var graph = service.getValue();
-			mainWindow.getDocument().setReactionDependencyGraph(graph);
+			mainWindow.getDocument().setReactionDependencyNetwork(graph);
 			final var textArea = mainWindow.getTabManager().getTextArea("Molecule dependencies");
 			var buf = new StringBuilder();
 			buf.append("# Molecule dependencies (%,d):%n".formatted(graph.getNumberOfEdges()));

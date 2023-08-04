@@ -44,6 +44,7 @@ public class MaterialIcons {
 	}
 
 	private final Map<String, String> nameCodePointMap = new TreeMap<>();
+	private final String styleSheet;
 
 	private MaterialIcons() {
 		try (var ins = Objects.requireNonNull(MaterialIcons.class.getResource("MaterialIconsOutlined-Regular.otf")).openStream()) {
@@ -73,6 +74,7 @@ public class MaterialIcons {
 		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		}
+		styleSheet = Objects.requireNonNull(getClass().getResource("button.css")).toExternalForm();
 	}
 
 	public static Node graphic(String materialIconName) {
@@ -95,6 +97,7 @@ public class MaterialIcons {
 
 
 	public static void setIcon(Labeled labeled, String materialIconName, String style, boolean graphicOnly) {
+		labeled.getStylesheets().add(getInstance().styleSheet);
 		labeled.setGraphic(graphic(materialIconName, style));
 		if (graphicOnly)
 			labeled.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
