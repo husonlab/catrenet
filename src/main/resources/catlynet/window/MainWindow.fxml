@@ -316,8 +316,7 @@
                                 <MenuItem fx:id="runTrivialRAFsAlgorithmMenuItem" mnemonicParsing="false"
                                           text="Trivial RAFs Algorithm"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="runCoreRAFMenuItem" mnemonicParsing="false"
-                                          text="Core RAF Algorithm"/>
+                                <MenuItem fx:id="runCoreRAFMenuItem" mnemonicParsing="false" text="Core RAF Algorithm"/>
                                 <MenuItem fx:id="runQuotientRAFMenuItem" mnemonicParsing="false"
                                           text="Quotient RAF Algorithm"/>
                                 <MenuItem fx:id="removeTrivialRAFsAlgorithmMenuItem" mnemonicParsing="false"
@@ -531,6 +530,10 @@
                                     <tooltip>
                                         <Tooltip text="Open a recent file"/>
                                     </tooltip>
+                                    <items>
+                                        <MenuItem fx:id="openNewMenuItem" mnemonicParsing="false" text="New..."/>
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                    </items>
                                 </MenuButton>
                                 <Separator orientation="VERTICAL" prefHeight="200.0"/>
 

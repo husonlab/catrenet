@@ -230,6 +230,9 @@ public class MainWindowController {
 	private MenuButton recentMenuButton;
 
 	@FXML
+	private MenuItem openNewMenuItem;
+
+	@FXML
 	private MenuButton exportMenuButton;
 
 	@FXML
@@ -608,6 +611,12 @@ public class MainWindowController {
 			networkPane = stackPane;
 			if (false) networkPane.setPadding(new javafx.geometry.Insets(100));
 			networkPane.getStyleClass().add("viewer-background");
+
+			openNewMenuItem.setOnAction(e -> newMenuItem.getOnAction().handle(e));
+			recentFilesMenu.getItems().addListener((InvalidationListener) e -> {
+				recentMenuButton.getItems().setAll(openNewMenuItem, new SeparatorMenuItem());
+				recentMenuButton.getItems().addAll(MenuUtils.copy(recentFilesMenu.getItems()));
+			});
 		}
 
 		{
@@ -1101,10 +1110,6 @@ public class MainWindowController {
 
 	public MenuItem getListFoodMenuItem() {
 		return listFoodMenuItem;
-	}
-
-	public MenuButton getRecentMenuButton() {
-		return recentMenuButton;
 	}
 
 	public MenuButton getExportMenuButton() {

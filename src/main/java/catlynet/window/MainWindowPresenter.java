@@ -144,20 +144,6 @@ public class MainWindowPresenter {
         });
         controller.getExportListOfReactionsMenuItem().disableProperty().bind(window.getInputReactionSystem().sizeProperty().isEqualTo(0));
 
-
-        var recentFilesInvalidationListener = (InvalidationListener) e -> {
-            controller.getRecentMenuButton().getItems().clear();
-            for (var menuItem : controller.getRecentFilesMenu().getItems()) {
-                var newMenuItem = new MenuItem(menuItem.getText());
-                newMenuItem.setOnAction(menuItem.getOnAction());
-                controller.getRecentMenuButton().getItems().add(newMenuItem);
-            }
-        };
-        recentFilesInvalidationListener.invalidated(null);
-        controller.getRecentFilesMenu().getItems().addListener(recentFilesInvalidationListener);
-        controller.getRecentFilesMenu().disableProperty().bind(Bindings.isEmpty(controller.getRecentFilesMenu().getItems()));
-
-
         controller.getExportMenu().getItems().addListener((InvalidationListener) e -> {
             controller.getExportMenuButton().getItems().clear();
             var afterSeparator = false;
