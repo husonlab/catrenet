@@ -41,7 +41,12 @@ public class MuCAFAlgorithm extends AlgorithmBase {
         return Name;
     }
 
-    /**
+	@Override
+	public String getDescription() {
+		return "computes one maximal uninhibited CAF";
+	}
+
+	/**
      * computes a MU CAF
      *
      * @param input - unexpanded catalytic reaction system

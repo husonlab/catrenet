@@ -43,7 +43,12 @@ import static catlynet.algorithm.ComputeReactionDependencies.collectAllAncestors
  * computes the graph of dependencies between all molecules
  * Daniel Huson and Mike Steel, 3.2023
  */
-public class ComputeMoleculeDependencies {
+public class ComputeMoleculeDependencies implements IDescribed {
+
+	public String getDescription() {
+		return "computes the graph of dependencies between all molecules [HXRS23]";
+	}
+
 	/**
 	 * computes the graph of strict molecule dependencies. There is an edge from
 	 *

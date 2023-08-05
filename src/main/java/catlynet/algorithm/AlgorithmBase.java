@@ -32,13 +32,16 @@ import java.util.Collection;
  * computes a new reaction system
  * Daniel Huson, 7.2019
  */
-public abstract class AlgorithmBase {
+public abstract class AlgorithmBase implements IDescribed {
     /**
      * get the name of the reaction system computed by this algorithm
      *
      * @return name
      */
     abstract public String getName();
+
+    @Override
+    abstract public String getDescription();
 
     /**
      * run the algorithm

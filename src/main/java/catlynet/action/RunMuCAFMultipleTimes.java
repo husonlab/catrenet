@@ -19,6 +19,7 @@
 
 package catlynet.action;
 
+import catlynet.algorithm.IDescribed;
 import catlynet.algorithm.MuCAFAlgorithm;
 import catlynet.main.Version;
 import catlynet.window.MainWindow;
@@ -38,7 +39,12 @@ import java.util.Optional;
  * run the mu CAF heuristic multiple times
  * Daniel Huson, 2.2020
  */
-public class RunMuCAFMultipleTimes {
+public class RunMuCAFMultipleTimes implements IDescribed {
+
+    public String getDescription() {
+        return "Runs the MU CAF algorithm multiple times, using different orderings of the input reactions";
+    }
+
     public static void apply(MainWindow window, MainWindowController controller, ChangeListener<Boolean> runningListener) {
         final TextInputDialog dialog = new TextInputDialog("10");
         dialog.setTitle("Setup mu-CAF algorithm - " + Version.SHORT_DESCRIPTION);

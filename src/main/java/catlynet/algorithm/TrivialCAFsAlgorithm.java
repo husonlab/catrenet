@@ -33,6 +33,10 @@ import java.util.stream.Collectors;
 public class TrivialCAFsAlgorithm extends AlgorithmBase {
     public static final String Name = "trivial CAFs";
 
+    @Override
+    public String getDescription() {
+        return "computes all reactions that can run using only the food set";
+    }
 
     @Override
     public String getName() {

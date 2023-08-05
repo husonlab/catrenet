@@ -43,7 +43,11 @@ import java.util.stream.Collectors;
  * determines which reactions are necessarily spontaneous in a RAF
  * Daniel Huson, 4.2020
  */
-public class ComputeNecessarilySpontaneousInRAF {
+public class ComputeNecessarilySpontaneousInRAF implements IDescribed {
+
+    public String getDescription() {
+        return "determine those reactions that must initially run uncatalyzed and then beome catalyzed later";
+    }
 
     public static void apply(MainWindow window, final ReactionSystem inputReactions, MainWindowController controller, ChangeListener<Boolean> runningListener) {
 

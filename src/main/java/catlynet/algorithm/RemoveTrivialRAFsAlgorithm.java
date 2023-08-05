@@ -42,6 +42,11 @@ public class RemoveTrivialRAFsAlgorithm extends AlgorithmBase {
         return Name;
     }
 
+    @Override
+    public String getDescription() {
+        return " computes CRS that is obtained by removing all trivial RAFs";
+    }
+
     /**
      * remove all trivial RAFs
      *

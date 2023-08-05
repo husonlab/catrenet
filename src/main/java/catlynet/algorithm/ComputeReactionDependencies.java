@@ -41,7 +41,12 @@ import java.util.stream.Collectors;
  * computes the graph of dependencies between all food-set generated reactions
  * Daniel Huson and Mike Steel, 3.2023
  */
-public class ComputeReactionDependencies {
+public class ComputeReactionDependencies implements IDescribed {
+
+	public String getDescription() {
+		return "computes the graph of dependencies between all food-set generated reactions [HXRS23]";
+	}
+
 	/**
 	 * computes the graph of strict reaction dependencies. There is an edge from p to r if p is required to produce
 	 * one of the reactants of r

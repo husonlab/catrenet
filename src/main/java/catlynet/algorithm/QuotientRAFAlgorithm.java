@@ -43,6 +43,11 @@ public class QuotientRAFAlgorithm extends AlgorithmBase {
         return Name;
     }
 
+    @Override
+    public String getDescription() {
+        return "computes the Max RAF minus all the reactions from the Max CAF and adds all produces of the Max CAF to the food set [SXH20]";
+    }
+
     /**
      * compute the quotient max RAF
      *

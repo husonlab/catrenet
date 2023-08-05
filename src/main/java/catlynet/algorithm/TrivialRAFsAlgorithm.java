@@ -39,7 +39,12 @@ public class TrivialRAFsAlgorithm extends AlgorithmBase {
         return Name;
     }
 
-    /**
+	@Override
+	public String getDescription() {
+		return "computes all reactions that can run using only the food set, where the catalyst need not be in the food set if the reaction produces it";
+	}
+
+	/**
      * compute all reactions that can run using only the food set
      *
      * @param input - unexpanded catalytic reaction system

@@ -38,7 +38,12 @@ import java.util.stream.Collectors;
  * greedily grow maxCAF to maxRAF by making reactions spontaneous
  * Daniel Huson, 3.2020
  */
-public class GreedilyGrowMaxCAF2MaxRAF {
+public class GreedilyGrowMaxCAF2MaxRAF implements IDescribed {
+
+    public String getDescription() {
+        return "greedily grow maxCAF to maxRAF by making reactions spontaneous";
+    }
+
     /**
      * tries to greedily grow a maxCAF to a maxRAF
      *

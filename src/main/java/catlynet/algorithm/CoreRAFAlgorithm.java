@@ -40,6 +40,11 @@ public class CoreRAFAlgorithm extends AlgorithmBase {
         return Name;
     }
 
+    @Override
+    public String getDescription() {
+        return "computes the unique irreducible RAF, if it exists (Section 4.1 of [SXH20])";
+    }
+
     /**
      * compute the core RAF
      *

@@ -37,6 +37,11 @@ public class URAFAlgorithm extends AlgorithmBase {
         return Name;
     }
 
+    @Override
+    public String getDescription() {
+        return "computes a max RAF, removes inhibited reactions, and then recomputes the max RAF (Section 6 of [HMS16])";
+    }
+
     /**
      * computes a canonical uninhibited RAF (U RAF)
      *

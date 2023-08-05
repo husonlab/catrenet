@@ -45,6 +45,11 @@ public class MinIrrRAFHeuristic extends AlgorithmBase {
         return Name;
     }
 
+    @Override
+    public String getDescription() {
+        return "searches for irreducible RAFs in a heuristic fashion [HS23]";
+    }
+
     /**
      * heuristically tries to compute a minimum irreducible RAD
      *

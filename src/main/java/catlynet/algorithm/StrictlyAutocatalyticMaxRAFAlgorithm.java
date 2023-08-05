@@ -42,6 +42,11 @@ public class StrictlyAutocatalyticMaxRAFAlgorithm extends AlgorithmBase {
         return Name;
     }
 
+    @Override
+    public String getDescription() {
+        return "computes a Max RAF that has the additional property that any contained reaction requires at least one molecule type for catalyzation that is not in the food set [HXRS23]";
+    }
+
     /**
      * computes the partially autocatalytic Max RAF.
      * Ignore all inhibitions.

@@ -35,7 +35,11 @@ import java.util.ArrayList;
  * computes importance of food items and reactions
  * Daniel Huson, 7.2019
  */
-public class Importance {
+public class Importance implements IDescribed {
+
+    public String getDescription() {
+        return "computes the percent difference between model size and model size without given food item [HS23]";
+    }
     /**
      * computes food importance
      *

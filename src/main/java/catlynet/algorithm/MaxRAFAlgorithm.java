@@ -42,6 +42,11 @@ public class MaxRAFAlgorithm extends AlgorithmBase {
         return Name;
     }
 
+    @Override
+    public String getDescription() {
+        return "computes the maximal RAF [HMS15] (see also [H23])";
+    }
+
     /**
      * computes the max RAF.
      * Ignore all inhibitions.

@@ -32,10 +32,10 @@ or maxPseudoRAF.
 
 The program provides the following calculations:
 
-- Max RAF Algorithm - compute the maximal RAF [[HMS15]](#10) (see also  [[H23]](#40))
-- Max CAF Algorithm - compute the maximal CAF [[HMS15]](#10)
-- Max Pseudo RAF Algorithm - compute the maximal Pseudo RAF [[HMS15]](#10)
-- Strictly Autocatalytic Max RAF Algorithm - compute a Max RAF that has the additional property that any contained
+- Max RAF Algorithm - computes the maximal RAF [[HMS15]](#10) (see also  [[H23]](#40))
+- Max CAF Algorithm - computes the maximal CAF [[HMS15]](#10)
+- Max Pseudo RAF Algorithm - computes the maximal Pseudo RAF [[HMS15]](#10)
+- Strictly Autocatalytic Max RAF Algorithm - computes a Max RAF that has the additional property that any contained
   reaction requires at least one molecule type for catalyzation that is not in the food set [[HXRS23]](#60)
 - Trivial CAFs Algorithm - computes all reactions that can run using only the food set
 - Trivial RAFs Algorithm - computes all reactions that can run using only the food set, where the catalyst need not be
@@ -52,7 +52,7 @@ The program provides the following calculations:
   reactions
 - Determine Necessarily Spontaneous in RAF - determine those reactions that must initially run uncatalyzed and then
   beome catalyzed later
-- Greedily Grow MaxCAF to MaxRAF - ???
+- Greedily Grow MaxCAF to MaxRAF - greedily grow maxCAF to maxRAF by making reactions spontaneous
 - Compute Reaction Dependencies - computes the graph of dependencies between all food-set generated
   reactions [[HXRS23]](#60)
 - Compute Molecule Dependencies - computes the graph of dependencies between all molecules [[HXRS23]](#60)

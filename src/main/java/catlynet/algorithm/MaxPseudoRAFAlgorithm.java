@@ -42,6 +42,11 @@ public class MaxPseudoRAFAlgorithm extends AlgorithmBase {
         return Name;
     }
 
+    @Override
+    public String getDescription() {
+        return "computes the maximal Pseudo RAF [HMS15]";
+    }
+
     /**
      * computes a pseudo-RAF
      *

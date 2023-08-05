@@ -42,6 +42,11 @@ public class MaxCAFAlgorithm extends AlgorithmBase {
         return Name;
     }
 
+    @Override
+    public String getDescription() {
+        return " computes the maximal CAF [HMS15]";
+    }
+
     /**
      * computes a CAF
      *
