@@ -6,6 +6,8 @@ implements fast and exact algorithms for calculating (maximal) RAFs, CAFs, and p
 'reactions' and a given 'food' set. These three notions are formalizations of the concept of a 'collectively
 autocatalytic set' originally introduced by Stuart Kauffman.
 
+CatlyNet is loosely based on a web application written by Dietrich Radel: http://www.math.canterbury.ac.nz/bio/RAF/
+
 ## Installers
 
 One click installers for MacOS, Windows and Linux are
@@ -30,29 +32,32 @@ or maxPseudoRAF.
 
 The program provides the following calculations:
 
-- Max RAF Algorithm - compute the maximal RAF
-- Max CAF Algorithm - compute the maximal CAF
-- Max Pseudo RAF Algorithm - compute the maximal Pseudo RAF
+- Max RAF Algorithm - compute the maximal RAF [[HMS15]](#10) (see also  [[H23]](#40))
+- Max CAF Algorithm - compute the maximal CAF [[HMS15]](#10)
+- Max Pseudo RAF Algorithm - compute the maximal Pseudo RAF [[HMS15]](#10)
 - Strictly Autocatalytic Max RAF Algorithm - compute a Max RAF that has the additional property that any contained
-  reaction requires at least one molecule type for catalyzation that is not in the food set
+  reaction requires at least one molecule type for catalyzation that is not in the food set [[HXRS23]](#60)
 - Trivial CAFs Algorithm - computes all reactions that can run using only the food set
 - Trivial RAFs Algorithm - computes all reactions that can run using only the food set, where the catalyst need not be
   in the food set if the reaction produces it
-- Core RAF Algorithm - computes the unique irreducible RAF, if it exists
+- Core RAF Algorithm - computes the unique irreducible RAF, if it exists (Section 4.1 of [[SXH20]](#50))
 - Quotient RAF Algorithm - computes the Max RAF minus all the reactions from the Max CAF and adds all produces of the
-  Max CAF to the food set
+  Max CAF to the food set [[SXH20]](#50)
 - Remove Trivial RAFs Algorithm - computes CRS that is obtained by removing all trivial RAFs
-- Min Irr RAF Heuristic - searches for irreducible RAFs in a heuristic fashion
+- Min Irr RAF Heuristic - searches for irreducible RAFs in a heuristic fashion [[HS23]](#30)
 - MU CAF Algorithm - computes one maximal uninhibited CAF
 - U RAF Algorithm - computes a max RAF, removes inhibited reactions, and then recomputes the max RAF
+  (Section 6 of [[HMS16]](#20))
 - Run MU CAF Multiple Times... - Runs the MU CAF algorithm multiple times, using different orderings of the input
   reactions
 - Determine Necessarily Spontaneous in RAF - determine those reactions that must initially run uncatalyzed and then
   beome catalyzed later
 - Greedily Grow MaxCAF to MaxRAF - ???
-- Compute Reaction Dependencies - computes the graph of dependencies between all food-set generated reactions
-- Compute Molecule Dependencies - computes the graph of dependencies between all molecules
-- Compute Importance - computes the percent difference between model size and model size without given food item
+- Compute Reaction Dependencies - computes the graph of dependencies between all food-set generated
+  reactions [[HXRS23]](#60)
+- Compute Molecule Dependencies - computes the graph of dependencies between all molecules [[HXRS23]](#60)
+- Compute Importance - computes the percent difference between model size and model size without given food
+  item [[HS23]](#30)
 
 ### Export computed systems
 
@@ -101,18 +106,27 @@ There are several options:
 
 The network can be exported in several image formats, including PNG, GIF, SVG and PDF.
 
-## Further reading
+## References
 
-CatlyNet is loosely based on a web application written by Dietrich Radel: http://www.math.canterbury.ac.nz/bio/RAF/
+<a id="10">[HSM15]</a>
+Hordijk, W., Smith, J. I. and Steel, M. (2015). Algorithms for detecting and analysing autocatalytic sets. Algorithms in
+Molecular Biology 10: 15.
 
-This publication describes and uses CatlyNet:
+<a id="20">[HS16]</a>
+Hordijk, W. and Steel, M. (2016). Autocatalytic sets in polymer networks with variable catalysis distributions, J. Math.
+Chem., 54(10): 1997-2021.
 
-Steel M, Xavier JC, Huson DH.
-2020 [The structure of autocatalytic networks, with application to early biochemistry](https://royalsocietypublishing.org/doi/10.1098/rsif.2020.0488)
-. J. R. Soc. Interface 17: 20200488.
+<a id="30">[HS23]</a>
+Huson, D. and Steel, M. (2023) CatlyNet - Implemented Algorithms (unpublished).
 
-Read more about autocatlyic networks and RAFs here:
+<a id="40">[H23]</a>
+Hordijk, W. (2023). A concise and formal definition of RAF sets and the RAF algorithm, arXiv:2303.01809.
 
-Hordijk, W. and Steel, M. (
-2017) [Chasing the tail: The emergence of autocatalytic networks.](http://www.sciencedirect.com/science/article/pii/S030326471630274X)
-Biosystems, 152: 1-10.
+<a id="50">[SXH20]</a>
+Steel, M., Xavier, J. C., and Huson, D. H. (
+2020). [The structure of autocatalytic networks, with application to early biochemistry.](https://royalsocietypublishing.org/doi/10.1098/rsif.2020.0488)
+J. Royal Society Interface, 17: 20200488.
+
+<a id="60">[HXRS23]</a>
+Huson, D., Xavier, J., Rodrigo, A. and Steel, M. (2023). Structural and algorithmic results for self-generating
+autocatalytic networks. (In prep).
