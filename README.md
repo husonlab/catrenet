@@ -37,14 +37,18 @@ The program provides the following calculations:
 - Max Pseudo RAF Algorithm - computes the maximal Pseudo RAF [[HMS15]](#10)
 - Strictly Autocatalytic Max RAF Algorithm - computes a Max RAF that has the additional property that any contained
   reaction requires at least one molecule type for catalyzation that is not in the food set [[HXRS23]](#60)
-- Trivial CAFs Algorithm - computes all reactions that can run using only the food set
+- Min RAF-Generating Given Element Algorithm - Identifies a subset of the Max RAF that is (i) a RAF and (ii) generates a
+  given element x
+  (not in the food set) and (iii) which is minimal amongst all such sets satisfying (i) and (ii).
+-
+  - Trivial CAFs Algorithm - computes all reactions that can run using only the food set
 - Trivial RAFs Algorithm - computes all reactions that can run using only the food set, where the catalyst need not be
   in the food set if the reaction produces it
 - Core RAF Algorithm - computes the unique irreducible RAF, if it exists (Section 4.1 of [[SXH20]](#50))
 - Quotient RAF Algorithm - computes the Max RAF minus all the reactions from the Max CAF and adds all produces of the
   Max CAF to the food set [[SXH20]](#50)
 - Remove Trivial RAFs Algorithm - computes CRS that is obtained by removing all trivial RAFs
-- Min Irr RAF Heuristic - searches for irreducible RAFs in a heuristic fashion [[HS23]](#30)
+- Min iRAF Heuristic - searches for irreducible RAFs in a heuristic fashion [[HS23]](#30)
 - MU CAF Algorithm - computes one maximal uninhibited CAF
 - U RAF Algorithm - computes a max RAF, removes inhibited reactions, and then recomputes the max RAF
   (Section 6 of [[HMS16]](#20))

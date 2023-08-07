@@ -305,6 +305,37 @@ public class MainWindowPresenter {
         });
         controller.getRunStrictlyAutocatalyticRAFMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
+
+        controller.getRunMinRAFGeneratingElementMenuItem().setOnAction(e -> {
+            var molecules = new TreeSet<MoleculeType>();
+            for (var r : window.getInputReactionSystem().getReactions()) {
+                molecules.addAll(r.getProducts());
+                molecules.addAll(r.getReactants());
+                molecules.addAll(r.getCatalystElements());
+            }
+            window.getInputReactionSystem().getFoods().forEach(molecules::remove);
+
+            if (molecules.isEmpty()) {
+                NotificationManager.showWarning("No molecule types that are not contained in the food set");
+            } else {
+                var selectedMolecule = MoleculeType.valueOf(ProgramProperties.get("GeneratingElement", molecules.first().getName()));
+                if (!molecules.contains(selectedMolecule))
+                    selectedMolecule = molecules.first();
+                var dialog = new ChoiceDialog<>(selectedMolecule, molecules);
+                dialog.initOwner(window.getStage());
+                dialog.setTitle("Select a Molecule");
+                dialog.setHeaderText("Select element for generating minimal RAF:");
+                var result = dialog.showAndWait();
+                result.ifPresent(m -> {
+                    ProgramProperties.put("GeneratingElement", m.getName());
+                    var algorithm = new MinRAFGeneratingElement();
+                    algorithm.setTarget(m);
+                    RunAlgorithm.apply(window, window.getInputReactionSystem(), algorithm, runningListener, true);
+                });
+            }
+        });
+        controller.getRunMinRAFGeneratingElementMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
+
         controller.getRunCAFMenuItem().setOnAction(e -> {
             if (VerifyInput.verify(window)) {
                 RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxCAFAlgorithm(), runningListener, true);
@@ -319,12 +350,12 @@ public class MainWindowPresenter {
         });
         controller.getRunPseudoRAFMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
-        controller.getRunMinIrrRAFMenuItem().setOnAction(e -> {
+        controller.getRunMinIRAFMenuItem().setOnAction(e -> {
             if (VerifyInput.verify(window)) {
-                RunAlgorithm.apply(window, window.getInputReactionSystem(), new MinIrrRAFHeuristic(), runningListener, true);
+                RunAlgorithm.apply(window, window.getInputReactionSystem(), new MinIRAFHeuristic(), runningListener, true);
             }
         });
-        controller.getRunMinIrrRAFMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
+        controller.getRunMinIRAFMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
         controller.getRunTrivialCAFsAlgorithmMenuItem().setOnAction(e -> {
             if (VerifyInput.verify(window)) {

@@ -309,6 +309,9 @@
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="runStrictlyAutocatalyticRAFMenuItem" mnemonicParsing="false"
                                           text="Strictly Autocatalytic Max RAF Algorithm"/>
+                                <MenuItem fx:id="runMinRAFGeneratingElementMenuItem" mnemonicParsing="false"
+                                          text="Min RAF-Generating Given Element Algorithm"/>
+
 
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="runTrivialCAFsAlgorithmMenuItem" mnemonicParsing="false"
@@ -321,8 +324,8 @@
                                           text="Quotient RAF Algorithm"/>
                                 <MenuItem fx:id="removeTrivialRAFsAlgorithmMenuItem" mnemonicParsing="false"
                                           text="Remove Trivial RAFs Algorithm"/>
-                                <MenuItem fx:id="runMinIrrRAFMenuItem" mnemonicParsing="false"
-                                          text="Min Irr RAF Heuristic"/>
+                                <MenuItem fx:id="runMinIRAFMenuItem" mnemonicParsing="false"
+                                          text="Min IRAF Heuristic"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="runMuCAFMenuItem" mnemonicParsing="false" text="MU CAF Algorithm"/>
                                 <MenuItem fx:id="runURAFMenuItem" mnemonicParsing="false" text="U RAF Algorithm"/>

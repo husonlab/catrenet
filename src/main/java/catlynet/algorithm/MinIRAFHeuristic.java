@@ -1,5 +1,5 @@
 /*
- * MinIrrRAFHeuristic.java Copyright (C) 2022 Daniel H. Huson
+ * MinIRAFHeuristic.java Copyright (C) 2022 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -35,8 +35,8 @@ import java.util.ArrayList;
  * Daniel Huson, 3.2020
  * Based on notes by Mike Steel
  */
-public class MinIrrRAFHeuristic extends AlgorithmBase {
-    public static final String Name = "irr RAF";
+public class MinIRAFHeuristic extends AlgorithmBase {
+    public static final String Name = "iRAF";
 
     private final IntegerProperty numberOfRandomInsertionOrders = new SimpleIntegerProperty(100);
 
@@ -106,7 +106,7 @@ public class MinIrrRAFHeuristic extends AlgorithmBase {
                 }
             }
         }
-        if (best.size() == 0)
+        if (best.isEmpty())
             best.add(maxRAF.shallowCopy());
         return best;
     }

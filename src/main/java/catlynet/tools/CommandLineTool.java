@@ -21,7 +21,7 @@ package catlynet.tools;
 
 import catlynet.action.ImportWimsFormat;
 import catlynet.algorithm.AlgorithmBase;
-import catlynet.algorithm.MinIrrRAFHeuristic;
+import catlynet.algorithm.MinIRAFHeuristic;
 import catlynet.format.ArrowNotation;
 import catlynet.format.ReactionNotation;
 import catlynet.io.ModelIO;
@@ -78,9 +78,9 @@ public class CommandLineTool {
 		var reactionNotation = StringUtils.valueOfIgnoreCase(ReactionNotation.class, options.getOption("-rn", "reactionNotation", "Output reaction notation", ReactionNotation.values(), ReactionNotation.Full.name()));
 		var arrowNotation = StringUtils.valueOfIgnoreCase(ArrowNotation.class, options.getOption("-an", "arrowNotation", "Output arrow notation", ArrowNotation.values(), ArrowNotation.UsesMinus.name()));
 
-		var numberRandomizedInsertionOrders = (new MinIrrRAFHeuristic()).getNumberOfRandomInsertionOrders();
-		if (algorithmName.equals(StringUtils.toCamelCase(MinIrrRAFHeuristic.Name)) || options.isDoHelp()) {
-			numberRandomizedInsertionOrders = options.getOption("-r", "runs", "Number of randomized runs for algorithm " + StringUtils.toCamelCase(MinIrrRAFHeuristic.Name), numberRandomizedInsertionOrders);
+		var numberRandomizedInsertionOrders = (new MinIRAFHeuristic()).getNumberOfRandomInsertionOrders();
+		if (algorithmName.equals(StringUtils.toCamelCase(MinIRAFHeuristic.Name)) || options.isDoHelp()) {
+			numberRandomizedInsertionOrders = options.getOption("-r", "runs", "Number of randomized runs for algorithm " + StringUtils.toCamelCase(MinIRAFHeuristic.Name), numberRandomizedInsertionOrders);
 		}
 		options.comment(ArgsOptions.OTHER);
 		final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file", catlynet.main.CatlyNet.getDefaultPropertiesFile());
@@ -98,7 +98,7 @@ public class CommandLineTool {
 		if (algorithm == null)
 			throw new IOException("Algorithm not found: " + algorithmName);
 
-		if (algorithm instanceof MinIrrRAFHeuristic irrRAFHeuristic) {
+		if (algorithm instanceof MinIRAFHeuristic irrRAFHeuristic) {
 			irrRAFHeuristic.setNumberOfRandomInsertionOrders(numberRandomizedInsertionOrders);
 			var outputSystems = irrRAFHeuristic.applyAllSmallest(inputSystem, new ProgressPercentage("Running", algorithmName));
 

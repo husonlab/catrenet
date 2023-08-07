@@ -368,6 +368,9 @@ public class MainWindowController {
 	private MenuItem runStrictlyAutocatalyticRAFMenuItem;
 
 	@FXML
+	private MenuItem runMinRAFGeneratingElementMenuItem;
+
+	@FXML
 	private MenuItem runPseudoRAFMenuItem;
 
 	@FXML
@@ -377,7 +380,7 @@ public class MainWindowController {
 	private MenuItem runURAFMenuItem;
 
 	@FXML
-	private MenuItem runMinIrrRAFMenuItem;
+	private MenuItem runMinIRAFMenuItem;
 
 	@FXML
 	private MenuItem runTrivialCAFsAlgorithmMenuItem;
@@ -796,6 +799,10 @@ public class MainWindowController {
 		return runStrictlyAutocatalyticRAFMenuItem;
 	}
 
+	public MenuItem getRunMinRAFGeneratingElementMenuItem() {
+		return runMinRAFGeneratingElementMenuItem;
+	}
+
 	public MenuItem getRunPseudoRAFMenuItem() {
 		return runPseudoRAFMenuItem;
 	}
@@ -808,8 +815,8 @@ public class MainWindowController {
 		return runURAFMenuItem;
 	}
 
-	public MenuItem getRunMinIrrRAFMenuItem() {
-		return runMinIrrRAFMenuItem;
+	public MenuItem getRunMinIRAFMenuItem() {
+		return runMinIRAFMenuItem;
 	}
 
 	public MenuItem getRunTrivialCAFsAlgorithmMenuItem() {
