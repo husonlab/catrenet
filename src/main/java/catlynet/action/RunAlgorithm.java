@@ -28,7 +28,6 @@ import catlynet.window.MainWindow;
 import catlynet.window.MainWindowController;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
-import javafx.scene.control.TextArea;
 import jloda.fx.util.AService;
 import jloda.fx.window.NotificationManager;
 import jloda.util.Basic;
@@ -47,17 +46,17 @@ public class RunAlgorithm {
     public static void apply(MainWindow window, final ReactionSystem inputReactions, AlgorithmBase algorithm, ChangeListener<Boolean> runningListener, boolean updateWorkingInputTextArea) {
         final MainWindowController controller = window.getController();
 
-        final ReactionSystem result = window.getReactionSystem(algorithm.getName());
 
         if (updateWorkingInputTextArea) {
-            controller.getWorkingReactionsTextArea().setText(String.format("# Input has %,d reactions (%,d two-way and %,d one-way) on %,d food items\n\n%s",
+            controller.getParsedReactionsTextArea().setText(String.format("# Input has %,d reactions (%,d two-way and %,d one-way) on %,d food items\n\n%s",
                     inputReactions.size(), inputReactions.getNumberOfTwoWayReactions(), inputReactions.getNumberOfOneWayReactions(), inputReactions.getFoodSize(),
                     ModelIO.toString(window.getInputReactionSystem().sorted(), true, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation())));
 
             WarnAboutMissingMoleculesOrUnusedFood.run(window);
         }
 
-        final AService<Triplet<ReactionSystem, String, String>> service = new AService<>(controller.getStatusFlowPane());
+        var result = window.getReactionSystem(algorithm.getName());
+        var service = new AService<Triplet<ReactionSystem, String, String>>(controller.getStatusFlowPane());
         service.setCallable(() -> {
             final ReactionSystem outputReactions = algorithm.apply(inputReactions, service.getProgressListener());
 
@@ -76,39 +75,39 @@ public class RunAlgorithm {
 
         service.runningProperty().addListener(runningListener);
 
-		service.setOnRunning(c -> service.getProgressListener().setTasks(StringUtils.fromCamelCase(Basic.getShortName(algorithm.getClass())), ""));
+        service.setOnRunning(c -> service.getProgressListener().setTasks(StringUtils.fromCamelCase(Basic.getShortName(algorithm.getClass())), ""));
 
         service.setOnSucceeded(c -> {
-            final Triplet<ReactionSystem, String, String> triplet = service.getValue();
+            var triplet = service.getValue();
 
             result.shallowCopy(triplet.getFirst());
 
             window.getExportManager().addOrReplace(result);
 
             if (result.size() > 0) {
-                final String headLine = result.getName() + " has " + result.size() + " reactions"
-                        + (result.getNumberOfTwoWayReactions() > 0 ? " (" + result.getNumberOfTwoWayReactions() + " two-way and " + result.getNumberOfOneWayReactions() + " one-way)" : "")
-                        + " on " + result.getFoods().size() + " food items";
+                var headLine = result.getName() + " has " + result.size() + " reactions"
+                               + (result.getNumberOfTwoWayReactions() > 0 ? " (" + result.getNumberOfTwoWayReactions() + " two-way and " + result.getNumberOfOneWayReactions() + " one-way)" : "")
+                               + " on " + result.getFoods().size() + " food items";
 
-                final String infoLine1 = triplet.getSecond();
-                final String infoLine2 = triplet.getThird();
+                var infoLine1 = triplet.getSecond();
+                var infoLine2 = triplet.getThird();
 
                 NotificationManager.showInformation(headLine);
 
-                final TextArea textArea = window.getTabManager().getTextArea(algorithm.getName());
+                var textArea = window.getTabManager().getTextArea(algorithm.getName());
                 window.getTabManager().getTab(algorithm.getName()).disableProperty().bind(result.sizeProperty().isEqualTo(0));
                 controller.getOutputTabPane().getSelectionModel().select(window.getTabManager().getTab(algorithm.getName()));
 
                 if (infoLine1 != null && infoLine2 != null) {
                     //final String text="# " + headLine + ":\n# " + infoLine1 + "\n# " + infoLine2 + "\n\n" + ModelIO.toString(result, false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation());
-					final String text = "# " + headLine + ":\n# " + infoLine1 + "\n# " + infoLine2 + "\n\n" + StringUtils.toString(result.getReactionNames(), "\n");
+                    var text = "# " + headLine + ":\n# " + infoLine1 + "\n# " + infoLine2 + "\n\n" + StringUtils.toString(result.getReactionNames(), "\n");
                     textArea.setText(text);
                     window.getLogStream().println("\n\n" + headLine);
                     window.getLogStream().println(infoLine1);
                     window.getLogStream().println(infoLine2);
                 } else {
                     //final String text= "# " + headLine + "\n\n" + ModelIO.toString(result, false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation());
-					final String text = "# " + headLine + "\n\n" + StringUtils.toString(result.getReactionNames(), "\n");
+                    var text = "# " + headLine + "\n\n" + StringUtils.toString(result.getReactionNames(), "\n");
                     textArea.setText(text);
                     window.getLogStream().println("\n" + headLine);
                 }

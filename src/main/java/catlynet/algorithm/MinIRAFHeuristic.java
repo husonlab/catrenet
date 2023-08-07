@@ -51,17 +51,20 @@ public class MinIRAFHeuristic extends AlgorithmBase {
     }
 
     /**
-     * heuristically tries to compute a minimum irreducible RAD
+	 * heuristically tries to compute a minimum irreducible RAF
      *
      * @param input - unexpanded catalytic reaction system
      * @return irr RAF or null
      */
     public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException {
-        return applyAllSmallest(input, progress).get(0);
+		var list = applyAllSmallest(input, progress);
+		if (!list.isEmpty())
+			return list.get(0);
+		else return null;
     }
 
     /**
-     * heuristically tries to compute a minimum irreducible RAD
+	 * heuristically tries to compute a minimum irreducible RAF
      *
      * @param input - unexpanded catalytic reaction system
      * @return irr RAF or null
@@ -83,11 +86,13 @@ public class MinIRAFHeuristic extends AlgorithmBase {
         for (var seed : seeds) {
             var ordering = CollectionUtils.randomize(reactions, seed);
             var work = maxRAF.shallowCopy();
+			work.setName(Name);
             for (var r : ordering) {
                 work.getReactions().remove(r);
                 try {
                     progress.checkForCancel();
                     var next = new MaxRAFAlgorithm().apply(work, new ProgressSilent());
+					next.setName(Name);
                     if (next.size() > 0 && next.size() <= work.size()) {
                         work = next;
                         if (next.size() < bestSize.get()) {
@@ -106,8 +111,11 @@ public class MinIRAFHeuristic extends AlgorithmBase {
                 }
             }
         }
-        if (best.isEmpty())
-            best.add(maxRAF.shallowCopy());
+		if (best.isEmpty()) {
+			var result = maxRAF.shallowCopy();
+			result.setName(Name);
+			best.add(result);
+		}
         return best;
     }
 

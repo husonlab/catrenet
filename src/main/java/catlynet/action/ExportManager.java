@@ -25,7 +25,6 @@ import catlynet.io.Save;
 import catlynet.model.MoleculeType;
 import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
-import catlynet.view.ReactionGraphView;
 import catlynet.window.MainWindow;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
@@ -41,7 +40,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * The export menu manager
@@ -142,14 +140,13 @@ public class ExportManager {
     }
 
     public static void exportNodes(MainWindow window) {
-        final ReactionGraphView graphView = window.getReactionGraphView();
+        final var graphView = window.getReactionGraphView();
 
-        final Set<MoleculeType> food = new HashSet<>();
+        final var food = new HashSet<MoleculeType>();
 
-        final ReactionSystem output = new ReactionSystem();
+        final var output = new ReactionSystem();
         graphView.getNodeSelection().getSelectedItems().forEach(v -> {
-            if (v.getInfo() instanceof Reaction) {
-                final Reaction r = (Reaction) v.getInfo();
+            if (v.getInfo() instanceof Reaction r) {
                 food.addAll(r.getReactants());
 				food.addAll(r.getProducts());
 				r.getCatalystConjunctions().forEach(c -> food.addAll(MoleculeType.valuesOf(StringUtils.split(c.getName(), '&'))));

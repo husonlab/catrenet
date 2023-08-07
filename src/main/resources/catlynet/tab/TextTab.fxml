@@ -40,7 +40,13 @@
                                         <ToggleButton fx:id="wrapButton" layoutX="10.0" layoutY="12.0"
                                                       mnemonicParsing="false" text="Wrap"/>
                                         <ToggleButton fx:id="findToggleButton" mnemonicParsing="false" text="FInd..."/>
-                                        <Button fx:id="exportButton" mnemonicParsing="false" text="Export"/>
+                                        <MenuButton fx:id="exportMenuButton" mnemonicParsing="false" text="Export">
+                                            <items>
+                                                <MenuItem fx:id="copyMenuItem" mnemonicParsing="false" text="Copy"/>
+                                                <MenuItem fx:id="exportMenuItem" mnemonicParsing="false"
+                                                          text="Export..."/>
+                                            </items>
+                                        </MenuButton>
                                     </items>
                                 </ToolBar>
                             </children>

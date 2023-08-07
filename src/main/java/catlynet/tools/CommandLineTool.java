@@ -80,7 +80,7 @@ public class CommandLineTool {
 
 		var numberRandomizedInsertionOrders = (new MinIRAFHeuristic()).getNumberOfRandomInsertionOrders();
 		if (algorithmName.equals(StringUtils.toCamelCase(MinIRAFHeuristic.Name)) || options.isDoHelp()) {
-			numberRandomizedInsertionOrders = options.getOption("-r", "runs", "Number of randomized runs for algorithm " + StringUtils.toCamelCase(MinIRAFHeuristic.Name), numberRandomizedInsertionOrders);
+			numberRandomizedInsertionOrders = options.getOption("-r", "runs", "Number of randomized runs for " + MinIRAFHeuristic.Name + " heuristic", numberRandomizedInsertionOrders);
 		}
 		options.comment(ArgsOptions.OTHER);
 		final var propertiesFile = options.getOption("-P", "propertiesFile", "Properties file", catlynet.main.CatlyNet.getDefaultPropertiesFile());

@@ -46,9 +46,9 @@ public class SetupFind {
         var inputReactionsFindToolBar = new FindToolBar(window.getStage(), new TextAreaSearcher("Input reactions", controller.getInputTextArea()));
         controller.getReactionsInputVBox().getChildren().add(inputReactionsFindToolBar);
 
-        var workingInputReactionsFindToolBar = new FindToolBar(window.getStage(), new TextAreaSearcher("Expanded reactions", controller.getWorkingReactionsTextArea()));
-        controller.getWorkingReactionsVBox().getChildren().add(workingInputReactionsFindToolBar);
-        controller.getFindWorkingReactionsToggleButton().selectedProperty().bindBidirectional(workingInputReactionsFindToolBar.showFindToolBarProperty());
+		var workingInputReactionsFindToolBar = new FindToolBar(window.getStage(), new TextAreaSearcher("Expanded reactions", controller.getParsedReactionsTextArea()));
+		controller.getParsedReactionsVBox().getChildren().add(workingInputReactionsFindToolBar);
+		controller.getFindParsedReactionsToggleButton().selectedProperty().bindBidirectional(workingInputReactionsFindToolBar.showFindToolBarProperty());
 
         var logFindToolBar = new FindToolBar(window.getStage(), new TextAreaSearcher("Log", controller.getLogTextArea()));
         controller.getLogVBox().getChildren().add(logFindToolBar);
@@ -82,7 +82,7 @@ public class SetupFind {
                 inputFoodFindToolBar.setShowFindToolBar(true);
             else if (controller.getInputTextArea().isFocused())
                 inputReactionsFindToolBar.setShowFindToolBar(true);
-            else if (controller.getWorkingReactionsTextArea().isFocused())
+			else if (controller.getParsedReactionsTextArea().isFocused())
                 workingInputReactionsFindToolBar.setShowFindToolBar(true);
             else if (controller.getLogTab().isSelected() || controller.getLogTextArea().isFocused())
                 logFindToolBar.setShowFindToolBar(true);
@@ -101,7 +101,7 @@ public class SetupFind {
         controller.getFindAgainMenuItem().setOnAction((e) -> {
             if (controller.getInputFoodTextArea().isFocused())
                 inputFoodFindToolBar.findAgain();
-            else if (controller.getWorkingReactionsTextArea().isFocused())
+			else if (controller.getParsedReactionsTextArea().isFocused())
                 workingInputReactionsFindToolBar.findAgain();
             else if (controller.getInputTextArea().isFocused())
                 inputReactionsFindToolBar.findAgain();

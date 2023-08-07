@@ -26,7 +26,13 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jloda.fx.window.NotificationManager;
 import jloda.util.CanceledException;
+import jloda.util.StringUtils;
 import jloda.util.progress.ProgressListener;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import static catlynet.io.ModelIO.FORMAL_FOOD;
 
 /**
  * Identifies a subset of the maxRAF that is (i) a RAF and (ii) generates a given element x (not in the food set) and (iii) which is minimal amongst all such sets satisfying (i) and (ii).
@@ -88,8 +94,7 @@ public class MinRAFGeneratingElement extends AlgorithmBase {
         augmented.getFoods().addAll(maxRAF.getFoods());
         for (var r : maxRAF.getReactions()) {
             var r1 = new Reaction(r);
-            var catalysts = r1.getCatalysts() + " & " + getTarget().getName();
-            r1.setCatalysts(catalysts);
+            r1.setCatalysts(andItemToAll(r1.getCatalystConjunctions(), getTarget()));
             augmented.getReactions().add(r1);
         }
 
@@ -106,5 +111,21 @@ public class MinRAFGeneratingElement extends AlgorithmBase {
             NotificationManager.showInformation("Irreducible is unique");
         }
         return iRAF;
+    }
+
+    public static String andItemToAll(Collection<MoleculeType> conjunctions, MoleculeType x) {
+        if (conjunctions.isEmpty() || conjunctions.stream().allMatch(m -> m == FORMAL_FOOD)) {
+            conjunctions.clear();
+            return x.getName();
+        } else {
+            var result = new ArrayList<MoleculeType>();
+            for (var one : conjunctions) {
+                if (one.equals(x))
+                    result.add(x);
+                else result.add(MoleculeType.valueOf(one.getName() + "&" + x));
+            }
+            return StringUtils.toString(result, ",");
+        }
+
     }
 }

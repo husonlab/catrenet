@@ -19,6 +19,7 @@
 
 package catlynet.tab;
 
+import catlynet.window.MainWindow;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
@@ -32,9 +33,11 @@ import java.util.stream.Collectors;
  * Daniel Huson, 4.2020
  */
 public class TabManager {
+	private final MainWindow mainWindow;
     private final ObservableList<Tab> tabs;
 
-    public TabManager(ObservableList<Tab> tabs) {
+	public TabManager(MainWindow mainWindow, ObservableList<Tab> tabs) {
+		this.mainWindow = mainWindow;
         this.tabs = tabs;
     }
 
@@ -52,7 +55,7 @@ public class TabManager {
         if (tab.isPresent())
             return tab.get();
         else { // create new tab and add in alphabetical order
-            final TextTab textTab = new TextTab(reactionSystemName);
+			final TextTab textTab = new TextTab(mainWindow, reactionSystemName);
             boolean added = false;
             for (int i = 0; !added && i < tabs.size(); i++) {
                 final Tab current = tabs.get(i);

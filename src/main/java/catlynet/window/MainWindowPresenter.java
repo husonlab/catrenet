@@ -36,7 +36,6 @@ import catlynet.view.NodeView;
 import catlynet.view.ReactionGraphView;
 import catlynet.view.SelectionBindings;
 import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
@@ -113,7 +112,7 @@ public class MainWindowPresenter {
             e.consume();
         });
 
-        controller.getWorkingReactionsTextArea().focusedProperty().addListener(textAreaFocusChangeListener(controller, printableNode, controller.getWorkingReactionsTextArea()));
+        controller.getParsedReactionsTextArea().focusedProperty().addListener(textAreaFocusChangeListener(controller, printableNode, controller.getParsedReactionsTextArea()));
         controller.getLogTextArea().focusedProperty().addListener(textAreaFocusChangeListener(controller, printableNode, controller.getLogTextArea()));
 
         controller.getOutputTabPane().getTabs().addListener((ListChangeListener<Tab>) z -> {
@@ -143,21 +142,6 @@ public class MainWindowPresenter {
             exportList.getStage().show();
         });
         controller.getExportListOfReactionsMenuItem().disableProperty().bind(window.getInputReactionSystem().sizeProperty().isEqualTo(0));
-
-        controller.getExportMenu().getItems().addListener((InvalidationListener) e -> {
-            controller.getExportMenuButton().getItems().clear();
-            var afterSeparator = false;
-            for (var menuItem : controller.getExportMenu().getItems()) {
-                if (menuItem instanceof SeparatorMenuItem)
-                    afterSeparator = true;
-                else if (afterSeparator) {
-                    var newMenuItem = new MenuItem(menuItem.getText());
-                    newMenuItem.setOnAction(menuItem.getOnAction());
-                    controller.getExportMenuButton().getItems().add(newMenuItem);
-                }
-            }
-        });
-        controller.getExportMenuButton().disableProperty().bind(Bindings.isEmpty(controller.getExportMenuButton().getItems()));
 
 
         controller.getSaveMenuItem().setOnAction(e -> Save.showSaveDialog(window));
@@ -307,31 +291,33 @@ public class MainWindowPresenter {
 
 
         controller.getRunMinRAFGeneratingElementMenuItem().setOnAction(e -> {
-            var molecules = new TreeSet<MoleculeType>();
-            for (var r : window.getInputReactionSystem().getReactions()) {
-                molecules.addAll(r.getProducts());
-                molecules.addAll(r.getReactants());
-                molecules.addAll(r.getCatalystElements());
-            }
-            window.getInputReactionSystem().getFoods().forEach(molecules::remove);
+            if (VerifyInput.verify(window)) {
+                var molecules = new TreeSet<MoleculeType>();
+                for (var r : window.getInputReactionSystem().getReactions()) {
+                    molecules.addAll(r.getProducts());
+                    molecules.addAll(r.getReactants());
+                    molecules.addAll(r.getCatalystElements());
+                }
+                window.getInputReactionSystem().getFoods().forEach(molecules::remove);
 
-            if (molecules.isEmpty()) {
-                NotificationManager.showWarning("No molecule types that are not contained in the food set");
-            } else {
-                var selectedMolecule = MoleculeType.valueOf(ProgramProperties.get("GeneratingElement", molecules.first().getName()));
-                if (!molecules.contains(selectedMolecule))
-                    selectedMolecule = molecules.first();
-                var dialog = new ChoiceDialog<>(selectedMolecule, molecules);
-                dialog.initOwner(window.getStage());
-                dialog.setTitle("Select a Molecule");
-                dialog.setHeaderText("Select element for generating minimal RAF:");
-                var result = dialog.showAndWait();
-                result.ifPresent(m -> {
-                    ProgramProperties.put("GeneratingElement", m.getName());
-                    var algorithm = new MinRAFGeneratingElement();
-                    algorithm.setTarget(m);
-                    RunAlgorithm.apply(window, window.getInputReactionSystem(), algorithm, runningListener, true);
-                });
+                if (molecules.isEmpty()) {
+                    NotificationManager.showWarning("No molecule types that are not contained in the food set");
+                } else {
+                    var selectedMolecule = MoleculeType.valueOf(ProgramProperties.get("GeneratingElement", molecules.first().getName()));
+                    if (!molecules.contains(selectedMolecule))
+                        selectedMolecule = molecules.first();
+                    var dialog = new ChoiceDialog<>(selectedMolecule, molecules);
+                    dialog.initOwner(window.getStage());
+                    dialog.setTitle("Select a Molecule");
+                    dialog.setHeaderText("Select element for generating minimal RAF:");
+                    var result = dialog.showAndWait();
+                    result.ifPresent(m -> {
+                        ProgramProperties.put("GeneratingElement", m.getName());
+                        var algorithm = new MinRAFGeneratingElement();
+                        algorithm.setTarget(m);
+                        RunAlgorithm.apply(window, window.getInputReactionSystem(), algorithm, runningListener, true);
+                    });
+                }
             }
         });
         controller.getRunMinRAFGeneratingElementMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
@@ -434,7 +420,7 @@ public class MainWindowPresenter {
         var disableRunProperty = new SimpleBooleanProperty(false);
         disableRunProperty.bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()));
 
-        controller.getWorkingReactionsTab().disableProperty().bind(controller.getWorkingReactionsTextArea().textProperty().isEmpty());
+        controller.getParsedReactionsTab().disableProperty().bind(controller.getParsedReactionsTextArea().textProperty().isEmpty());
 
         controller.getAboutMenuItem().setOnAction(e -> SplashScreen.showSplash(Duration.ofMinutes(2)));
 
@@ -719,7 +705,7 @@ public class MainWindowPresenter {
 
             controller.getInputTextArea().setStyle(style);
             controller.getInputFoodTextArea().setStyle(style);
-            controller.getWorkingReactionsTextArea().setStyle(style);
+            controller.getParsedReactionsTextArea().setStyle(style);
             controller.getLogTextArea().setStyle(style);
 
             for (TextTab textTab : tabManager.textTabs()) {

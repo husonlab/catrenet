@@ -24,6 +24,7 @@ import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
 import catlynet.window.MainWindow;
 import catlynet.window.MainWindowController;
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -132,7 +133,7 @@ public class SelectionBindings {
 
         final List<MenuItem> additionalContextMenuItems = new ArrayList<>(controller.getNetworkContextMenu().getItems());
 
-        window.getDocument().getDefinedSystems().addListener((InvalidationListener) c -> {
+        window.getDocument().getDefinedSystems().addListener((InvalidationListener) c -> Platform.runLater(() -> {
             controller.getNetworkContextMenu().getItems()
                     .setAll(window.getDocument().getDefinedSystems().stream().map(window::getReactionSystem).map(r -> {
                         final MenuItem menuItem = new MenuItem("Select " + r.getName());
@@ -141,19 +142,19 @@ public class SelectionBindings {
                         return menuItem;
                     }).collect(Collectors.toList()));
             controller.getNetworkContextMenu().getItems().addAll(additionalContextMenuItems);
-                }
+                })
         );
 
         window.getStage().focusedProperty().addListener((c, o, n) -> {
             if (!n) {
                 previousSelection.clear();
                 previousSelection.addAll(window.getReactionGraphView().getNodeSelection().getSelectedItems().stream().map(v -> window.getReactionGraphView().getLabel(v).getText())
-                        .filter(text -> text.length() > 0 && !text.equals("&")).collect(Collectors.toSet()));
+                        .filter(text -> !text.isEmpty() && !text.equals("&")).collect(Collectors.toSet()));
             }
         });
 
         controller.getSelectFromPreviousWindowMenuItem().setOnAction(c -> {
-            if (previousSelection.size() > 0) {
+            if (!previousSelection.isEmpty()) {
                 for (Node v : view.getReactionGraph().nodes()) {
                     final String text = view.getLabel(v).getText();
                     if (previousSelection.contains(text))
@@ -198,12 +199,10 @@ public class SelectionBindings {
         edgeSelection.clearSelection();
 
         for (Node v : view.getReactionGraph().nodes()) {
-            if (v.getInfo() instanceof Reaction) {
-                final Reaction reaction = (Reaction) v.getInfo();
+            if (v.getInfo() instanceof Reaction reaction) {
                 if (subReactionSystem.getReactionNames().contains(reaction.getName()))
                     nodeSelection.select(v);
-            } else if (v.getInfo() instanceof MoleculeType) {
-                final MoleculeType moleculeType = (MoleculeType) v.getInfo();
+            } else if (v.getInfo() instanceof MoleculeType moleculeType) {
                 if (molecules.contains(moleculeType))
                     nodeSelection.select(v);
             }

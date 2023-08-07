@@ -1,10 +1,12 @@
 module catlynet {
-    requires transitive jloda2;
+	requires com.install4j.runtime;
+
+	requires transitive jloda2;
 	requires transitive javafx.controls;
     requires transitive javafx.fxml;
-    requires com.install4j.runtime;
+	requires transitive javafx.web;
 
-    exports catlynet.algorithm;
+	exports catlynet.algorithm;
     exports catlynet.main;
     exports catlynet.tab;
 	exports catlynet.window;

@@ -233,9 +233,6 @@ public class MainWindowController {
 	private MenuItem openNewMenuItem;
 
 	@FXML
-	private MenuButton exportMenuButton;
-
-	@FXML
 	private Button stopAnimationButton;
 
 	@FXML
@@ -268,13 +265,13 @@ public class MainWindowController {
 	private TabPane outputTabPane;
 
 	@FXML
-	private Tab workingReactionsTab;
+	private Tab parsedReactionsTab;
 
 	@FXML
-	private TextArea workingReactionsTextArea;
+	private TextArea parsedReactionsTextArea;
 
 	@FXML
-	private VBox workingReactionsVBox;
+	private VBox parsedReactionsVBox;
 
 	@FXML
 	private Tab networkTab;
@@ -440,13 +437,16 @@ public class MainWindowController {
 	private MenuItem graphEmbedderIterationsMenuItem;
 
 	@FXML
-	private ToggleButton findWorkingReactionsToggleButton;
+	private ToggleButton findParsedReactionsToggleButton;
 
 	@FXML
-	private ToggleButton wrapWorkingReactionsToggleButton;
+	private ToggleButton wrapParsedReactionsToggleButton;
 
 	@FXML
-	private Button exportWorkingReactionsButton;
+	private MenuButton exportParsedMenuButton;
+
+	@FXML
+	private MenuItem copyParsedMenuItem;
 
 	@FXML
 	private ToggleButton findLogToggleButton;
@@ -455,7 +455,10 @@ public class MainWindowController {
 	private ToggleButton wrapLogToggleButton;
 
 	@FXML
-	private Button exportLogButton;
+	private MenuButton exportLogMenuButton;
+
+	@FXML
+	private MenuItem copyLogMenuItem;
 
 	@FXML
 	private MenuButton selectNetworkMenuButton;
@@ -486,7 +489,6 @@ public class MainWindowController {
 			MaterialIcons.setIcon(recentMenuButton, "launch");
 			MaterialIcons.setIcon(runMenuButton, "play_circle_filled");
 
-			MaterialIcons.setIcon(exportMenuButton, "file_upload");
 			MaterialIcons.setIcon(wrapFoodTextToggle, "wrap_text");
 			MaterialIcons.setIcon(wrapReactionsTextToggle, "wrap_text");
 			MaterialIcons.setIcon(findNetworkToggleButton, "search");
@@ -498,31 +500,30 @@ public class MainWindowController {
 			MaterialIcons.setIcon(zoomOutNetworkButton, "zoom_out");
 			MaterialIcons.setIcon(exportNetworkMenuButton, "ios_share");
 
-			MaterialIcons.setIcon(findWorkingReactionsToggleButton, "search");
-			MaterialIcons.setIcon(exportWorkingReactionsButton, "ios_share");
-			MaterialIcons.setIcon(wrapWorkingReactionsToggleButton, "wrap_text");
+			MaterialIcons.setIcon(findParsedReactionsToggleButton, "search");
+			MaterialIcons.setIcon(exportParsedMenuButton, "ios_share");
+			MaterialIcons.setIcon(wrapParsedReactionsToggleButton, "wrap_text");
 
 			MaterialIcons.setIcon(findLogToggleButton, "search");
-			MaterialIcons.setIcon(exportLogButton, "ios_share");
+			MaterialIcons.setIcon(exportLogMenuButton, "ios_share");
 			MaterialIcons.setIcon(wrapLogToggleButton, "wrap_text");
 
 			MaterialIcons.setIcon(selectNetworkMenuButton, "checklist_rtl");
 
 			MaterialIcons.setIcon(listLogButton, "list");
 
-
 		}
 
 		{
-			wrapWorkingReactionsToggleButton.selectedProperty().bindBidirectional(workingReactionsTextArea.wrapTextProperty());
-			exportWorkingReactionsButton.setOnAction(e -> {
+			wrapParsedReactionsToggleButton.selectedProperty().bindBidirectional(parsedReactionsTextArea.wrapTextProperty());
+			copyParsedMenuItem.setOnAction(e -> {
 				var content = new ClipboardContent();
-				content.putString(workingReactionsTextArea.getText());
+				content.putString(parsedReactionsTextArea.getText());
 				Clipboard.getSystemClipboard().setContent(content);
 			});
 
 			wrapLogToggleButton.selectedProperty().bindBidirectional(logTextArea.wrapTextProperty());
-			exportLogButton.setOnAction(e -> {
+			copyLogMenuItem.setOnAction(e -> {
 				var content = new ClipboardContent();
 				content.putString(logTextArea.getText());
 				Clipboard.getSystemClipboard().setContent(content);
@@ -1007,16 +1008,16 @@ public class MainWindowController {
 		return inputTextArea;
 	}
 
-	public Tab getWorkingReactionsTab() {
-		return workingReactionsTab;
+	public Tab getParsedReactionsTab() {
+		return parsedReactionsTab;
 	}
 
-	public TextArea getWorkingReactionsTextArea() {
-		return workingReactionsTextArea;
+	public TextArea getParsedReactionsTextArea() {
+		return parsedReactionsTextArea;
 	}
 
-	public VBox getWorkingReactionsVBox() {
-		return workingReactionsVBox;
+	public VBox getParsedReactionsVBox() {
+		return parsedReactionsVBox;
 	}
 
 	public Tab getNetworkTab() {
@@ -1119,10 +1120,6 @@ public class MainWindowController {
 		return listFoodMenuItem;
 	}
 
-	public MenuButton getExportMenuButton() {
-		return exportMenuButton;
-	}
-
 	public MenuItem getExportImageNetworkMenuItem() {
 		return exportImageNetworkMenuItem;
 	}
@@ -1139,8 +1136,8 @@ public class MainWindowController {
 		return animateNetworkMenuButton;
 	}
 
-	public ToggleButton getFindWorkingReactionsToggleButton() {
-		return findWorkingReactionsToggleButton;
+	public ToggleButton getFindParsedReactionsToggleButton() {
+		return findParsedReactionsToggleButton;
 	}
 
 	public ToggleButton getFindLogToggleButton() {

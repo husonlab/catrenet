@@ -44,11 +44,11 @@ The program provides the following calculations:
   - Trivial CAFs Algorithm - computes all reactions that can run using only the food set
 - Trivial RAFs Algorithm - computes all reactions that can run using only the food set, where the catalyst need not be
   in the food set if the reaction produces it
-- Core RAF Algorithm - computes the unique irreducible RAF, if it exists (Section 4.1 of [[SXH20]](#50))
+- Core RAF Algorithm - computes the unique irreducible RAF, if it exists (Section 4.1 of [[SXH20]](#25))
 - Quotient RAF Algorithm - computes the Max RAF minus all the reactions from the Max CAF and adds all produces of the
-  Max CAF to the food set [[SXH20]](#50)
+  Max CAF to the food set [[SXH20]](#25)
 - Remove Trivial RAFs Algorithm - computes CRS that is obtained by removing all trivial RAFs
-- Min iRAF Heuristic - searches for irreducible RAFs in a heuristic fashion [[HS23]](#30)
+- Min iRAF Heuristic - searches for a smallest irreducible RAF in a heuristic fashion [[HS23]](#50)
 - MU CAF Algorithm - computes one maximal uninhibited CAF
 - U RAF Algorithm - computes a max RAF, removes inhibited reactions, and then recomputes the max RAF
   (Section 6 of [[HMS16]](#20))
@@ -61,7 +61,7 @@ The program provides the following calculations:
   reactions [[HXRS23]](#60)
 - Compute Molecule Dependencies - computes the graph of dependencies between all molecules [[HXRS23]](#60)
 - Compute Importance - computes the percent difference between model size and model size without given food
-  item [[HS23]](#30)
+  item [[HS23]](#50)
 
 ### Export computed systems
 
@@ -124,6 +124,8 @@ The program comes with a number of example datasets (from [here](http://www.math
 - example-6.crs - 7 reactions and 1 food item, is a Max RAF and has no Max CAF
 - example-7.crs - 3 reactions (1 of which is 2-way) and 4 food items, is a Max RAF and a Max CAF
 - example-8.crs - uses binary polymers, has 17 two-way reactions and 4 foot items, is a Max RAF and a Max CAF
+- example-9.crs - Has a maxRAF of size 4 (which is an iRAF), a pseudoRAF of size 7 (everything) and no CAF (Figure 2
+  from [[XHKSM20]](#35))
 - inhibitions-1.crs - 2 reactions (1 of which has an inhibitor) and 6 food items, Max RAF and Max CAF both have 1
   reaction
 
@@ -138,16 +140,20 @@ Molecular Biology 10: 15.
 Hordijk, W. and Steel, M. (2016). Autocatalytic sets in polymer networks with variable catalysis distributions, J. Math.
 Chem., 54(10): 1997-2021.
 
-<a id="30">[HS23]</a>
-Huson, D. and Steel, M. (2023) CatlyNet - Implemented Algorithms (unpublished).
+<a id="25">[SXH20]</a>
+Steel, M., Xavier, J. C., and Huson, D. H. (
+2020). [The structure of autocatalytic networks, with application to early biochemistry.](https://royalsocietypublishing.org/doi/10.1098/rsif.2020.0488)
+J. Royal Society Interface, 17: 20200488.
+
+<a id="35">[XHKSM20]</a>
+Xavier, J. C., Hordijk, W., Kauffman, S., Steel M. and Martin, W. F. (2020). Autocatalytic chemical networks at the
+origin of metabolism. Proc. Roy. Soc. B. 287: 20192377
 
 <a id="40">[H23]</a>
 Hordijk, W. (2023). A concise and formal definition of RAF sets and the RAF algorithm, arXiv:2303.01809.
 
-<a id="50">[SXH20]</a>
-Steel, M., Xavier, J. C., and Huson, D. H. (
-2020). [The structure of autocatalytic networks, with application to early biochemistry.](https://royalsocietypublishing.org/doi/10.1098/rsif.2020.0488)
-J. Royal Society Interface, 17: 20200488.
+<a id="50">[HS23]</a>
+Huson, D. and Steel, M. (2023) CatlyNet - Implemented Algorithms (unpublished).
 
 <a id="60">[HXRS23]</a>
 Huson, D., Xavier, J., Rodrigo, A. and Steel, M. (2023). Structural and algorithmic results for self-generating

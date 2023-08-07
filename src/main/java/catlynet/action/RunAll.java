@@ -41,7 +41,7 @@ public class RunAll {
         final MainWindowController controller = window.getController();
         final TabManager tabManager = window.getTabManager();
 
-        controller.getWorkingReactionsTextArea().clear();
+		controller.getParsedReactionsTextArea().clear();
         tabManager.clearAll();
 
         window.getExportManager().clear();

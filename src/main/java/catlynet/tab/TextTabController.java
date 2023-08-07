@@ -48,22 +48,29 @@ public class TextTabController {
     private ToggleButton findToggleButton;
 
     @FXML
-    private Button exportButton;
+	private MenuButton exportMenuButton;
+
+	@FXML
+	private MenuItem copyMenuItem;
+
+	@FXML
+	private MenuItem exportMenuItem;
 
     @FXML
     void initialize() {
         MaterialIcons.setIcon(findToggleButton, "search");
-        MaterialIcons.setIcon(exportButton, "ios_share");
+		MaterialIcons.setIcon(exportMenuButton, "ios_share");
         MaterialIcons.setIcon(wrapButton, "wrap_text");
 
         tabPane.getTabs().remove(tab);
 
         wrapButton.selectedProperty().bindBidirectional(textArea.wrapTextProperty());
-        exportButton.setOnAction(e -> {
+		copyMenuItem.setOnAction(e -> {
             var content = new ClipboardContent();
             content.putString(textArea.getText());
             Clipboard.getSystemClipboard().setContent(content);
         });
+		copyMenuItem.disableProperty().bind(textArea.textProperty().isEmpty());
     }
 
     public Tab getTab() {
@@ -82,7 +89,11 @@ public class TextTabController {
         return findToggleButton;
     }
 
-    public Button getExportButton() {
-        return exportButton;
+	public MenuButton getExportButton() {
+		return exportMenuButton;
     }
+
+	public MenuItem getExportMenuItem() {
+		return exportMenuItem;
+	}
 }

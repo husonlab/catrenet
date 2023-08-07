@@ -19,6 +19,11 @@
 
 package catlynet.tab;
 
+import catlynet.window.MainWindow;
+import javafx.beans.InvalidationListener;
+import javafx.beans.WeakInvalidationListener;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
@@ -35,13 +40,14 @@ public class TextTab {
     final private VBox vBox;
     final private TextArea textArea;
     private FindToolBar findToolBar;
+
     private final TextTabController controller;
 
     /**
      * create a text tab
      *
 	 */
-    public TextTab(String reactionSystemName) {
+    public TextTab(MainWindow mainWindow, String reactionSystemName) {
         this.reactionSystemName = reactionSystemName;
         final ExtendedFXMLLoader<TextTabController> extendedFXMLLoader = new ExtendedFXMLLoader<>(TextTab.class);
         controller = extendedFXMLLoader.getController();
@@ -55,6 +61,27 @@ public class TextTab {
         tab.setClosable(true);
 
         tab.disableProperty().bind(textArea.textProperty().isEmpty());
+
+        var exportItem = new SimpleObjectProperty<MenuItem>();
+        InvalidationListener invalidationListener = e -> {
+            exportItem.set(null);
+            for (var item : mainWindow.getController().getExportMenu().getItems()) {
+                if (item.getText() != null && item.getText().equals(reactionSystemName + "...")) {
+                    exportItem.set(item);
+                    break;
+                }
+            }
+        };
+        mainWindow.getController().getExportMenu().getItems().addListener(new WeakInvalidationListener(invalidationListener));
+        invalidationListener.invalidated(null);
+
+        controller.getExportMenuItem().setOnAction(e -> exportItem.get().getOnAction().handle(e));
+        controller.getExportMenuItem().disableProperty().bind(exportItem.isNull());
+
+        tab.setOnClosed(e -> {
+            if (exportItem.get() != null)
+                mainWindow.getController().getExportMenu().getItems().remove(exportItem.get());
+        });
     }
 
     public String getReactionSystemName() {

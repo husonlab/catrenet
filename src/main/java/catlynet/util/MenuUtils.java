@@ -19,6 +19,7 @@
 
 package catlynet.util;
 
+import javafx.application.Platform;
 import javafx.scene.control.*;
 
 import java.util.ArrayList;
@@ -83,7 +84,7 @@ public class MenuUtils {
 			targetItem.setOnAction(e -> {
 				var action = sourceItem.getOnAction();
 				if (action != null)
-					action.handle(e);
+					Platform.runLater(() -> action.handle(e));
 			});
 			targetItem.disableProperty().bindBidirectional(sourceItem.disableProperty());
 			result.add(targetItem);

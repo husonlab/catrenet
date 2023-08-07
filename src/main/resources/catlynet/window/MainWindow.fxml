@@ -324,8 +324,7 @@
                                           text="Quotient RAF Algorithm"/>
                                 <MenuItem fx:id="removeTrivialRAFsAlgorithmMenuItem" mnemonicParsing="false"
                                           text="Remove Trivial RAFs Algorithm"/>
-                                <MenuItem fx:id="runMinIRAFMenuItem" mnemonicParsing="false"
-                                          text="Min IRAF Heuristic"/>
+                                <MenuItem fx:id="runMinIRAFMenuItem" mnemonicParsing="false" text="Min IRAF Heuristic"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="runMuCAFMenuItem" mnemonicParsing="false" text="MU CAF Algorithm"/>
                                 <MenuItem fx:id="runURAFMenuItem" mnemonicParsing="false" text="U RAF Algorithm"/>
@@ -553,27 +552,25 @@
                     <children>
                         <TabPane fx:id="outputTabPane">
                             <tabs>
-                                <Tab fx:id="workingReactionsTab" closable="false" disable="true" text="Parsed">
+                                <Tab fx:id="parsedReactionsTab" closable="false" disable="true" text="Parsed">
                                     <content>
                                         <BorderPane>
                                             <center>
-                                                <TextArea fx:id="workingReactionsTextArea" editable="false"
+                                                <TextArea fx:id="parsedReactionsTextArea" editable="false"
                                                           promptText="Working input" wrapText="true"/>
                                             </center>
                                             <top>
-                                                <VBox fx:id="workingReactionsVBox" minHeight="4.0"
+                                                <VBox fx:id="parsedReactionsVBox" minHeight="4.0"
                                                       BorderPane.alignment="CENTER">
                                                     <children>
                                                         <ToolBar>
                                                             <items>
-                                                                <ToggleButton fx:id="wrapWorkingReactionsToggleButton"
+                                                                <ToggleButton fx:id="wrapParsedReactionsToggleButton"
                                                                               layoutX="10.0" layoutY="12.0"
                                                                               mnemonicParsing="false" text="Wrap"/>
-                                                                <ToggleButton fx:id="findWorkingReactionsToggleButton"
+                                                                <ToggleButton fx:id="findParsedReactionsToggleButton"
                                                                               mnemonicParsing="false" text="FInd..."/>
-                                                                <Button fx:id="exportWorkingReactionsButton"
-                                                                        mnemonicParsing="false" text="Export"/>
-                                                                <MenuButton fx:id="exportMenuButton"
+                                                                <MenuButton fx:id="exportParsedMenuButton"
                                                                             maxHeight="-Infinity" maxWidth="-Infinity"
                                                                             minHeight="-Infinity" minWidth="-Infinity"
                                                                             mnemonicParsing="false" text="Export">
@@ -581,6 +578,10 @@
                                                                         <Tooltip
                                                                                 text="Export a computed reaction system"/>
                                                                     </tooltip>
+                                                                    <items>
+                                                                        <MenuItem fx:id="copyParsedMenuItem"
+                                                                                  mnemonicParsing="false" text="Copy"/>
+                                                                    </items>
                                                                 </MenuButton>
                                                             </items>
                                                         </ToolBar>
@@ -606,6 +607,17 @@
                                                                 </ToggleButton>
                                                                 <Separator layoutX="207.0" layoutY="10.0"
                                                                            orientation="VERTICAL"/>
+                                                                <MenuButton fx:id="exportNetworkMenuButton"
+                                                                            mnemonicParsing="false" text="Export...">
+                                                                    <items>
+                                                                        <MenuItem fx:id="copyNetworkMenuItem"
+                                                                                  mnemonicParsing="false" text="Copy"/>
+                                                                        <MenuItem fx:id="exportImageNetworkMenuItem"
+                                                                                  mnemonicParsing="false"
+                                                                                  text="Export Image..."/>
+                                                                    </items>
+                                                                </MenuButton>
+                                                                <Separator orientation="VERTICAL"/>
                                                                 <Button fx:id="zoomInNetworkButton"
                                                                         mnemonicParsing="false" text="Zoom In">
                                                                     <tooltip>
@@ -625,17 +637,6 @@
 
                                                                 <MenuButton fx:id="selectNetworkMenuButton"
                                                                             mnemonicParsing="false" text="Select">
-                                                                </MenuButton>
-                                                                <Separator orientation="VERTICAL"/>
-                                                                <MenuButton fx:id="exportNetworkMenuButton"
-                                                                            mnemonicParsing="false" text="Export...">
-                                                                    <items>
-                                                                        <MenuItem fx:id="copyNetworkMenuItem"
-                                                                                  mnemonicParsing="false" text="Copy"/>
-                                                                        <MenuItem fx:id="exportImageNetworkMenuItem"
-                                                                                  mnemonicParsing="false"
-                                                                                  text="Export Image..."/>
-                                                                    </items>
                                                                 </MenuButton>
                                                                 <Separator orientation="VERTICAL"/>
                                                                 <MenuButton fx:id="animateNetworkMenuButton"
@@ -706,8 +707,13 @@
                                                                               text="Wrap"/>
                                                                 <ToggleButton fx:id="findLogToggleButton"
                                                                               mnemonicParsing="false" text="FInd..."/>
-                                                                <Button fx:id="exportLogButton" mnemonicParsing="false"
-                                                                        text="Export"/>
+                                                                <MenuButton fx:id="exportLogMenuButton"
+                                                                            mnemonicParsing="false" text="Export">
+                                                                    <items>
+                                                                        <MenuItem fx:id="copyLogMenuItem"
+                                                                                  mnemonicParsing="false" text="Copy"/>
+                                                                    </items>
+                                                                </MenuButton>
                                                                 <Separator orientation="VERTICAL"/>
                                                                 <MenuButton fx:id="listLogButton"
                                                                             mnemonicParsing="false" text="List"/>
