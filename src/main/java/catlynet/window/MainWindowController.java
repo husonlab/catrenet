@@ -20,7 +20,6 @@
 package catlynet.window;
 
 import catlynet.icons.MaterialIcons;
-import catlynet.util.MenuUtils;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
@@ -36,6 +35,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import jloda.fx.control.SplittableTabPane;
 import jloda.fx.control.ZoomableScrollPane;
+import jloda.fx.util.BasicFX;
 import jloda.fx.util.ProgramProperties;
 import jloda.fx.window.MainWindowManager;
 
@@ -619,15 +619,15 @@ public class MainWindowController {
 			openNewMenuItem.setOnAction(e -> newMenuItem.getOnAction().handle(e));
 			recentFilesMenu.getItems().addListener((InvalidationListener) e -> {
 				recentMenuButton.getItems().setAll(openNewMenuItem, new SeparatorMenuItem());
-				recentMenuButton.getItems().addAll(MenuUtils.copy(recentFilesMenu.getItems()));
+				recentMenuButton.getItems().addAll(BasicFX.copyMenu(recentFilesMenu.getItems()));
 			});
 		}
 
 		{
-			computeNetworkMenuButton.getItems().addAll(MenuUtils.copy(networkMenu.getItems()));
-			runMenuButton.getItems().addAll(MenuUtils.copy(algorithmMenu.getItems()));
-			animateNetworkMenuButton.getItems().addAll(MenuUtils.copy(animateMenu.getItems()));
-			selectNetworkMenuButton.getItems().addAll(MenuUtils.copy(selectMenu.getItems()));
+			computeNetworkMenuButton.getItems().addAll(BasicFX.copyMenu(networkMenu.getItems()));
+			runMenuButton.getItems().addAll(BasicFX.copyMenu(algorithmMenu.getItems()));
+			animateNetworkMenuButton.getItems().addAll(BasicFX.copyMenu(animateMenu.getItems()));
+			selectNetworkMenuButton.getItems().addAll(BasicFX.copyMenu(selectMenu.getItems()));
 
 			zoomInNetworkButton.setOnAction(e -> zoomInMenuItem.getOnAction().handle(e));
 			zoomInNetworkButton.disableProperty().bind(zoomInMenuItem.disableProperty());
@@ -636,7 +636,7 @@ public class MainWindowController {
 
 			selectReactionSystemMenu.disableProperty().bind(Bindings.isEmpty(selectReactionSystemMenu.getItems()));
 
-			listLogButton.getItems().addAll(MenuUtils.copy(listMenu.getItems()));
+			listLogButton.getItems().addAll(BasicFX.copyMenu(listMenu.getItems()));
 		}
 	}
 
