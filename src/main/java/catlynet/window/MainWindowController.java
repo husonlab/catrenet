@@ -25,161 +25,178 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.KeyCharacterCombination;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import jloda.fx.control.SplittableTabPane;
 import jloda.fx.control.ZoomableScrollPane;
 import jloda.fx.util.BasicFX;
 import jloda.fx.util.ProgramProperties;
+import jloda.fx.util.RunAfterAWhile;
 import jloda.fx.window.MainWindowManager;
+import jloda.fx.window.NotificationManager;
 
 import java.util.ArrayList;
 
 public class MainWindowController {
+	@FXML
+	private MenuItem aboutMenuItem;
 
 	@FXML
-	private ToggleButton wrapFoodTextToggle;
+	private Menu algorithmMenu;
 
 	@FXML
-	private ToggleButton wrapReactionsTextToggle;
+	private CheckMenuItem animateCAFCheckMenuItem;
 
 	@FXML
-	private MenuBar menuBar;
+	private CheckMenuItem animateInhibitionsMenuItem;
 
 	@FXML
-	private Menu fileMenu;
+	private CheckMenuItem animateMaxRAFCheckMenuItem;
 
 	@FXML
-	private MenuItem newMenuItem;
+	private Menu animateMenu;
 
 	@FXML
-	private MenuItem openMenuItem;
+	private MenuButton animateNetworkMenuButton;
 
 	@FXML
-	private MenuItem importMenuItem;
+	private CheckMenuItem animateRAFCheckMenuItem;
 
 	@FXML
-	private Menu exportMenu;
+	private RadioMenuItem associationGraphRadioMenuItem;
 
 	@FXML
-	private MenuItem exportSelectedNodesMenuItem;
-
-	@FXML
-	private MenuItem exportListOfReactionsMenuItem;
-
-	@FXML
-	private Menu recentFilesMenu;
-
-	@FXML
-	private MenuItem saveMenuItem;
-
-	@FXML
-	private MenuItem pageSetupMenuItem;
-
-	@FXML
-	private MenuItem printMenuItem;
-
-	@FXML
-	private MenuItem closeMenuItem;
-
-	@FXML
-	private MenuItem quitMenuItem;
-
-	@FXML
-	private Menu editMenu;
-
-	@FXML
-	private MenuItem undoMenuItem;
-
-	@FXML
-	private MenuItem redoMenuItem;
-
-	@FXML
-	private MenuItem cutMenuItem;
-
-	@FXML
-	private MenuItem copyMenuItem;
-
-	@FXML
-	private MenuItem pasteMenuItem;
+	private MenuItem checkForUpdatesMenuItem;
 
 	@FXML
 	private MenuItem clearMenuItem;
 
 	@FXML
-	private MenuItem findMenuItem;
+	private MenuItem closeMenuItem;
 
 	@FXML
-	private MenuItem findAgainMenuItem;
+	private CheckMenuItem computeImportanceCheckMenuItem;
 
 	@FXML
-	private MenuItem selectAllMenuItem;
+	private MenuButton computeNetworkMenuButton;
 
 	@FXML
-	private MenuItem selectNoneMenuItem;
+	private MenuItem computeNetworkMenuItem;
 
 	@FXML
-	private MenuItem selectInvertedMenuItem;
+	private MenuItem copyExportMenuItem;
 
 	@FXML
-	private MenuItem selectNodesMenuItem;
+	private MenuItem copyMenuItem;
 
 	@FXML
-	private MenuItem selectEdgesMenuItem;
+	private MenuItem copyNetworkContextMenuItem;
 
 	@FXML
-	private Menu selectReactionSystemMenu;
+	private MenuItem cutMenuItem;
 
 	@FXML
-	private MenuItem selectFoodMenuItem;
-
-	@FXML
-	private MenuItem selectMoleculesMenuItem;
-
-	@FXML
-	private MenuItem selectReactionsMenuItem;
-
-	@FXML
-	private MenuItem selectConnectedComponentMenuItem;
-
-	@FXML
-	private MenuItem selectFromPreviousWindowMenuItem;
-
-
-	@FXML
-	private MenuButton exportNetworkMenuButton;
-
-	@FXML
-	private MenuItem copyNetworkMenuItem;
-
-	@FXML
-	private MenuItem exportImageNetworkMenuItem;
-
-
-	@FXML
-	private Menu algorithmMenu;
-
-
-	@FXML
-	private MenuItem stopAnimationMenuItem;
-
-	@FXML
-	private MenuItem increaseFontSizeMenuItem;
+	private Button decreaseFontButton;
 
 	@FXML
 	private MenuItem decreaseFontSizeMenuItem;
 
 	@FXML
+	private Menu editMenu;
+
+	@FXML
+	private MenuItem exportExportMenuItem;
+
+	@FXML
+	private MenuItem exportListOfReactionsMenuItem;
+
+	@FXML
+	private Menu exportMenu;
+
+	@FXML
+	private MenuButton exportMenuButton;
+
+	@FXML
+	private MenuItem exportSelectedNodesMenuItem;
+
+	@FXML
+	private Menu fileMenu;
+
+	@FXML
+	private MenuItem findAgainMenuItem;
+
+	@FXML
+	private ToggleButton findButton;
+
+	@FXML
+	private ToggleButton findFoodTextToggleButton;
+
+	@FXML
+	private MenuItem findMenuItem;
+
+	@FXML
+	private ToggleButton findReactionsTextToggleButton;
+
+	@FXML
+	private VBox foodInputVBox;
+
+	@FXML
+	private MenuItem formatMenuItem;
+
+	@FXML
+	private RadioMenuItem fullGraphRadioMenuItem;
+
+	@FXML
+	private MenuItem fullScreenMenuItem;
+
+	@FXML
+	private MenuItem graphEmbedderIterationsMenuItem;
+
+	@FXML
+	private Label graphTypeLabel;
+
+	@FXML
+	private MenuItem greedyGrowMenuItem;
+
+	@FXML
+	private MenuItem importMenuItem;
+
+	@FXML
+	private Button inceaseFontButton;
+
+	@FXML
+	private MenuItem increaseFontSizeMenuItem;
+
+	@FXML
+	private Label inputFoodSizeLabel;
+
+	@FXML
+	private TextArea inputFoodTextArea;
+
+	@FXML
+	private Label inputReactionsSizeLabel;
+
+	@FXML
+	private SplitPane inputSplitPane;
+
+	@FXML
+	private TextArea inputTextArea;
+
+	@FXML
 	private MenuItem listCatalystsMenuItem;
 
 	@FXML
+	private MenuItem listFoodMenuItem;
+
+	@FXML
 	private MenuItem listInhibitorsMenuItem;
+
+	@FXML
+	private Menu listMenu;
+
+	@FXML
+	private MenuButton listMenuButton;
 
 	@FXML
 	private MenuItem listProductsMenuItem;
@@ -191,72 +208,64 @@ public class MainWindowController {
 	private MenuItem listReactionsMenuItem;
 
 	@FXML
-	private MenuItem listFoodMenuItem;
+	private Tab logTab;
 
 	@FXML
-	private MenuItem zoomInMenuItem;
-
-	@FXML
-	private MenuItem zoomOutMenuItem;
-
-	@FXML
-	private MenuItem zoomToFitMenuItem;
-
-	@FXML
-	private CheckMenuItem wrapTextMenuItem;
-
-	@FXML
-	private MenuItem formatMenuItem;
-
-	@FXML
-	private MenuItem showNodeAndEdgeFormatMenuItem;
-
-	@FXML
-	private MenuItem fullScreenMenuItem;
-
-	@FXML
-	private Menu windowMenu;
-
-	@FXML
-	private MenuItem aboutMenuItem;
-
-	@FXML
-	private MenuItem checkForUpdatesMenuItem;
-
-	@FXML
-	private ToolBar mainToolBar;
-
-	@FXML
-	private MenuButton recentMenuButton;
-
-	@FXML
-	private MenuItem openNewMenuItem;
-
-	@FXML
-	private Button stopAnimationButton;
-
-	@FXML
-	private FlowPane statusFlowPane;
-
-	@FXML
-	private Label memoryUsageLabel;
+	private TextArea logTextArea;
 
 	@FXML
 	private SplitPane mainSplitPane;
 
 	@FXML
-	private SplitPane inputSplitPane;
+	private ToolBar mainToolBar;
 
 	@FXML
-	private VBox foodInputVBox;
-	@FXML
-	private TextArea inputFoodTextArea;
+	private Label memoryUsageLabel;
 
 	@FXML
-	private VBox reactionsInputVBox;
+	private MenuBar menuBar;
 
 	@FXML
-	private TextArea inputTextArea;
+	private MenuItem moleculeDependenciesMenuItem;
+
+	@FXML
+	private RadioMenuItem moleculeDependencyGraphRadioMenuItem;
+
+	@FXML
+	private CheckMenuItem moveLabelsMenuItem;
+
+	@FXML
+	private BorderPane networkBorderPane;
+
+	@FXML
+	private ContextMenu networkContextMenu;
+
+	@FXML
+	private Menu networkMenu;
+
+	@FXML
+	private StackPane networkPane;
+
+	@FXML
+	private AnchorPane networkCopyPane;
+
+	@FXML
+	private Tab networkTab;
+
+	@FXML
+	private VBox networkVBox;
+
+	@FXML
+	private MenuItem newMenuItem;
+
+	@FXML
+	private MenuItem newRecentFileMenuItem;
+
+	@FXML
+	private MenuItem openMenuItem;
+
+	@FXML
+	private MenuItem openRecentFileMenuItem;
 
 	@FXML
 	private StackPane outputPane;
@@ -265,98 +274,73 @@ public class MainWindowController {
 	private TabPane outputTabPane;
 
 	@FXML
+	private MenuItem pageSetupMenuItem;
+
+	@FXML
 	private Tab parsedReactionsTab;
 
 	@FXML
 	private TextArea parsedReactionsTextArea;
 
 	@FXML
-	private VBox parsedReactionsVBox;
+	private MenuItem pasteMenuItem;
 
 	@FXML
-	private Tab networkTab;
+	private MenuItem printMenuItem;
 
 	@FXML
-	private Label graphTypeLabel;
+	private MenuItem quitMenuItem;
 
-	@FXML
-	private BorderPane networkBorderPane;
-
-	@FXML
-	private VBox networkVBox;
-
-	@FXML
-	private StackPane networkPane;
-
-	@FXML
-	private ContextMenu networkContextMenu;
-
-	@FXML
-	private MenuItem selectNoneContextMenuItem;
-
-	@FXML
-	private MenuItem selectConnectedComponentContextMenuItem;
-
-	@FXML
-	private Tab logTab;
-
-	@FXML
-	private TextArea logTextArea;
-
-	@FXML
-	private MenuItem clearLogMenuItem;
-
-	@FXML
-	private VBox logVBox;
-
-	@FXML
-	private Label inputFoodSizeLabel;
-
-	@FXML
-	private Label inputReactionsSizeLabel;
-
-	@FXML
-	private CheckMenuItem useDarkThemeCheckMenuItem;
-
-	@FXML
-	private MenuItem computeNetworkMenuItem;
-
-	@FXML
-	private RadioMenuItem fullGraphRadioMenuItem;
-	@FXML
-	private RadioMenuItem associationGraphRadioMenuItem;
 	@FXML
 	private RadioMenuItem reactantAssociationRadioMenuItem;
+
 	@FXML
-	private CheckMenuItem suppressFormalFoodMenuItem;
-	@FXML
-	private CheckMenuItem suppressCatalystEdgesMenuItem;
-	@FXML
-	private CheckMenuItem useMultiCopyFoodNodesMenuItem;
+	private MenuItem reactionDependenciesMenuItem;
+
 	@FXML
 	private RadioMenuItem reactionDependencyGraphRadioMenuItem;
-	@FXML
-	private RadioMenuItem moleculeDependencyGraphRadioMenuItem;
-	@FXML
-	private MenuItem showNodeLabels;
 
 	@FXML
-	private MenuButton computeNetworkMenuButton;
+	private VBox reactionsInputVBox;
 
 	@FXML
-	private Button zoomInNetworkButton;
+	private Menu recentFilesMenu;
 
 	@FXML
-	private Button zoomOutNetworkButton;
+	private MenuButton recentMenuButton;
 
 	@FXML
-	private ToggleButton findNetworkToggleButton;
+	private MenuItem redoMenuItem;
+
+	@FXML
+	private MenuItem removeTrivialRAFsAlgorithmMenuItem;
+
+	@FXML
+	private MenuItem runCAFMenuItem;
+
+	@FXML
+	private MenuItem runCoreRAFMenuItem;
 
 	@FXML
 	private MenuButton runMenuButton;
 
 	@FXML
-	private MenuItem runCAFMenuItem;
+	private MenuItem runMinIRAFMenuItem;
+
+	@FXML
+	private MenuItem runMinRAFGeneratingElementMenuItem;
+
+	@FXML
+	private MenuItem runMuCAFMenuItem;
+
+	@FXML
+	private MenuItem runMuCAFMultipleTimesMenuItem;
+
+	@FXML
+	private MenuItem runPseudoRAFMenuItem;
+
+	@FXML
+	private MenuItem runQuotientRAFMenuItem;
 
 	@FXML
 	private MenuItem runRAFMenuItem;
@@ -365,176 +349,159 @@ public class MainWindowController {
 	private MenuItem runStrictlyAutocatalyticRAFMenuItem;
 
 	@FXML
-	private MenuItem runMinRAFGeneratingElementMenuItem;
-
-	@FXML
-	private MenuItem runPseudoRAFMenuItem;
-
-	@FXML
-	private MenuItem runMuCAFMenuItem;
-
-	@FXML
-	private MenuItem runURAFMenuItem;
-
-	@FXML
-	private MenuItem runMinIRAFMenuItem;
-
-	@FXML
 	private MenuItem runTrivialCAFsAlgorithmMenuItem;
 
 	@FXML
 	private MenuItem runTrivialRAFsAlgorithmMenuItem;
 
 	@FXML
-	private MenuItem runQuotientRAFMenuItem;
+	private MenuItem runURAFMenuItem;
 
 	@FXML
-	private MenuItem runCoreRAFMenuItem;
+	private MenuItem saveMenuItem;
 
 	@FXML
-	private MenuItem removeTrivialRAFsAlgorithmMenuItem;
+	private MenuItem selectAllMenuItem;
 
 	@FXML
-	private MenuItem runMuCAFMultipleTimesMenuItem;
+	private MenuItem selectConnectedComponentMenuItem;
 
 	@FXML
-	private MenuItem spontaneousInRafMenuItem;
+	private MenuItem selectEdgesMenuItem;
 
 	@FXML
-	private MenuItem greedyGrowMenuItem;
+	private MenuItem selectFoodMenuItem;
 
 	@FXML
-	private MenuItem reactionDependenciesMenuItem;
+	private MenuItem selectFromPreviousWindowMenuItem;
 
 	@FXML
-	private MenuItem moleculeDependenciesMenuItem;
+	private MenuItem selectInvertedMenuItem;
 
 	@FXML
-	private CheckMenuItem computeImportanceCheckMenuItem;
+	private Menu selectMenu;
 
 	@FXML
-	private MenuButton animateNetworkMenuButton;
-
-	@FXML
-	private CheckMenuItem animateCAFCheckMenuItem;
-
-	@FXML
-	private CheckMenuItem animateRAFCheckMenuItem;
-
-	@FXML
-	private CheckMenuItem animateMaxRAFCheckMenuItem;
-
-	@FXML
-	private CheckMenuItem animateInhibitionsMenuItem;
-
-	@FXML
-	private CheckMenuItem moveLabelsMenuItem;
-
-	@FXML
-	private CheckMenuItem useColorsMenuItem;
-
-	@FXML
-	private MenuItem graphEmbedderIterationsMenuItem;
-
-	@FXML
-	private ToggleButton findParsedReactionsToggleButton;
-
-	@FXML
-	private ToggleButton wrapParsedReactionsToggleButton;
-
-	@FXML
-	private MenuButton exportParsedMenuButton;
-
-	@FXML
-	private MenuItem copyParsedMenuItem;
-
-	@FXML
-	private ToggleButton findLogToggleButton;
-
-	@FXML
-	private ToggleButton wrapLogToggleButton;
-
-	@FXML
-	private MenuButton exportLogMenuButton;
-
-	@FXML
-	private MenuItem copyLogMenuItem;
+	private MenuItem selectMoleculesMenuItem;
 
 	@FXML
 	private MenuButton selectNetworkMenuButton;
 
 	@FXML
-	private Menu networkMenu;
+	private MenuItem selectNodesMenuItem;
 
 	@FXML
-	private Menu animateMenu;
-
-
-	@FXML
-	private Menu selectMenu;
-
+	private MenuItem selectNoneMenuItem;
 
 	@FXML
-	private Menu listMenu;
+	private Menu selectReactionSystemMenu;
 
 	@FXML
-	private MenuButton listLogButton;
+	private MenuItem selectReactionsMenuItem;
 
+	@FXML
+	private MenuItem showNodeAndEdgeFormatMenuItem;
+
+	@FXML
+	private MenuItem showNodeLabels;
+
+	@FXML
+	private Button sidebarButton;
+
+	@FXML
+	private MenuItem spontaneousInRafMenuItem;
+
+	@FXML
+	private FlowPane statusFlowPane;
+
+	@FXML
+	private Button stopAnimationButton;
+
+	@FXML
+	private MenuItem stopAnimationMenuItem;
+
+	@FXML
+	private CheckMenuItem suppressCatalystEdgesMenuItem;
+
+	@FXML
+	private CheckMenuItem suppressFormalFoodMenuItem;
+
+	@FXML
+	private VBox topMainVBox;
+
+	@FXML
+	private MenuItem undoMenuItem;
+
+	@FXML
+	private CheckMenuItem useColorsMenuItem;
+
+	@FXML
+	private CheckMenuItem useDarkThemeCheckMenuItem;
+
+	@FXML
+	private CheckMenuItem useMultiCopyFoodNodesMenuItem;
+
+	@FXML
+	private Menu windowMenu;
+
+	@FXML
+	private CheckMenuItem wrapTextMenuItem;
+
+	@FXML
+	private MenuItem zoomInMenuItem;
+
+	@FXML
+	private Button zoomInNetworkButton;
+
+	@FXML
+	private MenuItem zoomOutMenuItem;
+
+	@FXML
+	private Button zoomOutNetworkButton;
+
+	@FXML
+	private MenuItem zoomToFitMenuItem;
+
+	@FXML
+	private CheckMenuItem showNotificationsCheckMenuItem;
 
 	private ZoomableScrollPane zoomableScrollPane;
 
 	@FXML
 	void initialize() {
 		{
-			MaterialIcons.setIcon(recentMenuButton, "launch");
+			MaterialIcons.setIcon(recentMenuButton, "file_open");
 			MaterialIcons.setIcon(runMenuButton, "play_circle_filled");
 
-			MaterialIcons.setIcon(wrapFoodTextToggle, "wrap_text");
-			MaterialIcons.setIcon(wrapReactionsTextToggle, "wrap_text");
-			MaterialIcons.setIcon(findNetworkToggleButton, "search");
 
 			MaterialIcons.setIcon(computeNetworkMenuButton, "tune");
 			MaterialIcons.setIcon(animateNetworkMenuButton, "play_circle");
 			MaterialIcons.setIcon(stopAnimationButton, "close", null, false);
 			MaterialIcons.setIcon(zoomInNetworkButton, "zoom_in");
 			MaterialIcons.setIcon(zoomOutNetworkButton, "zoom_out");
-			MaterialIcons.setIcon(exportNetworkMenuButton, "ios_share");
-
-			MaterialIcons.setIcon(findParsedReactionsToggleButton, "search");
-			MaterialIcons.setIcon(exportParsedMenuButton, "ios_share");
-			MaterialIcons.setIcon(wrapParsedReactionsToggleButton, "wrap_text");
-
-			MaterialIcons.setIcon(findLogToggleButton, "search");
-			MaterialIcons.setIcon(exportLogMenuButton, "ios_share");
-			MaterialIcons.setIcon(wrapLogToggleButton, "wrap_text");
 
 			MaterialIcons.setIcon(selectNetworkMenuButton, "checklist_rtl");
 
-			MaterialIcons.setIcon(listLogButton, "list");
+			MaterialIcons.setIcon(listMenuButton, "list");
 
+			MaterialIcons.setIcon(exportMenuButton, "ios_share");
+			MaterialIcons.setIcon(inceaseFontButton, "text_increase");
+			MaterialIcons.setIcon(decreaseFontButton, "text_decrease");
+
+			MaterialIcons.setIcon(sidebarButton, "menu");
+			MaterialIcons.setIcon(findButton, "search");
+			MaterialIcons.setIcon(findFoodTextToggleButton, "search");
+			MaterialIcons.setIcon(findReactionsTextToggleButton, "search");
 		}
 
-		{
-			wrapParsedReactionsToggleButton.selectedProperty().bindBidirectional(parsedReactionsTextArea.wrapTextProperty());
-			copyParsedMenuItem.setOnAction(e -> {
-				var content = new ClipboardContent();
-				content.putString(parsedReactionsTextArea.getText());
-				Clipboard.getSystemClipboard().setContent(content);
-			});
+		sidebarButton.setDisable(true);
 
-			wrapLogToggleButton.selectedProperty().bindBidirectional(logTextArea.wrapTextProperty());
-			copyLogMenuItem.setOnAction(e -> {
-				var content = new ClipboardContent();
-				content.putString(logTextArea.getText());
-				Clipboard.getSystemClipboard().setContent(content);
-			});
+		wrapTextMenuItem.selectedProperty().bindBidirectional(parsedReactionsTextArea.wrapTextProperty());
+		wrapTextMenuItem.selectedProperty().bindBidirectional(logTextArea.wrapTextProperty());
 
-			copyNetworkMenuItem.setOnAction(e -> copyMenuItem.getOnAction().handle(e));
-		}
 
-		wrapFoodTextToggle.selectedProperty().bindBidirectional(inputFoodTextArea.wrapTextProperty());
-		wrapFoodTextToggle.setSelected(true);
-		wrapReactionsTextToggle.selectedProperty().bindBidirectional(inputTextArea.wrapTextProperty());
+		wrapTextMenuItem.selectedProperty().bindBidirectional(inputFoodTextArea.wrapTextProperty());
+		wrapTextMenuItem.selectedProperty().bindBidirectional(inputTextArea.wrapTextProperty());
 
 		increaseFontSizeMenuItem.setAccelerator(new KeyCharacterCombination("+", KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_ANY));
 		decreaseFontSizeMenuItem.setAccelerator(new KeyCharacterCombination("/", KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_ANY));
@@ -547,8 +514,12 @@ public class MainWindowController {
 			//editMenu.getItems().remove(getPreferencesMenuItem());
 		}
 
-		networkTabContextMenu = networkTab.getContextMenu();
-		networkTab.setContextMenu(null);
+		{
+			networkTabContextMenu = networkTab.getContextMenu();
+			networkTab.setContextMenu(null);
+			networkTabContextMenu.getItems().addAll(BasicFX.copyMenu(selectMenu.getItems()));
+		}
+
 
 		// replace tabbed pane by splittable one
 
@@ -558,7 +529,7 @@ public class MainWindowController {
 		outputSplittableTabPane = new SplittableTabPane();
 		outputSplittableTabPane.getTabs().addAll(tabs);
 		outputPane.getChildren().setAll(outputSplittableTabPane);
-		if (outputSplittableTabPane.getTabs().size() > 0)
+		if (!outputSplittableTabPane.getTabs().isEmpty())
 			outputSplittableTabPane.getSelectionModel().select(0);
 
 		final var originalWindowMenuItems = new ArrayList<>(windowMenu.getItems());
@@ -605,7 +576,7 @@ public class MainWindowController {
 				mainSplitPane.setDividerPosition(0, newPos);
 			}
 		});
-		Platform.runLater(() -> mainSplitPane.setDividerPosition(0, 200.0 / mainSplitPane.getWidth()));
+		Platform.runLater(() -> mainSplitPane.setDividerPosition(0, 250.0 / mainSplitPane.getWidth()));
 
 
 		{
@@ -616,9 +587,11 @@ public class MainWindowController {
 			if (false) networkPane.setPadding(new javafx.geometry.Insets(100));
 			networkPane.getStyleClass().add("viewer-background");
 
-			openNewMenuItem.setOnAction(e -> newMenuItem.getOnAction().handle(e));
+			newRecentFileMenuItem.setOnAction(e -> newMenuItem.getOnAction().handle(e));
+			openRecentFileMenuItem.setOnAction(e -> openMenuItem.getOnAction().handle(e));
+
 			recentFilesMenu.getItems().addListener((InvalidationListener) e -> {
-				recentMenuButton.getItems().setAll(openNewMenuItem, new SeparatorMenuItem());
+				recentMenuButton.getItems().setAll(newRecentFileMenuItem, openRecentFileMenuItem, new SeparatorMenuItem());
 				recentMenuButton.getItems().addAll(BasicFX.copyMenu(recentFilesMenu.getItems()));
 			});
 		}
@@ -627,17 +600,38 @@ public class MainWindowController {
 			computeNetworkMenuButton.getItems().addAll(BasicFX.copyMenu(networkMenu.getItems()));
 			runMenuButton.getItems().addAll(BasicFX.copyMenu(algorithmMenu.getItems()));
 			animateNetworkMenuButton.getItems().addAll(BasicFX.copyMenu(animateMenu.getItems()));
+
 			selectNetworkMenuButton.getItems().addAll(BasicFX.copyMenu(selectMenu.getItems()));
+
 
 			zoomInNetworkButton.setOnAction(e -> zoomInMenuItem.getOnAction().handle(e));
 			zoomInNetworkButton.disableProperty().bind(zoomInMenuItem.disableProperty());
 			zoomOutNetworkButton.setOnAction(e -> zoomOutMenuItem.getOnAction().handle(e));
 			zoomOutNetworkButton.disableProperty().bind(zoomOutMenuItem.disableProperty());
 
+			inceaseFontButton.setOnAction(e -> increaseFontSizeMenuItem.getOnAction().handle(e));
+			inceaseFontButton.disableProperty().bindBidirectional(increaseFontSizeMenuItem.disableProperty());
+			decreaseFontButton.setOnAction(e -> decreaseFontSizeMenuItem.getOnAction().handle(e));
+			decreaseFontButton.disableProperty().bindBidirectional(decreaseFontSizeMenuItem.disableProperty());
+
 			selectReactionSystemMenu.disableProperty().bind(Bindings.isEmpty(selectReactionSystemMenu.getItems()));
 
-			listLogButton.getItems().addAll(BasicFX.copyMenu(listMenu.getItems()));
+			listMenuButton.getItems().addAll(BasicFX.copyMenu(listMenu.getItems()));
+			listMenuButton.disableProperty().bind(runRAFMenuItem.disableProperty());
+
+			runMenuButton.disableProperty().bind(runRAFMenuItem.disableProperty());
+
 		}
+
+		logTextArea.textProperty().addListener(e -> {
+			RunAfterAWhile.applyInFXThread(logTextArea, () -> logTextArea.positionCaret(logTextArea.getText().length()));
+		});
+		parsedReactionsTextArea.textProperty().addListener(e -> {
+			RunAfterAWhile.applyInFXThread(parsedReactionsTextArea, () -> parsedReactionsTextArea.positionCaret(parsedReactionsTextArea.getText().length()));
+		});
+
+		NotificationManager.setShowNotifications(false);
+		showNotificationsCheckMenuItem.selectedProperty().addListener((v, o, n) -> NotificationManager.setShowNotifications(n));
 	}
 
 	private SplittableTabPane outputSplittableTabPane;
@@ -1016,10 +1010,6 @@ public class MainWindowController {
 		return parsedReactionsTextArea;
 	}
 
-	public VBox getParsedReactionsVBox() {
-		return parsedReactionsVBox;
-	}
-
 	public Tab getNetworkTab() {
 		return networkTab;
 	}
@@ -1040,12 +1030,8 @@ public class MainWindowController {
 		return networkContextMenu;
 	}
 
-	public MenuItem getSelectNoneContextMenuItem() {
-		return selectNoneContextMenuItem;
-	}
-
-	public MenuItem getSelectConnectedComponentContextMenuItem() {
-		return selectConnectedComponentContextMenuItem;
+	public MenuItem getcopyNetworkContextMenuItem() {
+		return copyNetworkContextMenuItem;
 	}
 
 	public Tab getLogTab() {
@@ -1054,14 +1040,6 @@ public class MainWindowController {
 
 	public TextArea getLogTextArea() {
 		return logTextArea;
-	}
-
-	public MenuItem getClearLogMenuItem() {
-		return clearLogMenuItem;
-	}
-
-	public VBox getLogVBox() {
-		return logVBox;
 	}
 
 	public SplittableTabPane getOutputTabPane() {
@@ -1120,31 +1098,43 @@ public class MainWindowController {
 		return listFoodMenuItem;
 	}
 
-	public MenuItem getExportImageNetworkMenuItem() {
-		return exportImageNetworkMenuItem;
-	}
-
 	public StackPane getNetworkPane() {
 		return networkPane;
 	}
 
-	public ToggleButton getFindNetworkToggleButton() {
-		return findNetworkToggleButton;
+	public AnchorPane getNetworkCopyPane() {
+		return networkCopyPane;
 	}
 
 	public MenuButton getAnimateNetworkMenuButton() {
 		return animateNetworkMenuButton;
 	}
 
-	public ToggleButton getFindParsedReactionsToggleButton() {
-		return findParsedReactionsToggleButton;
+	public VBox getTopMainVBox() {
+		return topMainVBox;
 	}
 
-	public ToggleButton getFindLogToggleButton() {
-		return findLogToggleButton;
+	public ToggleButton getFindButton() {
+		return findButton;
 	}
 
-	public MenuButton getExportNetworkMenuButton() {
-		return exportNetworkMenuButton;
+	public MenuItem getCopyExportMenuItem() {
+		return copyExportMenuItem;
+	}
+
+	public MenuItem getExportExportMenuItem() {
+		return exportExportMenuItem;
+	}
+
+	public MenuItem getCopyNetworkContextMenuItem() {
+		return copyNetworkContextMenuItem;
+	}
+
+	public ToggleButton getFindFoodTextToggleButton() {
+		return findFoodTextToggleButton;
+	}
+
+	public ToggleButton getFindReactionsTextToggleButton() {
+		return findReactionsTextToggleButton;
 	}
 }

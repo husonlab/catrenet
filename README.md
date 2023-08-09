@@ -5,8 +5,9 @@ CatlyNet is a program for working with autocatalytic networks. It is written in 
 implements fast and exact algorithms for calculating (maximal) RAFs, CAFs, and pseudo-RAFs from any set of catalysed
 'reactions' and a given 'food' set. These three notions are formalizations of the concept of a 'collectively
 autocatalytic set' originally introduced by Stuart Kauffman.
+The program was first introduced in [[SXH20]](#25).
 
-CatlyNet is loosely based on a web application written by Dietrich Radel: http://www.math.canterbury.ac.nz/bio/RAF/
+CatlyNet is loosely based on a web application written by Dietrich Radel: http://www.math.canterbury.ac.nz/bio/RAF/.
 
 ## Installers
 
@@ -126,9 +127,9 @@ The program comes with a number of example datasets (from [here](http://www.math
 - example-8.crs - uses binary polymers, has 17 two-way reactions and 4 foot items, is a Max RAF and a Max CAF
 - example-9.crs - Has a maxRAF of size 4 (which is an iRAF), a pseudoRAF of size 7 (everything) and no CAF (Figure 2
   from [[XHKSM20]](#35))
+- example-10.crs - 3 reactions and 1 food item, is a Max RAF and a Max CAF (Fig. 3(c) in [[GFHKU]](#22))
 - inhibitions-1.crs - 2 reactions (1 of which has an inhibitor) and 6 food items, Max RAF and Max CAF both have 1
   reaction
-
 
 ## References
 
@@ -139,6 +140,11 @@ Molecular Biology 10: 15.
 <a id="20">[HS16]</a>
 Hordijk, W. and Steel, M. (2016). Autocatalytic sets in polymer networks with variable catalysis distributions, J. Math.
 Chem., 54(10): 1997-2021.
+
+<a id="22">[GFHKU]</a>
+Gatti, R.C., Fath, B., Hordijk, W., Kauffman, S. and Ulanowicz, R. (2018).
+Niche emergence as an autocatalytic process in the evolution of ecosystems,
+Journal of Theoretical Biology, 454: 110-117.
 
 <a id="25">[SXH20]</a>
 Steel, M., Xavier, J. C., and Huson, D. H. (

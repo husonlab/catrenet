@@ -19,110 +19,87 @@
 
 package catlynet.tab;
 
+import catlynet.dialog.ExportTextFileDialog;
 import catlynet.window.MainWindow;
-import javafx.beans.InvalidationListener;
-import javafx.beans.WeakInvalidationListener;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.VBox;
-import jloda.fx.find.FindToolBar;
-import jloda.fx.util.ExtendedFXMLLoader;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import jloda.fx.find.ISearcher;
+import jloda.fx.find.TextAreaSearcher;
+import jloda.fx.util.RunAfterAWhile;
+import jloda.util.StringUtils;
 
 /**
- * text tab, with v box and text area
+ * text tab
  * Daniel Huson, 4.2020
  */
-public class TextTab {
-    final private String reactionSystemName;
-    final private Tab tab;
-    final private VBox vBox;
-    final private TextArea textArea;
-    private FindToolBar findToolBar;
+public class TextTab extends Tab {
+    private final MainWindow mainWindow;
 
-    private final TextTabController controller;
+    private final String name;
+    final private TextArea textArea;
+
+    private final ISearcher searcher;
 
     /**
      * create a text tab
      *
 	 */
-    public TextTab(MainWindow mainWindow, String reactionSystemName) {
-        this.reactionSystemName = reactionSystemName;
-        final ExtendedFXMLLoader<TextTabController> extendedFXMLLoader = new ExtendedFXMLLoader<>(TextTab.class);
-        controller = extendedFXMLLoader.getController();
+    public TextTab(MainWindow mainWindow, String name) {
+        this.mainWindow = mainWindow;
+        this.name = name;
 
-        tab = controller.getTab();
-        tab.setText(reactionSystemName);
-        tab.setId(reactionSystemName);
-        vBox = controller.getVbox();
-        textArea = controller.getTextArea();
-        tab.setUserData(this);
-        tab.setClosable(true);
+        setText(name);
+        setId(name);
+        textArea = new TextArea();
+        setContent(textArea);
+        textArea.wrapTextProperty().bindBidirectional(mainWindow.getController().getWrapTextMenuItem().selectedProperty());
+        setClosable(true);
 
-        tab.disableProperty().bind(textArea.textProperty().isEmpty());
+        disableProperty().bind(textArea.textProperty().isEmpty());
+        searcher = new TextAreaSearcher(name, getTextArea());
 
-        var exportItem = new SimpleObjectProperty<MenuItem>();
-        InvalidationListener invalidationListener = e -> {
-            exportItem.set(null);
-            for (var item : mainWindow.getController().getExportMenu().getItems()) {
-                if (item.getText() != null && item.getText().equals(reactionSystemName + "...")) {
-                    exportItem.set(item);
-                    break;
-                }
-            }
-        };
-        mainWindow.getController().getExportMenu().getItems().addListener(new WeakInvalidationListener(invalidationListener));
-        invalidationListener.invalidated(null);
-
-        controller.getExportMenuItem().setOnAction(e -> exportItem.get().getOnAction().handle(e));
-        controller.getExportMenuItem().disableProperty().bind(exportItem.isNull());
-
-        tab.setOnClosed(e -> {
-            if (exportItem.get() != null)
-                mainWindow.getController().getExportMenu().getItems().remove(exportItem.get());
+        textArea.textProperty().addListener(e -> {
+            RunAfterAWhile.applyInFXThread(textArea, () -> textArea.positionCaret(textArea.getText().length()));
         });
     }
 
-    public String getReactionSystemName() {
-        return reactionSystemName;
+    public void copyToClipboard() {
+        var content = new ClipboardContent();
+        content.putString(textArea.getSelectedText().isEmpty() ? textArea.getText() : textArea.getSelectedText());
+        Clipboard.getSystemClipboard().setContent(content);
     }
 
-    public Tab getTab() {
-        return tab;
+    public void exportToFile() {
+        ExportTextFileDialog.apply(mainWindow, StringUtils.toCamelCase(name), textArea.getText());
     }
 
-    public VBox getvBox() {
-        return vBox;
+    public String getName() {
+        return name;
+    }
+
+    public MainWindow getMainWindow() {
+        return mainWindow;
     }
 
     public TextArea getTextArea() {
         return textArea;
     }
 
-    public FindToolBar getFindToolBar() {
-        return findToolBar;
-    }
-
-    public void setFindToolBar(FindToolBar findToolBar) {
-        if (findToolBar != null)
-            vBox.getChildren().add(findToolBar);
-        this.findToolBar = findToolBar;
-    }
-
-    public TextTabController getController() {
-        return controller;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof TextTab)) return false;
-        return ((TextTab) o).reactionSystemName.equals(reactionSystemName);
+        return ((TextTab) o).getName().equals(getName());
     }
 
     @Override
     public int hashCode() {
-        return reactionSystemName.hashCode();
+        return getName().hashCode();
+    }
+
+    public ISearcher getSearcher() {
+        return searcher;
     }
 }

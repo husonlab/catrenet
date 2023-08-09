@@ -82,8 +82,6 @@ public class RunAlgorithm {
 
             result.shallowCopy(triplet.getFirst());
 
-            window.getExportManager().addOrReplace(result);
-
             if (result.size() > 0) {
                 var headLine = result.getName() + " has " + result.size() + " reactions"
                                + (result.getNumberOfTwoWayReactions() > 0 ? " (" + result.getNumberOfTwoWayReactions() + " two-way and " + result.getNumberOfOneWayReactions() + " one-way)" : "")
@@ -94,9 +92,10 @@ public class RunAlgorithm {
 
                 NotificationManager.showInformation(headLine);
 
-                var textArea = window.getTabManager().getTextArea(algorithm.getName());
-                window.getTabManager().getTab(algorithm.getName()).disableProperty().bind(result.sizeProperty().isEqualTo(0));
-                controller.getOutputTabPane().getSelectionModel().select(window.getTabManager().getTab(algorithm.getName()));
+                var textTab = window.getTabManager().getTextTab(result.getName(), result);
+
+                var textArea = textTab.getTextArea();
+                controller.getOutputTabPane().getSelectionModel().select(textTab);
 
                 if (infoLine1 != null && infoLine2 != null) {
                     //final String text="# " + headLine + ":\n# " + infoLine1 + "\n# " + infoLine2 + "\n\n" + ModelIO.toString(result, false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation());

@@ -80,8 +80,6 @@ public class SelectionBindings {
         });
         controller.getSelectNoneMenuItem().disableProperty().bind(inputHasFocus.not().and(visualizationHasFocus.not()));
 
-        controller.getSelectNoneContextMenuItem().setOnAction(controller.getSelectNoneMenuItem().getOnAction());
-        controller.getSelectNoneContextMenuItem().disableProperty().bind(controller.getSelectNoneMenuItem().disableProperty());
 
         controller.getSelectInvertedMenuItem().setOnAction(c -> {
             view.getReactionGraph().nodeStream().forEach(v -> view.getNodeSelection().toggleSelection(v));
@@ -119,9 +117,6 @@ public class SelectionBindings {
             view.getEdgeSelection().selectItems(edges);
         });
         controller.getSelectConnectedComponentMenuItem().disableProperty().bind(visualizationHasFocus.not().or(view.getNodeSelection().emptyProperty()));
-
-        controller.getSelectConnectedComponentContextMenuItem().setOnAction(controller.getSelectConnectedComponentMenuItem().getOnAction());
-        controller.getSelectConnectedComponentContextMenuItem().disableProperty().bind(controller.getSelectConnectedComponentMenuItem().disableProperty());
 
         window.getDocument().getDefinedSystems().addListener((InvalidationListener) c -> controller.getSelectReactionSystemMenu().getItems()
                 .setAll(window.getDocument().getDefinedSystems().stream().map(window::getReactionSystem).map(r -> {

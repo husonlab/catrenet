@@ -135,7 +135,7 @@ public class ComputeMoleculeDependencies implements IDescribed {
 		service.setOnSucceeded(a -> {
 			var graph = service.getValue();
 			mainWindow.getDocument().setReactionDependencyNetwork(graph);
-			final var textArea = mainWindow.getTabManager().getTextArea("Molecule dependencies");
+			final var textArea = mainWindow.getTabManager().getTextTab("Molecule dependencies", null).getTextArea();
 			var buf = new StringBuilder();
 			buf.append("# Molecule dependencies (%,d):%n".formatted(graph.getNumberOfEdges()));
 			var lines = graph.edgeStream().map(e -> e.getSource().getInfo() + " -> " + e.getTarget().getInfo()).sorted().toList();

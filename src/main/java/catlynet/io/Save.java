@@ -79,6 +79,7 @@ public class Save {
                 ProgramProperties.put("SaveFileDir", selectedFile.getParent());
                 NotificationManager.showInformation("Saved to file: " + selectedFile);
                 RecentFilesManager.getInstance().insertRecentFile(selectedFile.getPath());
+				window.getDocument().setDirty(false);
                 return true;
             } catch (IOException ex) {
                 NotificationManager.showError("Save failed: " + ex);

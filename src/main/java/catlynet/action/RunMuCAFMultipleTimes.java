@@ -58,7 +58,7 @@ public class RunMuCAFMultipleTimes implements IDescribed {
         result.ifPresent(name -> inputString.set(result.get()));
 
         if (NumberUtils.isInteger(inputString.get()) && NumberUtils.parseInt(inputString.get()) > 0) {
-            final TextArea textArea = window.getTabManager().getTextArea(MuCAFAlgorithm.Name);
+			final TextArea textArea = window.getTabManager().getTextTab(MuCAFAlgorithm.Name, null).getTextArea();
             MultiRunAlgorithm.apply(window, window.getInputReactionSystem(), new MuCAFAlgorithm(), textArea, NumberUtils.parseInt(inputString.get()), runningListener);
         }
     }

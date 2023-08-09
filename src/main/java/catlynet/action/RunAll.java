@@ -44,8 +44,6 @@ public class RunAll {
 		controller.getParsedReactionsTextArea().clear();
         tabManager.clearAll();
 
-        window.getExportManager().clear();
-
         if (VerifyInput.verify(window)) {
             final ReactionSystem inputReactions = window.getInputReactionSystem();
 

@@ -87,7 +87,7 @@ public class MaterialIcons {
 		var label = new Label(ch);
 		label.getStyleClass().add("icon-text");
 		label.setAlignment(Pos.CENTER);
-		label.setStyle("-fx-font-family: 'Material Icons Outlined'; -fx-font-size: 16; -fx-background-color: transparent;" + (style != null ? style : ""));
+		label.setStyle("-fx-font-family: 'Material Icons Outlined'; -fx-font-size: 18; -fx-background-color: transparent;" + (style != null ? style : ""));
 		return label;
 	}
 
@@ -105,5 +105,9 @@ public class MaterialIcons {
 
 	public Map<String, String> getNameCodePointMap() {
 		return nameCodePointMap;
+	}
+
+	public String getStyleSheet() {
+		return styleSheet;
 	}
 }

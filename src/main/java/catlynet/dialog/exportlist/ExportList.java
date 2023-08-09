@@ -19,7 +19,7 @@
 
 package catlynet.dialog.exportlist;
 
-import catlynet.action.ExportManager;
+import catlynet.dialog.ExportReactionsFileDialog;
 import catlynet.model.ReactionSystem;
 import catlynet.window.MainWindow;
 import javafx.beans.binding.Bindings;
@@ -88,7 +88,7 @@ public class ExportList {
             final ReactionSystem result = new ReactionSystem("extracted");
             result.getReactions().setAll(inputReactions.getReactions().filtered(r -> reactionNames.contains(r.getName()) == controller.getKeepRadioButton().isSelected()));
             result.getFoods().setAll(result.computeMentionedFoods(inputReactions.getFoods()));
-            ExportManager.exportDialog(window, result.getName(), result);
+			ExportReactionsFileDialog.apply(window, result);
         });
         controller.getExportButton().disableProperty().bind(Bindings.isEmpty(reactionNames));
     }

@@ -269,7 +269,7 @@ public class ComputeReactionDependencies implements IDescribed {
 		service.setOnSucceeded(a -> {
 			var graph = service.getValue();
 			mainWindow.getDocument().setReactionDependencyNetwork(graph);
-			final var textArea = mainWindow.getTabManager().getTextArea("Dependencies");
+			final var textArea = mainWindow.getTabManager().getTextTab("Dependencies", null).getTextArea();
 			var buf = new StringBuilder();
 			buf.append("# Earliest reactions (%,d):%n".formatted(graph.nodeStream().filter(v -> v.getInDegree() == 0 && v.getOutDegree() > 0).count()));
 			buf.append(StringUtils.toString(new TreeSet<>(graph.nodeStream().filter(v -> v.getInDegree() == 0 && v.getOutDegree() > 0).map(v -> v.getInfo().toString()).toList()), "\n")).append("\n");

@@ -21,6 +21,7 @@ package catlynet.window;
 
 import catlynet.action.*;
 import catlynet.algorithm.*;
+import catlynet.dialog.ExportReactionsForSelectedNodesDialog;
 import catlynet.dialog.exportlist.ExportList;
 import catlynet.format.FormatWindow;
 import catlynet.io.Save;
@@ -48,7 +49,6 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import jloda.fx.control.ZoomableScrollPane;
-import jloda.fx.dialog.ExportImageDialog;
 import jloda.fx.util.*;
 import jloda.fx.window.MainWindowManager;
 import jloda.fx.window.NotificationManager;
@@ -130,10 +130,9 @@ public class MainWindowPresenter {
 
         controller.getOpenMenuItem().setOnAction(FileOpenManager.createOpenFileEventHandler(window.getStage()));
 
-
         controller.getImportMenuItem().setOnAction(c -> ImportWimsFormat.apply(window.getStage()));
 
-        controller.getExportSelectedNodesMenuItem().setOnAction(c -> ExportManager.exportNodes(window));
+        controller.getExportSelectedNodesMenuItem().setOnAction(c -> ExportReactionsForSelectedNodesDialog.apply(window));
         controller.getExportSelectedNodesMenuItem().disableProperty().bind(graphView.getNodeSelection().emptyProperty());
 
         controller.getExportListOfReactionsMenuItem().setOnAction(c -> {
@@ -178,8 +177,6 @@ public class MainWindowPresenter {
             }
         });
 
-        controller.getExportNetworkMenuButton().disableProperty().bind(graphView.getMoleculeFlowAnimation().playingProperty().or(graphView.emptyProperty()));
-
         // cut, copy, paste and undo/redo all implemented by TextArea controls
 
         controller.getCutMenuItem().setOnAction(e -> {
@@ -219,8 +216,6 @@ public class MainWindowPresenter {
                 ((controller.getInputTextArea().focusedProperty().and(controller.getInputTextArea().redoableProperty()))
                         .or(controller.getInputFoodTextArea().undoableProperty())).not());
 
-        controller.getClearLogMenuItem().setOnAction(e -> controller.getLogTextArea().clear());
-        controller.getClearLogMenuItem().disableProperty().bind(controller.getLogTextArea().textProperty().isEmpty());
 
         controller.getComputeNetworkMenuItem().setOnAction(c -> {
             if (controller.getFullGraphRadioMenuItem().getToggleGroup().getSelectedToggle() == null) {
@@ -485,9 +480,6 @@ public class MainWindowPresenter {
             });
             controller.getZoomToFitMenuItem().disableProperty().bind(controller.getZoomInMenuItem().disableProperty());
 
-            controller.getExportImageNetworkMenuItem().setOnAction(e -> ExportImageDialog.show(window.getDocument().getFileName(), window.getStage(), controller.getNetworkScrollPane().getContent()));
-            controller.getExportImageNetworkMenuItem().disableProperty().bind(disableGraphItems);
-
             // controller.getStatusFlowPane().prefHeightProperty().addListener((c,o,n)->System.err.println("PH changed: "+o+" -> "+n));
             // controller.getStatusFlowPane().heightProperty().addListener((c,o,n)->System.err.println("H changed: "+o+" -> "+n));
 
@@ -661,6 +653,7 @@ public class MainWindowPresenter {
 
         controller.getComputeImportanceCheckMenuItem().setSelected(computeImportance); // this is a program-run parameter
         controller.getComputeImportanceCheckMenuItem().selectedProperty().addListener((c, o, n) -> computeImportance = n);
+        controller.getComputeImportanceCheckMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
         window.getInputReactionSystem().sizeProperty().addListener((c, o, n) -> controller.getInputReactionsSizeLabel().setText(String.format("%,d", n.intValue())));
         window.getInputReactionSystem().foodSizeProperty().addListener((c, o, n) -> {
@@ -673,6 +666,8 @@ public class MainWindowPresenter {
         controller.getUseDarkThemeCheckMenuItem().selectedProperty().bindBidirectional(MainWindowManager.useDarkThemeProperty());
 
         SetupFind.apply(window);
+        SetupExport.apply(window);
+
 
         selectLogTab(controller);
 

@@ -19,7 +19,6 @@
 
 package catlynet.window;
 
-import catlynet.action.ExportManager;
 import catlynet.io.CRSFileFilter;
 import catlynet.io.FileOpener;
 import catlynet.model.ReactionSystem;
@@ -59,8 +58,6 @@ public class MainWindow implements IMainWindow {
 
     private final UndoManager undoManager = new UndoManager();
 
-    private final ExportManager exportManager;
-
     private final TabManager tabManager;
 
     private final Document document = new Document();
@@ -86,8 +83,6 @@ public class MainWindow implements IMainWindow {
 
             reactionGraphView = new ReactionGraphView(getDocument(), controller, getLogStream());
         }
-
-        exportManager = new ExportManager(this);
 
         tabManager = new TabManager(this, controller.getOutputTabPane().getTabs());
 
@@ -187,10 +182,6 @@ public class MainWindow implements IMainWindow {
 
     public ReactionGraphView getReactionGraphView() {
         return reactionGraphView;
-    }
-
-    public ExportManager getExportManager() {
-        return exportManager;
     }
 
     public TabManager getTabManager() {

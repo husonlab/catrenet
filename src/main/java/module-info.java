@@ -30,4 +30,5 @@ module catlynet {
 	opens catlynet.resources.icons;
 
 	exports catlynet;
+	exports catlynet.dialog;
 }
