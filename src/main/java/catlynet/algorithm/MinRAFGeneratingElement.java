@@ -74,7 +74,7 @@ public class MinRAFGeneratingElement extends AlgorithmBase {
      */
     public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException {
         var empty = new ReactionSystem();
-		empty.setName(Name);
+        empty.setName(Name + " '" + getTarget().getName() + "'");
 
         if (getTarget() == null) {
             NotificationManager.showWarning("No element selected");

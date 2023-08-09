@@ -22,6 +22,7 @@ package catlynet.window;
 import catlynet.format.ArrowNotation;
 import catlynet.format.ReactionNotation;
 import catlynet.model.ReactionSystem;
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -51,8 +52,10 @@ public class Document {
      */
     public Document() {
         reactionSystems.addListener((InvalidationListener) c -> {
-            definedSystems.clear();
-            definedSystems.addAll(reactionSystems.keySet());
+            Platform.runLater(() -> {
+                definedSystems.clear();
+                definedSystems.addAll(reactionSystems.keySet());
+            });
         });
     }
 

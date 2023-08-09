@@ -118,8 +118,8 @@ public class MainWindowPresenter {
         controller.getOutputTabPane().getTabs().addListener((ListChangeListener<Tab>) z -> {
             while (z.next()) {
                 for (Tab tab : z.getAddedSubList()) {
-                    if (tab.getUserData() instanceof TextTab) {
-                        final TextArea textArea = ((TextTab) tab.getUserData()).getTextArea();
+                    if (tab.getUserData() instanceof TextTab textTab) {
+                        final TextArea textArea = textTab.getTextArea();
                         textArea.focusedProperty().addListener(textAreaFocusChangeListener(controller, printableNode, textArea));
                     }
                 }
@@ -298,19 +298,37 @@ public class MainWindowPresenter {
                 if (molecules.isEmpty()) {
                     NotificationManager.showWarning("No molecule types that are not contained in the food set");
                 } else {
+                    var moleculeNames = molecules.stream().map(MoleculeType::getName).toList();
                     var selectedMolecule = MoleculeType.valueOf(ProgramProperties.get("GeneratingElement", molecules.first().getName()));
                     if (!molecules.contains(selectedMolecule))
                         selectedMolecule = molecules.first();
-                    var dialog = new ChoiceDialog<>(selectedMolecule, molecules);
+                    var dialog = new ChoiceDialog<>(selectedMolecule.getName(), moleculeNames);
                     dialog.initOwner(window.getStage());
                     dialog.setTitle("Select a Molecule");
                     dialog.setHeaderText("Select element for generating minimal RAF:");
+
+                    var comboBox = BasicFX.findOneRecursively(dialog.getDialogPane(), ComboBox.class);
+                    if (comboBox != null) {
+                        comboBox.setEditable(true);
+                        comboBox.getEditor().textProperty().addListener((v, o, n) -> {
+                            if (!n.isEmpty()) {
+                                for (var name : moleculeNames) {
+                                    if (name.startsWith(n))
+                                        return;
+                                }
+                                Platform.runLater(() -> comboBox.getEditor().setText(n.substring(0, n.length() - 1)));
+                            }
+                        });
+                    }
+
                     var result = dialog.showAndWait();
                     result.ifPresent(m -> {
-                        ProgramProperties.put("GeneratingElement", m.getName());
-                        var algorithm = new MinRAFGeneratingElement();
-                        algorithm.setTarget(m);
-                        RunAlgorithm.apply(window, window.getInputReactionSystem(), algorithm, runningListener, true);
+                        if (moleculeNames.contains(m)) {
+                            ProgramProperties.put("GeneratingElement", m);
+                            var algorithm = new MinRAFGeneratingElement();
+                            algorithm.setTarget(MoleculeType.valueOf(m));
+                            RunAlgorithm.apply(window, window.getInputReactionSystem(), algorithm, runningListener, true);
+                        } else NotificationManager.showWarning("Invalid molecule type: " + m);
                     });
                 }
             }

@@ -50,7 +50,7 @@ public class ExportReactionsFileDialog {
 	 * @param reactions
 	 */
 	public static void apply(MainWindow window, ReactionSystem reactions) {
-		var name = StringUtils.toCamelCase(reactions.getName());
+		var name = StringUtils.toCamelCase(reactions.getName()).replaceAll("'", "_");
 		final FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Export File - " + ProgramProperties.getProgramVersion());
 

@@ -99,8 +99,7 @@ public class SetupExport {
                 copyMenuItem.disableProperty().bind(textArea.textProperty().isEmpty());
                 exportMenuItem.disableProperty().bind(textArea.textProperty().isEmpty());
 
-            } else if (n != null && n.getUserData() instanceof TextTab textTab) {
-                var textArea = textTab.getTextArea();
+            } else if (n instanceof TextTab textTab) {
                 copyMenuItem.setOnAction(e -> textTab.copyToClipboard());
                 exportMenuItem.setOnAction(e -> textTab.exportToFile());
                 copyMenuItem.disableProperty().bind(textTab.getTextArea().textProperty().isEmpty());

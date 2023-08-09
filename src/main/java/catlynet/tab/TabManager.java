@@ -42,11 +42,11 @@ public class TabManager {
     }
 
     public void clearAll() {
-        tabs.stream().filter(t -> t.getUserData() instanceof TextTab).toList().forEach(tabs::remove);
+        tabs.stream().filter(t -> t instanceof TextTab).toList().forEach(tabs::remove);
     }
 
     public void clear(String reactionSystemName) {
-        final Optional<Tab> tab = tabs.stream().filter(t -> t.getUserData() instanceof TextTab && ((TextTab) t.getUserData()).getName().equals(reactionSystemName)).findAny();
+        final Optional<Tab> tab = tabs.stream().filter(t -> t instanceof TextTab textTab && textTab.getName().equals(reactionSystemName)).findAny();
         tab.ifPresent(tabs::remove);
     }
 

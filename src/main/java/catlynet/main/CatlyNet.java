@@ -108,6 +108,7 @@ public class CatlyNet extends Application {
         final var silentMode = options.getOption("-S", "silentMode", "Silent mode", false);
         ProgramExecutorService.setNumberOfCoresToUse(options.getOption("-t", "threads", "Maximum number of threads to use in a parallel algorithm (0=all available)", 0));
         ProgramProperties.setConfirmQuit(options.getOption("-q", "confirmQuit", "Confirm quit on exit", ProgramProperties.isConfirmQuit()));
+        ProgramProperties.put("MaxNumberRecentFiles", 100);
         options.done();
 
         ProgramProperties.load(propertiesFile);

@@ -76,7 +76,7 @@ public class SetupFind {
 				findToolBar.setSearchers(logSearcher);
 			} else if (n == controller.getParsedReactionsTab()) {
 				findToolBar.setSearchers(parsedSearcher);
-			} else if (n.getUserData() instanceof TextTab textTab) {
+			} else if (n instanceof TextTab textTab) {
 				findToolBar.setSearchers(textTab.getSearcher());
 			} else
 				findToolBar.setSearchers(emptySearcher);
