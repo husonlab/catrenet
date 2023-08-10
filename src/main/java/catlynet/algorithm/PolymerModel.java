@@ -95,7 +95,8 @@ public class PolymerModel implements IDescribed {
 				var suffix = polymer.substring(i);
 				var reaction = new Reaction(String.format("r%03d", (++count)));
 				reaction.getReactants().add(MoleculeType.valueOf(prefix));
-				reaction.getProducts().add(MoleculeType.valueOf(suffix));
+				reaction.getReactants().add(MoleculeType.valueOf(suffix));
+				reaction.getProducts().add(MoleculeType.valueOf(polymer));
 				reaction.setDirection(Reaction.Direction.both);
 				reactions.add(reaction);
 			}
