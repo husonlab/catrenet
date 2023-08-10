@@ -22,16 +22,11 @@ package catlynet.window;
 import catlynet.format.ArrowNotation;
 import catlynet.format.ReactionNotation;
 import catlynet.model.ReactionSystem;
-import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
-import javafx.collections.ObservableSet;
 import jloda.fx.util.ProgramProperties;
 import jloda.graph.Graph;
-
-import java.util.TreeSet;
 
 public class Document {
     private final StringProperty fileName = new SimpleStringProperty("Untitled");
@@ -39,8 +34,6 @@ public class Document {
     private final BooleanProperty warnedAboutInhibitions = new SimpleBooleanProperty(false);
 
     private final ObservableMap<String, ReactionSystem> reactionSystems = FXCollections.observableHashMap();
-    private final ObservableSet<String> definedSystems = FXCollections.observableSet(new TreeSet<>());
-
     private final ObjectProperty<Graph> reactionDependencyNetwork = new SimpleObjectProperty<>(this, "reactionDependencyNetwork");
     private final ObjectProperty<Graph> moleculeDependencyNetwork = new SimpleObjectProperty<>(this, "moleculeDependencyNetwork");
 
@@ -51,12 +44,6 @@ public class Document {
      * constructor
      */
     public Document() {
-        reactionSystems.addListener((InvalidationListener) c -> {
-            Platform.runLater(() -> {
-                definedSystems.clear();
-                definedSystems.addAll(reactionSystems.keySet());
-            });
-        });
     }
 
     public ReactionSystem getInputReactionSystem() {
@@ -70,6 +57,10 @@ public class Document {
             reactionSystems.put(name, inputReactionSystem);
         }
         return inputReactionSystem;
+    }
+
+    public ObservableMap<String, ReactionSystem> getReactionSystems() {
+        return reactionSystems;
     }
 
     public boolean isDirty() {
@@ -130,10 +121,6 @@ public class Document {
 
     public void setWarnedAboutInhibitions(boolean warnedAboutInhibitions) {
         this.warnedAboutInhibitions.set(warnedAboutInhibitions);
-    }
-
-    public ObservableSet<String> getDefinedSystems() {
-        return new ReadOnlySetWrapper<>(definedSystems);
     }
 
     public Graph getReactionDependencyNetwork() {

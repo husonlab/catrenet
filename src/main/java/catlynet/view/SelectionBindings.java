@@ -118,25 +118,35 @@ public class SelectionBindings {
         });
         controller.getSelectConnectedComponentMenuItem().disableProperty().bind(visualizationHasFocus.not().or(view.getNodeSelection().emptyProperty()));
 
-        window.getDocument().getDefinedSystems().addListener((InvalidationListener) c -> controller.getSelectReactionSystemMenu().getItems()
-                .setAll(window.getDocument().getDefinedSystems().stream().map(window::getReactionSystem).map(r -> {
-                    final MenuItem menuItem = new MenuItem(r.getName());
-                    menuItem.setOnAction(z -> selectForAlgorithm(view, window.getReactionSystem(r.getName())));
-                    menuItem.disableProperty().bind(visualizationHasFocus.not().or(window.getReactionSystem(r.getName()).sizeProperty().isEqualTo(0)));
-                    return menuItem;
-                }).collect(Collectors.toList())));
+
+        window.getDocument().getReactionSystems().addListener((InvalidationListener) e ->
+                Platform.runLater(() -> {
+                    controller.getSelectReactionSystemMenu().getItems().clear();
+                    for (var r : window.getDocument().getReactionSystems().values()) {
+                        if (!r.getName().equals(window.getDocument().getInputReactionSystem().getName())) {
+                            var menuItem = new MenuItem(r.getName());
+                            menuItem.setOnAction(z -> selectForAlgorithm(view, r));
+                            menuItem.disableProperty().bind(visualizationHasFocus.not().or(r.sizeProperty().isEqualTo(0)));
+                            controller.getSelectReactionSystemMenu().getItems().add(menuItem);
+                        }
+                    }
+                })
+        );
 
         final List<MenuItem> additionalContextMenuItems = new ArrayList<>(controller.getNetworkContextMenu().getItems());
 
-        window.getDocument().getDefinedSystems().addListener((InvalidationListener) c -> Platform.runLater(() -> {
-            controller.getNetworkContextMenu().getItems()
-                    .setAll(window.getDocument().getDefinedSystems().stream().map(window::getReactionSystem).map(r -> {
-                        final MenuItem menuItem = new MenuItem("Select " + r.getName());
-                        menuItem.setOnAction(z -> selectForAlgorithm(view, window.getReactionSystem(r.getName())));
-                        menuItem.disableProperty().bind(window.getReactionSystem(r.getName()).sizeProperty().isEqualTo(0));
-                        return menuItem;
-                    }).collect(Collectors.toList()));
-            controller.getNetworkContextMenu().getItems().addAll(additionalContextMenuItems);
+        window.getDocument().getReactionSystems().addListener((InvalidationListener) e ->
+                Platform.runLater(() -> {
+                    controller.getNetworkContextMenu().getItems().clear();
+                    for (var r : window.getDocument().getReactionSystems().values()) {
+                        if (!r.getName().equals(window.getDocument().getInputReactionSystem().getName())) {
+                            final MenuItem menuItem = new MenuItem("Select " + r.getName());
+                            menuItem.setOnAction(z -> selectForAlgorithm(view, window.getReactionSystem(r.getName())));
+                            menuItem.disableProperty().bind(window.getReactionSystem(r.getName()).sizeProperty().isEqualTo(0));
+                            controller.getNetworkContextMenu().getItems().add(menuItem);
+                        }
+                    }
+                    controller.getNetworkContextMenu().getItems().addAll(additionalContextMenuItems);
                 })
         );
 

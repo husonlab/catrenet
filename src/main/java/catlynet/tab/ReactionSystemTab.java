@@ -23,6 +23,8 @@ import catlynet.dialog.ExportReactionsFileDialog;
 import catlynet.model.ReactionSystem;
 import catlynet.window.MainWindow;
 import javafx.scene.control.MenuItem;
+import jloda.fx.window.NotificationManager;
+import jloda.util.StringUtils;
 
 /**
  * reaction system tab
@@ -48,7 +50,15 @@ public class ReactionSystemTab extends TextTab {
 		setOnClosed(e -> {
 			var menuItem = mainWindow.getController().getExportMenu().getItems().stream().filter(item -> label.equals(item.getText())).findAny();
 			menuItem.ifPresent(item -> mainWindow.getController().getExportMenu().getItems().remove(item));
+			mainWindow.getDocument().getReactionSystems().remove(reactionSystem.getName());
 		});
+
+		NotificationManager.showInformation(reactionSystem.getHeaderLine());
+
+		//final String text="# " + headLine + ":\n# " + infoLine1 + "\n# " + infoLine2 + "\n\n" + ModelIO.toString(result, false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation());
+		var text = "# " + reactionSystem.getHeaderLine() + ":\n\n" + StringUtils.toString(reactionSystem.getReactionNames(), "\n");
+		getTextArea().setText(text);
+		mainWindow.getLogStream().println("\n\n" + reactionSystem.getHeaderLine());
 	}
 
 	public ReactionSystem getReactionSystem() {

@@ -39,6 +39,8 @@
                                                             shortcut="UP"/>
                                     </accelerator>
                                 </MenuItem>
+                                <MenuItem fx:id="newPolymerModelMenuItem" mnemonicParsing="false"
+                                          text="New Polymer Model..."/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="openMenuItem" mnemonicParsing="false" text="Open...">
                                     <accelerator>
@@ -566,9 +568,10 @@
                                     </tooltip>
                                     <items>
                                         <MenuItem fx:id="newRecentFileMenuItem" mnemonicParsing="false" text="New..."/>
+                                        <MenuItem fx:id="newPolymerModelRecentFileMenuItem" mnemonicParsing="false"
+                                                  text="New Polymer Model..."/>
                                         <MenuItem fx:id="openRecentFileMenuItem" mnemonicParsing="false"
                                                   text="Open..."/>
-
                                         <SeparatorMenuItem mnemonicParsing="false"/>
                                     </items>
                                 </MenuButton>

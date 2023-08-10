@@ -22,6 +22,7 @@ package catlynet.window;
 import catlynet.action.*;
 import catlynet.algorithm.*;
 import catlynet.dialog.ExportReactionsForSelectedNodesDialog;
+import catlynet.dialog.PolymerModelDialog;
 import catlynet.dialog.exportlist.ExportList;
 import catlynet.format.FormatWindow;
 import catlynet.io.Save;
@@ -74,18 +75,18 @@ public class MainWindowPresenter {
 
     private static Stage vFormatWindowStage = null;
 
-    public static void setup(MainWindow window) {
+    public static void setup(MainWindow mainWindow) {
         final ObjectProperty<javafx.scene.Node> printableNode = new SimpleObjectProperty<>();
 
-        final var controller = window.getController();
-        final var tabManager = window.getTabManager();
-        final var graphView = window.getReactionGraphView();
+        final var controller = mainWindow.getController();
+        final var tabManager = mainWindow.getTabManager();
+        final var graphView = mainWindow.getReactionGraphView();
 
         final var disableGraphItems = new SimpleBooleanProperty(true);
         final var disableFullGraphItems = new SimpleBooleanProperty(true);
         disableFullGraphItems.bind(disableGraphItems.or(graphView.graphTypeProperty().isEqualTo(ReactionGraphView.Type.associationNetwork)
                         .or(graphView.graphTypeProperty().isEqualTo(ReactionGraphView.Type.reactantAssociationNetwork)))
-                .or(window.getReactionGraphView().getMoleculeFlowAnimation().playingProperty()));
+                .or(mainWindow.getReactionGraphView().getMoleculeFlowAnimation().playingProperty()));
 
         final var algorithmsRunning = new SimpleIntegerProperty(0);
         final ChangeListener<Boolean> runningListener = (c, o, n) -> {
@@ -97,17 +98,17 @@ public class MainWindowPresenter {
 
         controller.getInputTextArea().undoableProperty().addListener((c, o, n) -> {
             if (n)
-                window.getDocument().setDirty(true);
+                mainWindow.getDocument().setDirty(true);
         });
         controller.getInputFoodTextArea().undoableProperty().addListener((c, o, n) -> {
             if (n)
-                window.getDocument().setDirty(true);
+                mainWindow.getDocument().setDirty(true);
         });
 
         RecentFilesManager.getInstance().setFileOpener(FileOpenManager.getFileOpener());
         RecentFilesManager.getInstance().setupMenu(controller.getRecentFilesMenu());
 
-        window.getStage().setOnCloseRequest(e -> {
+        mainWindow.getStage().setOnCloseRequest(e -> {
             controller.getCloseMenuItem().getOnAction().handle(null);
             e.consume();
         });
@@ -128,43 +129,45 @@ public class MainWindowPresenter {
 
         controller.getNewMenuItem().setOnAction(e -> NewWindow.apply());
 
-        controller.getOpenMenuItem().setOnAction(FileOpenManager.createOpenFileEventHandler(window.getStage()));
+        controller.getNewPolymerModelMenuItem().setOnAction(e -> PolymerModelDialog.show(mainWindow));
 
-        controller.getImportMenuItem().setOnAction(c -> ImportWimsFormat.apply(window.getStage()));
+        controller.getOpenMenuItem().setOnAction(FileOpenManager.createOpenFileEventHandler(mainWindow.getStage()));
 
-        controller.getExportSelectedNodesMenuItem().setOnAction(c -> ExportReactionsForSelectedNodesDialog.apply(window));
+        controller.getImportMenuItem().setOnAction(c -> ImportWimsFormat.apply(mainWindow.getStage()));
+
+        controller.getExportSelectedNodesMenuItem().setOnAction(c -> ExportReactionsForSelectedNodesDialog.apply(mainWindow));
         controller.getExportSelectedNodesMenuItem().disableProperty().bind(graphView.getNodeSelection().emptyProperty());
 
         controller.getExportListOfReactionsMenuItem().setOnAction(c -> {
-            final ExportList exportList = new ExportList(window);
-            MainWindowManager.getInstance().addAuxiliaryWindow(window, exportList.getStage());
+            final ExportList exportList = new ExportList(mainWindow);
+            MainWindowManager.getInstance().addAuxiliaryWindow(mainWindow, exportList.getStage());
             exportList.getStage().show();
         });
-        controller.getExportListOfReactionsMenuItem().disableProperty().bind(window.getInputReactionSystem().sizeProperty().isEqualTo(0));
+        controller.getExportListOfReactionsMenuItem().disableProperty().bind(mainWindow.getInputReactionSystem().sizeProperty().isEqualTo(0));
 
 
-        controller.getSaveMenuItem().setOnAction(e -> Save.showSaveDialog(window));
+        controller.getSaveMenuItem().setOnAction(e -> Save.showSaveDialog(mainWindow));
 
         controller.getCloseMenuItem().setOnAction(e -> {
             if (MainWindowManager.getInstance().size() > 1 && algorithmsRunning.get() > 0)
                 NotificationManager.showWarning(algorithmsRunning.get() + " computation(s) running, please cancel before closing");
             else {
                 graphView.getMoleculeFlowAnimation().setPlaying(false);
-                if (SaveBeforeClosingDialog.apply(window) != SaveBeforeClosingDialog.Result.cancel) {
-                    ProgramProperties.put("WindowGeometry", (new WindowGeometry(window.getStage())).toString());
-                    MainWindowManager.getInstance().closeMainWindow(window);
+                if (SaveBeforeClosingDialog.apply(mainWindow) != SaveBeforeClosingDialog.Result.cancel) {
+                    ProgramProperties.put("WindowGeometry", (new WindowGeometry(mainWindow.getStage())).toString());
+                    MainWindowManager.getInstance().closeMainWindow(mainWindow);
                 }
             }
         });
         controller.getCloseMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0));
 
 
-        controller.getPageSetupMenuItem().setOnAction(e -> Print.showPageLayout(window.getStage()));
+        controller.getPageSetupMenuItem().setOnAction(e -> Print.showPageLayout(mainWindow.getStage()));
 
         controller.getPrintMenuItem().setOnAction(e -> {
             javafx.scene.Node node = printableNode.get();
 
-            Print.print(window.getStage(), node);
+            Print.print(mainWindow.getStage(), node);
 
         });
         controller.getPrintMenuItem().disableProperty().bind(printableNode.isNull());
@@ -222,7 +225,7 @@ public class MainWindowPresenter {
                 controller.getFullGraphRadioMenuItem().setSelected(true);
             } else {
                 disableGraphItems.set(false);
-                ComputeGraph.apply(window, controller);
+                ComputeGraph.apply(mainWindow, controller);
                 controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
             }
 
@@ -245,14 +248,14 @@ public class MainWindowPresenter {
 
         controller.getFormatMenuItem().setOnAction(e -> {
             Stage stage = null;
-            for (Stage auxStage : MainWindowManager.getInstance().getAuxiliaryWindows(window)) {
+            for (Stage auxStage : MainWindowManager.getInstance().getAuxiliaryWindows(mainWindow)) {
                 if (auxStage.getTitle().contains(FormatWindow.title)) {
                     stage = auxStage;
                     break;
                 }
             }
             if (stage == null) {
-                final FormatWindow formatWindow = new FormatWindow(window);
+                final FormatWindow formatWindow = new FormatWindow(mainWindow);
                 stage = formatWindow.getStage();
             }
             stage.setIconified(false);
@@ -262,7 +265,7 @@ public class MainWindowPresenter {
         controller.getShowNodeAndEdgeFormatMenuItem().setOnAction(e -> {
 
             if (vFormatWindowStage == null) {
-                final VFormatWindow formatWindow = new VFormatWindow(window);
+                final VFormatWindow formatWindow = new VFormatWindow(mainWindow);
                 vFormatWindowStage = formatWindow.getStage();
             }
             vFormatWindowStage.setIconified(false);
@@ -271,29 +274,29 @@ public class MainWindowPresenter {
         });
 
         controller.getRunRAFMenuItem().setOnAction(e -> {
-            if (VerifyInput.verify(window)) {
-                RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxRAFAlgorithm(), runningListener, true);
+            if (VerifyInput.verify(mainWindow)) {
+                RunAlgorithm.apply(mainWindow, mainWindow.getInputReactionSystem(), new MaxRAFAlgorithm(), runningListener, true);
             }
         });
         controller.getRunRAFMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()));
 
         controller.getRunStrictlyAutocatalyticRAFMenuItem().setOnAction(e -> {
-            if (VerifyInput.verify(window)) {
-                RunAlgorithm.apply(window, window.getInputReactionSystem(), new StrictlyAutocatalyticMaxRAFAlgorithm(), runningListener, true);
+            if (VerifyInput.verify(mainWindow)) {
+                RunAlgorithm.apply(mainWindow, mainWindow.getInputReactionSystem(), new StrictlyAutocatalyticMaxRAFAlgorithm(), runningListener, true);
             }
         });
         controller.getRunStrictlyAutocatalyticRAFMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
 
         controller.getRunMinRAFGeneratingElementMenuItem().setOnAction(e -> {
-            if (VerifyInput.verify(window)) {
+            if (VerifyInput.verify(mainWindow)) {
                 var molecules = new TreeSet<MoleculeType>();
-                for (var r : window.getInputReactionSystem().getReactions()) {
+                for (var r : mainWindow.getInputReactionSystem().getReactions()) {
                     molecules.addAll(r.getProducts());
                     molecules.addAll(r.getReactants());
                     molecules.addAll(r.getCatalystElements());
                 }
-                window.getInputReactionSystem().getFoods().forEach(molecules::remove);
+                mainWindow.getInputReactionSystem().getFoods().forEach(molecules::remove);
 
                 if (molecules.isEmpty()) {
                     NotificationManager.showWarning("No molecule types that are not contained in the food set");
@@ -303,7 +306,7 @@ public class MainWindowPresenter {
                     if (!molecules.contains(selectedMolecule))
                         selectedMolecule = molecules.first();
                     var dialog = new ChoiceDialog<>(selectedMolecule.getName(), moleculeNames);
-                    dialog.initOwner(window.getStage());
+                    dialog.initOwner(mainWindow.getStage());
                     dialog.setTitle("Select a Molecule");
                     dialog.setHeaderText("Select element for generating minimal RAF:");
 
@@ -327,7 +330,7 @@ public class MainWindowPresenter {
                             ProgramProperties.put("GeneratingElement", m);
                             var algorithm = new MinRAFGeneratingElement();
                             algorithm.setTarget(MoleculeType.valueOf(m));
-                            RunAlgorithm.apply(window, window.getInputReactionSystem(), algorithm, runningListener, true);
+                            RunAlgorithm.apply(mainWindow, mainWindow.getInputReactionSystem(), algorithm, runningListener, true);
                         } else NotificationManager.showWarning("Invalid molecule type: " + m);
                     });
                 }
@@ -336,97 +339,97 @@ public class MainWindowPresenter {
         controller.getRunMinRAFGeneratingElementMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
         controller.getRunCAFMenuItem().setOnAction(e -> {
-            if (VerifyInput.verify(window)) {
-                RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxCAFAlgorithm(), runningListener, true);
+            if (VerifyInput.verify(mainWindow)) {
+                RunAlgorithm.apply(mainWindow, mainWindow.getInputReactionSystem(), new MaxCAFAlgorithm(), runningListener, true);
             }
         });
         controller.getRunCAFMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
         controller.getRunPseudoRAFMenuItem().setOnAction(e -> {
-            if (VerifyInput.verify(window)) {
-                RunAlgorithm.apply(window, window.getInputReactionSystem(), new MaxPseudoRAFAlgorithm(), runningListener, true);
+            if (VerifyInput.verify(mainWindow)) {
+                RunAlgorithm.apply(mainWindow, mainWindow.getInputReactionSystem(), new MaxPseudoRAFAlgorithm(), runningListener, true);
             }
         });
         controller.getRunPseudoRAFMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
         controller.getRunMinIRAFMenuItem().setOnAction(e -> {
-            if (VerifyInput.verify(window)) {
-                RunAlgorithm.apply(window, window.getInputReactionSystem(), new MinIRAFHeuristic(), runningListener, true);
+            if (VerifyInput.verify(mainWindow)) {
+                RunAlgorithm.apply(mainWindow, mainWindow.getInputReactionSystem(), new MinIRAFHeuristic(), runningListener, true);
             }
         });
         controller.getRunMinIRAFMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
         controller.getRunTrivialCAFsAlgorithmMenuItem().setOnAction(e -> {
-            if (VerifyInput.verify(window)) {
-                RunAlgorithm.apply(window, window.getInputReactionSystem(), new TrivialCAFsAlgorithm(), runningListener, true);
+            if (VerifyInput.verify(mainWindow)) {
+                RunAlgorithm.apply(mainWindow, mainWindow.getInputReactionSystem(), new TrivialCAFsAlgorithm(), runningListener, true);
             }
         });
         controller.getRunTrivialCAFsAlgorithmMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
         controller.getRunTrivialRAFsAlgorithmMenuItem().setOnAction(e -> {
-            if (VerifyInput.verify(window)) {
-                RunAlgorithm.apply(window, window.getInputReactionSystem(), new TrivialRAFsAlgorithm(), runningListener, true);
+            if (VerifyInput.verify(mainWindow)) {
+                RunAlgorithm.apply(mainWindow, mainWindow.getInputReactionSystem(), new TrivialRAFsAlgorithm(), runningListener, true);
             }
         });
         controller.getRunTrivialRAFsAlgorithmMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
         controller.getRunQuotientRAFMenuItem().setOnAction(e -> {
-            if (VerifyInput.verify(window)) {
-                RunAlgorithm.apply(window, window.getInputReactionSystem(), new QuotientRAFAlgorithm(), runningListener, true);
+            if (VerifyInput.verify(mainWindow)) {
+                RunAlgorithm.apply(mainWindow, mainWindow.getInputReactionSystem(), new QuotientRAFAlgorithm(), runningListener, true);
             }
         });
         controller.getRunQuotientRAFMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
         controller.getRunCoreRAFMenuItem().setOnAction(e -> {
-            if (VerifyInput.verify(window)) {
-                RunAlgorithm.apply(window, window.getInputReactionSystem(), new CoreRAFAlgorithm(), runningListener, true);
+            if (VerifyInput.verify(mainWindow)) {
+                RunAlgorithm.apply(mainWindow, mainWindow.getInputReactionSystem(), new CoreRAFAlgorithm(), runningListener, true);
             }
         });
         controller.getRunCoreRAFMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
         controller.getRemoveTrivialRAFsAlgorithmMenuItem().setOnAction(e -> {
-            if (VerifyInput.verify(window)) {
-                RunAlgorithm.apply(window, window.getInputReactionSystem(), new RemoveTrivialRAFsAlgorithm(), runningListener, true);
+            if (VerifyInput.verify(mainWindow)) {
+                RunAlgorithm.apply(mainWindow, mainWindow.getInputReactionSystem(), new RemoveTrivialRAFsAlgorithm(), runningListener, true);
             }
         });
         controller.getRemoveTrivialRAFsAlgorithmMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
         controller.getRunMuCAFMenuItem().setOnAction(e -> {
-            if (VerifyInput.verify(window)) {
-                if (window.getInputReactionSystem().isInhibitorsPresent()) {
-                    RunAlgorithm.apply(window, window.getInputReactionSystem(), new MuCAFAlgorithm(), runningListener, true);
+            if (VerifyInput.verify(mainWindow)) {
+                if (mainWindow.getInputReactionSystem().isInhibitorsPresent()) {
+                    RunAlgorithm.apply(mainWindow, mainWindow.getInputReactionSystem(), new MuCAFAlgorithm(), runningListener, true);
                 } else
                     NotificationManager.showWarning("Won't run MU CAF algorithm, no inhibitions present");
             }
         });
 
-        controller.getRunMuCAFMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()).or(window.getInputReactionSystem().inhibitorsPresentProperty().not()));
+        controller.getRunMuCAFMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()).or(mainWindow.getInputReactionSystem().inhibitorsPresentProperty().not()));
 
         controller.getRunURAFMenuItem().setOnAction(e -> {
-            if (VerifyInput.verify(window)) {
-                if (window.getInputReactionSystem().isInhibitorsPresent()) {
-                    RunAlgorithm.apply(window, window.getInputReactionSystem(), new URAFAlgorithm(), runningListener, true);
+            if (VerifyInput.verify(mainWindow)) {
+                if (mainWindow.getInputReactionSystem().isInhibitorsPresent()) {
+                    RunAlgorithm.apply(mainWindow, mainWindow.getInputReactionSystem(), new URAFAlgorithm(), runningListener, true);
                 } else
                     NotificationManager.showWarning("Won't run U RAF algorithm, no inhibitions present");
             }
         });
-        controller.getRunURAFMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()).or(window.getInputReactionSystem().inhibitorsPresentProperty().not()));
+        controller.getRunURAFMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()).or(mainWindow.getInputReactionSystem().inhibitorsPresentProperty().not()));
 
 
-        controller.getRunMuCAFMultipleTimesMenuItem().setOnAction(e -> RunMuCAFMultipleTimes.apply(window, controller, runningListener));
-        controller.getRunMuCAFMultipleTimesMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()).or(window.getInputReactionSystem().inhibitorsPresentProperty().not()));
+        controller.getRunMuCAFMultipleTimesMenuItem().setOnAction(e -> RunMuCAFMultipleTimes.apply(mainWindow, controller, runningListener));
+        controller.getRunMuCAFMultipleTimesMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()).or(mainWindow.getInputReactionSystem().inhibitorsPresentProperty().not()));
 
 
-        controller.getSpontaneousInRafMenuItem().setOnAction(e -> ComputeNecessarilySpontaneousInRAF.apply(window, window.getInputReactionSystem(), controller, runningListener));
+        controller.getSpontaneousInRafMenuItem().setOnAction(e -> ComputeNecessarilySpontaneousInRAF.apply(mainWindow, mainWindow.getInputReactionSystem(), controller, runningListener));
         controller.getSpontaneousInRafMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
-        controller.getGreedyGrowMenuItem().setOnAction(e -> GreedilyGrowMaxCAF2MaxRAF.apply(window, window.getInputReactionSystem(), runningListener));
+        controller.getGreedyGrowMenuItem().setOnAction(e -> GreedilyGrowMaxCAF2MaxRAF.apply(mainWindow, mainWindow.getInputReactionSystem(), runningListener));
         controller.getGreedyGrowMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
-        controller.getReactionDependenciesMenuItem().setOnAction(e -> ComputeReactionDependencies.run(window));
+        controller.getReactionDependenciesMenuItem().setOnAction(e -> ComputeReactionDependencies.run(mainWindow));
         controller.getReactionDependenciesMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
-        controller.getMoleculeDependenciesMenuItem().setOnAction(e -> ComputeMoleculeDependencies.run(window));
+        controller.getMoleculeDependenciesMenuItem().setOnAction(e -> ComputeMoleculeDependencies.run(mainWindow));
         controller.getMoleculeDependenciesMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
 
@@ -577,7 +580,7 @@ public class MainWindowPresenter {
             controller.getAnimateNetworkMenuButton().disableProperty().bind(graphView.getMoleculeFlowAnimation().playingProperty());
 
             graphView.getMoleculeFlowAnimation().animateInhibitionsProperty().bind(controller.getAnimateInhibitionsMenuItem().selectedProperty());
-            controller.getAnimateInhibitionsMenuItem().disableProperty().bind(window.getInputReactionSystem().inhibitorsPresentProperty().not());
+            controller.getAnimateInhibitionsMenuItem().disableProperty().bind(mainWindow.getInputReactionSystem().inhibitorsPresentProperty().not());
 
             controller.getMoveLabelsMenuItem().setSelected(graphView.getMoleculeFlowAnimation().isMoveLabels());
             controller.getMoveLabelsMenuItem().selectedProperty().bindBidirectional(graphView.getMoleculeFlowAnimation().moveLabelsProperty());
@@ -587,10 +590,10 @@ public class MainWindowPresenter {
             controller.getUseColorsMenuItem().selectedProperty().bindBidirectional(graphView.getMoleculeFlowAnimation().multiColorMovingPartsProperty());
             controller.getUseColorsMenuItem().disableProperty().bind(disableFullGraphItems);
         }
-        SelectionBindings.setup(window, controller);
+        SelectionBindings.setup(mainWindow, controller);
 
         controller.getShowNodeLabels().setOnAction(e -> ShowHideNodeLabels.apply(graphView));
-        BasicFX.setupFullScreenMenuSupport(window.getStage(), controller.getFullScreenMenuItem());
+        BasicFX.setupFullScreenMenuSupport(mainWindow.getStage(), controller.getFullScreenMenuItem());
 
         final var noGraphTypeSet = new RadioMenuItem();
         final var graphTypeButtonGroup = new ToggleGroup();
@@ -606,19 +609,19 @@ public class MainWindowPresenter {
             controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
                 }
         );
-        controller.getFullGraphRadioMenuItem().disableProperty().bind(disableRunProperty.or(window.getReactionGraphView().getMoleculeFlowAnimation().playingProperty()));
+        controller.getFullGraphRadioMenuItem().disableProperty().bind(disableRunProperty.or(mainWindow.getReactionGraphView().getMoleculeFlowAnimation().playingProperty()));
 
         controller.getReactionDependencyGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> {
             graphView.setGraphType(ReactionGraphView.Type.reactionDependencyNetwork);
             controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
         });
-        controller.getReactionDependencyGraphRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty().or(window.getDocument().reactionDependencyNetworkProperty().isNull()));
+        controller.getReactionDependencyGraphRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty().or(mainWindow.getDocument().reactionDependencyNetworkProperty().isNull()));
 
         controller.getMoleculeDependencyGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> {
             graphView.setGraphType(ReactionGraphView.Type.moleculeDependencyNetwork);
             controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
         });
-        controller.getMoleculeDependencyGraphRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty().or(window.getDocument().moleculeDependencyNetworkProperty().isNull()));
+        controller.getMoleculeDependencyGraphRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty().or(mainWindow.getDocument().moleculeDependencyNetworkProperty().isNull()));
 
 
         controller.getAssociationGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> {
@@ -643,7 +646,7 @@ public class MainWindowPresenter {
             graphView.setSuppressFormalFood(n);
             controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
         });
-        controller.getSuppressFormalFoodMenuItem().disableProperty().bind(controller.getSuppressCatalystEdgesMenuItem().selectedProperty().or(Bindings.createBooleanBinding(() -> !window.getInputReactionSystem().getFoods().contains(FORMAL_FOOD), window.getInputReactionSystem().getFoods())));
+        controller.getSuppressFormalFoodMenuItem().disableProperty().bind(controller.getSuppressCatalystEdgesMenuItem().selectedProperty().or(Bindings.createBooleanBinding(() -> !mainWindow.getInputReactionSystem().getFoods().contains(FORMAL_FOOD), mainWindow.getInputReactionSystem().getFoods())));
 
 
         controller.getUseMultiCopyFoodNodesMenuItem().selectedProperty().addListener((c, o, n) ->
@@ -673,9 +676,9 @@ public class MainWindowPresenter {
         controller.getComputeImportanceCheckMenuItem().selectedProperty().addListener((c, o, n) -> computeImportance = n);
         controller.getComputeImportanceCheckMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
-        window.getInputReactionSystem().sizeProperty().addListener((c, o, n) -> controller.getInputReactionsSizeLabel().setText(String.format("%,d", n.intValue())));
-        window.getInputReactionSystem().foodSizeProperty().addListener((c, o, n) -> {
-            if (window.getInputReactionSystem().getFoods().contains(MoleculeType.valueOf("$")))
+        mainWindow.getInputReactionSystem().sizeProperty().addListener((c, o, n) -> controller.getInputReactionsSizeLabel().setText(String.format("%,d", n.intValue())));
+        mainWindow.getInputReactionSystem().foodSizeProperty().addListener((c, o, n) -> {
+            if (mainWindow.getInputReactionSystem().getFoods().contains(MoleculeType.valueOf("$")))
                 controller.getInputFoodSizeLabel().setText(String.format("%,d (plus the formal item '$')", n.intValue() - 1));
             else
                 controller.getInputFoodSizeLabel().setText(String.format("%,d", n.intValue()));
@@ -683,25 +686,25 @@ public class MainWindowPresenter {
 
         controller.getUseDarkThemeCheckMenuItem().selectedProperty().bindBidirectional(MainWindowManager.useDarkThemeProperty());
 
-        SetupFind.apply(window);
-        SetupExport.apply(window);
+        SetupFind.apply(mainWindow);
+        SetupExport.apply(mainWindow);
 
 
         selectLogTab(controller);
 
 
-        controller.getListFoodMenuItem().setOnAction(e -> reportList(window.getInputReactionSystem(), "Food", controller));
+        controller.getListFoodMenuItem().setOnAction(e -> reportList(mainWindow.getInputReactionSystem(), "Food", controller));
         controller.getListFoodMenuItem().disableProperty().bind(disableRunProperty);
 
-        controller.getListReactionsMenuItem().setOnAction(e -> reportList(window.getInputReactionSystem(), "Reactions", controller));
+        controller.getListReactionsMenuItem().setOnAction(e -> reportList(mainWindow.getInputReactionSystem(), "Reactions", controller));
         controller.getListReactionsMenuItem().disableProperty().bind(disableRunProperty);
-        controller.getListReactantsMenuItem().setOnAction(e -> reportList(window.getInputReactionSystem(), "Reactants", controller));
+        controller.getListReactantsMenuItem().setOnAction(e -> reportList(mainWindow.getInputReactionSystem(), "Reactants", controller));
         controller.getListReactantsMenuItem().disableProperty().bind(disableRunProperty);
-        controller.getListProductsMenuItem().setOnAction(e -> reportList(window.getInputReactionSystem(), "Products", controller));
+        controller.getListProductsMenuItem().setOnAction(e -> reportList(mainWindow.getInputReactionSystem(), "Products", controller));
         controller.getListProductsMenuItem().disableProperty().bind(disableRunProperty);
-        controller.getListCatalystsMenuItem().setOnAction(e -> reportList(window.getInputReactionSystem(), "Catalysts", controller));
+        controller.getListCatalystsMenuItem().setOnAction(e -> reportList(mainWindow.getInputReactionSystem(), "Catalysts", controller));
         controller.getListCatalystsMenuItem().disableProperty().bind(disableRunProperty);
-        controller.getListInhibitorsMenuItem().setOnAction(e -> reportList(window.getInputReactionSystem(), "Inhibitors", controller));
+        controller.getListInhibitorsMenuItem().setOnAction(e -> reportList(mainWindow.getInputReactionSystem(), "Inhibitors", controller));
         controller.getListInhibitorsMenuItem().disableProperty().bind(disableRunProperty);
 
     }

@@ -155,6 +155,20 @@ public class ReactionSystem {
         return name.get();
     }
 
+    public String getHeaderLine() {
+        var buf = new StringBuilder(getName() + " has " + size());
+        if (getNumberOfOneWayReactions() == 0 && getNumberOfTwoWayReactions() > 0)
+            buf.append(" two-way reactions");
+        else if (getNumberOfOneWayReactions() > 0 && getNumberOfTwoWayReactions() == 0)
+            buf.append(" one-way reactions");
+        else if (getNumberOfOneWayReactions() > 0 && getNumberOfTwoWayReactions() > 0)
+            buf.append(" reactions (").append(getNumberOfTwoWayReactions()).append(" two-way and ").append(getNumberOfOneWayReactions()).append(" one-way)");
+        else buf.append(" reactions");
+        buf.append(" on ").append(getFoods().size()).append(" food items");
+        return buf.toString();
+
+    }
+
     public StringProperty nameProperty() {
         return name;
     }

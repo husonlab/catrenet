@@ -5,6 +5,7 @@ module catlynet {
 	requires transitive javafx.controls;
     requires transitive javafx.fxml;
 	requires transitive javafx.web;
+	requires commons.math3;
 
 	exports catlynet.algorithm;
     exports catlynet.main;

@@ -19,9 +19,6 @@
 
 package catlynet.algorithm;
 
-import catlynet.format.ArrowNotation;
-import catlynet.format.ReactionNotation;
-import catlynet.io.ModelIO;
 import catlynet.model.MoleculeType;
 import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
@@ -72,10 +69,6 @@ public class ComputeNecessarilySpontaneousInRAF implements IDescribed {
     private static int computeMaxRAFsForModifiedReactions(ReactionSystem maxRAF, Reaction r0) {
 
         final Collection<MoleculeType> catalystConjunctions = r0.getCatalystConjunctions();
-
-        if (r0.getName().endsWith("R00284")) {
-            System.err.println(ModelIO.toString(r0, ReactionNotation.Full, ArrowNotation.UsesEquals));
-        }
 
         final Single<Integer> maxSize = new Single<>(0);
         for (MoleculeType and : catalystConjunctions) {

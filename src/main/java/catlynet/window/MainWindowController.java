@@ -259,7 +259,13 @@ public class MainWindowController {
 	private MenuItem newMenuItem;
 
 	@FXML
+	private MenuItem newPolymerModelMenuItem;
+
+	@FXML
 	private MenuItem newRecentFileMenuItem;
+
+	@FXML
+	private MenuItem newPolymerModelRecentFileMenuItem;
 
 	@FXML
 	private MenuItem openMenuItem;
@@ -588,10 +594,11 @@ public class MainWindowController {
 			networkPane.getStyleClass().add("viewer-background");
 
 			newRecentFileMenuItem.setOnAction(e -> newMenuItem.getOnAction().handle(e));
+			newPolymerModelRecentFileMenuItem.setOnAction(e -> newPolymerModelMenuItem.getOnAction().handle(e));
 			openRecentFileMenuItem.setOnAction(e -> openMenuItem.getOnAction().handle(e));
 
 			recentFilesMenu.getItems().addListener((InvalidationListener) e -> {
-				recentMenuButton.getItems().setAll(newRecentFileMenuItem, openRecentFileMenuItem, new SeparatorMenuItem());
+				recentMenuButton.getItems().setAll(newRecentFileMenuItem, newPolymerModelRecentFileMenuItem, openRecentFileMenuItem, new SeparatorMenuItem());
 				recentMenuButton.getItems().addAll(BasicFX.copyMenu(recentFilesMenu.getItems()));
 			});
 		}
@@ -602,6 +609,11 @@ public class MainWindowController {
 			animateNetworkMenuButton.getItems().addAll(BasicFX.copyMenu(animateMenu.getItems()));
 
 			selectNetworkMenuButton.getItems().addAll(BasicFX.copyMenu(selectMenu.getItems()));
+
+			{
+				var subMenu = selectNetworkMenuButton.getItems().stream().filter(t -> t instanceof Menu).map(t -> (Menu) t).filter(t -> t.getText() != null && selectReactionSystemMenu.getText().equals(t.getText())).findAny();
+				subMenu.ifPresent(menu -> selectReactionSystemMenu.getItems().addListener((InvalidationListener) e -> menu.getItems().setAll(BasicFX.copyMenu(selectReactionSystemMenu.getItems()))));
+			}
 
 
 			zoomInNetworkButton.setOnAction(e -> zoomInMenuItem.getOnAction().handle(e));
@@ -648,6 +660,10 @@ public class MainWindowController {
 
 	public MenuItem getNewMenuItem() {
 		return newMenuItem;
+	}
+
+	public MenuItem getNewPolymerModelMenuItem() {
+		return newPolymerModelMenuItem;
 	}
 
 	public MenuItem getOpenMenuItem() {
