@@ -52,12 +52,12 @@ public class PolymerModel implements IDescribed {
 
 	@Override
 	public String getDescription() {
-		return "runs the polymer model with alphabet-size k, food set max length k, polymer max length n and mean number of catalyzed reactions m";
+		return "runs the polymer model with alphabet-size a, food set max length k, polymer max length n and mean number of catalyzed reactions m";
 	}
 
 	public ReactionSystem apply() throws CanceledException {
 		if (inputParameters != null) {
-			return apply(inputParameters.r, inputParameters.k, inputParameters.n, inputParameters.m, inputParameters.seed);
+			return apply(inputParameters.a, inputParameters.k, inputParameters.n, inputParameters.m, inputParameters.seed);
 		} else
 			return null;
 	}
@@ -65,23 +65,23 @@ public class PolymerModel implements IDescribed {
 	/**
 	 * runs the polymer model with alphabet-size k, polymer length n and mean number of catalyzed reactions m
 	 *
-	 * @param r    alphabet size
+	 * @param a    alphabet size
 	 * @param k    food items max length
 	 * @param n    polymer max length
 	 * @param m    mean number of reactions catalyzed by any molecule (Poisson distribution)
-	 * @param seed random number seed
+	 * @param r the replicateNumber
 	 * @return reaction system
 	 */
-	public static ReactionSystem apply(int r, int k, int n, double m, int seed) {
-		var reactionSystem = new ReactionSystem("PolymerModel_r%d_k%d_n%d_m%s_s%d".formatted(r, k, n, StringUtils.removeTrailingZerosAfterDot("%.2f", m), seed));
+	public static ReactionSystem apply(int a, int k, int n, double m, int r) {
+		var reactionSystem = new ReactionSystem("PolymerModel_a%d_k%d_n%d_m%s_r%d".formatted(a, k, n, StringUtils.removeTrailingZerosAfterDot("%.2f", m), r));
 
 		var foodNames = new ArrayList<String>();
-		createPolymersRec(r, k, "", foodNames);
+		createPolymersRec(a, k, "", foodNames);
 		reactionSystem.getFoods().addAll(foodNames.stream().map(MoleculeType::valueOf).toList());
 
 
 		var polymers = new ArrayList<String>();
-		createPolymersRec(r, n, "", polymers);
+		createPolymersRec(a, n, "", polymers);
 
 		if (false)
 			System.err.println("Polymers:\n" + StringUtils.toString(polymers, "\n"));
@@ -102,8 +102,8 @@ public class PolymerModel implements IDescribed {
 			}
 		}
 
-		var random = new Random(seed);
-		var poissonDistribution = new PoissonDistribution(new Well19937c(seed), m, 1.0E-12, 10000000);
+		var random = new Random(r);
+		var poissonDistribution = new PoissonDistribution(new Well19937c(r), m, 1.0E-12, 10000000);
 
 		for (var polymer : polymers) {
 			var replicate = poissonDistribution.sample();
@@ -146,15 +146,7 @@ public class PolymerModel implements IDescribed {
 		this.inputParameters = inputParameters;
 	}
 
-	public record Parameters(int r, int k, int n, double m, int seed) {
-	}
-
-	private static String toLetters(String number) {
-		var buf = new StringBuilder();
-		for (var i = 0; i < number.length(); i++) {
-			buf.append((char) (number.charAt(i) - '0' + 'a'));
-		}
-		return buf.toString();
+	public record Parameters(int a, int k, int n, double m, int seed) {
 	}
 }
 

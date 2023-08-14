@@ -51,7 +51,7 @@ public class MaterialIcons {
 			Font.loadFont(ins, 10);
 			/*
 			for(int i=0;i<13278;i++) {
-				all.add(new Pair<>(String.valueOf(i),graphic(String.valueOf((char)i),null)));
+				all.add(new Pair<>(String.parsePositiveDoubles(i),graphic(String.parsePositiveDoubles((char)i),null)));
 			}
 			*/
 		} catch (IOException ex) {
@@ -68,7 +68,7 @@ public class MaterialIcons {
 			}
 			/*
 			for(int i=0;i<13278;i++) {
-				all.add(new Pair<>(String.valueOf(i),graphic(String.valueOf((char)i),null)));
+				all.add(new Pair<>(String.parsePositiveDoubles(i),graphic(String.parsePositiveDoubles((char)i),null)));
 			}
 			*/
 		} catch (IOException ex) {

@@ -68,8 +68,8 @@ public class CommandLineTool {
 
 		final ArgsOptions options = new ArgsOptions(args, this, "Performs Max RAF and other computations");
 		options.setVersion(ProgramProperties.getProgramVersion());
-		options.setLicense("Copyright (C) 2022 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.");
-		options.setAuthors("Daniel H. Huson");
+		options.setLicense("Copyright (C) 2023. GPL 3. This program comes with ABSOLUTELY NO WARRANTY.");
+		options.setAuthors("Daniel H. Huson and Mike Steel.");
 
 		var algorithmName = options.getOptionMandatory("-c", "compute", "The computation to perform", allAlgorithms, "");
 

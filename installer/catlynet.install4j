@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="10.0.6" transformSequenceNumber="10">
-  <directoryPresets config="../src/main/resources/catlynet/resources/icons" />
+  <directoryPresets config="../tools/polymer-tool" />
   <application name="CatlyNet" applicationId="3801-6361-6203-7564" mediaDir="../../../builds" shortName="CatlyNet" publisher="Daniel Huson and Mike Steel" publisherWeb="http://www.husonlab.org/catlynet" version="0.0.0_beta" allPathsRelative="true" macVolumeId="b8c0a1154e563a9a" javaMinVersion="11">
     <variables>
       <variable name="renderingVMOption" />
@@ -35,6 +35,7 @@
       <fileEntry mountPoint="1691243203" file="../target/dependency/install4j-runtime-10.0.5.jar" />
       <dirEntry mountPoint="1691242153" file="../examples" subDirectory="examples" />
       <fileEntry mountPoint="1691243204" file="../tools/catlynet-tool" fileMode="755" overrideFileMode="true" />
+      <fileEntry mountPoint="1691243204" file="../tools/polymer-tool" fileMode="755" overrideFileMode="true" />
       <fileEntry mountPoint="675425072" file="./License.txt" overrideFileMode="true" overrideOverwriteMode="true" overrideUninstallMode="true" />
     </entries>
     <components>
@@ -243,10 +244,15 @@ return console.askOkCancel(message, true);
               </action>
               <action id="1691243205" beanClass="com.install4j.runtime.beans.actions.text.ReplaceInstallerVariablesAction" actionElevationType="elevated" rollbackBarrierExitCode="0">
                 <serializedBean>
-                  <property name="files" type="array" class="java.io.File" length="1">
+                  <property name="files" type="array" class="java.io.File" length="2">
                     <element index="0">
                       <object class="java.io.File">
                         <string>tools/catlynet-tool</string>
+                      </object>
+                    </element>
+                    <element index="1">
+                      <object class="java.io.File">
+                        <string>tools/polymer-tool</string>
                       </object>
                     </element>
                   </property>
@@ -1149,4 +1155,5 @@ return true;</property>
   <buildIds buildAll="false">
     <mediaSet refId="1691242165" />
   </buildIds>
+  <buildOptions disableSigning="true" disableNotarization="true" />
 </install4j>

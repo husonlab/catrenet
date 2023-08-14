@@ -71,7 +71,7 @@ public class CatlyNet extends Application {
         ProgramProperties.setProgramName(Version.NAME);
         ProgramProperties.setProgramVersion(Version.SHORT_DESCRIPTION);
         ProgramProperties.setProgramLicence("""
-                Copyright (C) 2023 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.
+                Copyright (C) 2023. his program comes with ABSOLUTELY NO WARRANTY.
                 This is free software, licensed under the terms of the GNU General Public License, Version 3.
                 Sources available at: https://github.com/husonlab/catlynet
                 """);

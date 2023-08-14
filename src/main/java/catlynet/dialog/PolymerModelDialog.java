@@ -102,22 +102,27 @@ public class PolymerModelDialog {
 		if (meanNumberOfCatalyzedField.getText().isBlank())
 			meanNumberOfCatalyzedField.setText("2.0");
 
-		var randomSeedField = new TextField();
-		randomSeedField.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
-		ProgramProperties.track("randomSeedField", randomSeedField.textProperty(), "666");
-		if (randomSeedField.getText().isBlank())
-			randomSeedField.setText("666");
+		var replicateNumberField = new TextField();
+		replicateNumberField.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
+		ProgramProperties.track("replicateNumberField", replicateNumberField.textProperty(), "1");
+		if (replicateNumberField.getText().isBlank())
+			replicateNumberField.setText("666");
 
 		gridPane.add(new Label("Alphabet Size:"), 0, 0);
 		gridPane.add(alphabetSizeField, 1, 0);
-		gridPane.add(new Label("Food Molecule Max Length:"), 0, 1);
+		alphabetSizeField.setTooltip(new Tooltip("The size of the alphabet."));
+		gridPane.add(new Label("Food Molecules Max Length:"), 0, 1);
 		gridPane.add(foodMoleculeMaxLengthField, 1, 1);
-		gridPane.add(new Label("Polymer Max Length:"), 0, 2);
+		foodMoleculeMaxLengthField.setTooltip(new Tooltip("All molecules up to this length are placed in the food set"));
+		gridPane.add(new Label("Polymers Max Length:"), 0, 2);
 		gridPane.add(polymerMaxLengthField, 1, 2);
+		polymerMaxLengthField.setTooltip(new Tooltip("All molecules up to this length are generated (but only those that are catalyzed are kept)"));
 		gridPane.add(new Label("Mean Number of Catalyzed Reactions:"), 0, 3);
 		gridPane.add(meanNumberOfCatalyzedField, 1, 3);
-		gridPane.add(new Label("Random number seed:"), 0, 4);
-		gridPane.add(randomSeedField, 1, 4);
+		meanNumberOfCatalyzedField.setTooltip(new Tooltip("The mean number of reactions that any given molecule will catalyse"));
+		gridPane.add(new Label("Replicate number:"), 0, 4);
+		gridPane.add(replicateNumberField, 1, 4);
+		replicateNumberField.setTooltip(new Tooltip("Different numbers will generated different replicates (is used as random number seed)"));
 
 		customDialog.getDialogPane().setContent(gridPane);
 
@@ -127,7 +132,7 @@ public class PolymerModelDialog {
 				var foodMoleculeMaxLength = Double.parseDouble(foodMoleculeMaxLengthField.getText());
 				var polymerMaxLength = Double.parseDouble(polymerMaxLengthField.getText());
 				var meanNumberOfCatalyzed = Double.parseDouble(meanNumberOfCatalyzedField.getText());
-				var randomSeed = Double.parseDouble(randomSeedField.getText());
+				var randomSeed = Double.parseDouble(replicateNumberField.getText());
 				return new Double[]{alphabetSize, foodMoleculeMaxLength, polymerMaxLength, meanNumberOfCatalyzed, randomSeed};
 			}
 			return null;
