@@ -30,6 +30,7 @@ import jloda.util.progress.ProgressPercentage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class PolymerModelTool {
 	/**
@@ -62,12 +63,11 @@ public class PolymerModelTool {
 		options.setAuthors("Daniel H. Huson and Mike Steel.");
 
 		options.comment("Parameters");
-		var alphabetSizeDef = options.getOption("-a", "alphabetSize", "alphabet size (list (comma separated) or range (a-b/step) ok)", "2");
-		var foodMaxLengthDef = options.getOption("-k", "foodMaxLength", "food molecule max length  (list or range ok)", "2");
-		var polymerMaxLengthDef = options.getOption("-n", "polymerMaxLength", "polymer max length  (list or range ok)", "4");
-		;
-		var meansDef = options.getOption("-m", "meanCatalyzed", "mean number of catalyzed reactions per molecule  (list or range ok)", "2.0");
-		var replicatesDef = options.getOption("-r", "replicate", "The replicate number (list or range ok)", "1");
+		var alphabetSizeDef = StringUtils.toString(options.getOption("-a", "alphabetSize", "alphabet size (list (x,y,z,...) or range (x-z or x-z/step) ok)", List.of("2")), "");
+		var foodMaxLengthDef = StringUtils.toString(options.getOption("-k", "foodMaxLength", "food molecule max length  (list or range ok)", List.of("2")), "");
+		var polymerMaxLengthDef = StringUtils.toString(options.getOption("-n", "polymerMaxLength", "polymer max length  (list or range ok)", List.of("4")), "");
+		var meansDef = StringUtils.toString(options.getOption("-m", "meanCatalyzed", "mean number of catalyzed reactions per molecule  (list or range ok)", List.of("2.0")), "");
+		var replicatesDef = StringUtils.toString(options.getOption("-r", "replicate", "The replicate number (list or range ok)", List.of("1")), "");
 
 		options.comment("Output");
 		var outputDir = options.getOption("-o", "output", "Output directory (or stdout)", "stdout");
@@ -108,7 +108,7 @@ public class PolymerModelTool {
 								polymerModel.setInputParameters(new PolymerModel.Parameters(a, k, n, m, r));
 								var reactionSystem = polymerModel.apply();
 								try (var w = FileUtils.getOutputWriterPossiblyZIPorGZIP(fileName)) {
-									w.write("# Polymer model a=%d k=%d n=%d m=%s r=%d%n%n:".formatted(a, k, n, StringUtils.removeTrailingZerosAfterDot(m), r));
+									w.write("# Polymer model a=%d k=%d n=%d m=%s r=%d:%n%n".formatted(a, k, n, StringUtils.removeTrailingZerosAfterDot(m), r));
 									ModelIO.write(reactionSystem, w, true, reactionNotation, arrowNotation);
 									w.write("\n#EOF\n");
 									countFiles++;
