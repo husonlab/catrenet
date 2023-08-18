@@ -1,37 +1,50 @@
 # CatlyNet
 <img src="https://github.com/husonlab/catlynet/blob/master/src/main/resources/catlynet/resources/images/splash.png" alt="Splash" width="600"/>
 
-CatlyNet is a program for working with autocatalytic networks. It is written in Java and uses JavaFX. The program
-implements fast and exact algorithms for calculating (maximal) RAFs, CAFs, and pseudo-RAFs from any set of catalysed
-'reactions' and a given 'food' set. These three notions are formalizations of the concept of a 'collectively
-autocatalytic set' originally introduced by Stuart Kauffman.
-The program was first introduced in [[SXH20]](#25).
+CatlyNet is a program for working with a catalytic reaction system (CRS) consisting of a set of
+'catalyzed reactions' and a given 'food set' of molecules.
+It provides fast and exact algorithms for calculating the three main types of autocatalytic networks,
+namely (maximal) RAFs, CAFs, and pseudo-RAFs. These three notions are formalizations of the concept of a 'collectively
+autocatalytic set' originally introduced by Stuart Kauffman. Several other algorithms are also implemented.
+The program can visualize a CRS and animate the emergence of a maximal auto-catalytic network.
+CatlyNet was first introduced in [[SXH20]](#25).
 
-CatlyNet is loosely based on a web application written by Dietrich Radel: http://www.math.canterbury.ac.nz/bio/RAF/.
+CatlyNet is written in Java using JavaFX and
+is loosely based on a web application written by Dietrich Radel: http://www.math.canterbury.ac.nz/bio/RAF/.
 
 ## Installers
 
-One click installers for MacOS, Windows and Linux are
+One-click installers for MacOS, Windows and Linux are
 available [here](https://software-ab.cs.uni-tuebingen.de/download/catlynet/welcome.html).
 
 Versions for iOS and Android are under development.
 
 ## Main features
 
-Input to CatlyNet is a food set and a list of reactions, a catalytic reaction system (CRS).
+Input to CatlyNet is a catalytic reaction system (CRS), which consists of a list of catalyzed reactions and a food set
+of molecules, specified like this example consisting of two food items and three (one-way) reactions:
 
-Several algorithms are available that aim at computing certain subsystems. The three main calculations are the
-computation of the "maxRAF"
-(maximal RAF, reflexively autocatalytic f-generated system), the maxCAF (maximal CAF, constructively autocatalytic and
+```
+Food: f1 f2
+
+r1 : f2 [f1,p3] => p1
+r2 : p1 [f2] => p2
+r3 : p2 [p1] => p3
+```
+
+Several algorithms are available that aim at computing certain 'auto-catalytic' subsystems.
+The three main calculations are the computation of a "maxRAF"
+(maximal RAF, reflexively autocatalytic f-generated system), a maxCAF (maximal CAF, constructively autocatalytic and
 f-generated system)
-and the maxPseudoRAF (maximal pseudo RAF) of a CRS.
+and a maxPseudoRAF (maximal pseudo RAF) of a CRS.
 
-The program can display a CRS as a network, in several ways. Moreover, it can animate the emergence of a maxRAF, maxCAF
-or maxPseudoRAF.
+The program can display a CRS as a network, in several ways. Moreover, it can animate the emergence of a Max RAF, Max
+CAF
+or Max Pseudo RAF.
 
 ## Algorithms and heuristics
 
-The program provides the following calculations:
+In more detail, the program provides the following calculations:
 
 - Max RAF Algorithm - computes the maximal RAF [[HMS15]](#10) (see also  [[H23]](#40))
 - Max CAF Algorithm - computes the maximal CAF [[HMS15]](#10)
@@ -41,8 +54,7 @@ The program provides the following calculations:
 - Min RAF-Generating Given Element Algorithm - Identifies a subset of the Max RAF that is (i) a RAF and (ii) generates a
   given element x
   (not in the food set) and (iii) which is minimal amongst all such sets satisfying (i) and (ii).
--
-  - Trivial CAFs Algorithm - computes all reactions that can run using only the food set
+- Trivial CAFs Algorithm - computes all reactions that can run using only the food set
 - Trivial RAFs Algorithm - computes all reactions that can run using only the food set, where the catalyst need not be
   in the food set if the reaction produces it
 - Core RAF Algorithm - computes the unique irreducible RAF, if it exists (Section 4.1 of [[SXH20]](#25))
@@ -93,9 +105,12 @@ There are a several options:
 
 The program can animate the emergence of three types of systems:
 
-- Animate Max RAF - in this animation, uncatalyzed reactions proceed at a low rate, as long as all reactants are present
-- Animate Max CAF - reactions only proceed when catalyzed and all reactants are present
-- Animate Max Pseudo RAF - reactions proceed at a low rate even when uncatalyzed or missing one or more reactants
+- Animate Max RAF - in this animation, uncatalyzed reactions "run" at a low rate, as long as all reactants are present.
+- Animate Max CAF - reactions only "run" (at full rate) when catalyzed and all reactants are present.
+- Animate Max Pseudo RAF - reactions "run" at a low rate even when uncatalyzed or missing one or more reactants.
+
+Run long enough, in each case, the set of reactions running at full rate, together with the assoicated food sources,
+constitutes a subsytem of the animated type.
 
 There are several options:
 
