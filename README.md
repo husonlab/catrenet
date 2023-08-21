@@ -76,6 +76,12 @@ In more detail, the program provides the following calculations:
 - Compute Importance - computes the percent difference between model size and model size without given food
   item [[HS23]](#50)
 
+In addition, the program provides an implementation
+of Kauffman's  'binary polymer model'. This features generates a system consisting of all polymers (over a finite
+alphabet)
+of length at most n, with ligation-cleavage reactions, and with catalysis assigned randomly (each molecule catalysing on
+average m reactions).
+
 ### Export computed systems
 
 Any of the computed subsystems can be exported to a new file.
@@ -126,6 +132,13 @@ There are several options:
 ### Export network
 
 The network can be exported in several image formats, including PNG, GIF, SVG and PDF.
+
+## Commandline tools
+
+The Linux and MacOS distributions have a tools directory that contains two commandline programs:
+
+- catlynet-tool - runs the implemented algorithms on one or more CRS input files
+- polymer-tool - generates a set of CRS input files using the binary polymer model
 
 ## Provided datasets
 

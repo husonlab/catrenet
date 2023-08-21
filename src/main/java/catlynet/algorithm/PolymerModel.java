@@ -24,7 +24,7 @@ import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
 import jloda.util.CanceledException;
 import jloda.util.StringUtils;
-import org.apache.commons.math3.distribution.PoissonDistribution;
+import org.apache.commons.math3.distribution.BinomialDistribution;
 import org.apache.commons.math3.random.Well19937c;
 
 import java.util.ArrayList;
@@ -103,10 +103,11 @@ public class PolymerModel implements IDescribed {
 		}
 
 		var random = new Random(r);
-		var poissonDistribution = new PoissonDistribution(new Well19937c(r), m, 1.0E-12, 10000000);
+		// var distribution = new PoissonDistribution(new Well19937c(r), m, 1.0E-12, 10000000);
+		var distribution = new BinomialDistribution(new Well19937c(r), reactions.size(), m / reactions.size());
 
 		for (var polymer : polymers) {
-			var replicate = poissonDistribution.sample();
+			var replicate = distribution.sample();
 			while (replicate > 0) {
 				var reaction = reactions.get(random.nextInt(reactions.size()));
 				var catalysts = reaction.getCatalysts();

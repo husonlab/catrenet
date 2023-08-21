@@ -31,8 +31,8 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Path;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
@@ -161,20 +161,22 @@ public class MoleculeFlowAnimation {
         if (path != null) {
             final Shape movingPart;
             if (isMoveLabels()) {
-                final Text text = new Text(label);
+                var text = new Text(label);
                 text.setFont(ReactionGraphView.getFont());
                 text.setFill(colorScheme.get(Math.abs(label.hashCode()) % colorScheme.size()));
                 movingPart = text;
             } else {
-                final Circle circle = new Circle(3);
-                final Color color = colorScheme.get(Math.abs(label.hashCode()) % colorScheme.size());
-                circle.setFill(color);
-                circle.setStroke(((Color) circle.getFill()).darker());
-                circle.setMouseTransparent(true);
-                movingPart = circle;
+                var shape = new Rectangle(7, 5);
+                var color = colorScheme.get(Math.abs(label.hashCode()) % colorScheme.size());
+                shape.setFill(color);
+                shape.setStroke(color);
+                shape.setMouseTransparent(true);
+                movingPart = shape;
             }
 
-            final PathTransition pathTransition = new PathTransition(Duration.seconds(2), path, movingPart);
+            var pathTransition = new PathTransition(Duration.seconds(2), path, movingPart);
+            if (!isMoveLabels())
+                pathTransition.setOrientation(PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT);
 
             edge2currentCount.increment(edge);
 

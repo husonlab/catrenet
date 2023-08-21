@@ -45,7 +45,7 @@ public class EdgeView extends Group {
     private final EdgeStyle inhibitionEdgeStyle = EdgeStyle.valueOf(ProgramProperties.get("inhibitionEdgeStyle", EdgeStyle.Dashed.name()));
 
     private final Color reactionColor = ProgramProperties.get("reactionColor", Color.BLACK);
-    private final Color catalystColor = ProgramProperties.get("catalystColor", Color.BLACK);
+    private final Color catalystColor = ProgramProperties.get("catalystColor", Color.GRAY);
     private final Color inhibitionColor = ProgramProperties.get("inhibitionColor", Color.LIGHTGREY);
 
     private final int reactionEdgeWidth = ProgramProperties.get("reactionEdgeWidth", 2);
@@ -56,29 +56,19 @@ public class EdgeView extends Group {
     }
 
     public EdgeView(ReactionGraphView graphView, Edge e, ReadOnlyDoubleProperty aX, ReadOnlyDoubleProperty aY, ReadOnlyDoubleProperty bX, ReadOnlyDoubleProperty bY, EdgeType edgeType) {
-        final Shape arrowHead;
-        switch (edgeType) {
-            default -> arrowHead = new Polyline(-7, -5, 7, 0, -7, 5);
-            case Association, Reactant, Product -> arrowHead = new Polygon(-7, -5, 7, 0, -7, 5);
-            case ReactantReversible -> arrowHead = new Polygon(-8, 0, 0, 6, 8, 0, 0, -6);
-            case ProductReversible -> arrowHead = new Polygon(-8, 0, 0, 6, 8, 0, 0, -6);
-            case Inhibitor -> arrowHead = new Polyline(0, -7, 0, 7);
-        }
-        arrowHead.getStyleClass().add("graph-node"); // yes, graph-node
-
-        final MoveTo moveToA = new MoveTo();
-
-        final LineTo lineToB = new LineTo();
-
-        final QuadCurveTo quadCurveToD = new QuadCurveTo();
-
-        final LineTo lineToE = new LineTo();
-
-        final CircleShape circleShape = new CircleShape(3);
+        var arrowHead = switch (edgeType) {
+            case Association, Catalyst, Reactant, Product -> new Polygon(-6, -4, 6, 0, -6, 4);
+            case ReactantReversible, ProductReversible -> new Polygon(-7, 0, 0, 5, 7, 0, 0, -5);
+            case Inhibitor -> new Polyline(0, -7, 0, 7);
+        };
+        var moveToA = new MoveTo();
+        var lineToB = new LineTo();
+        var quadCurveToD = new QuadCurveTo();
+        var lineToE = new LineTo();
+        var circleShape = new CircleShape(3);
 
         final InvalidationListener invalidationListener = v -> {
-            final Point2D lineCenter = updatePath(aX.get(), aY.get(), bX.get(), bY.get(), null, moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(e));
-
+            var lineCenter = updatePath(aX.get(), aY.get(), bX.get(), bY.get(), null, moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(e));
             if (lineCenter != null) {
                 circleShape.setTranslateX(lineCenter.getX());
                 circleShape.setTranslateY(lineCenter.getY());
@@ -91,7 +81,7 @@ public class EdgeView extends Group {
         bY.addListener(invalidationListener);
 
         {
-            final Point2D lineCenter = updatePath(aX.get(), aY.get(), bX.get(), bY.get(), null, moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(e));
+            var lineCenter = updatePath(aX.get(), aY.get(), bX.get(), bY.get(), null, moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(e));
             if (lineCenter != null) {
                 circleShape.setTranslateX(lineCenter.getX());
                 circleShape.setTranslateY(lineCenter.getY());
@@ -105,60 +95,64 @@ public class EdgeView extends Group {
             }
         }
 
-        final Path path = new Path(moveToA, lineToB, quadCurveToD, lineToE);
+        var path = new Path(moveToA, lineToB, quadCurveToD, lineToE);
         path.setStrokeWidth(2);
-        path.getStyleClass().add("graph-edge");
 
         graphView.setupMouseInteraction(path, circleShape, null, e);
 
         switch (edgeType) {
-            case Catalyst: {
+            case Catalyst -> {
                 if (getCatalystEdgeStyle() == EdgeStyle.Dashed) {
                     path.getStrokeDashArray().setAll(4.0, 6.0);
                 } else if (getCatalystEdgeStyle() == EdgeStyle.Dotted) {
                     path.getStrokeDashArray().setAll(1.0, 5.0);
                 }
                 path.setStroke(getCatalystColor());
+                arrowHead.setFill(getCatalystColor());
                 path.setStrokeWidth(getCatalystEdgeWidth());
-                break;
             }
-            case Inhibitor: {
+            case Inhibitor -> {
                 if (getInhibitionEdgeStyle() == EdgeStyle.Dashed) {
                     path.getStrokeDashArray().setAll(4.0, 6.0);
                 } else if (getInhibitionEdgeStyle() == EdgeStyle.Dotted) {
                     path.getStrokeDashArray().setAll(1.0, 5.0);
                 }
                 path.setStroke(getInhibitionColor());
+                arrowHead.setFill(getInhibitionColor());
                 path.setStrokeWidth(getInhibitionEdgeWidth());
 
-                break;
             }
-            default: {
+            default -> {
                 if (getReactionEdgeStyle() == EdgeStyle.Dashed) {
                     path.getStrokeDashArray().setAll(4.0, 6.0);
                 } else if (getReactionEdgeStyle() == EdgeStyle.Dotted) {
                     path.getStrokeDashArray().setAll(1.0, 5.0);
                 }
                 path.setStroke(getReactionColor());
+                arrowHead.setFill(getReactionColor());
                 path.setStrokeWidth(getReactionEdgeWidth());
-
-                break;
             }
+        }
+        arrowHead.setStroke(arrowHead.getFill());
+
+        if (path.getStroke() instanceof Color color && color.equals(Color.BLACK)) {
+            arrowHead.getStyleClass().add("graph-node"); // yes, graph-node
+            path.getStyleClass().add("graph-edge");
         }
 
         getChildren().addAll(path, arrowHead, circleShape);
     }
 
     /**
-     * apply the path representing an edge
+     * update the path representing an edge
      *
      * @return center point
      */
     private static Point2D updatePath(double ax, double ay, double ex, double ey, Point2D center, MoveTo moveToA, LineTo lineToB, QuadCurveTo quadCurveToD, LineTo lineToE, EdgeType edgeType, Shape arrowHead, boolean clockwise) {
-        final double straightSegmentLength = 25;
-        final double liftFactor = 0.2;
+        var straightSegmentLength = 25.0;
+        var liftFactor = 0.2;
 
-        final double distance = GeometryUtilsFX.distance(ax, ay, ex, ey);
+        final var distance = GeometryUtilsFX.distance(ax, ay, ex, ey);
 
         moveToA.setX(ax);
         moveToA.setY(ay);
@@ -178,9 +172,8 @@ public class EdgeView extends Group {
             arrowHead.setTranslateX(0.5 * (quadCurveToD.getX() + lineToE.getX()));
             arrowHead.setTranslateY(0.5 * (quadCurveToD.getY() + lineToE.getY()));
         } else {
-            final double alpha = GeometryUtilsFX.computeAngle(new Point2D(ex - ax, ey - ay));
-
-            final Point2D m = new Point2D(0.5 * (ax + ex), 0.5 * (ay + ey));
+            var alpha = GeometryUtilsFX.computeAngle(new Point2D(ex - ax, ey - ay));
+            var m = new Point2D(0.5 * (ax + ex), 0.5 * (ay + ey));
             if (center == null) {
                 if (!clockwise)
                     center = m.add(-Math.sin(GeometryUtilsFX.deg2rad(alpha)) * liftFactor * distance, Math.cos(GeometryUtilsFX.deg2rad(alpha)) * liftFactor * distance);
@@ -188,15 +181,15 @@ public class EdgeView extends Group {
                     center = m.subtract(-Math.sin(GeometryUtilsFX.deg2rad(alpha)) * liftFactor * distance, Math.cos(GeometryUtilsFX.deg2rad(alpha)) * liftFactor * distance);
             }
 
-            final double beta = GeometryUtilsFX.computeAngle(center.subtract(ax, ay));
+            var beta = GeometryUtilsFX.computeAngle(center.subtract(ax, ay));
 
-            final Point2D b = new Point2D(ax + straightSegmentLength * Math.cos(GeometryUtilsFX.deg2rad(beta)), ay + straightSegmentLength * Math.sin(GeometryUtilsFX.deg2rad(beta)));
+            var b = new Point2D(ax + straightSegmentLength * Math.cos(GeometryUtilsFX.deg2rad(beta)), ay + straightSegmentLength * Math.sin(GeometryUtilsFX.deg2rad(beta)));
 
             lineToB.setX(b.getX());
             lineToB.setY(b.getY());
 
-            final double delta = GeometryUtilsFX.computeAngle(center.subtract(ex, ey));
-            final Point2D d = new Point2D(ex + straightSegmentLength * Math.cos(GeometryUtilsFX.deg2rad(delta)), ey + straightSegmentLength * Math.sin(GeometryUtilsFX.deg2rad(delta)));
+            var delta = GeometryUtilsFX.computeAngle(center.subtract(ex, ey));
+            var d = new Point2D(ex + straightSegmentLength * Math.cos(GeometryUtilsFX.deg2rad(delta)), ey + straightSegmentLength * Math.sin(GeometryUtilsFX.deg2rad(delta)));
 
             quadCurveToD.setX(d.getX());
             quadCurveToD.setY(d.getY());
@@ -211,7 +204,7 @@ public class EdgeView extends Group {
             lineToE.setY(arrowHead.getTranslateY());
         }
 
-        final double angle = GeometryUtilsFX.computeAngle(new Point2D(lineToE.getX() - quadCurveToD.getX(), lineToE.getY() - quadCurveToD.getY()));
+        var angle = GeometryUtilsFX.computeAngle(new Point2D(lineToE.getX() - quadCurveToD.getX(), lineToE.getY() - quadCurveToD.getY()));
         arrowHead.setRotationAxis(new Point3D(0, 0, 1));
         arrowHead.setRotate(angle);
         return center;

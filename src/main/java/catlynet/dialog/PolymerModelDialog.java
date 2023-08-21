@@ -65,6 +65,9 @@ public class PolymerModelDialog {
 		mainWindow.getController().getInputFoodTextArea().setText(ModelIO.getFoodString(inputReactions, doc.getReactionNotation()));
 		mainWindow.getInputReactionSystem().getReactions().addAll(reactionSystem.getReactions());
 		mainWindow.getController().getInputTextArea().setText("# " + reactionSystem.getHeaderLine() + ":\n\n" + ModelIO.toString(reactionSystem, false, doc.getReactionNotation(), doc.getArrowNotation()));
+		mainWindow.getController().getLogTextArea().setText("# " + reactionSystem.getHeaderLine() + "\n");
+		mainWindow.getDocument().setDirty(true);
+		mainWindow.getDocument().setFileName(reactionSystem.getName() + ".crs");
 	}
 
 	private static PolymerModel.Parameters showParametersDialog(Stage stage) {
