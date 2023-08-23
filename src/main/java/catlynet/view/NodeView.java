@@ -112,7 +112,6 @@ public class NodeView {
             // text.setBackground(labelBackground);
         }
 
-        shape.getStyleClass().add("graph-node-hollow");
         shape.setTranslateX(x);
         shape.setTranslateY(y);
         graphView.setupMouseInteraction(shape, shape, v, null);
@@ -156,9 +155,11 @@ public class NodeView {
             case Circle:
                 shape = new CircleShape(size);
         }
-        shape.getStyleClass().add("graph-node");
-        if (fillColor != Color.WHITE)
-            shape.setFill(fillColor);
+        if (!fillColor.equals(Color.WHITE))
+            shape.getStyleClass().add("graph-node-hollow");
+
+        shape.setStroke(Color.BLACK);
+        shape.setFill(fillColor);
         shape.setStrokeWidth(strokeWidth);
         shape.setUserData(nodeStyle);
         return shape;

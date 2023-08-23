@@ -22,7 +22,6 @@ package catlynet.algorithm;
 import catlynet.model.MoleculeType;
 import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
-import jloda.util.CanceledException;
 import jloda.util.StringUtils;
 import org.apache.commons.math3.distribution.BinomialDistribution;
 import org.apache.commons.math3.random.Well19937c;
@@ -55,7 +54,7 @@ public class PolymerModel implements IDescribed {
 		return "runs the polymer model with alphabet-size a, food set max length k, polymer max length n and mean number of catalyzed reactions m";
 	}
 
-	public ReactionSystem apply() throws CanceledException {
+	public ReactionSystem apply() {
 		if (inputParameters != null) {
 			return apply(inputParameters.a, inputParameters.k, inputParameters.n, inputParameters.m, inputParameters.seed);
 		} else
@@ -78,7 +77,6 @@ public class PolymerModel implements IDescribed {
 		var foodNames = new ArrayList<String>();
 		createPolymersRec(a, k, "", foodNames);
 		reactionSystem.getFoods().addAll(foodNames.stream().map(MoleculeType::valueOf).toList());
-
 
 		var polymers = new ArrayList<String>();
 		createPolymersRec(a, n, "", polymers);
