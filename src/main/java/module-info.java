@@ -32,5 +32,4 @@ module catlynet {
 
 	exports catlynet;
 	exports catlynet.dialog;
-	exports catlynet.xtra;
 }

@@ -25,6 +25,7 @@ import catlynet.dialog.ExportReactionsForSelectedNodesDialog;
 import catlynet.dialog.PolymerModelDialog;
 import catlynet.dialog.exportlist.ExportList;
 import catlynet.format.FormatWindow;
+import catlynet.io.GraphIO;
 import catlynet.io.Save;
 import catlynet.io.SaveBeforeClosingDialog;
 import catlynet.main.CheckForUpdate;
@@ -48,6 +49,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import jloda.fx.control.ZoomableScrollPane;
 import jloda.fx.util.*;
@@ -56,9 +58,12 @@ import jloda.fx.window.NotificationManager;
 import jloda.fx.window.SplashScreen;
 import jloda.fx.window.WindowGeometry;
 import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.NumberUtils;
 import jloda.util.StringUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -105,6 +110,14 @@ public class MainWindowPresenter {
                 mainWindow.getDocument().setDirty(true);
         });
 
+        controller.getInputFoodTextArea().textProperty().addListener((v, o, n) -> {
+            RunAfterAWhile.applyInFXThread(controller.getInputFoodTextArea(), () -> VerifyInput.verify(mainWindow));
+        });
+
+        controller.getInputTextArea().textProperty().addListener((v, o, n) -> {
+            RunAfterAWhile.applyInFXThread(controller.getInputTextArea(), () -> VerifyInput.verify(mainWindow));
+        });
+
         RecentFilesManager.getInstance().setFileOpener(FileOpenManager.getFileOpener());
         RecentFilesManager.getInstance().setupMenu(controller.getRecentFilesMenu());
 
@@ -144,6 +157,28 @@ public class MainWindowPresenter {
             exportList.getStage().show();
         });
         controller.getExportListOfReactionsMenuItem().disableProperty().bind(mainWindow.getInputReactionSystem().sizeProperty().isEqualTo(0));
+
+        controller.getExportGraphGMLMenuItem().setOnAction(c -> {
+            final FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Export GML - " + ProgramProperties.getProgramVersion());
+            var dir = new File(ProgramProperties.get("GMLDir", ""));
+            if (dir.isDirectory())
+                fileChooser.setInitialDirectory(dir);
+            fileChooser.setInitialFileName(FileUtils.replaceFileSuffix(FileUtils.getFileNameWithoutPath(mainWindow.getDocument().getFileName()), ".gml"));
+            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("GML file", "*.gml"), TextFileFilter.getInstance());
+
+            var file = fileChooser.showSaveDialog(mainWindow.getStage());
+            if (file != null) {
+                ProgramProperties.put("GMLDir", file.getParentFile());
+                try (var w = FileUtils.getOutputWriterPossiblyZIPorGZIP(file.getPath())) {
+                    GraphIO.write(w, mainWindow.getDocument(), graphView);
+                } catch (IOException ex) {
+                    NotificationManager.showError("Save to GML failed: " + ex.getMessage());
+                }
+            }
+
+        });
+        controller.getExportGraphGMLMenuItem().disableProperty().bind(disableGraphItems);
 
 
         controller.getSaveMenuItem().setOnAction(e -> Save.showSaveDialog(mainWindow));
@@ -189,7 +224,7 @@ public class MainWindowPresenter {
         controller.getCopyMenuItem().setOnAction(e -> {
             if (controller.getNetworkTab().getTabPane().isFocused() && controller.getNetworkTab().isSelected()) {
                 final ClipboardContent content = new ClipboardContent();
-                if (graphView.getNodeSelection().size() > 0)
+                if (!graphView.getNodeSelection().isEmpty())
                     content.putString(StringUtils.toString(graphView.getSelectedLabels(), "\n"));
                 content.putImage(controller.getNetworkScrollPane().getContent().snapshot(null, null));
                 Clipboard.getSystemClipboard().setContent(content);

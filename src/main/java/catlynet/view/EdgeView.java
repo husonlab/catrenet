@@ -52,20 +52,29 @@ public class EdgeView extends Group {
     private final int catalystEdgeWidth = ProgramProperties.get("catalystEdgeWidth", 2);
     private final int inhibitionEdgeWidth = ProgramProperties.get("inhibitionEdgeWidth", 2);
 
+	private final Path path = new Path();
+
+	private EdgeType edgeType;
+
+	private final MoveTo moveToA = new MoveTo();
+	private final LineTo lineToB = new LineTo();
+	private final QuadCurveTo quadCurveToD = new QuadCurveTo();
+	private final LineTo lineToE = new LineTo();
+
+	private final CircleShape circleShape = new CircleShape(3);
+
     private EdgeView() {
     }
 
     public EdgeView(ReactionGraphView graphView, Edge e, ReadOnlyDoubleProperty aX, ReadOnlyDoubleProperty aY, ReadOnlyDoubleProperty bX, ReadOnlyDoubleProperty bY, EdgeType edgeType) {
+		this.edgeType = edgeType;
+
         var arrowHead = switch (edgeType) {
             case Association, Catalyst, Reactant, Product -> new Polygon(-6, -4, 6, 0, -6, 4);
             case ReactantReversible, ProductReversible -> new Polygon(-7, 0, 0, 5, 7, 0, 0, -5);
             case Inhibitor -> new Polyline(0, -7, 0, 7);
         };
-        var moveToA = new MoveTo();
-        var lineToB = new LineTo();
-        var quadCurveToD = new QuadCurveTo();
-        var lineToE = new LineTo();
-        var circleShape = new CircleShape(3);
+
 
         final InvalidationListener invalidationListener = v -> {
             var lineCenter = updatePath(aX.get(), aY.get(), bX.get(), bY.get(), null, moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(e));
@@ -95,7 +104,7 @@ public class EdgeView extends Group {
             }
         }
 
-        var path = new Path(moveToA, lineToB, quadCurveToD, lineToE);
+		path.getElements().addAll(moveToA, lineToB, quadCurveToD, lineToE);
         path.setStrokeWidth(2);
 
         graphView.setupMouseInteraction(path, circleShape, null, e);
@@ -208,7 +217,22 @@ public class EdgeView extends Group {
         arrowHead.setRotationAxis(new Point3D(0, 0, 1));
         arrowHead.setRotate(angle);
         return center;
+	}
 
+	public EdgeType getEdgeType() {
+		return edgeType;
+	}
+
+	public double getControlX() {
+		return quadCurveToD.getControlX();
+	}
+
+	public double getControlY() {
+		return quadCurveToD.getControlY();
+	}
+
+	public Path getPath() {
+		return path;
     }
 
     /**

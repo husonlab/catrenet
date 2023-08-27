@@ -63,6 +63,9 @@
                                         <MenuItem fx:id="exportListOfReactionsMenuItem" mnemonicParsing="false"
                                                   text="List of Reactions..."/>
                                         <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <MenuItem fx:id="exportGraphGMLMenuItem" mnemonicParsing="false"
+                                                  text="Graph in GML Format..."/>
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
                                     </items>
                                 </Menu>
                                 <SeparatorMenuItem mnemonicParsing="false"/>

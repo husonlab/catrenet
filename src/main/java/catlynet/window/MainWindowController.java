@@ -112,6 +112,9 @@ public class MainWindowController {
 	private MenuItem exportListOfReactionsMenuItem;
 
 	@FXML
+	private MenuItem exportGraphGMLMenuItem;
+
+	@FXML
 	private Menu exportMenu;
 
 	@FXML
@@ -684,6 +687,10 @@ public class MainWindowController {
 
 	public MenuItem getExportListOfReactionsMenuItem() {
 		return exportListOfReactionsMenuItem;
+	}
+
+	public MenuItem getExportGraphGMLMenuItem() {
+		return exportGraphGMLMenuItem;
 	}
 
 	public Menu getRecentFilesMenu() {

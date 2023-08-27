@@ -52,9 +52,8 @@ public class TabManager {
 
     public TextTab getTextTab(String name, ReactionSystem reactionSystem) {
         final Optional<TextTab> tab = tabs.stream().filter(t -> t instanceof TextTab).map(t -> (TextTab) t).filter(t -> t.getName().equals(name)).findAny();
-        if (tab.isPresent())
-            return tab.get();
-        else { // create new tab and add in alphabetical order
+        tab.ifPresent(tabs::remove);
+        { // create new tab and add in alphabetical order
             final TextTab textTab = reactionSystem != null ? new ReactionSystemTab(mainWindow, reactionSystem) : new TextTab(mainWindow, name);
             boolean added = false;
             for (int i = 0; !added && i < tabs.size(); i++) {
