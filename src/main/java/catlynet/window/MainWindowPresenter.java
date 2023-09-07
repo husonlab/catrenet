@@ -24,20 +24,21 @@ import catlynet.algorithm.*;
 import catlynet.dialog.ExportReactionsForSelectedNodesDialog;
 import catlynet.dialog.PolymerModelDialog;
 import catlynet.dialog.exportlist.ExportList;
-import catlynet.format.FormatWindow;
 import catlynet.io.GraphIO;
 import catlynet.io.Save;
 import catlynet.io.SaveBeforeClosingDialog;
 import catlynet.main.CheckForUpdate;
 import catlynet.model.MoleculeType;
 import catlynet.model.ReactionSystem;
+import catlynet.settings.SettingsView;
 import catlynet.tab.TabManager;
 import catlynet.tab.TextTab;
-import catlynet.vformat.VFormatWindow;
 import catlynet.view.MoleculeFlowAnimation;
 import catlynet.view.NodeView;
 import catlynet.view.ReactionGraphView;
 import catlynet.view.SelectionBindings;
+import javafx.animation.Animation;
+import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
@@ -48,6 +49,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -280,33 +282,6 @@ public class MainWindowPresenter {
         });
 
         graphView.emptyProperty().addListener((c, o, n) -> disableGraphItems.set(n));
-
-        controller.getFormatMenuItem().setOnAction(e -> {
-            Stage stage = null;
-            for (Stage auxStage : MainWindowManager.getInstance().getAuxiliaryWindows(mainWindow)) {
-                if (auxStage.getTitle().contains(FormatWindow.title)) {
-                    stage = auxStage;
-                    break;
-                }
-            }
-            if (stage == null) {
-                final FormatWindow formatWindow = new FormatWindow(mainWindow);
-                stage = formatWindow.getStage();
-            }
-            stage.setIconified(false);
-            stage.toFront();
-        });
-
-        controller.getShowNodeAndEdgeFormatMenuItem().setOnAction(e -> {
-
-            if (vFormatWindowStage == null) {
-                final VFormatWindow formatWindow = new VFormatWindow(mainWindow);
-                vFormatWindowStage = formatWindow.getStage();
-            }
-            vFormatWindowStage.setIconified(false);
-            vFormatWindowStage.show();
-            vFormatWindowStage.toFront();
-        });
 
         controller.getRunRAFMenuItem().setOnAction(e -> {
             if (VerifyInput.verify(mainWindow)) {
@@ -724,9 +699,7 @@ public class MainWindowPresenter {
         SetupFind.apply(mainWindow);
         SetupExport.apply(mainWindow);
 
-
         selectLogTab(controller);
-
 
         controller.getListFoodMenuItem().setOnAction(e -> reportList(mainWindow.getInputReactionSystem(), "Food", controller));
         controller.getListFoodMenuItem().disableProperty().bind(disableRunProperty);
@@ -742,6 +715,47 @@ public class MainWindowPresenter {
         controller.getListInhibitorsMenuItem().setOnAction(e -> reportList(mainWindow.getInputReactionSystem(), "Inhibitors", controller));
         controller.getListInhibitorsMenuItem().disableProperty().bind(disableRunProperty);
 
+        controller.getUndoFoodButton().disableProperty().bind(controller.getInputFoodTextArea().undoableProperty().not());
+        controller.getRedoFoodButton().disableProperty().bind(controller.getInputFoodTextArea().redoableProperty().not());
+        controller.getUndoFoodButton().setOnAction(e -> controller.getInputFoodTextArea().undo());
+        controller.getRedoFoodButton().setOnAction(e -> controller.getInputFoodTextArea().redo());
+
+        controller.getUndoReactionsButton().disableProperty().bind(controller.getInputTextArea().undoableProperty().not());
+        controller.getRedoReactionsButton().disableProperty().bind(controller.getInputTextArea().redoableProperty().not());
+        controller.getUndoReactionsButton().setOnAction(e -> controller.getInputTextArea().undo());
+        controller.getRedoReactionsButton().setOnAction(e -> controller.getInputTextArea().redo());
+
+        {
+            var settings = new SettingsView(mainWindow);
+            var translate = new TranslateTransition(javafx.util.Duration.seconds(0.5), settings.getRoot());
+
+            DraggableUtils.setupDragMouseTranslate(settings.getRoot());
+
+            var translateX = new SimpleDoubleProperty(0.0);
+            var translateY = new SimpleDoubleProperty(0.0);
+
+            controller.getSidebarButton().selectedProperty().addListener((v, o, n) -> {
+                if (n) {
+                    AnchorPane.setLeftAnchor(settings.getRoot(), 5.0);
+                    AnchorPane.setTopAnchor(settings.getRoot(), 45.0);
+                    controller.getMainAnchorPane().getChildren().add(settings.getRoot());
+                    translate.setFromX(-450);
+                    translate.setToX(translateX.get());
+                    translate.setToY(translateY.get());
+                    translate.setOnFinished(e -> {
+                    });
+                } else {
+                    translateX.set(settings.getRoot().getTranslateX());
+                    translateY.set(settings.getRoot().getTranslateY());
+                    translate.setFromX(translateX.get());
+                    translate.setToX(-450);
+                    translate.setToY(0);
+                    translate.setOnFinished(e -> controller.getMainAnchorPane().getChildren().remove(settings.getRoot()));
+                }
+                translate.play();
+            });
+            controller.getSidebarButton().disableProperty().bind(translate.statusProperty().isEqualTo(Animation.Status.RUNNING));
+        }
     }
 
     public static void selectLogTab(MainWindowController controller) {

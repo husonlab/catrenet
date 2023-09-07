@@ -1,5 +1,5 @@
 /*
- * ArrowNotation.java Copyright (C) 2022 Daniel H. Huson
+ * ArrowNotation.java Copyright (C) 2023 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package catlynet.format;
+package catlynet.settings;
 
 /**
  * arrow notation

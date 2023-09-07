@@ -19,9 +19,9 @@
 
 package catlynet.window;
 
-import catlynet.format.ArrowNotation;
-import catlynet.format.ReactionNotation;
 import catlynet.model.ReactionSystem;
+import catlynet.settings.ArrowNotation;
+import catlynet.settings.ReactionNotation;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;

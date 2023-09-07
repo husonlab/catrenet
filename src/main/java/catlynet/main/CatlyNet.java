@@ -40,6 +40,7 @@ import java.time.Duration;
  * Daniel Huson, 2020
  */
 public class CatlyNet extends Application {
+    private static ArgsOptions options;
     private static String[] inputFilesAtStartup;
 
     @Override
@@ -93,7 +94,7 @@ public class CatlyNet extends Application {
     }
 
     protected static void parseArguments(String[] args) throws CanceledException, UsageException {
-        final var options = new ArgsOptions(args, CatlyNet.class, Version.NAME + " - Auto catalytic networks");
+        options = new ArgsOptions(args, CatlyNet.class, Version.NAME + " - Auto catalytic networks");
         options.setAuthors("Daniel H. Huson and Mike A. Steel");
         options.setLicense(ProgramProperties.getProgramLicence());
         options.setVersion(ProgramProperties.getProgramVersion());
@@ -131,7 +132,7 @@ public class CatlyNet extends Application {
         SplashScreen.showSplash(Duration.ofSeconds(5));
         try {
             primaryStage.setTitle("Untitled - " + ProgramProperties.getProgramName());
-            NotificationManager.setShowNotifications(true);
+            NotificationManager.setShowNotifications(false);
 
             final var mainWindow = new MainWindow();
 
@@ -160,5 +161,9 @@ public class CatlyNet extends Application {
             return System.getProperty("user.home") + "/Library/Preferences/CatlyNet.def";
         else
             return System.getProperty("user.home") + File.separator + ".CatlyNet.def";
+    }
+
+    public static ArgsOptions getOptions() {
+        return options;
     }
 }

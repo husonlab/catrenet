@@ -22,8 +22,8 @@ module catlynet {
 	opens catlynet.window;
 	opens catlynet.icons;
 
-	opens catlynet.format;
-	opens catlynet.vformat;
+	opens catlynet.settings;
+	exports catlynet.settings;
 
 	opens catlynet.dialog.exportlist;
 

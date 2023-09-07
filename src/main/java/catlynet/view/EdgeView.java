@@ -44,9 +44,9 @@ public class EdgeView extends Group {
     private final EdgeStyle catalystEdgeStyle = EdgeStyle.valueOf(ProgramProperties.get("catalystEdgeStyle", EdgeStyle.Dashed.name()));
     private final EdgeStyle inhibitionEdgeStyle = EdgeStyle.valueOf(ProgramProperties.get("inhibitionEdgeStyle", EdgeStyle.Dashed.name()));
 
-    private final Color reactionColor = ProgramProperties.get("reactionColor", Color.BLACK);
-    private final Color catalystColor = ProgramProperties.get("catalystColor", Color.GRAY);
-    private final Color inhibitionColor = ProgramProperties.get("inhibitionColor", Color.LIGHTGREY);
+	private final Color reactionColor = ProgramProperties.get("reactionEdgeColor", Color.BLACK);
+	private final Color catalystColor = ProgramProperties.get("catalystEdgeColor", Color.GRAY);
+	private final Color inhibitionColor = ProgramProperties.get("inhibitionEdgeColor", Color.LIGHTGREY);
 
     private final int reactionEdgeWidth = ProgramProperties.get("reactionEdgeWidth", 2);
     private final int catalystEdgeWidth = ProgramProperties.get("catalystEdgeWidth", 2);

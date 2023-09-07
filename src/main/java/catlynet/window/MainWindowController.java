@@ -145,9 +145,6 @@ public class MainWindowController {
 	private VBox foodInputVBox;
 
 	@FXML
-	private MenuItem formatMenuItem;
-
-	@FXML
 	private RadioMenuItem fullGraphRadioMenuItem;
 
 	@FXML
@@ -408,14 +405,12 @@ public class MainWindowController {
 	@FXML
 	private MenuItem selectReactionsMenuItem;
 
-	@FXML
-	private MenuItem showNodeAndEdgeFormatMenuItem;
 
 	@FXML
 	private MenuItem showNodeLabels;
 
 	@FXML
-	private Button sidebarButton;
+	private ToggleButton sidebarButton;
 
 	@FXML
 	private MenuItem spontaneousInRafMenuItem;
@@ -474,6 +469,22 @@ public class MainWindowController {
 	@FXML
 	private CheckMenuItem showNotificationsCheckMenuItem;
 
+	@FXML
+	private AnchorPane mainAnchorPane;
+
+	@FXML
+	private Button undoFoodButton;
+
+	@FXML
+	private Button redoFoodButton;
+
+	@FXML
+	private Button undoReactionsButton;
+
+	@FXML
+	private Button redoReactionsButton;
+
+
 	private ZoomableScrollPane zoomableScrollPane;
 
 	@FXML
@@ -501,9 +512,14 @@ public class MainWindowController {
 			MaterialIcons.setIcon(findButton, "search");
 			MaterialIcons.setIcon(findFoodTextToggleButton, "search");
 			MaterialIcons.setIcon(findReactionsTextToggleButton, "search");
-		}
 
-		sidebarButton.setDisable(true);
+			MaterialIcons.setIcon(undoFoodButton, "undo");
+			MaterialIcons.setIcon(redoFoodButton, "redo");
+
+			MaterialIcons.setIcon(undoReactionsButton, "undo");
+			MaterialIcons.setIcon(redoReactionsButton, "redo");
+
+		}
 
 		wrapTextMenuItem.selectedProperty().bindBidirectional(parsedReactionsTextArea.wrapTextProperty());
 		wrapTextMenuItem.selectedProperty().bindBidirectional(logTextArea.wrapTextProperty());
@@ -929,14 +945,6 @@ public class MainWindowController {
 		return wrapTextMenuItem;
 	}
 
-	public MenuItem getFormatMenuItem() {
-		return formatMenuItem;
-	}
-
-	public MenuItem getShowNodeAndEdgeFormatMenuItem() {
-		return showNodeAndEdgeFormatMenuItem;
-	}
-
 	public MenuItem getFullScreenMenuItem() {
 		return fullScreenMenuItem;
 	}
@@ -1159,5 +1167,29 @@ public class MainWindowController {
 
 	public ToggleButton getFindReactionsTextToggleButton() {
 		return findReactionsTextToggleButton;
+	}
+
+	public AnchorPane getMainAnchorPane() {
+		return mainAnchorPane;
+	}
+
+	public ToggleButton getSidebarButton() {
+		return sidebarButton;
+	}
+
+	public Button getUndoFoodButton() {
+		return undoFoodButton;
+	}
+
+	public Button getRedoFoodButton() {
+		return redoFoodButton;
+	}
+
+	public Button getUndoReactionsButton() {
+		return undoReactionsButton;
+	}
+
+	public Button getRedoReactionsButton() {
+		return redoReactionsButton;
 	}
 }

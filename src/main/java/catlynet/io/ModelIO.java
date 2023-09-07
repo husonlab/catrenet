@@ -19,11 +19,11 @@
 
 package catlynet.io;
 
-import catlynet.format.ArrowNotation;
-import catlynet.format.ReactionNotation;
 import catlynet.model.MoleculeType;
 import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
+import catlynet.settings.ArrowNotation;
+import catlynet.settings.ReactionNotation;
 import jloda.util.Basic;
 import jloda.util.IOExceptionWithLineNumber;
 import jloda.util.StringUtils;

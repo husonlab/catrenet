@@ -20,9 +20,9 @@
 package catlynet.tools;
 
 import catlynet.algorithm.PolymerModel;
-import catlynet.format.ArrowNotation;
-import catlynet.format.ReactionNotation;
 import catlynet.io.ModelIO;
+import catlynet.settings.ArrowNotation;
+import catlynet.settings.ReactionNotation;
 import jloda.fx.util.ArgsOptions;
 import jloda.fx.util.ResourceManagerFX;
 import jloda.util.*;

@@ -1,5 +1,5 @@
 /*
- * Version.java Copyright (C) 2022 Daniel H. Huson
+ * floating-titled-pane.css Copyright (C) 2023 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -17,9 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package catlynet.main;
-
-public class Version {
-    static public final String NAME = "CatlyNet";
-	static public final String SHORT_DESCRIPTION = "CatlyNet (version 0.8.10, built 7 Sep 2023)";
+.titled-pane {
+    -fx-border-color: gray;
+    -fx-border-width: 0.5px;
 }
+
+.titled-pane .title .arrow-button {
+    visibility: hidden;
+}
+
+

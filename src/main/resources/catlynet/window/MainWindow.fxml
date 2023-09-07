@@ -24,8 +24,346 @@
 <?import javafx.scene.input.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<BorderPane prefHeight="500.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1"
+<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="catlynet.window.MainWindowController">
+    <center>
+        <AnchorPane fx:id="mainAnchorPane">
+            <children>
+                <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                            AnchorPane.topAnchor="0.0">
+                    <top>
+                        <VBox BorderPane.alignment="CENTER">
+                            <children>
+                                <AnchorPane>
+                                    <children>
+                                        <ToolBar fx:id="mainToolBar" AnchorPane.bottomAnchor="0.0"
+                                                 AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                                 AnchorPane.topAnchor="0.0">
+                                            <items>
+                                                <ToggleButton fx:id="sidebarButton" mnemonicParsing="false"
+                                                              text="Sidebar"/>
+                                                <Label text="CatlyNet">
+                                                    <padding>
+                                                        <Insets left="20.0" right="20.0"/>
+                                                    </padding>
+                                                    <font>
+                                                        <Font size="18.0"/>
+                                                    </font>
+                                                </Label>
+                                            </items>
+                                        </ToolBar>
+                                        <HBox alignment="CENTER" spacing="5.0" AnchorPane.rightAnchor="20.0"
+                                              AnchorPane.topAnchor="5.0">
+                                            <children>
+                                                <ToggleButton fx:id="findButton" mnemonicParsing="false" text="Find"
+                                                              HBox.hgrow="NEVER"/>
+                                                <Separator layoutX="150.0" layoutY="10.0" orientation="VERTICAL"/>
+                                                <Button fx:id="inceaseFontButton" mnemonicParsing="false"
+                                                        text="Font++"/>
+                                                <Button fx:id="decreaseFontButton" mnemonicParsing="false"
+                                                        text="Font--"/>
+                                                <Separator orientation="VERTICAL"/>
+                                                <MenuButton fx:id="exportMenuButton" mnemonicParsing="false"
+                                                            text="Export">
+                                                    <items>
+                                                        <MenuItem fx:id="copyExportMenuItem" mnemonicParsing="false"
+                                                                  text="Copy"/>
+                                                        <MenuItem fx:id="exportExportMenuItem" mnemonicParsing="false"
+                                                                  text="Export..."/>
+                                                    </items>
+                                                </MenuButton>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </AnchorPane>
+                            </children>
+                        </VBox>
+                    </top>
+                    <bottom>
+                        <AnchorPane minHeight="30.0" BorderPane.alignment="CENTER">
+                            <children>
+                                <FlowPane fx:id="statusFlowPane" alignment="CENTER_LEFT" minHeight="-Infinity"
+                                          prefHeight="30.0" rowValignment="TOP" style="-fx-border-color: lightgray;"
+                                          AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                          AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <padding>
+                                        <Insets right="50.0"/>
+                                    </padding>
+                                </FlowPane>
+                                <Label fx:id="memoryUsageLabel" text="Memory" AnchorPane.bottomAnchor="3.0"
+                                       AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="3.0"/>
+                            </children>
+                        </AnchorPane>
+                    </bottom>
+                    <center>
+                        <SplitPane fx:id="mainSplitPane" dividerPositions="0.3" prefHeight="160.0" prefWidth="200.0"
+                                   BorderPane.alignment="CENTER">
+                            <items>
+                                <BorderPane>
+                                    <center>
+                                        <SplitPane fx:id="inputSplitPane" dividerPositions="0.28518971848225216"
+                                                   orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0"
+                                                   BorderPane.alignment="CENTER">
+                                            <items>
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0"
+                                                            prefWidth="160.0">
+                                                    <children>
+                                                        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                                              AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <children>
+                                                                <VBox fx:id="foodInputVBox">
+                                                                    <children>
+                                                                        <ToolBar>
+                                                                            <VBox.margin>
+                                                                                <Insets/>
+                                                                            </VBox.margin>
+                                                                            <items>
+                                                                                <ToggleButton
+                                                                                        fx:id="findFoodTextToggleButton"
+                                                                                        layoutX="10.0" layoutY="10.0"
+                                                                                        mnemonicParsing="false"
+                                                                                        style="-fx-border-style: none;"
+                                                                                        text="Find">
+                                                                                </ToggleButton>
+                                                                                <Button fx:id="undoFoodButton"
+                                                                                        mnemonicParsing="false"
+                                                                                        text="Undo"/>
+                                                                                <Button fx:id="redoFoodButton"
+                                                                                        layoutX="134.0" layoutY="10.0"
+                                                                                        mnemonicParsing="false"
+                                                                                        text="Redo"/>
+                                                                                <Label maxHeight="-Infinity"
+                                                                                       minHeight="-Infinity"
+                                                                                       prefHeight="26.0"
+                                                                                       text="Input food:"/>
+                                                                                <Label fx:id="inputFoodSizeLabel"
+                                                                                       text="0" textFill="LIGHTGRAY">
+                                                                                    <padding>
+                                                                                        <Insets left="3.0"/>
+                                                                                    </padding>
+                                                                                </Label>
+                                                                            </items>
+                                                                        </ToolBar>
+                                                                    </children>
+                                                                </VBox>
+                                                                <TextArea fx:id="inputFoodTextArea"
+                                                                          promptText="Input food set" wrapText="true"
+                                                                          VBox.vgrow="ALWAYS"/>
+                                                            </children>
+                                                        </VBox>
+                                                    </children>
+                                                </AnchorPane>
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0"
+                                                            prefWidth="160.0">
+                                                    <children>
+                                                        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                                              AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <children>
+                                                                <VBox fx:id="reactionsInputVBox">
+                                                                    <children>
+                                                                        <ToolBar>
+                                                                            <items>
+                                                                                <ToggleButton
+                                                                                        fx:id="findReactionsTextToggleButton"
+                                                                                        layoutX="10.0" layoutY="10.0"
+                                                                                        mnemonicParsing="false"
+                                                                                        style="-fx-border-style: none;"
+                                                                                        text="Find">
+                                                                                </ToggleButton>
+                                                                                <Button fx:id="undoReactionsButton"
+                                                                                        mnemonicParsing="false"
+                                                                                        text="Undo"/>
+                                                                                <Button fx:id="redoReactionsButton"
+                                                                                        mnemonicParsing="false"
+                                                                                        text="Redo"/>
+                                                                                <Label text="Input  reactions:"/>
+                                                                                <Label fx:id="inputReactionsSizeLabel"
+                                                                                       text="0" textFill="LIGHTGRAY">
+                                                                                    <padding>
+                                                                                        <Insets left="3.0"/>
+                                                                                    </padding>
+                                                                                </Label>
+                                                                            </items>
+                                                                        </ToolBar>
+                                                                    </children>
+                                                                </VBox>
+                                                                <TextArea fx:id="inputTextArea"
+                                                                          promptText="Input reactions" wrapText="true"
+                                                                          VBox.vgrow="ALWAYS"/>
+                                                            </children>
+                                                        </VBox>
+                                                    </children>
+                                                </AnchorPane>
+                                            </items>
+                                        </SplitPane>
+                                    </center>
+                                    <top>
+                                        <ToolBar BorderPane.alignment="CENTER">
+                                            <items>
+                                                <MenuButton fx:id="recentMenuButton" maxHeight="-Infinity"
+                                                            maxWidth="-Infinity" minHeight="-Infinity"
+                                                            minWidth="-Infinity" mnemonicParsing="false" text="Recent">
+                                                    <tooltip>
+                                                        <Tooltip text="Open a recent file"/>
+                                                    </tooltip>
+                                                    <items>
+                                                        <MenuItem fx:id="newRecentFileMenuItem" mnemonicParsing="false"
+                                                                  text="New..."/>
+                                                        <MenuItem fx:id="newPolymerModelRecentFileMenuItem"
+                                                                  mnemonicParsing="false" text="New Polymer Model..."/>
+                                                        <MenuItem fx:id="openRecentFileMenuItem" mnemonicParsing="false"
+                                                                  text="Open..."/>
+                                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                                    </items>
+                                                </MenuButton>
+                                                <Separator orientation="VERTICAL"/>
+                                                <MenuButton fx:id="listMenuButton" mnemonicParsing="false" text="List"/>
+
+                                                <MenuButton fx:id="runMenuButton" mnemonicParsing="false" text="Run">
+                                                    <tooltip>
+                                                        <Tooltip text="Run algorithms"/>
+                                                    </tooltip>
+                                                </MenuButton>
+                                            </items>
+                                        </ToolBar>
+                                    </top>
+                                </BorderPane>
+                                <BorderPane>
+                                    <center>
+                                        <StackPane fx:id="outputPane">
+                                            <children>
+                                                <TabPane fx:id="outputTabPane">
+                                                    <tabs>
+                                                        <Tab fx:id="parsedReactionsTab" closable="false" disable="true"
+                                                             text="Parsed">
+                                                            <content>
+                                                                <BorderPane>
+                                                                    <center>
+                                                                        <TextArea fx:id="parsedReactionsTextArea"
+                                                                                  editable="false"
+                                                                                  promptText="Parsed input"
+                                                                                  wrapText="true"/>
+                                                                    </center>
+                                                                </BorderPane>
+                                                            </content>
+                                                        </Tab>
+                                                        <Tab fx:id="networkTab" closable="false" disable="true"
+                                                             text="Network">
+                                                            <content>
+                                                                <BorderPane fx:id="networkBorderPane">
+                                                                    <top>
+                                                                        <VBox fx:id="networkVBox"
+                                                                              BorderPane.alignment="CENTER">
+                                                                            <children>
+                                                                                <ToolBar>
+                                                                                    <items>
+                                                                                        <Button fx:id="zoomInNetworkButton"
+                                                                                                mnemonicParsing="false"
+                                                                                                text="Zoom In">
+                                                                                            <tooltip>
+                                                                                                <Tooltip
+                                                                                                        text="Zoom in"/>
+                                                                                            </tooltip>
+                                                                                        </Button>
+                                                                                        <Button fx:id="zoomOutNetworkButton"
+                                                                                                mnemonicParsing="false"
+                                                                                                text="Zoom Out">
+                                                                                            <tooltip>
+                                                                                                <Tooltip
+                                                                                                        text="Zoom out"/>
+                                                                                            </tooltip>
+                                                                                        </Button>
+                                                                                        <Separator
+                                                                                                orientation="VERTICAL"/>
+                                                                                        <MenuButton
+                                                                                                fx:id="computeNetworkMenuButton"
+                                                                                                mnemonicParsing="false"
+                                                                                                text="Compute">
+                                                                                        </MenuButton>
+
+                                                                                        <MenuButton
+                                                                                                fx:id="selectNetworkMenuButton"
+                                                                                                mnemonicParsing="false"
+                                                                                                text="Select">
+                                                                                        </MenuButton>
+                                                                                        <Separator
+                                                                                                orientation="VERTICAL"/>
+                                                                                        <MenuButton
+                                                                                                fx:id="animateNetworkMenuButton"
+                                                                                                mnemonicParsing="false"
+                                                                                                text="Animate">
+                                                                                        </MenuButton>
+                                                                                        <Button fx:id="stopAnimationButton"
+                                                                                                mnemonicParsing="false"
+                                                                                                text="Stop">
+                                                                                            <tooltip>
+                                                                                                <Tooltip
+                                                                                                        text="Stop an animation"/>
+                                                                                            </tooltip>
+                                                                                        </Button>
+                                                                                    </items>
+                                                                                </ToolBar>
+                                                                            </children>
+                                                                        </VBox>
+                                                                    </top>
+                                                                    <center>
+                                                                        <AnchorPane fx:id="networkCopyPane">
+                                                                            <children>
+                                                                                <StackPane fx:id="networkPane"
+                                                                                           AnchorPane.bottomAnchor="0.0"
+                                                                                           AnchorPane.leftAnchor="0.0"
+                                                                                           AnchorPane.rightAnchor="0.0"
+                                                                                           AnchorPane.topAnchor="0.0"/>
+                                                                                <Label fx:id="graphTypeLabel"
+                                                                                       text="Label"
+                                                                                       textAlignment="RIGHT"
+                                                                                       AnchorPane.rightAnchor="30.0"
+                                                                                       AnchorPane.topAnchor="5.0"/>
+                                                                            </children>
+                                                                        </AnchorPane>
+                                                                    </center>
+                                                                </BorderPane>
+                                                            </content>
+                                                            <contextMenu>
+                                                                <ContextMenu fx:id="networkContextMenu">
+                                                                    <items>
+                                                                        <MenuItem fx:id="copyNetworkContextMenuItem"
+                                                                                  mnemonicParsing="false"
+                                                                                  text="Copy Image"/>
+                                                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                                                    </items>
+                                                                </ContextMenu>
+                                                            </contextMenu>
+                                                        </Tab>
+                                                        <Tab fx:id="logTab" closable="false" text="Log">
+                                                            <content>
+                                                                <BorderPane>
+                                                                    <center>
+                                                                        <TextArea fx:id="logTextArea" editable="false"
+                                                                                  promptText="Log" wrapText="true"/>
+                                                                    </center>
+                                                                </BorderPane>
+                                                            </content>
+                                                        </Tab>
+                                                    </tabs>
+                                                </TabPane>
+                                            </children>
+                                        </StackPane>
+                                    </center>
+                                    <top>
+                                        <VBox fx:id="topMainVBox" BorderPane.alignment="CENTER"/>
+                                    </top>
+                                </BorderPane>
+                            </items>
+                            <BorderPane.margin>
+                                <Insets left="2.0" right="2.0"/>
+                            </BorderPane.margin>
+                        </SplitPane>
+                    </center>
+                </BorderPane>
+            </children>
+        </AnchorPane>
+    </center>
     <top>
         <VBox BorderPane.alignment="CENTER">
             <children>
@@ -149,20 +487,6 @@
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <Menu mnemonicParsing="false" text="Preferences">
                                     <items>
-                                        <MenuItem fx:id="formatMenuItem" mnemonicParsing="false"
-                                                  text="Reaction Format...">
-                                            <accelerator>
-                                                <KeyCodeCombination alt="UP" code="J" control="UP" meta="DOWN"
-                                                                    shift="UP" shortcut="UP"/>
-                                            </accelerator>
-                                        </MenuItem>
-                                        <MenuItem fx:id="showNodeAndEdgeFormatMenuItem" mnemonicParsing="false"
-                                                  text="Node and Edge Format...">
-                                            <accelerator>
-                                                <KeyCodeCombination alt="UP" code="J" control="UP" meta="DOWN"
-                                                                    shift="DOWN" shortcut="UP"/>
-                                            </accelerator>
-                                        </MenuItem>
                                         <CheckMenuItem fx:id="showNotificationsCheckMenuItem" mnemonicParsing="false"
                                                        text="Show Notifications"/>
                                     </items>
@@ -427,281 +751,7 @@
                         </Menu>
                     </menus>
                 </MenuBar>
-                <AnchorPane>
-                    <children>
-                        <ToolBar fx:id="mainToolBar" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                 AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                            <items>
-                                <Button fx:id="sidebarButton" mnemonicParsing="false" text="Sidebar"/>
-                                <Label text="CatlyNet">
-                                    <padding>
-                                        <Insets left="20.0" right="20.0"/>
-                                    </padding>
-                                    <font>
-                                        <Font size="18.0"/>
-                                    </font>
-                                </Label>
-                            </items>
-                        </ToolBar>
-                        <HBox alignment="CENTER" spacing="5.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="5.0">
-                            <children>
-                                <ToggleButton fx:id="findButton" mnemonicParsing="false" text="Find"
-                                              HBox.hgrow="NEVER"/>
-                                <Separator layoutX="150.0" layoutY="10.0" orientation="VERTICAL"/>
-                                <Button fx:id="inceaseFontButton" mnemonicParsing="false" text="Font++"/>
-                                <Button fx:id="decreaseFontButton" mnemonicParsing="false" text="Font--"/>
-                                <Separator orientation="VERTICAL"/>
-                                <MenuButton fx:id="exportMenuButton" mnemonicParsing="false" text="Export">
-                                    <items>
-                                        <MenuItem fx:id="copyExportMenuItem" mnemonicParsing="false" text="Copy"/>
-                                        <MenuItem fx:id="exportExportMenuItem" mnemonicParsing="false"
-                                                  text="Export..."/>
-                                    </items>
-                                </MenuButton>
-                            </children>
-                        </HBox>
-                    </children>
-                </AnchorPane>
             </children>
         </VBox>
     </top>
-    <bottom>
-        <AnchorPane minHeight="30.0" BorderPane.alignment="CENTER">
-            <children>
-                <FlowPane fx:id="statusFlowPane" alignment="CENTER_LEFT" minHeight="-Infinity" prefHeight="30.0"
-                          rowValignment="TOP" style="-fx-border-color: lightgray;" AnchorPane.bottomAnchor="0.0"
-                          AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <padding>
-                        <Insets right="50.0"/>
-                    </padding>
-                </FlowPane>
-                <Label fx:id="memoryUsageLabel" text="Memory" AnchorPane.bottomAnchor="3.0"
-                       AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="3.0"/>
-            </children>
-        </AnchorPane>
-    </bottom>
-    <center>
-        <SplitPane fx:id="mainSplitPane" dividerPositions="0.3" prefHeight="160.0" prefWidth="200.0"
-                   BorderPane.alignment="CENTER">
-            <items>
-                <BorderPane>
-                    <center>
-                        <SplitPane fx:id="inputSplitPane" dividerPositions="0.28518971848225216" orientation="VERTICAL"
-                                   prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
-                            <items>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                                    <children>
-                                        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                              AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                            <children>
-                                                <VBox fx:id="foodInputVBox">
-                                                    <children>
-                                                        <ToolBar>
-                                                            <VBox.margin>
-                                                                <Insets/>
-                                                            </VBox.margin>
-                                                            <items>
-                                                                <ToggleButton fx:id="findFoodTextToggleButton"
-                                                                              layoutX="10.0" layoutY="10.0"
-                                                                              mnemonicParsing="false"
-                                                                              style="-fx-border-style: none;"
-                                                                              text="Find">
-                                                                </ToggleButton>
-                                                                <Label maxHeight="-Infinity" minHeight="-Infinity"
-                                                                       prefHeight="26.0" text="Input food:"/>
-                                                                <Label fx:id="inputFoodSizeLabel" text="0"
-                                                                       textFill="LIGHTGRAY">
-                                                                    <padding>
-                                                                        <Insets left="3.0"/>
-                                                                    </padding>
-                                                                </Label>
-                                                            </items>
-                                                        </ToolBar>
-                                                    </children>
-                                                </VBox>
-                                                <TextArea fx:id="inputFoodTextArea" promptText="Input food set"
-                                                          wrapText="true" VBox.vgrow="ALWAYS"/>
-                                            </children>
-                                        </VBox>
-                                    </children>
-                                </AnchorPane>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                                    <children>
-                                        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                              AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                            <children>
-                                                <VBox fx:id="reactionsInputVBox">
-                                                    <children>
-                                                        <ToolBar>
-                                                            <items>
-                                                                <ToggleButton fx:id="findReactionsTextToggleButton"
-                                                                              layoutX="10.0" layoutY="10.0"
-                                                                              mnemonicParsing="false"
-                                                                              style="-fx-border-style: none;"
-                                                                              text="Find">
-                                                                </ToggleButton>
-                                                                <Label text="Input  reactions:"/>
-                                                                <Label fx:id="inputReactionsSizeLabel" text="0"
-                                                                       textFill="LIGHTGRAY">
-                                                                    <padding>
-                                                                        <Insets left="3.0"/>
-                                                                    </padding>
-                                                                </Label>
-                                                            </items>
-                                                        </ToolBar>
-                                                    </children>
-                                                </VBox>
-                                                <TextArea fx:id="inputTextArea" promptText="Input reactions"
-                                                          wrapText="true" VBox.vgrow="ALWAYS"/>
-                                            </children>
-                                        </VBox>
-                                    </children>
-                                </AnchorPane>
-                            </items>
-                        </SplitPane>
-                    </center>
-                    <top>
-                        <ToolBar BorderPane.alignment="CENTER">
-                            <items>
-                                <MenuButton fx:id="recentMenuButton" maxHeight="-Infinity" maxWidth="-Infinity"
-                                            minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false"
-                                            text="Recent">
-                                    <tooltip>
-                                        <Tooltip text="Open a recent file"/>
-                                    </tooltip>
-                                    <items>
-                                        <MenuItem fx:id="newRecentFileMenuItem" mnemonicParsing="false" text="New..."/>
-                                        <MenuItem fx:id="newPolymerModelRecentFileMenuItem" mnemonicParsing="false"
-                                                  text="New Polymer Model..."/>
-                                        <MenuItem fx:id="openRecentFileMenuItem" mnemonicParsing="false"
-                                                  text="Open..."/>
-                                        <SeparatorMenuItem mnemonicParsing="false"/>
-                                    </items>
-                                </MenuButton>
-                                <Separator orientation="VERTICAL"/>
-                                <MenuButton fx:id="listMenuButton" mnemonicParsing="false" text="List"/>
-
-                                <MenuButton fx:id="runMenuButton" mnemonicParsing="false" text="Run">
-                                    <tooltip>
-                                        <Tooltip text="Run algorithms"/>
-                                    </tooltip>
-                                </MenuButton>
-                            </items>
-                        </ToolBar>
-                    </top>
-                </BorderPane>
-                <BorderPane>
-                    <center>
-                        <StackPane fx:id="outputPane">
-                            <children>
-                                <TabPane fx:id="outputTabPane">
-                                    <tabs>
-                                        <Tab fx:id="parsedReactionsTab" closable="false" disable="true" text="Parsed">
-                                            <content>
-                                                <BorderPane>
-                                                    <center>
-                                                        <TextArea fx:id="parsedReactionsTextArea" editable="false"
-                                                                  promptText="Parsed input" wrapText="true"/>
-                                                    </center>
-                                                </BorderPane>
-                                            </content>
-                                        </Tab>
-                                        <Tab fx:id="networkTab" closable="false" disable="true" text="Network">
-                                            <content>
-                                                <BorderPane fx:id="networkBorderPane">
-                                                    <top>
-                                                        <VBox fx:id="networkVBox" BorderPane.alignment="CENTER">
-                                                            <children>
-                                                                <ToolBar>
-                                                                    <items>
-                                                                        <Button fx:id="zoomInNetworkButton"
-                                                                                mnemonicParsing="false" text="Zoom In">
-                                                                            <tooltip>
-                                                                                <Tooltip text="Zoom in"/>
-                                                                            </tooltip>
-                                                                        </Button>
-                                                                        <Button fx:id="zoomOutNetworkButton"
-                                                                                mnemonicParsing="false" text="Zoom Out">
-                                                                            <tooltip>
-                                                                                <Tooltip text="Zoom out"/>
-                                                                            </tooltip>
-                                                                        </Button>
-                                                                        <Separator orientation="VERTICAL"/>
-                                                                        <MenuButton fx:id="computeNetworkMenuButton"
-                                                                                    mnemonicParsing="false"
-                                                                                    text="Compute">
-                                                                </MenuButton>
-
-                                                                        <MenuButton fx:id="selectNetworkMenuButton"
-                                                                                    mnemonicParsing="false"
-                                                                                    text="Select">
-                                                                </MenuButton>
-                                                                        <Separator orientation="VERTICAL"/>
-                                                                        <MenuButton fx:id="animateNetworkMenuButton"
-                                                                                    mnemonicParsing="false"
-                                                                                    text="Animate">
-                                                                </MenuButton>
-                                                                        <Button fx:id="stopAnimationButton"
-                                                                                mnemonicParsing="false" text="Stop">
-                                                                            <tooltip>
-                                                                                <Tooltip text="Stop an animation"/>
-                                                                            </tooltip>
-                                                                        </Button>
-                                                                    </items>
-                                                                </ToolBar>
-                                                            </children>
-                                                        </VBox>
-                                                    </top>
-                                                    <center>
-                                                        <AnchorPane fx:id="networkCopyPane">
-                                                            <children>
-                                                                <StackPane fx:id="networkPane"
-                                                                           AnchorPane.bottomAnchor="0.0"
-                                                                           AnchorPane.leftAnchor="0.0"
-                                                                           AnchorPane.rightAnchor="0.0"
-                                                                           AnchorPane.topAnchor="0.0"/>
-                                                                <Label fx:id="graphTypeLabel" text="Label"
-                                                                       textAlignment="RIGHT"
-                                                                       AnchorPane.rightAnchor="30.0"
-                                                                       AnchorPane.topAnchor="5.0"/>
-                                                            </children>
-                                                        </AnchorPane>
-                                                    </center>
-                                                </BorderPane>
-                                            </content>
-                                            <contextMenu>
-                                                <ContextMenu fx:id="networkContextMenu">
-                                                    <items>
-                                                        <MenuItem fx:id="copyNetworkContextMenuItem"
-                                                                  mnemonicParsing="false" text="Copy Image"/>
-                                                        <SeparatorMenuItem mnemonicParsing="false"/>
-                                                    </items>
-                                                </ContextMenu>
-                                            </contextMenu>
-                                        </Tab>
-                                        <Tab fx:id="logTab" closable="false" text="Log">
-                                            <content>
-                                                <BorderPane>
-                                                    <center>
-                                                        <TextArea fx:id="logTextArea" editable="false" promptText="Log"
-                                                                  wrapText="true"/>
-                                                    </center>
-                                                </BorderPane>
-                                            </content>
-                                        </Tab>
-                                    </tabs>
-                                </TabPane>
-                            </children>
-                        </StackPane>
-                    </center>
-                    <top>
-                        <VBox fx:id="topMainVBox" BorderPane.alignment="CENTER"/>
-                    </top>
-                </BorderPane>
-            </items>
-            <BorderPane.margin>
-                <Insets left="2.0" right="2.0"/>
-            </BorderPane.margin>
-        </SplitPane>
-    </center>
 </BorderPane>
