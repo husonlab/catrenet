@@ -27,6 +27,8 @@ import javafx.scene.control.*;
 import jloda.fx.util.ProgramProperties;
 
 public class SettingsController {
+	@FXML
+	private TitledPane titledPane;
 
 	@FXML
 	private TextField iterationsTextField;
@@ -87,9 +89,6 @@ public class SettingsController {
 
 	@FXML
 	private ChoiceBox<Integer> foodNodesSizeCBox;
-
-	@FXML
-	private TitledPane titledPane;
 
 	@FXML
 	private RadioButton singleArrowRadioButton;
@@ -220,5 +219,9 @@ public class SettingsController {
 
 	public CheckBox getWrapTextCheckBox() {
 		return wrapTextCheckBox;
+	}
+
+	public TitledPane getTitledPane() {
+		return titledPane;
 	}
 }

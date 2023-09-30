@@ -755,6 +755,13 @@ public class MainWindowPresenter {
                 translate.play();
             });
             controller.getSidebarButton().disableProperty().bind(translate.statusProperty().isEqualTo(Animation.Status.RUNNING));
+
+            settings.getController().getTitledPane().setOnMouseClicked(e -> {
+                if (e.getClickCount() > 1) {
+                    controller.getSidebarButton().setSelected(false);
+                    e.consume();
+                }
+            });
         }
     }
 

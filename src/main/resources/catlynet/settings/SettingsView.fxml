@@ -19,13 +19,13 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<TitledPane fx:id="titledPane" prefWidth="450.0" text="Settings" xmlns="http://javafx.com/javafx/18"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="catlynet.settings.SettingsController">
+<TitledPane fx:id="titledPane" animated="false" collapsible="false" prefWidth="450.0" text="Settings"
+            xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="catlynet.settings.SettingsController">
     <content>
         <AnchorPane>
             <children>
