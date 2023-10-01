@@ -33,6 +33,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 
+/**
+ * gives access to Google's material icons
+ * Daniel Huson, 7.2023
+ */
 public class MaterialIcons {
 	private static MaterialIcons instance;
 
