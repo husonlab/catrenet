@@ -19,7 +19,6 @@
 
 package catlynet.window;
 
-import catlynet.icons.MaterialIcons;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
@@ -30,6 +29,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
 import jloda.fx.control.SplittableTabPane;
 import jloda.fx.control.ZoomableScrollPane;
+import jloda.fx.icons.MaterialIcons;
 import jloda.fx.util.BasicFX;
 import jloda.fx.util.ProgramProperties;
 import jloda.fx.util.RunAfterAWhile;

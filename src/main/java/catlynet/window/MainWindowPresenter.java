@@ -24,7 +24,7 @@ import catlynet.algorithm.*;
 import catlynet.dialog.ExportReactionsForSelectedNodesDialog;
 import catlynet.dialog.PolymerModelDialog;
 import catlynet.dialog.exportlist.ExportList;
-import catlynet.io.GraphIO;
+import catlynet.io.NetworkIO;
 import catlynet.io.Save;
 import catlynet.io.SaveBeforeClosingDialog;
 import catlynet.main.CheckForUpdate;
@@ -173,7 +173,7 @@ public class MainWindowPresenter {
             if (file != null) {
                 ProgramProperties.put("GMLDir", file.getParentFile());
                 try (var w = FileUtils.getOutputWriterPossiblyZIPorGZIP(file.getPath())) {
-                    GraphIO.write(w, mainWindow.getDocument(), graphView);
+                    NetworkIO.write(w, mainWindow.getDocument(), graphView);
                 } catch (IOException ex) {
                     NotificationManager.showError("Save to GML failed: " + ex.getMessage());
                 }

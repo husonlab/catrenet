@@ -19,7 +19,6 @@
 
 package catlynet.window;
 
-import catlynet.icons.MaterialIcons;
 import catlynet.tab.TextTab;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -27,6 +26,7 @@ import jloda.fx.find.FindToolBar;
 import jloda.fx.find.GraphSearcher;
 import jloda.fx.find.ISearcher;
 import jloda.fx.find.TextAreaSearcher;
+import jloda.fx.icons.MaterialIcons;
 
 /**
  * setup find

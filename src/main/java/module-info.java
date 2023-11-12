@@ -20,7 +20,6 @@ module catlynet {
 
 	opens catlynet.tab;
 	opens catlynet.window;
-	opens catlynet.icons;
 
 	opens catlynet.settings;
 	exports catlynet.settings;
