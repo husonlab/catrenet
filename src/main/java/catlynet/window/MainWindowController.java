@@ -493,7 +493,6 @@ public class MainWindowController {
 			MaterialIcons.setIcon(recentMenuButton, "file_open");
 			MaterialIcons.setIcon(runMenuButton, "play_circle_filled");
 
-
 			MaterialIcons.setIcon(computeNetworkMenuButton, "tune");
 			MaterialIcons.setIcon(animateNetworkMenuButton, "play_circle");
 			MaterialIcons.setIcon(stopAnimationButton, "close", null, false);
