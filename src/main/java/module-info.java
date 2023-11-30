@@ -15,15 +15,12 @@ module catlynet {
 	exports catlynet.view;
 	exports catlynet.action;
 	exports catlynet.tools;
-
-	opens catlynet.algorithm;
-
-	opens catlynet.tab;
-	opens catlynet.window;
-
-	opens catlynet.settings;
 	exports catlynet.settings;
 
+	opens catlynet.algorithm;
+	opens catlynet.tab;
+	opens catlynet.window;
+	opens catlynet.settings;
 	opens catlynet.dialog.exportlist;
 
 	opens catlynet.resources.images;

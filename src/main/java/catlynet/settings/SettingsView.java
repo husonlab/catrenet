@@ -20,8 +20,11 @@
 package catlynet.settings;
 
 import catlynet.window.MainWindow;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import jloda.fx.util.ExtendedFXMLLoader;
+
+import java.io.IOException;
+import java.util.Objects;
 
 public class SettingsView {
 	private final Parent root;
@@ -29,9 +32,14 @@ public class SettingsView {
 	private final SettingsPresenter presenter;
 
 	public SettingsView(MainWindow mainWindow) {
-		final ExtendedFXMLLoader<SettingsController> extendedFXMLLoader = new ExtendedFXMLLoader<>(this.getClass());
-		root = extendedFXMLLoader.getRoot();
-		controller = extendedFXMLLoader.getController();
+		var fxmlLoader = new FXMLLoader();
+		try (var ins = Objects.requireNonNull(SettingsView.class.getResource("SettingsView.fxml")).openStream()) {
+			fxmlLoader.load(ins);
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
+		root = fxmlLoader.getRoot();
+		controller = fxmlLoader.getController();
 		presenter = new SettingsPresenter(mainWindow, controller);
 	}
 

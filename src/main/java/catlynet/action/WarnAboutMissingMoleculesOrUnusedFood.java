@@ -55,16 +55,28 @@ public class WarnAboutMissingMoleculesOrUnusedFood {
 			return new Result(missingCatalysts, CollectionUtils.difference(inputReactions.getFoods(), inputReactions.computeMentionedFoods(inputReactions.getFoods())));
         });
         aService.setOnSucceeded(c -> {
-            if (aService.getValue().getMissingCatalysts().size() > 0) {
-				final String message1 = "There are " + aService.getValue().getMissingCatalysts().size() + " catalysts that are never provided or produced: " + StringUtils.toString(aService.getValue().getMissingCatalysts(), ", ") + ".";
-                NotificationManager.showWarning(message1);
-                controller.getLogTextArea().setText(controller.getLogTextArea().getText() + "\n\n" + message1);
+            var missingCatalysts = aService.getValue().getMissingCatalysts().size();
+            if (missingCatalysts == 1) {
+                var message = "There is one catalyst that is never provided or produced: '" + aService.getValue().getMissingCatalysts().iterator().next() + "'.";
+                NotificationManager.showWarning(message);
+                controller.getLogTextArea().setText(controller.getLogTextArea().getText() + "\n\n" + message);
+            } else if (missingCatalysts == 2) {
+                var message = "There are " + aService.getValue().getMissingCatalysts().size() + " catalysts that are never provided or produced: '"
+                              + StringUtils.toString(aService.getValue().getMissingCatalysts(), "', '") + "'.";
+                NotificationManager.showWarning(message);
+                controller.getLogTextArea().setText(controller.getLogTextArea().getText() + "\n\n" + message);
             }
+            var unusedFood = aService.getValue().getUnusedFood().size();
+            if (unusedFood == 1) {
+                var message = "There is one food item that is never used: '" + aService.getValue().getUnusedFood().iterator().next() + "'.";
+                NotificationManager.showWarning(message);
+                controller.getLogTextArea().setText(controller.getLogTextArea().getText() + "\n\n" + message);
 
-            if (aService.getValue().getUnusedFood().size() > 0) {
-				String message2 = "There are " + aService.getValue().getUnusedFood().size() + " food items that are never used: " + StringUtils.toString(aService.getValue().getUnusedFood(), ", ") + ".";
-                NotificationManager.showWarning(message2);
-                controller.getLogTextArea().setText(controller.getLogTextArea().getText() + "\n\n" + message2);
+            } else if (unusedFood == 2) {
+                var message = "There are " + aService.getValue().getUnusedFood().size() + " food items that are never used: '"
+                              + StringUtils.toString(aService.getValue().getUnusedFood(), "', '") + "'.";
+                NotificationManager.showWarning(message);
+                controller.getLogTextArea().setText(controller.getLogTextArea().getText() + "\n\n" + message);
             }
         });
         aService.start();

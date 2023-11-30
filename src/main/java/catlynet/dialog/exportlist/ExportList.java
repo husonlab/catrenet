@@ -25,17 +25,19 @@ import catlynet.window.MainWindow;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import jloda.fx.util.ExtendedFXMLLoader;
 import jloda.fx.util.ProgramProperties;
 import jloda.util.CollectionUtils;
 import jloda.util.StringUtils;
 
+import java.io.IOException;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -51,9 +53,14 @@ public class ExportList {
      *
 	 */
     public ExportList(MainWindow window) {
-        final ExtendedFXMLLoader<ExportListController> extendedFXMLLoader = new ExtendedFXMLLoader<>(this.getClass());
-        final ExportListController controller = extendedFXMLLoader.getController();
-        final Parent root = extendedFXMLLoader.getRoot();
+		var fxmlLoader = new FXMLLoader();
+		try (var ins = Objects.requireNonNull(ExportList.class.getResource("ExportList.fxml")).openStream()) {
+			fxmlLoader.load(ins);
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
+		final ExportListController controller = fxmlLoader.getController();
+		final Parent root = fxmlLoader.getRoot();
 
         final Scene scene = new Scene(root);
         stage = new Stage();
