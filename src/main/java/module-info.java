@@ -22,6 +22,8 @@ module catlynet {
 	opens catlynet.window;
 	opens catlynet.settings;
 	opens catlynet.dialog.exportlist;
+	opens catlynet.dialog.targets;
+
 
 	opens catlynet.resources.images;
 	opens catlynet.resources.icons;

@@ -643,7 +643,7 @@
                                 <MenuItem fx:id="runStrictlyAutocatalyticRAFMenuItem" mnemonicParsing="false"
                                           text="Strictly Autocatalytic Max RAF Algorithm"/>
                                 <MenuItem fx:id="runMinRAFGeneratingElementMenuItem" mnemonicParsing="false"
-                                          text="Min RAF-Generating Given Element Algorithm"/>
+                                          text="Min RAF-Generating Target Elements Algorithm"/>
 
 
                                 <SeparatorMenuItem mnemonicParsing="false"/>

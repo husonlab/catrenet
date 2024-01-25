@@ -24,6 +24,7 @@ import catlynet.algorithm.*;
 import catlynet.dialog.ExportReactionsForSelectedNodesDialog;
 import catlynet.dialog.PolymerModelDialog;
 import catlynet.dialog.exportlist.ExportList;
+import catlynet.dialog.targets.TargetsDialog;
 import catlynet.io.NetworkIO;
 import catlynet.io.Save;
 import catlynet.io.SaveBeforeClosingDialog;
@@ -312,37 +313,15 @@ public class MainWindowPresenter {
                     NotificationManager.showWarning("No molecule types that are not contained in the food set");
                 } else {
                     var moleculeNames = molecules.stream().map(MoleculeType::getName).toList();
-                    var selectedMolecule = MoleculeType.valueOf(ProgramProperties.get("GeneratingElement", molecules.first().getName()));
-                    if (!molecules.contains(selectedMolecule))
-                        selectedMolecule = molecules.first();
-                    var dialog = new ChoiceDialog<>(selectedMolecule.getName(), moleculeNames);
-                    dialog.initOwner(mainWindow.getStage());
-                    dialog.setTitle("Select a Molecule");
-                    dialog.setHeaderText("Select element for generating minimal RAF:");
-
-                    var comboBox = BasicFX.findOneRecursively(dialog.getDialogPane(), ComboBox.class);
-                    if (comboBox != null) {
-                        comboBox.setEditable(true);
-                        comboBox.getEditor().textProperty().addListener((v, o, n) -> {
-                            if (!n.isEmpty()) {
-                                for (var name : moleculeNames) {
-                                    if (name.startsWith(n))
-                                        return;
-                                }
-                                Platform.runLater(() -> comboBox.getEditor().setText(n.substring(0, n.length() - 1)));
-                            }
-                        });
+                    var targetsDialog = new TargetsDialog(mainWindow.getStage(), moleculeNames);
+                    var targetNames = targetsDialog.show();
+                    if (!targetNames.isEmpty()) {
+                        var algorithm = new MinRAFGeneratingElement();
+                        for (var name : targetNames) {
+                            algorithm.getTargets().add(MoleculeType.valueOf(name));
+                        }
+                        RunAlgorithm.apply(mainWindow, mainWindow.getInputReactionSystem(), algorithm, runningListener, true);
                     }
-
-                    var result = dialog.showAndWait();
-                    result.ifPresent(m -> {
-                        if (moleculeNames.contains(m)) {
-                            ProgramProperties.put("GeneratingElement", m);
-                            var algorithm = new MinRAFGeneratingElement();
-                            algorithm.setTarget(MoleculeType.valueOf(m));
-                            RunAlgorithm.apply(mainWindow, mainWindow.getInputReactionSystem(), algorithm, runningListener, true);
-                        } else NotificationManager.showWarning("Invalid molecule type: " + m);
-                    });
                 }
             }
         });

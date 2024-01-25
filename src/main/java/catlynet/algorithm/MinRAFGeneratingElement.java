@@ -22,10 +22,11 @@ package catlynet.algorithm;
 import catlynet.model.MoleculeType;
 import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import jloda.fx.window.NotificationManager;
 import jloda.util.CanceledException;
+import jloda.util.SetUtils;
 import jloda.util.StringUtils;
 import jloda.util.progress.ProgressListener;
 
@@ -42,7 +43,7 @@ import static catlynet.io.ModelIO.FORMAL_FOOD;
 public class MinRAFGeneratingElement extends AlgorithmBase {
     public static final String Name = "Min RAF Generating Element";
 
-    private final ObjectProperty<MoleculeType> target = new SimpleObjectProperty<>(this, "target");
+    private final ObservableList<MoleculeType> targets = FXCollections.observableArrayList();
 
     @Override
     public String getName() {
@@ -54,16 +55,8 @@ public class MinRAFGeneratingElement extends AlgorithmBase {
         return "Identifies a subset of the maxRAF that is (i) a RAF and (ii) generates a given element x (not in the food set) and (iii) which is minimal amongst all such sets satisfying (i) and (ii)";
     }
 
-    public MoleculeType getTarget() {
-        return target.get();
-    }
-
-    public ObjectProperty<MoleculeType> targetProperty() {
-        return target;
-    }
-
-    public void setTarget(MoleculeType target) {
-        this.target.set(target);
+    public ObservableList<MoleculeType> getTargets() {
+        return targets;
     }
 
     /**
@@ -73,14 +66,20 @@ public class MinRAFGeneratingElement extends AlgorithmBase {
      * @return Min RAF generating a specific element
      */
     public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException {
-        var empty = new ReactionSystem();
-        empty.setName(Name + " '" + getTarget().getName() + "'");
+        var resultSystemName = "";
+        if (getTargets().size() == 1)
+            resultSystemName = (Name + " '" + getTargets().get(0).getName() + "'");
+        else
+            resultSystemName = (Name + " '" + getTargets().size() + "targets'");
 
-        if (getTarget() == null) {
-            NotificationManager.showWarning("No element selected");
+        var empty = new ReactionSystem();
+        empty.setName(resultSystemName);
+
+        if (getTargets().isEmpty()) {
+            NotificationManager.showWarning("No targets selected");
             return empty;
-        } else if (input.getFoods().contains(getTarget())) {
-            NotificationManager.showWarning("Element already contained in food set");
+        } else if (SetUtils.intersect(input.getFoods(), getTargets())) {
+            NotificationManager.showWarning("A target element is contained in food set");
             return empty;
         }
 
@@ -94,16 +93,17 @@ public class MinRAFGeneratingElement extends AlgorithmBase {
         augmented.getFoods().addAll(maxRAF.getFoods());
         for (var r : maxRAF.getReactions()) {
             var r1 = new Reaction(r);
-            r1.setCatalysts(andItemToAll(r1.getCatalystConjunctions(), getTarget()));
+            for (var target : getTargets()) {
+                r1.setCatalysts(andItemToAll(r1.getCatalystConjunctions(), target));
+            }
             augmented.getReactions().add(r1);
         }
 
         var iRAF = new MinIRAFHeuristic().apply(augmented, progress);
-        iRAF.setName(Name + " '" + getTarget().getName() + "'");
+        iRAF.setName(resultSystemName);
         if (iRAF.size() == 0) {
             NotificationManager.showWarning("Irreducible RAF is empty");
             return empty;
-
         }
         var coreRAF = new CoreRAFAlgorithm().apply(augmented, progress);
 
@@ -126,6 +126,5 @@ public class MinRAFGeneratingElement extends AlgorithmBase {
             }
             return StringUtils.toString(result, ",");
         }
-
     }
 }
