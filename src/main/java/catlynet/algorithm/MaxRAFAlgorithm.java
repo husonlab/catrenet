@@ -1,5 +1,5 @@
 /*
- * MaxRAFAlgorithm.java Copyright (C) 2022 Daniel H. Huson
+ * MaxRAFAlgorithm.java Copyright (C) 2024 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  *

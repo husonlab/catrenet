@@ -1,5 +1,5 @@
 /*
- * MinIRAFHeuristic.java Copyright (C) 2022 Daniel H. Huson
+ * MinIRAFHeuristic.java Copyright (C) 2024 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -83,14 +83,18 @@ public class MinIRAFHeuristic extends AlgorithmBase {
 
         final var best = new ArrayList<ReactionSystem>();
         final var bestSize = new Single<>(maxRAF.size());
+        bothLoops:
         for (var seed : seeds) {
             var ordering = CollectionUtils.randomize(reactions, seed);
             var work = maxRAF.shallowCopy();
 			work.setName(Name);
             for (var r : ordering) {
-                work.getReactions().remove(r);
                 try {
                     progress.checkForCancel();
+                } catch (CanceledException ex) {
+                    break bothLoops;
+                }
+                work.getReactions().remove(r);
                     var next = new MaxRAFAlgorithm().apply(work, new ProgressSilent());
 					next.setName(Name);
                     if (next.size() > 0 && next.size() <= work.size()) {
@@ -107,8 +111,6 @@ public class MinIRAFHeuristic extends AlgorithmBase {
                             break;
                     } else
                         work.getReactions().add(r); // put back
-                } catch (CanceledException ignored) {
-                }
             }
         }
 		if (best.isEmpty()) {

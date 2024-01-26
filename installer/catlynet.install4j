@@ -67,7 +67,7 @@
   <launchers>
     <launcher name="CatlyNet" id="1691242142" menuName="CatlyNet">
       <executable name="CatlyNet" iconSet="true" redirectStdout="true" executableMode="gui" changeWorkingDirectory="false" singleInstance="true" checkConsoleParameter="true" dpiAware="false">
-        <versionInfo include="true" fileDescription="CatlyNet catalytic network analysis program" legalCopyright="Copyright (C)  2020 ${compiler:sys.publisher}" internalName="CatlyNet" />
+        <versionInfo include="true" fileDescription="CatlyNet catalytic network analysis program" legalCopyright="Copyright (C)  2024 ${compiler:sys.publisher}" internalName="CatlyNet" />
       </executable>
       <java mainClass="catlynet/catlynet.main.CatlyNet" mainMode="module" vmParameters="-server -Duser.language=en -Duser.region=US  ${compiler:renderingVMOption}">
         <modulePath>

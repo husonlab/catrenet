@@ -23,14 +23,20 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.stage.Stage;
 import jloda.fx.util.AutoCompleteComboBox;
+import jloda.util.IteratorUtils;
+import jloda.util.SetUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 public class TargetsDialogPresenter {
+	private static final ArrayList<String> previousListMembers = new ArrayList<>();
+
 	public TargetsDialogPresenter(Stage stage, Collection<String> possibleTargets, TargetsDialogController controller, Collection<String> selected) {
 		controller.getSelectComboBox().getItems().addAll(possibleTargets.stream().sorted().toList());
 		Platform.runLater(() -> AutoCompleteComboBox.install(controller.getSelectComboBox()));
+
+		controller.getListView().getItems().addAll(IteratorUtils.asList(SetUtils.intersection(previousListMembers, possibleTargets)).stream().sorted().toList());
 
 		controller.getSelectComboBox().setDisable(possibleTargets.isEmpty());
 		controller.getAddButton().disableProperty().bind(
@@ -52,6 +58,8 @@ public class TargetsDialogPresenter {
 
 		controller.getApplyButton().setOnAction(e -> {
 			selected.addAll(controller.getListView().getItems());
+			previousListMembers.clear();
+			previousListMembers.addAll(controller.getListView().getItems());
 			stage.hide();
 		});
 		controller.getApplyButton().disableProperty().bind(Bindings.isEmpty(controller.getListView().getItems()));

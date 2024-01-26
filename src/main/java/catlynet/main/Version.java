@@ -1,5 +1,5 @@
 /*
- * Version.java Copyright (C) 2022 Daniel H. Huson
+ * Version.java Copyright (C) 2024 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -21,5 +21,5 @@ package catlynet.main;
 
 public class Version {
     static public final String NAME = "CatlyNet";
-	static public final String SHORT_DESCRIPTION = "CatlyNet (version 0.8.13, built 30 Nov 2023)";
+	static public final String SHORT_DESCRIPTION = "CatlyNet (version 0.8.14, built 26 Jan 2024)";
 }
