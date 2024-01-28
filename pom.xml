@@ -32,10 +32,9 @@
         <maven.compiler.release>17</maven.compiler.release>
         <maven.compiler.target>17</maven.compiler.target>
         <maven.compiler.source>17</maven.compiler.source>
-        <javafx.version>17</javafx.version>
+        <javafx.version>21.0.2</javafx.version>
         <javafx.plugin.version>0.0.8</javafx.plugin.version>
         <main.class>catlynet.main.CatlyNet</main.class>
-
     </properties>
     <dependencies>
         <dependency>
@@ -50,14 +49,19 @@
             <type>pom</type>
         </dependency>
         <dependency>
-            <groupId>com.install4j</groupId>
-            <artifactId>install4j-runtime</artifactId>
-            <version>10.0.5</version>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>${javafx.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
-            <artifactId>javafx-web</artifactId>
-            <version>19.0.2.1</version>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.install4j</groupId>
+            <artifactId>install4j-runtime</artifactId>
+            <version>10.0.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -122,6 +126,22 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.3.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>catlynet.main.CatlyNet</mainClass>
+                    <!-- Add any additional configuration parameters as needed -->
+                </configuration>
             </plugin>
         </plugins>
     </build>

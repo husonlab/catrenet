@@ -26,8 +26,6 @@ import jloda.util.progress.ProgressListener;
 import jloda.util.progress.ProgressOverrideTaskName;
 import jloda.util.progress.ProgressSilent;
 
-import java.util.stream.Collectors;
-
 /**
  * compute the core RAF
  * Daniel Huson, 5.2020
@@ -52,17 +50,17 @@ public class CoreRAFAlgorithm extends AlgorithmBase {
     public ReactionSystem apply(ReactionSystem input, ProgressListener progress) throws CanceledException {
         progress = new ProgressOverrideTaskName(progress, "Compute core RAF");
 
-        final ReactionSystem maxRAF = new MaxRAFAlgorithm().apply(input, new ProgressSilent());
+        final var maxRAF = new MaxRAFAlgorithm().apply(input, new ProgressSilent());
 
-        final ReactionSystem importantReactions = new ReactionSystem();
+        final var importantReactions = new ReactionSystem();
         importantReactions.setName("Important");
 
         importantReactions.getReactions().addAll(Importance.computeReactionImportance(input, maxRAF, new MaxRAFAlgorithm(), progress)
-                .stream().filter(p -> p.getSecond() == 100f).map(Pair::getFirst).collect(Collectors.toList()));
+                .stream().filter(p -> p.getSecond() == 100f).map(Pair::getFirst).toList());
         importantReactions.getFoods().addAll(importantReactions.computeMentionedFoods(input.getFoods()));
         progress.setProgress(2);
 
-        final ReactionSystem coreRAF = new MaxRAFAlgorithm().apply(importantReactions, progress);
+        final var coreRAF = new MaxRAFAlgorithm().apply(importantReactions, progress);
         coreRAF.setName("Core RAF");
         return coreRAF;
     }

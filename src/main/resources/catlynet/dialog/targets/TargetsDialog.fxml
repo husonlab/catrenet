@@ -67,24 +67,41 @@
             </ListView>
          </center>
          <bottom>
-            <ButtonBar BorderPane.alignment="CENTER">
-               <buttons>
-                   <Button fx:id="cancelButton" cancelButton="true" mnemonicParsing="false" text="Cancel">
-                       <tooltip>
-                           <Tooltip text="Cancel"/>
-                       </tooltip>
-                   </Button>
-                   <Button fx:id="applyButton" defaultButton="true" layoutX="340.0" layoutY="17.0"
-                           mnemonicParsing="false" text="OK">
-                       <tooltip>
-                           <Tooltip text="Run algorithm"/>
-                       </tooltip>
-                   </Button>
-               </buttons>
-               <padding>
-                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
-               </padding>
-            </ButtonBar>
+             <VBox BorderPane.alignment="CENTER">
+                 <children>
+                     <HBox alignment="CENTER_LEFT" spacing="10.0">
+                         <children>
+                             <Label text="Random orders:"/>
+                             <TextField fx:id="ordersTextField" prefColumnCount="6">
+                                 <tooltip>
+                                     <Tooltip text="Number of random orders to try when finding a irreducible RAF RAF"/>
+                                 </tooltip>
+                             </TextField>
+                         </children>
+                         <VBox.margin>
+                             <Insets left="10.0" right="10.0" top="5.0"/>
+                         </VBox.margin>
+                     </HBox>
+                     <ButtonBar>
+                         <buttons>
+                             <Button fx:id="cancelButton" cancelButton="true" mnemonicParsing="false" text="Cancel">
+                                 <tooltip>
+                                     <Tooltip text="Cancel"/>
+                                 </tooltip>
+                             </Button>
+                             <Button fx:id="applyButton" defaultButton="true" layoutX="340.0" layoutY="17.0"
+                                     mnemonicParsing="false" text="OK">
+                                 <tooltip>
+                                     <Tooltip text="Run algorithm"/>
+                                 </tooltip>
+                             </Button>
+                         </buttons>
+                         <padding>
+                             <Insets bottom="10.0" left="10.0" right="10.0"/>
+                         </padding>
+                     </ButtonBar>
+                 </children>
+             </VBox>
          </bottom>
          <right>
             <Button fx:id="deleteButton" mnemonicParsing="false" text="Delete" BorderPane.alignment="CENTER">

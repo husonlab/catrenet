@@ -22,6 +22,7 @@ package catlynet.algorithm;
 import catlynet.model.MoleculeType;
 import catlynet.model.Reaction;
 import catlynet.model.ReactionSystem;
+import javafx.beans.property.IntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jloda.fx.window.NotificationManager;
@@ -43,7 +44,14 @@ import static catlynet.io.ModelIO.FORMAL_FOOD;
 public class MinRAFGeneratingElement extends AlgorithmBase {
     public static final String Name = "Min RAF Generating Element";
 
+    private final MinIRAFHeuristic minIRAFHeuristic;
+
+
     private final ObservableList<MoleculeType> targets = FXCollections.observableArrayList();
+
+    public MinRAFGeneratingElement() {
+        this.minIRAFHeuristic = new MinIRAFHeuristic();
+    }
 
     @Override
     public String getName() {
@@ -70,7 +78,7 @@ public class MinRAFGeneratingElement extends AlgorithmBase {
         if (getTargets().size() == 1)
             resultSystemName = (Name + " '" + getTargets().get(0).getName() + "'");
         else
-            resultSystemName = (Name + " '" + getTargets().size() + "targets'");
+            resultSystemName = (Name + " '" + getTargets().size() + " targets'");
 
         var empty = new ReactionSystem();
         empty.setName(resultSystemName);
@@ -99,7 +107,7 @@ public class MinRAFGeneratingElement extends AlgorithmBase {
             augmented.getReactions().add(r1);
         }
 
-        var iRAF = new MinIRAFHeuristic().apply(augmented, progress);
+        var iRAF = minIRAFHeuristic.apply(augmented, progress);
         iRAF.setName(resultSystemName);
         if (iRAF.size() == 0) {
             NotificationManager.showWarning("Irreducible RAF is empty");
@@ -126,5 +134,9 @@ public class MinRAFGeneratingElement extends AlgorithmBase {
             }
             return StringUtils.toString(result, ",");
         }
+    }
+
+    public IntegerProperty numberOfRandomInsertionOrdersProperty() {
+        return minIRAFHeuristic.numberOfRandomInsertionOrdersProperty();
     }
 }

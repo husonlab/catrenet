@@ -46,21 +46,21 @@ public class Importance implements IDescribed {
      * @return list of food, importance pairs, in order of decreasing importance (percent difference between model size and model size without given food item)
      */
     public static ArrayList<Pair<MoleculeType, Float>> computeFoodImportance(ReactionSystem inputSystem, ReactionSystem originalResult, AlgorithmBase algorithm, ProgressListener progress) throws CanceledException {
-        final ArrayList<Pair<MoleculeType, Float>> result = new ArrayList<>();
+        final var result = new ArrayList<Pair<MoleculeType, Float>>();
 
         progress.setTasks(StringUtils.fromCamelCase(Basic.getShortName(algorithm.getClass())), "importance");
         progress.setMaximum(inputSystem.getFoods().size());
         progress.setMaximum(10000000);
         progress.setProgress(0);
-        final int increment = 5000000 / inputSystem.getFoods().size();
+        final var increment = 5000000 / inputSystem.getFoods().size();
 
-        for (MoleculeType food : inputSystem.getFoods()) {
-            final ReactionSystem replicateInput = inputSystem.shallowCopy();
+        for (var food : inputSystem.getFoods()) {
+            final var replicateInput = inputSystem.shallowCopy();
             replicateInput.setName("Food importance");
             replicateInput.getFoods().remove(food);
-            final ReactionSystem replicateOutput = algorithm.apply(replicateInput, new ProgressSilent());
+            final var replicateOutput = algorithm.apply(replicateInput, new ProgressSilent());
 
-            final float importance = 100f * (originalResult.size() - replicateOutput.size()) / (float) originalResult.size();
+            final var importance = 100f * (originalResult.size() - replicateOutput.size()) / (float) originalResult.size();
             if (importance > 0)
                 result.add(new Pair<>(food, importance));
             progress.setProgress(progress.getProgress() + increment);
@@ -75,7 +75,7 @@ public class Importance implements IDescribed {
      * @return list of reaction, importance pairs, in order of decreasing importance (difference between model size and model size without given reaction)
      */
     public static ArrayList<Pair<Reaction, Float>> computeReactionImportance(ReactionSystem inputSystem, ReactionSystem originalResult, AlgorithmBase algorithm, ProgressListener progress) throws CanceledException {
-        final ArrayList<Pair<Reaction, Float>> result = new ArrayList<>();
+        final var result = new ArrayList<Pair<Reaction, Float>>();
 
         if (originalResult.size() == 1) {
             result.add(new Pair<>(originalResult.getReactions().get(0), 100f));
@@ -84,17 +84,17 @@ public class Importance implements IDescribed {
             progress.setMaximum(inputSystem.getFoods().size());
             progress.setMaximum(10000000);
             progress.setProgress(5000000);
-            final int increment = 5000000 / inputSystem.getReactions().size();
+            final var increment = 5000000 / inputSystem.getReactions().size();
 
-            final float sizeToCompareAgainst = originalResult.size() - 1;
+            final var sizeToCompareAgainst = originalResult.size() - 1;
 
-            for (Reaction reaction : inputSystem.getReactions()) {
-                final ReactionSystem replicateInput = inputSystem.shallowCopy();
+            for (var reaction : inputSystem.getReactions()) {
+                final var replicateInput = inputSystem.shallowCopy();
                 replicateInput.setName("Reaction importance");
                 replicateInput.getReactions().remove(reaction);
-                final ReactionSystem replicateOutput = algorithm.apply(replicateInput, new ProgressSilent());
+                final var replicateOutput = algorithm.apply(replicateInput, new ProgressSilent());
                 if (replicateOutput.size() < sizeToCompareAgainst) {
-                    final float importance = 100f * (sizeToCompareAgainst - replicateOutput.size()) / sizeToCompareAgainst;
+                    final var importance = 100f * (sizeToCompareAgainst - replicateOutput.size()) / sizeToCompareAgainst;
                     if (importance > 0)
                         result.add(new Pair<>(reaction, importance));
                 }
@@ -111,11 +111,11 @@ public class Importance implements IDescribed {
      * @return food importance string
      */
     public static String toStringFoodImportance(ArrayList<Pair<MoleculeType, Float>> foodImportance) {
-        final StringBuilder buf = new StringBuilder();
+        final var buf = new StringBuilder();
 
         buf.append("Food importance: ");
-        boolean first = true;
-        for (Pair<MoleculeType, Float> pair : foodImportance) {
+        var first = true;
+        for (var pair : foodImportance) {
             if (first)
                 first = false;
             else
@@ -131,11 +131,11 @@ public class Importance implements IDescribed {
      * @return food importance string
      */
     public static String toStringReactionImportance(ArrayList<Pair<Reaction, Float>> reactionImportance) {
-        final StringBuilder buf = new StringBuilder();
+        final var buf = new StringBuilder();
 
         buf.append("Reaction importance: ");
-        boolean first = true;
-        for (Pair<Reaction, Float> pair : reactionImportance) {
+        var first = true;
+        for (var pair : reactionImportance) {
             if (first)
                 first = false;
             else

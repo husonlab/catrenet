@@ -20,9 +20,8 @@
 package catlynet.dialog.targets;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
+import javafx.util.converter.IntegerStringConverter;
 import jloda.fx.icons.MaterialIcons;
 
 public class TargetsDialogController {
@@ -46,9 +45,14 @@ public class TargetsDialogController {
 	private ComboBox<String> selectComboBox;
 
 	@FXML
+	private TextField ordersTextField;
+
+	@FXML
 	private void initialize() {
 		MaterialIcons.setIcon(addButton, "add");
 		MaterialIcons.setIcon(deleteButton, "delete");
+
+		ordersTextField.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
 	}
 
 	public Button getAddButton() {
@@ -73,5 +77,9 @@ public class TargetsDialogController {
 
 	public ComboBox<String> getSelectComboBox() {
 		return selectComboBox;
+	}
+
+	public TextField getOrdersTextField() {
+		return ordersTextField;
 	}
 }

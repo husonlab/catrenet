@@ -25,19 +25,22 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
+/**
+ * shows a dialog to setup the Min RAF Generating Element algorithm
+ * Daniel Huson, 1.2024
+ */
 public class TargetsDialog {
 	private final Stage stage;
-	private final Collection<String> results = new ArrayList<>();
+
+	private final TargetsDialogPresenter presenter;
 
 	public TargetsDialog(Stage parent, Collection<String> possibleTargets) {
 		stage = new Stage();
 		stage.setTitle("Select Target Molecules");
 		stage.initOwner(parent);
-
 
 		var fxmlLoader = new FXMLLoader();
 		try (var ins = Objects.requireNonNull(TargetsDialogController.class.getResource("TargetsDialog.fxml")).openStream()) {
@@ -46,7 +49,7 @@ public class TargetsDialog {
 			throw new RuntimeException(ex);
 		}
 		TargetsDialogController controller = fxmlLoader.getController();
-		var presenter = new TargetsDialogPresenter(stage, possibleTargets, controller, results);
+		presenter = new TargetsDialogPresenter(stage, possibleTargets, controller);
 
 		stage.setScene(new Scene(fxmlLoader.getRoot()));
 		stage.sizeToScene();
@@ -55,7 +58,11 @@ public class TargetsDialog {
 	public Collection<String> show() {
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.showAndWait();
-		return results;
+		return presenter.getResults();
+	}
+
+	public int getRandomOrders() {
+		return presenter.getRandomOrders();
 	}
 
 }

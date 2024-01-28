@@ -23,16 +23,23 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.stage.Stage;
 import jloda.fx.util.AutoCompleteComboBox;
+import jloda.fx.util.ProgramProperties;
 import jloda.util.IteratorUtils;
+import jloda.util.NumberUtils;
 import jloda.util.SetUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class TargetsDialogPresenter {
-	private static final ArrayList<String> previousListMembers = new ArrayList<>();
+	private static final List<String> previousListMembers = new ArrayList<>(List.of(ProgramProperties.get("TargetPreviousListMembers", new String[0])));
 
-	public TargetsDialogPresenter(Stage stage, Collection<String> possibleTargets, TargetsDialogController controller, Collection<String> selected) {
+	private final Collection<String> results = new ArrayList<>();
+	private int randomOrders = ProgramProperties.get("TargetRandomOrders", 100);
+
+
+	public TargetsDialogPresenter(Stage stage, Collection<String> possibleTargets, TargetsDialogController controller) {
 		controller.getSelectComboBox().getItems().addAll(possibleTargets.stream().sorted().toList());
 		Platform.runLater(() -> AutoCompleteComboBox.install(controller.getSelectComboBox()));
 
@@ -50,6 +57,12 @@ public class TargetsDialogPresenter {
 			}
 		});
 
+		controller.getOrdersTextField().setText(String.valueOf(randomOrders));
+		controller.getOrdersTextField().textProperty().addListener((v, o, n) -> {
+			if (NumberUtils.isInteger(n) && NumberUtils.parseInt(n) > 0)
+				randomOrders = NumberUtils.parseInt(n);
+		});
+
 		controller.getDeleteButton().setOnAction(e -> {
 			var toRemove = new ArrayList<>(controller.getListView().getSelectionModel().getSelectedItems());
 			Platform.runLater(() -> controller.getListView().getItems().removeAll(toRemove));
@@ -57,15 +70,26 @@ public class TargetsDialogPresenter {
 		controller.getDeleteButton().disableProperty().bind(Bindings.isEmpty(controller.getListView().getSelectionModel().getSelectedItems()));
 
 		controller.getApplyButton().setOnAction(e -> {
-			selected.addAll(controller.getListView().getItems());
+			results.addAll(controller.getListView().getItems());
 			previousListMembers.clear();
 			previousListMembers.addAll(controller.getListView().getItems());
+			ProgramProperties.put("TargetRandomOrders", getRandomOrders());
+			ProgramProperties.put("TargetPreviousListMembers", previousListMembers.toArray(new String[0]));
 			stage.hide();
 		});
 		controller.getApplyButton().disableProperty().bind(Bindings.isEmpty(controller.getListView().getItems()));
+
 		controller.getCancelButton().setOnAction(e -> {
-			selected.clear();
+			results.clear();
 			stage.hide();
 		});
+	}
+
+	public Collection<String> getResults() {
+		return results;
+	}
+
+	public int getRandomOrders() {
+		return randomOrders;
 	}
 }

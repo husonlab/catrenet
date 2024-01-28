@@ -317,6 +317,7 @@ public class MainWindowPresenter {
                     var targetNames = targetsDialog.show();
                     if (!targetNames.isEmpty()) {
                         var algorithm = new MinRAFGeneratingElement();
+                        algorithm.numberOfRandomInsertionOrdersProperty().set(targetsDialog.getRandomOrders());
                         for (var name : targetNames) {
                             algorithm.getTargets().add(MoleculeType.valueOf(name));
                         }
