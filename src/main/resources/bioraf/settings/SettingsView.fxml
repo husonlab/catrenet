@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ SettingsView.fxml Copyright (C) 2024 Daniel H. Huson
+  ~  
+  ~ (Some files contain contributions from other authors, who are then mentioned separately.)
+  ~  
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~  
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~  
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<TitledPane fx:id="titledPane" animated="false" collapsible="false" prefWidth="450.0" text="Settings"
+            xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="bioraf.settings.SettingsController">
+    <content>
+        <AnchorPane>
+            <children>
+                <VBox spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                      AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <TextArea fx:id="infoTextArea" editable="false" focusTraversable="false" prefRowCount="3"
+                              wrapText="true"/>
+                    <Separator layoutX="10.0" layoutY="10.0" prefWidth="200.0">
+                        <VBox.margin>
+                            <Insets top="5.0"/>
+                        </VBox.margin>
+                    </Separator>
+                    <Label layoutX="10.0" layoutY="13.0" text="Setting notation for reactions">
+                        <VBox.margin>
+                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                        </VBox.margin>
+                    </Label>
+                    <GridPane prefHeight="90.0" prefWidth="300.0">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="126.0" minWidth="10.0" prefWidth="89.0"/>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="346.0" minWidth="10.0" prefWidth="341.0"/>
+                        </columnConstraints>
+                        <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                        </rowConstraints>
+                        <children>
+                            <RadioButton fx:id="fullNotationRadioButton" mnemonicParsing="false" text="Full"/>
+                            <RadioButton fx:id="sparseNotationRadioButton" mnemonicParsing="false" text="Sparse"
+                                         GridPane.rowIndex="1"/>
+                            <RadioButton fx:id="tabbedFormatRadioButton" mnemonicParsing="false" text="Tabbed"
+                                         GridPane.rowIndex="2"/>
+                            <Label text="R1: a + b [ c, d &amp; e] =&gt; f, g" textFill="GREY" GridPane.columnIndex="1">
+                                <font>
+                                    <Font name="Courier New" size="13.0"/>
+                                </font>
+                            </Label>
+                            <Label text="R1: a  b [ c d &amp; e] =&gt; f, g" textFill="GREY" GridPane.columnIndex="1"
+                                   GridPane.rowIndex="1">
+                                <font>
+                                    <Font name="Courier New" size="13.0"/>
+                                </font>
+                            </Label>
+                            <Label text="R1 &lt;tab&gt;  a  b =&gt; f g &lt;tab&gt;  c d &amp; e" textFill="GREY"
+                                   GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                <font>
+                                    <Font name="Courier New" size="13.0"/>
+                                </font>
+                            </Label>
+                            <Label text="Arrows" GridPane.rowIndex="3">
+                                <padding>
+                                    <Insets left="20.0"/>
+                                </padding>
+                            </Label>
+                            <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="3"
+                                  GridPane.vgrow="ALWAYS">
+                                <children>
+                                    <RadioButton fx:id="doubleArrowRadioButton" mnemonicParsing="false" text="=&gt;"/>
+                                    <RadioButton fx:id="singleArrowRadioButton" mnemonicParsing="false" text="-&gt;"/>
+                                    <Label text="(Note &lt;= and &lt;=&gt; also ok)" textFill="GREY">
+                                        <font>
+                                            <Font name="Courier New" size="13.0"/>
+                                        </font>
+                                        <HBox.margin>
+                                            <Insets left="10.0"/>
+                                        </HBox.margin>
+                                    </Label>
+                                </children>
+                            </HBox>
+                        </children>
+                        <VBox.margin>
+                            <Insets/>
+                        </VBox.margin>
+                    </GridPane>
+                    <Separator prefWidth="200.0">
+                        <VBox.margin>
+                            <Insets top="10.0"/>
+                        </VBox.margin>
+                    </Separator>
+                    <Label text="Set default visualization format for nodes and edges in network">
+                        <VBox.margin>
+                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                        </VBox.margin>
+                    </Label>
+                    <GridPane hgap="5.0" vgap="5.0">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="94.5" minWidth="10.0" prefWidth="88.5"/>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="125.0" minWidth="10.0" prefWidth="106.0"/>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                        </columnConstraints>
+                        <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                            <RowConstraints minHeight="0.0" prefHeight="0.0" vgrow="ALWAYS"/>
+                        </rowConstraints>
+                        <children>
+                            <Label text="Reaction edges">
+                                <font>
+                                    <Font size="12.0"/>
+                                </font>
+                            </Label>
+                            <Label text="Catalyst edges" GridPane.rowIndex="1">
+                                <font>
+                                    <Font size="12.0"/>
+                                </font>
+                            </Label>
+                            <Label text="Inhibition edges" GridPane.rowIndex="2">
+                                <font>
+                                    <Font size="12.0"/>
+                                </font>
+                            </Label>
+                            <Label text="Reaction nodes" GridPane.rowIndex="3">
+                                <font>
+                                    <Font size="12.0"/>
+                                </font>
+                            </Label>
+                            <Label text="Food nodes" GridPane.rowIndex="5">
+                                <font>
+                                    <Font size="12.0"/>
+                                </font>
+                            </Label>
+                            <ChoiceBox fx:id="reactionEdgeStyleCBox" prefWidth="100.0" GridPane.columnIndex="1"/>
+                            <ChoiceBox fx:id="catalystEdgeStyleCBox" prefWidth="100.0" GridPane.columnIndex="1"
+                                       GridPane.rowIndex="1"/>
+                            <ChoiceBox fx:id="inhibitionEdgeStyleCBox" prefWidth="100.0" GridPane.columnIndex="1"
+                                       GridPane.rowIndex="2"/>
+                            <ChoiceBox fx:id="reactionNodeStyleCBox" prefWidth="100.0" GridPane.columnIndex="1"
+                                       GridPane.rowIndex="3"/>
+                            <ChoiceBox fx:id="foodNodeStyleCBox" prefWidth="100.0" GridPane.columnIndex="1"
+                                       GridPane.rowIndex="5"/>
+                            <ColorPicker fx:id="reactionEdgesColorCBox" editable="true" GridPane.columnIndex="2"/>
+                            <ColorPicker fx:id="catlystEdgesColorCBox" editable="true" GridPane.columnIndex="2"
+                                         GridPane.rowIndex="1"/>
+                            <ColorPicker fx:id="inhibitorEdgesColorCBox" editable="true" GridPane.columnIndex="2"
+                                         GridPane.rowIndex="2"/>
+                            <ColorPicker fx:id="reactionNodesColorCBox" editable="true" GridPane.columnIndex="2"
+                                         GridPane.rowIndex="3"/>
+                            <ColorPicker fx:id="foodNodesColorCBox" editable="true" GridPane.columnIndex="2"
+                                         GridPane.rowIndex="5"/>
+                            <ChoiceBox fx:id="reactionEdgesLineWidthCBox" prefWidth="100.0" GridPane.columnIndex="3"/>
+                            <ChoiceBox fx:id="catalystEdgesLineWidthCBox" prefWidth="100.0" GridPane.columnIndex="3"
+                                       GridPane.rowIndex="1"/>
+                            <ChoiceBox fx:id="inhibitionEdgesLineWidthCBox" prefWidth="100.0" GridPane.columnIndex="3"
+                                       GridPane.rowIndex="2"/>
+                            <ChoiceBox fx:id="reactionNodesSizeCBox" prefWidth="100.0" GridPane.columnIndex="3"
+                                       GridPane.rowIndex="3"/>
+                            <ChoiceBox fx:id="foodNodesSizeCBox" prefWidth="100.0" GridPane.columnIndex="3"
+                                       GridPane.rowIndex="5"/>
+                            <Label text="Molecule nodes" GridPane.rowIndex="4">
+                                <font>
+                                    <Font size="12.0"/>
+                                </font>
+                            </Label>
+                            <ChoiceBox fx:id="moleculeNodeStyleCBox" layoutX="114.0" layoutY="127.0" prefWidth="100.0"
+                                       GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                            <ColorPicker fx:id="moleculeNodesColorCBox" editable="true" layoutX="219.0" layoutY="127.0"
+                                         GridPane.columnIndex="2" GridPane.rowIndex="4"/>
+                            <ChoiceBox fx:id="moleculeNodesSizeCBox" layoutX="363.0" layoutY="127.0" prefWidth="100.0"
+                                       GridPane.columnIndex="3" GridPane.rowIndex="4"/>
+                        </children>
+                    </GridPane>
+                    <Separator layoutX="10.0" layoutY="178.0" prefWidth="200.0"/>
+                    <Label text="Other settings">
+                        <VBox.margin>
+                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                        </VBox.margin>
+                    </Label>
+                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <children>
+                            <Label text="Network embedding iterations">
+                                <HBox.margin>
+                                    <Insets/>
+                                </HBox.margin>
+                            </Label>
+                            <TextField fx:id="iterationsTextField" maxWidth="-Infinity" prefWidth="80.0"/>
+                        </children>
+                        <VBox.margin>
+                            <Insets/>
+                        </VBox.margin>
+                    </HBox>
+                    <HBox alignment="CENTER_LEFT" spacing="20.0">
+                        <children>
+                            <CheckBox fx:id="wrapTextCheckBox" contentDisplay="RIGHT" mnemonicParsing="false"
+                                      selected="true" text="Wrap text">
+                                <HBox.margin>
+                                    <Insets/>
+                                </HBox.margin>
+                            </CheckBox>
+                            <CheckBox fx:id="darkModeCheckBox" contentDisplay="RIGHT" mnemonicParsing="false"
+                                      text="Dark mode"/>
+                        </children>
+                        <VBox.margin>
+                            <Insets/>
+                        </VBox.margin>
+                    </HBox>
+                </VBox>
+            </children>
+        </AnchorPane>
+    </content>
+</TitledPane>

@@ -1,4 +1,4 @@
-module catlynet {
+module bioraf {
 	requires com.install4j.runtime;
 
 	requires transitive jloda2;
@@ -7,27 +7,27 @@ module catlynet {
 	requires transitive javafx.web;
 	requires commons.math3;
 
-	exports catlynet.algorithm;
-    exports catlynet.main;
-    exports catlynet.tab;
-	exports catlynet.window;
-	exports catlynet.model;
-	exports catlynet.view;
-	exports catlynet.action;
-	exports catlynet.tools;
-	exports catlynet.settings;
+	exports bioraf.algorithm;
+	exports bioraf.main;
+	exports bioraf.tab;
+	exports bioraf.window;
+	exports bioraf.model;
+	exports bioraf.view;
+	exports bioraf.action;
+	exports bioraf.tools;
+	exports bioraf.settings;
 
-	opens catlynet.algorithm;
-	opens catlynet.tab;
-	opens catlynet.window;
-	opens catlynet.settings;
-	opens catlynet.dialog.exportlist;
-	opens catlynet.dialog.targets;
+	opens bioraf.algorithm;
+	opens bioraf.tab;
+	opens bioraf.window;
+	opens bioraf.settings;
+	opens bioraf.dialog.exportlist;
+	opens bioraf.dialog.targets;
 
 
-	opens catlynet.resources.images;
-	opens catlynet.resources.icons;
+	opens bioraf.resources.images;
+	opens bioraf.resources.icons;
 
-	exports catlynet;
-	exports catlynet.dialog;
+	exports bioraf;
+	exports bioraf.dialog;
 }

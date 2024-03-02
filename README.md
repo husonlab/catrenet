@@ -1,27 +1,28 @@
-# CatlyNet
-<img src="https://github.com/husonlab/catlynet/blob/master/src/main/resources/catlynet/resources/images/splash.png" alt="Splash" width="600"/>
+# BioRAF
 
-CatlyNet is a program for working with a catalytic reaction system (CRS) consisting of a set of
+<img src="https://github.com/husonlab/bioraf/blob/master/src/main/resources/bioraf/resources/images/splash.png" alt="Splash" width="600"/>
+
+BioRAF (formally CatlyNet) is a program for working with a catalytic reaction system (CRS) consisting of a set of
 'catalyzed reactions' and a given 'food set' of molecules.
 It provides fast and exact algorithms for calculating the three main types of autocatalytic networks,
 namely (maximal) RAFs, CAFs, and pseudo-RAFs. These three notions are formalizations of the concept of a 'collectively
 autocatalytic set' originally introduced by Stuart Kauffman. Several other algorithms are also implemented.
 The program can visualize a CRS and animate the emergence of a maximal auto-catalytic network.
-CatlyNet was first introduced in [[SXH20]](#25).
+BioRAF was first introduced as CatlyNet in [[SXH20]](#25).
 
-CatlyNet is written in Java using JavaFX and
+BioRAF is written in Java using JavaFX and
 is loosely based on a web application written by Dietrich Radel: http://www.math.canterbury.ac.nz/bio/RAF/.
 
 ## Installers
 
 One-click installers for MacOS, Windows and Linux are
-available [here](https://software-ab.cs.uni-tuebingen.de/download/catlynet/welcome.html).
+available [here](https://software-ab.cs.uni-tuebingen.de/download/bioraf/welcome.html).
 
 Versions for iOS and Android are under development.
 
 ## Main features
 
-Input to CatlyNet is a catalytic reaction system (CRS), which consists of a list of catalyzed reactions and a food set
+Input to BioRAF is a catalytic reaction system (CRS), which consists of a list of catalyzed reactions and a food set
 of molecules, specified like this example consisting of two food items and three (one-way) reactions:
 
 ```
@@ -61,7 +62,7 @@ In more detail, the program provides the following calculations:
 - Quotient RAF Algorithm - computes the Max RAF minus all the reactions from the Max CAF and adds all produces of the
   Max CAF to the food set [[SXH20]](#25)
 - Remove Trivial RAFs Algorithm - computes CRS that is obtained by removing all trivial RAFs
-- Min iRAF Heuristic - searches for a smallest irreducible RAF in a heuristic fashion [[HS23]](#50)
+- Min iRAF Heuristic - searches for a smallest irreducible RAF in a heuristic fashion [[HS24]](#50)
 - MU CAF Algorithm - computes one maximal uninhibited CAF
 - U RAF Algorithm - computes a max RAF, removes inhibited reactions, and then recomputes the max RAF
   (Section 6 of [[HMS16]](#20))
@@ -127,7 +128,7 @@ There are several options:
 - Network Embbedder Iterations - set the number of iterations used by the algorithm that computes the layout of the
   network
 
-<img src="https://github.com/danielhuson/catlynet/blob/master/artwork/animation.gif" alt="Animation" width="600"/>
+<img src="https://github.com/danielhuson/bioraf/blob/master/artwork/animation.gif" alt="Animation" width="600"/>
 
 ### Export network
 
@@ -137,7 +138,7 @@ The network can be exported in several image formats, including PNG, GIF, SVG an
 
 The Linux and MacOS distributions have a tools directory that contains two commandline programs:
 
-- catlynet-tool - runs the implemented algorithms on one or more CRS input files
+- bioraf-tool - runs the implemented algorithms on one or more CRS input files
 - polymer-tool - generates a set of CRS input files using the binary polymer model
 
 ## Provided datasets
@@ -187,8 +188,8 @@ origin of metabolism. Proc. Roy. Soc. B. 287: 20192377
 <a id="40">[H23]</a>
 Hordijk, W. (2023). A concise and formal definition of RAF sets and the RAF algorithm, arXiv:2303.01809.
 
-<a id="50">[HS23]</a>
-Huson, D. and Steel, M. (2023) CatlyNet - Implemented Algorithms (unpublished).
+<a id="50">[HS24]</a>
+Huson, D. and Steel, M. (2024) BioRAF - Implemented Algorithms (unpublished).
 
 <a id="60">[HXRS23]</a>
 Huson, D., Xavier, J., Rodrigo, A. and Steel, M. (2023). Structural and algorithmic results for self-generating

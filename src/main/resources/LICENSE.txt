@@ -1,4 +1,4 @@
-CatlyNet https://github.com/husonlab/catlynet
+BioRAF https://github.com/husonlab/bioraf
 
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007

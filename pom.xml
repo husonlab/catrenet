@@ -24,7 +24,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.husonlab</groupId>
-    <artifactId>catlynet</artifactId>
+    <artifactId>bioraf</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -34,7 +34,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <javafx.version>21.0.2</javafx.version>
         <javafx.plugin.version>0.0.8</javafx.plugin.version>
-        <main.class>catlynet.main.CatlyNet</main.class>
+        <main.class>bioraf.main.BioRAF</main.class>
     </properties>
     <dependencies>
         <dependency>
@@ -139,7 +139,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>catlynet.main.CatlyNet</mainClass>
+                    <mainClass>bioraf.main.BioRAF</mainClass>
                     <!-- Add any additional configuration parameters as needed -->
                 </configuration>
             </plugin>
