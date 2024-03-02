@@ -2,7 +2,7 @@
 
 <img src="https://github.com/husonlab/bioraf/blob/master/src/main/resources/bioraf/resources/images/splash.png" alt="Splash" width="600"/>
 
-BioRAF (formally CatlyNet) is a program for working with a catalytic reaction system (CRS) consisting of a set of
+BioRAF (formerly CatlyNet) is a program for working with a catalytic reaction system (CRS) consisting of a set of
 'catalyzed reactions' and a given 'food set' of molecules.
 It provides fast and exact algorithms for calculating the three main types of autocatalytic networks,
 namely (maximal) RAFs, CAFs, and pseudo-RAFs. These three notions are formalizations of the concept of a 'collectively
