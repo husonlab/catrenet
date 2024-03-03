@@ -1,7 +1,8 @@
 module bioraf {
 	requires com.install4j.runtime;
 
-	requires transitive jloda2;
+	requires transitive jloda_core;
+	requires transitive jloda_fx;
 	requires transitive javafx.controls;
     requires transitive javafx.fxml;
 	requires transitive javafx.web;
@@ -23,7 +24,6 @@ module bioraf {
 	opens bioraf.settings;
 	opens bioraf.dialog.exportlist;
 	opens bioraf.dialog.targets;
-
 
 	opens bioraf.resources.images;
 	opens bioraf.resources.icons;

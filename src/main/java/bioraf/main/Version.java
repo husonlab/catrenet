@@ -21,5 +21,5 @@ package bioraf.main;
 
 public class Version {
 	static public final String NAME = "BioRAF";
-	static public final String SHORT_DESCRIPTION = "BioRAF (version 0.8.15, built 28 Jan 2024)";
+	static public final String SHORT_DESCRIPTION = "BioRAF (version 0.9.0, built 3 Mar 2024)";
 }

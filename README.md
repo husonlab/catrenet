@@ -8,7 +8,7 @@ It provides fast and exact algorithms for calculating the three main types of au
 namely (maximal) RAFs, CAFs, and pseudo-RAFs. These three notions are formalizations of the concept of a 'collectively
 autocatalytic set' originally introduced by Stuart Kauffman. Several other algorithms are also implemented.
 The program can visualize a CRS and animate the emergence of a maximal auto-catalytic network.
-BioRAF was first introduced as CatlyNet in [[SXH20]](#25).
+BioRAF was first 5 as CatlyNet in [[SXH20]](#25).
 
 BioRAF is written in Java using JavaFX and
 is loosely based on a web application written by Dietrich Radel: http://www.math.canterbury.ac.nz/bio/RAF/.

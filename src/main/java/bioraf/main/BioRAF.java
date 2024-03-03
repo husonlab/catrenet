@@ -30,6 +30,7 @@ import jloda.fx.window.SplashScreen;
 import jloda.fx.window.WindowGeometry;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
+import jloda.util.ProgramExecutorService;
 import jloda.util.UsageException;
 
 import java.io.File;
@@ -42,6 +43,8 @@ import java.time.Duration;
 public class BioRAF extends Application {
     private static ArgsOptions options;
     private static String[] inputFilesAtStartup;
+
+    private static boolean desktop = true;
 
     @Override
     public void init() {
@@ -164,5 +167,14 @@ public class BioRAF extends Application {
 
     public static ArgsOptions getOptions() {
         return options;
+    }
+
+
+    public static boolean isDesktop() {
+        return desktop;
+    }
+
+    public static void setDesktop(boolean desktop) {
+        BioRAF.desktop = desktop;
     }
 }

@@ -23,7 +23,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.input.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
 <BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="bioraf.window.MainWindowController">
     <center>
@@ -40,16 +39,30 @@
                                                  AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                                                  AnchorPane.topAnchor="0.0">
                                             <items>
+                                                <MenuButton fx:id="recentMenuButton" maxHeight="-Infinity"
+                                                            maxWidth="-Infinity" minHeight="-Infinity"
+                                                            minWidth="-Infinity" mnemonicParsing="false" text="Recent">
+                                                    <tooltip>
+                                                        <Tooltip text="Open a recent file"/>
+                                                    </tooltip>
+                                                    <items>
+                                                        <MenuItem fx:id="newRecentFileMenuItem" mnemonicParsing="false"
+                                                                  text="New..."/>
+                                                        <MenuItem fx:id="newPolymerModelRecentFileMenuItem"
+                                                                  mnemonicParsing="false" text="New Polymer Model..."/>
+                                                        <MenuItem fx:id="openRecentFileMenuItem" mnemonicParsing="false"
+                                                                  text="Open..."/>
+                                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                                    </items>
+                                                </MenuButton>
                                                 <ToggleButton fx:id="sidebarButton" mnemonicParsing="false"
                                                               text="Sidebar"/>
-                                                <Label text="BioRAF">
-                                                    <padding>
-                                                        <Insets left="20.0" right="20.0"/>
-                                                    </padding>
-                                                    <font>
-                                                        <Font size="18.0"/>
-                                                    </font>
-                                                </Label>
+
+                                                <MenuButton fx:id="runMenuButton" mnemonicParsing="false" text="Run">
+                                                    <tooltip>
+                                                        <Tooltip text="Run algorithms"/>
+                                                    </tooltip>
+                                                </MenuButton>
                                             </items>
                                         </ToolBar>
                                         <HBox alignment="CENTER" spacing="5.0" AnchorPane.rightAnchor="20.0"
@@ -113,7 +126,9 @@
                                                             <children>
                                                                 <VBox fx:id="foodInputVBox">
                                                                     <children>
-                                                                        <ToolBar>
+                                                                        <ToolBar maxHeight="-Infinity"
+                                                                                 minHeight="-Infinity"
+                                                                                 prefHeight="32.0">
                                                                             <VBox.margin>
                                                                                 <Insets/>
                                                                             </VBox.margin>
@@ -161,7 +176,9 @@
                                                             <children>
                                                                 <VBox fx:id="reactionsInputVBox">
                                                                     <children>
-                                                                        <ToolBar>
+                                                                        <ToolBar maxHeight="-Infinity"
+                                                                                 minHeight="-Infinity"
+                                                                                 prefHeight="32.0">
                                                                             <items>
                                                                                 <ToggleButton
                                                                                         fx:id="findReactionsTextToggleButton"
@@ -197,36 +214,6 @@
                                             </items>
                                         </SplitPane>
                                     </center>
-                                    <top>
-                                        <ToolBar BorderPane.alignment="CENTER">
-                                            <items>
-                                                <MenuButton fx:id="recentMenuButton" maxHeight="-Infinity"
-                                                            maxWidth="-Infinity" minHeight="-Infinity"
-                                                            minWidth="-Infinity" mnemonicParsing="false" text="Recent">
-                                                    <tooltip>
-                                                        <Tooltip text="Open a recent file"/>
-                                                    </tooltip>
-                                                    <items>
-                                                        <MenuItem fx:id="newRecentFileMenuItem" mnemonicParsing="false"
-                                                                  text="New..."/>
-                                                        <MenuItem fx:id="newPolymerModelRecentFileMenuItem"
-                                                                  mnemonicParsing="false" text="New Polymer Model..."/>
-                                                        <MenuItem fx:id="openRecentFileMenuItem" mnemonicParsing="false"
-                                                                  text="Open..."/>
-                                                        <SeparatorMenuItem mnemonicParsing="false"/>
-                                                    </items>
-                                                </MenuButton>
-                                                <Separator orientation="VERTICAL"/>
-                                                <MenuButton fx:id="listMenuButton" mnemonicParsing="false" text="List"/>
-
-                                                <MenuButton fx:id="runMenuButton" mnemonicParsing="false" text="Run">
-                                                    <tooltip>
-                                                        <Tooltip text="Run algorithms"/>
-                                                    </tooltip>
-                                                </MenuButton>
-                                            </items>
-                                        </ToolBar>
-                                    </top>
                                 </BorderPane>
                                 <BorderPane>
                                     <center>
@@ -342,10 +329,24 @@
                                                                         <TextArea fx:id="logTextArea" editable="false"
                                                                                   promptText="Log" wrapText="true"/>
                                                                     </center>
+                                                                    <top>
+                                                                        <ToolBar maxHeight="-Infinity"
+                                                                                 minHeight="-Infinity" prefHeight="32.0"
+                                                                                 BorderPane.alignment="CENTER">
+                                                                            <items>
+                                                                                <MenuButton fx:id="listMenuButton"
+                                                                                            mnemonicParsing="false"
+                                                                                            text="List"/>
+                                                                            </items>
+                                                                        </ToolBar>
+                                                                    </top>
                                                                 </BorderPane>
                                                             </content>
                                                         </Tab>
                                                     </tabs>
+                                                    <StackPane.margin>
+                                                        <Insets/>
+                                                    </StackPane.margin>
                                                 </TabPane>
                                             </children>
                                         </StackPane>

@@ -36,7 +36,6 @@ import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import jloda.fx.control.ItemSelectionModel;
 import jloda.fx.util.AService;
-import jloda.fx.util.ProgramExecutorService;
 import jloda.fx.util.SelectionEffectBlue;
 import jloda.fx.window.NotificationManager;
 import jloda.graph.*;
@@ -48,6 +47,7 @@ import jloda.graph.fmm.MultiComponents;
 import jloda.util.APoint2D;
 import jloda.util.CollectionUtils;
 import jloda.util.IteratorUtils;
+import jloda.util.ProgramExecutorService;
 
 import java.io.PrintStream;
 import java.util.*;
