@@ -395,10 +395,6 @@
                                 <Menu fx:id="recentFilesMenu" mnemonicParsing="false" text="Recent"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="importMenuItem" mnemonicParsing="false" text="Import...">
-                                    <accelerator>
-                                        <KeyCodeCombination alt="UP" code="O" control="UP" meta="DOWN" shift="DOWN"
-                                                            shortcut="UP"/>
-                                    </accelerator>
                                 </MenuItem>
                                 <Menu fx:id="exportMenu" mnemonicParsing="false" text="Export">
                                     <items>

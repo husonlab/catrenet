@@ -37,10 +37,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 import jloda.fx.undo.UndoManager;
-import jloda.fx.util.FileOpenManager;
-import jloda.fx.util.MemoryUsage;
-import jloda.fx.util.PrintStreamToTextArea;
-import jloda.fx.util.ProgramProperties;
+import jloda.fx.util.*;
 import jloda.fx.window.IMainWindow;
 import jloda.fx.window.MainWindowManager;
 import jloda.util.FileUtils;
@@ -86,7 +83,7 @@ public class MainWindow implements IMainWindow {
 
         {
             var fxmlLoader = new FXMLLoader();
-            try (var ins = Objects.requireNonNull(MainWindowController.class.getResource("MainWindow.fxml")).openStream()) {
+            try (var ins = StatementFilter.applyMobileFXML(Objects.requireNonNull(MainWindowController.class.getResource("MainWindow.fxml")).openStream(), BioRAF.isDesktop())) {
                 fxmlLoader.load(ins);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
