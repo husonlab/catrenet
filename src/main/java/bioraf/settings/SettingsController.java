@@ -19,7 +19,6 @@
 
 package bioraf.settings;
 
-import bioraf.main.BioRAF;
 import bioraf.view.EdgeView;
 import bioraf.view.NodeView;
 import javafx.fxml.FXML;
@@ -114,7 +113,7 @@ public class SettingsController {
 	@FXML
 	private void initialize() {
 		titledPane.getStylesheets().add(getClass().getResource("floating-titled-pane.css").toExternalForm());
-		infoTextArea.setText(ProgramProperties.getProgramVersion() + "\n" + BioRAF.getOptions().getAuthors() + ". License GPL3");
+		infoTextArea.setText(ProgramProperties.getProgramVersion() + "\nDaniel H. Huson and Mike A. Steel. License GPL3");
 	}
 
 	public TextField getIterationsTextField() {

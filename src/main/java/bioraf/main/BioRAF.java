@@ -41,7 +41,6 @@ import java.time.Duration;
  * Daniel Huson, 2020
  */
 public class BioRAF extends Application {
-    private static ArgsOptions options;
     private static String[] inputFilesAtStartup;
 
     private static boolean desktop = true;
@@ -96,7 +95,7 @@ public class BioRAF extends Application {
     }
 
     protected static void parseArguments(String[] args) throws CanceledException, UsageException {
-        options = new ArgsOptions(args, BioRAF.class, Version.NAME + " - Auto catalytic networks");
+        var options = new ArgsOptions(args, BioRAF.class, Version.NAME + " - Auto catalytic networks");
         options.setAuthors("Daniel H. Huson and Mike A. Steel");
         options.setLicense(ProgramProperties.getProgramLicence());
         options.setVersion(ProgramProperties.getProgramVersion());
@@ -164,11 +163,6 @@ public class BioRAF extends Application {
         else
             return System.getProperty("user.home") + File.separator + ".BioRAF.def";
     }
-
-    public static ArgsOptions getOptions() {
-        return options;
-    }
-
 
     public static boolean isDesktop() {
         return desktop;

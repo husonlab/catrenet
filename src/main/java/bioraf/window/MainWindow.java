@@ -21,6 +21,7 @@ package bioraf.window;
 
 import bioraf.io.CRSFileFilter;
 import bioraf.io.FileOpener;
+import bioraf.main.BioRAF;
 import bioraf.model.ReactionSystem;
 import bioraf.tab.TabManager;
 import bioraf.view.ReactionGraphView;
@@ -147,7 +148,8 @@ public class MainWindow implements IMainWindow {
         final MemoryUsage memoryUsage = MemoryUsage.getInstance();
         controller.getMemoryUsageLabel().textProperty().bind(memoryUsage.memoryUsageStringProperty());
 
-        stage.show();
+        if (BioRAF.isDesktop())
+            stage.show();
 
         controller.getInputFoodTextArea().textProperty().length().addListener((c, o, n) -> hasFoodInput.set(n.intValue() > 0));
 

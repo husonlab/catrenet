@@ -46,12 +46,15 @@ import java.util.function.Consumer;
  */
 public class FileOpener implements Consumer<String> {
 
-    @Override
-    public void accept(String fileName) {
-        var window = (MainWindow) MainWindowManager.getInstance().getLastFocusedMainWindow();
-        if (window == null || !window.isEmpty())
-            window = NewWindow.apply();
+	@Override
+	public void accept(String fileName) {
+		var window = (MainWindow) MainWindowManager.getInstance().getLastFocusedMainWindow();
+		if (window == null || !window.isEmpty())
+			window = NewWindow.apply();
+		accept(fileName, window);
+	}
 
+	public void accept(String fileName, MainWindow window) {
 		var reactionSystem = window.getInputReactionSystem();
 
         try {
