@@ -53,7 +53,6 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import jloda.fx.control.ZoomableScrollPane;
 import jloda.fx.util.*;
 import jloda.fx.window.MainWindowManager;
@@ -71,6 +70,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.TreeSet;
+import java.util.function.Consumer;
 
 import static bioraf.io.ModelIO.FORMAL_FOOD;
 
@@ -79,11 +79,9 @@ import static bioraf.io.ModelIO.FORMAL_FOOD;
  * Daniel Huson, 7.2019
  */
 public class MainWindowPresenter {
-    private static boolean computeImportance = false;
+    private boolean computeImportance = false;
 
-    private static Stage vFormatWindowStage = null;
-
-    public static void setup(MainWindow mainWindow) {
+    public MainWindowPresenter(MainWindow mainWindow) {
         final ObjectProperty<javafx.scene.Node> printableNode = new SimpleObjectProperty<>();
 
         final var controller = mainWindow.getController();
@@ -718,7 +716,7 @@ public class MainWindowPresenter {
                 if (n) {
                     AnchorPane.setLeftAnchor(settings.getRoot(), 5.0);
                     AnchorPane.setTopAnchor(settings.getRoot(), 45.0);
-                    controller.getMainAnchorPane().getChildren().add(settings.getRoot());
+                    controller.getRootPane().getChildren().add(settings.getRoot());
                     translate.setFromX(-450);
                     translate.setToX(translateX.get());
                     translate.setToY(translateY.get());
@@ -730,7 +728,7 @@ public class MainWindowPresenter {
                     translate.setFromX(translateX.get());
                     translate.setToX(-450);
                     translate.setToY(0);
-                    translate.setOnFinished(e -> controller.getMainAnchorPane().getChildren().remove(settings.getRoot()));
+                    translate.setOnFinished(e -> controller.getRootPane().getChildren().remove(settings.getRoot()));
                 }
                 translate.play();
             });
@@ -743,6 +741,9 @@ public class MainWindowPresenter {
                 }
             });
         }
+
+        if (additionalCommonMenuSetup != null)
+            additionalCommonMenuSetup.accept(mainWindow);
     }
 
     public static void selectLogTab(MainWindowController controller) {
@@ -848,5 +849,12 @@ public class MainWindowPresenter {
         textArea.setText(textArea.getText() + "%n%nList %s (%,d):%n".formatted(what, lines.size()) + StringUtils.toString(lines, "\n"));
         selectLogTab(controller);
         Platform.runLater(() -> textArea.setScrollTop(Double.MAX_VALUE));
+
+    }
+
+    private Consumer<MainWindow> additionalCommonMenuSetup = null;
+
+    public void setAdditionalCommonMenuSetup(Consumer<MainWindow> additionalCommonMenuSetup) {
+        this.additionalCommonMenuSetup = additionalCommonMenuSetup;
     }
 }

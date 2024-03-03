@@ -50,7 +50,7 @@ public class GreedilyGrowMaxCAF2MaxRAF implements IDescribed {
 	 */
     public static void apply(MainWindow window, ReactionSystem inputReactionSystem, ChangeListener<Boolean> runningListener) {
 
-        final AService<Result> service = new AService<>(window.getController().getStatusFlowPane());
+		final AService<Result> service = new AService<>(window.getController().getBottomFlowPane());
 
         service.setCallable(() -> {
             final ProgressListener progress = service.getProgressListener();

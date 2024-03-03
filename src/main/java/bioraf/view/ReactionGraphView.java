@@ -220,7 +220,7 @@ public class ReactionGraphView {
 		if (numberOfConnectedComponts > 1)
 			logStream.printf("Reaction network has %d connected components%n", numberOfConnectedComponts);
 
-		final var service = new AService<NodeArray<APoint2D<?>>>(controller.getStatusFlowPane());
+		final var service = new AService<NodeArray<APoint2D<?>>>(controller.getBottomFlowPane());
 
 		final var result = new NodeArray<APoint2D<?>>(reactionGraph);
 

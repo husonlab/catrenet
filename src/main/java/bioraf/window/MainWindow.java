@@ -28,6 +28,8 @@ import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -54,6 +56,8 @@ import java.util.Objects;
 public class MainWindow implements IMainWindow {
     private Stage stage;
     private final MainWindowController controller;
+
+    private MainWindowPresenter presenter;
     private final Parent root;
     private final FlowPane statusPane;
 
@@ -67,9 +71,11 @@ public class MainWindow implements IMainWindow {
 
     private final Document document = new Document();
 
-    private final BooleanProperty hasFoodInput = new SimpleBooleanProperty(false);
-    private final BooleanProperty hasReactionsInput = new SimpleBooleanProperty(false);
-    private final BooleanProperty empty = new SimpleBooleanProperty();
+    private final BooleanProperty hasFoodInput = new SimpleBooleanProperty(this, "hasFoodInput", false);
+    private final BooleanProperty hasReactionsInput = new SimpleBooleanProperty(this, "hasReactionsInput", false);
+    private final BooleanProperty empty = new SimpleBooleanProperty(this, "empty", true);
+
+    private final StringProperty name = new SimpleStringProperty(this, "name", "Untitled");
 
     /**
      * constructor
@@ -89,7 +95,7 @@ public class MainWindow implements IMainWindow {
 
             logStream = new PrintStreamToTextArea(controller.getLogTextArea());
 
-            statusPane = controller.getStatusFlowPane();
+            statusPane = controller.getBottomFlowPane();
 
             reactionGraphView = new ReactionGraphView(getDocument(), controller, getLogStream());
         }
@@ -118,7 +124,7 @@ public class MainWindow implements IMainWindow {
         stage.getIcons().addAll(ProgramProperties.getProgramIconsFX());
 
         final var scene = new Scene(root);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("mainwindow.css")).toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("MainWindow.css")).toExternalForm());
 
         stage.setScene(scene);
         stage.setX(screenX);
@@ -126,11 +132,9 @@ public class MainWindow implements IMainWindow {
         stage.setWidth(width);
         stage.setHeight(height);
 
-        final InvalidationListener listener = ((e) -> {
-            if (document.getFileName() == null)
-                getStage().setTitle("Untitled - " + ProgramProperties.getProgramName());
-            else
-                getStage().setTitle(FileUtils.getFileNameWithoutPath(document.getFileName()) + (document.isDirty() ? "*" : "") + " - " + ProgramProperties.getProgramName());
+        final InvalidationListener listener = (e -> {
+            name.set(document.getFileName() == null ? "Untitled" : FileUtils.getFileNameWithoutPath(document.getFileName()));
+            getStage().setTitle(getName() + (document.isDirty() ? "*" : "") + " - " + ProgramProperties.getProgramName());
         });
         document.fileNameProperty().addListener(listener);
 
@@ -138,7 +142,7 @@ public class MainWindow implements IMainWindow {
 
         getStage().titleProperty().addListener((e) -> MainWindowManager.getInstance().fireChanged());
 
-        MainWindowPresenter.setup(this);
+        presenter = new MainWindowPresenter(this);
 
         final MemoryUsage memoryUsage = MemoryUsage.getInstance();
         controller.getMemoryUsageLabel().textProperty().bind(memoryUsage.memoryUsageStringProperty());
@@ -169,6 +173,10 @@ public class MainWindow implements IMainWindow {
         return controller;
     }
 
+    public MainWindowPresenter getPresenter() {
+        return presenter;
+    }
+
     public FlowPane getStatusPane() {
         return statusPane;
     }
@@ -196,5 +204,17 @@ public class MainWindow implements IMainWindow {
 
     public TabManager getTabManager() {
         return tabManager;
+    }
+
+    public String getName() {
+        return name.get();
+    }
+
+    public StringProperty nameProperty() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name.set(name);
     }
 }

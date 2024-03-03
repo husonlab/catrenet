@@ -48,7 +48,7 @@ public class ComputeNecessarilySpontaneousInRAF implements IDescribed {
 
     public static void apply(MainWindow window, final ReactionSystem inputReactions, MainWindowController controller, ChangeListener<Boolean> runningListener) {
 
-        final AService<Collection<String>> service = new AService<>(controller.getStatusFlowPane());
+		final AService<Collection<String>> service = new AService<>(controller.getBottomFlowPane());
 
         service.setCallable(() -> {
             final ReactionSystem maxRAF = (new MaxRAFAlgorithm()).apply(inputReactions, service.getProgressListener());

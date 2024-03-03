@@ -8,6 +8,7 @@ module bioraf {
 	requires transitive javafx.web;
 	requires commons.math3;
 
+	exports bioraf.io;
 	exports bioraf.algorithm;
 	exports bioraf.main;
 	exports bioraf.tab;

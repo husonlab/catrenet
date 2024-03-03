@@ -313,7 +313,7 @@ public class MainWindowController {
 	private Menu recentFilesMenu;
 
 	@FXML
-	private MenuButton recentMenuButton;
+	private MenuButton fileMenuButton;
 
 	@FXML
 	private MenuItem redoMenuItem;
@@ -416,7 +416,7 @@ public class MainWindowController {
 	private MenuItem spontaneousInRafMenuItem;
 
 	@FXML
-	private FlowPane statusFlowPane;
+	private FlowPane bottomFlowPane;
 
 	@FXML
 	private Button stopAnimationButton;
@@ -470,7 +470,7 @@ public class MainWindowController {
 	private CheckMenuItem showNotificationsCheckMenuItem;
 
 	@FXML
-	private AnchorPane mainAnchorPane;
+	private AnchorPane rootPane;
 
 	@FXML
 	private Button undoFoodButton;
@@ -484,13 +484,16 @@ public class MainWindowController {
 	@FXML
 	private Button redoReactionsButton;
 
+	@FXML
+	private ProgressIndicator progressIndicator;
+
 
 	private ZoomableScrollPane zoomableScrollPane;
 
 	@FXML
 	void initialize() {
 		{
-			MaterialIcons.setIcon(recentMenuButton, "file_open");
+			MaterialIcons.setIcon(fileMenuButton, "file_open");
 			MaterialIcons.setIcon(runMenuButton, "play_circle_filled");
 
 			MaterialIcons.setIcon(computeNetworkMenuButton, "tune");
@@ -616,8 +619,8 @@ public class MainWindowController {
 			openRecentFileMenuItem.setOnAction(e -> openMenuItem.getOnAction().handle(e));
 
 			recentFilesMenu.getItems().addListener((InvalidationListener) e -> {
-				recentMenuButton.getItems().setAll(newRecentFileMenuItem, newPolymerModelRecentFileMenuItem, openRecentFileMenuItem, new SeparatorMenuItem());
-				recentMenuButton.getItems().addAll(BasicFX.copyMenu(recentFilesMenu.getItems()));
+				fileMenuButton.getItems().setAll(newRecentFileMenuItem, newPolymerModelRecentFileMenuItem, openRecentFileMenuItem, new SeparatorMenuItem());
+				fileMenuButton.getItems().addAll(BasicFX.copyMenu(recentFilesMenu.getItems()));
 			});
 		}
 
@@ -651,6 +654,7 @@ public class MainWindowController {
 
 			runMenuButton.disableProperty().bind(runRAFMenuItem.disableProperty());
 
+			progressIndicator.visibleProperty().bind(Bindings.isEmpty(bottomFlowPane.getChildren()).not());
 		}
 
 		logTextArea.textProperty().addListener(e -> {
@@ -674,6 +678,10 @@ public class MainWindowController {
 
 	public Menu getFileMenu() {
 		return fileMenu;
+	}
+
+	public MenuButton getFileMenuButton() {
+		return fileMenuButton;
 	}
 
 	public MenuItem getNewMenuItem() {
@@ -1004,8 +1012,8 @@ public class MainWindowController {
 		return stopAnimationButton;
 	}
 
-	public FlowPane getStatusFlowPane() {
-		return statusFlowPane;
+	public FlowPane getBottomFlowPane() {
+		return bottomFlowPane;
 	}
 
 	public Label getMemoryUsageLabel() {
@@ -1168,8 +1176,8 @@ public class MainWindowController {
 		return findReactionsTextToggleButton;
 	}
 
-	public AnchorPane getMainAnchorPane() {
-		return mainAnchorPane;
+	public AnchorPane getRootPane() {
+		return rootPane;
 	}
 
 	public ToggleButton getSidebarButton() {
@@ -1190,5 +1198,13 @@ public class MainWindowController {
 
 	public Button getRedoReactionsButton() {
 		return redoReactionsButton;
+	}
+
+	public ProgressIndicator getProgressIndicator() {
+		return progressIndicator;
+	}
+
+	public void setProgressIndicator(ProgressIndicator progressIndicator) {
+		this.progressIndicator = progressIndicator;
 	}
 }

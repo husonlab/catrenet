@@ -45,7 +45,7 @@ public class MultiRunAlgorithm {
     public static void apply(MainWindow window, final ReactionSystem inputReactions, AlgorithmBase algorithm, TextArea textArea, int numberOfRuns, ChangeListener<Boolean> runningListener) {
         final MainWindowController controller = window.getController();
 
-        final AService<Collection<Pair<ReactionSystem, Integer>>> service = new AService<>(controller.getStatusFlowPane());
+        final AService<Collection<Pair<ReactionSystem, Integer>>> service = new AService<>(controller.getBottomFlowPane());
         service.setCallable(() -> {
             final Map<Set<String>, Pair<ReactionSystem, Integer>> names2reactions2counts = new HashMap<>();
             for (int i = 0; i < numberOfRuns; i++) {

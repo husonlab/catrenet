@@ -55,7 +55,7 @@ public class RunAlgorithm {
         }
 
         var result = window.getReactionSystem(algorithm.getName());
-        var service = new AService<Triplet<ReactionSystem, String, String>>(controller.getStatusFlowPane());
+		var service = new AService<Triplet<ReactionSystem, String, String>>(controller.getBottomFlowPane());
         service.setCallable(() -> {
             final ReactionSystem outputReactions = algorithm.apply(inputReactions, service.getProgressListener());
 
