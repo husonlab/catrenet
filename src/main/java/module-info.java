@@ -28,6 +28,5 @@ module bioraf {
 	opens bioraf.resources.images;
 	opens bioraf.resources.icons;
 
-	exports bioraf;
 	exports bioraf.dialog;
 }
