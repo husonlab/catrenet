@@ -102,6 +102,14 @@ public class MainWindow implements IMainWindow {
 
         FileOpenManager.setExtensions(Collections.singletonList(CRSFileFilter.getInstance()));
         FileOpenManager.setFileOpener(new FileOpener());
+
+        final InvalidationListener listener = (e -> {
+            name.set(document.getFileName() == null ? "Untitled" : FileUtils.getFileNameWithoutPath(document.getFileName()));
+            if (getStage() != null)
+                getStage().setTitle(getName() + (document.isDirty() ? "*" : "") + " - " + ProgramProperties.getProgramName());
+        });
+        document.fileNameProperty().addListener(listener);
+        document.dirtyProperty().addListener(listener);
     }
 
     @Override
@@ -129,14 +137,6 @@ public class MainWindow implements IMainWindow {
         stage.setY(screenY);
         stage.setWidth(width);
         stage.setHeight(height);
-
-        final InvalidationListener listener = (e -> {
-            name.set(document.getFileName() == null ? "Untitled" : FileUtils.getFileNameWithoutPath(document.getFileName()));
-            getStage().setTitle(getName() + (document.isDirty() ? "*" : "") + " - " + ProgramProperties.getProgramName());
-        });
-        document.fileNameProperty().addListener(listener);
-
-        document.dirtyProperty().addListener(listener);
 
         getStage().titleProperty().addListener((e) -> MainWindowManager.getInstance().fireChanged());
 
