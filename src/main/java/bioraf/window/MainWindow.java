@@ -104,7 +104,7 @@ public class MainWindow implements IMainWindow {
         FileOpenManager.setFileOpener(new FileOpener());
 
         final InvalidationListener listener = (e -> {
-            name.set(document.getFileName() == null ? "Untitled" : FileUtils.getFileNameWithoutPath(document.getFileName()));
+            name.set(document.getFileName() == null ? "Untitled" : FileUtils.getFileNameWithoutPathOrSuffix(document.getFileName()));
             if (getStage() != null)
                 getStage().setTitle(getName() + (document.isDirty() ? "*" : "") + " - " + ProgramProperties.getProgramName());
         });
