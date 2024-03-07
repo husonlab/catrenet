@@ -26,11 +26,10 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Orientation;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
 import jloda.fx.dialog.ExportImageDialog;
 import jloda.fx.find.ISearcher;
 import jloda.fx.util.BasicFX;
+import jloda.fx.util.ClipboardUtils;
 import jloda.util.StringUtils;
 
 /**
@@ -53,9 +52,9 @@ public class SetupExport {
             if (n == controller.getNetworkTab()) {
                 copyMenuItem.setOnAction(e -> {
                     var graphView = mainWindow.getReactionGraphView();
-                    final var content = new ClipboardContent();
-                    if (!graphView.getNodeSelection().isEmpty())
-                        content.putString(StringUtils.toString(graphView.getSelectedLabels(), "\n"));
+
+                    var string = (graphView.getNodeSelection().isEmpty() ? null : StringUtils.toString(graphView.getSelectedLabels(), "\n"));
+
                     var parameters = new SnapshotParameters();
                     var bounds = controller.getNetworkCopyPane().getBoundsInParent();
                     var right = BasicFX.isScrollBarVisible(controller.getNetworkScrollPane(), Orientation.VERTICAL) ? 20 : 6;
@@ -63,8 +62,8 @@ public class SetupExport {
 
                     parameters.setViewport(new Rectangle2D(bounds.getMinX() + 3, bounds.getMinY() + 3, bounds.getWidth() - right, bounds.getHeight() - bottom));
                     var image = controller.getNetworkCopyPane().snapshot(parameters, null);
-                    content.putImage(image);
-                    Clipboard.getSystemClipboard().setContent(content);
+
+                    ClipboardUtils.put(string, image, null);
                 });
 
                 exportMenuItem.setOnAction(e -> ExportImageDialog.show(mainWindow.getDocument().getFileName(), mainWindow.getStage(), controller.getNetworkScrollPane().getContent()));
@@ -76,9 +75,7 @@ public class SetupExport {
             } else if (n == controller.getLogTab()) {
                 var textArea = controller.getLogTextArea();
                 copyMenuItem.setOnAction(e -> {
-                    var content = new ClipboardContent();
-                    content.putString(textArea.getSelectedText().isEmpty() ? textArea.getText() : textArea.getSelectedText());
-                    Clipboard.getSystemClipboard().setContent(content);
+                    ClipboardUtils.putString(textArea.getSelectedText().isEmpty() ? textArea.getText() : textArea.getSelectedText());
                 });
                 exportMenuItem.setOnAction(e -> {
                     ExportTextFileDialog.apply(mainWindow, "log", textArea.getText());
@@ -89,9 +86,7 @@ public class SetupExport {
             } else if (n == controller.getParsedReactionsTab()) {
                 var textArea = controller.getParsedReactionsTextArea();
                 copyMenuItem.setOnAction(e -> {
-                    var content = new ClipboardContent();
-                    content.putString(textArea.getSelectedText().isEmpty() ? textArea.getText() : textArea.getSelectedText());
-                    Clipboard.getSystemClipboard().setContent(content);
+                    ClipboardUtils.putString(textArea.getSelectedText().isEmpty() ? textArea.getText() : textArea.getSelectedText());
                 });
                 exportMenuItem.setOnAction(e -> {
                     ExportTextFileDialog.apply(mainWindow, "parsed", textArea.getText());

@@ -473,6 +473,9 @@ public class MainWindowController {
 	private AnchorPane rootPane;
 
 	@FXML
+	private AnchorPane innerAnchorPane;
+
+	@FXML
 	private Button undoFoodButton;
 
 	@FXML
@@ -487,6 +490,8 @@ public class MainWindowController {
 	@FXML
 	private ProgressIndicator progressIndicator;
 
+	@FXML
+	private VBox topVBox;
 
 	private ZoomableScrollPane zoomableScrollPane;
 
@@ -547,7 +552,6 @@ public class MainWindowController {
 			networkTabContextMenu.getItems().addAll(BasicFX.copyMenu(selectMenu.getItems()));
 		}
 
-
 		// replace tabbed pane by splittable one
 
 		final var tabs = new ArrayList<>(outputTabPane.getTabs());
@@ -595,6 +599,7 @@ public class MainWindowController {
 				inputSplitPane.getDividers().get(0).setPosition(newPos);
 			}
 		});
+
 		inputSplitPane.getDividers().get(0).setPosition(0.3);
 
 		mainSplitPane.widthProperty().addListener((c, o, n) -> {
@@ -603,8 +608,8 @@ public class MainWindowController {
 				mainSplitPane.setDividerPosition(0, newPos);
 			}
 		});
-		Platform.runLater(() -> mainSplitPane.setDividerPosition(0, 250.0 / mainSplitPane.getWidth()));
 
+		Platform.runLater(() -> mainSplitPane.setDividerPosition(0, 250.0 / mainSplitPane.getWidth()));
 
 		{
 			var stackPane = new StackPane();
@@ -635,7 +640,6 @@ public class MainWindowController {
 				var subMenu = selectNetworkMenuButton.getItems().stream().filter(t -> t instanceof Menu).map(t -> (Menu) t).filter(t -> t.getText() != null && selectReactionSystemMenu.getText().equals(t.getText())).findAny();
 				subMenu.ifPresent(menu -> selectReactionSystemMenu.getItems().addListener((InvalidationListener) e -> menu.getItems().setAll(BasicFX.copyMenu(selectReactionSystemMenu.getItems()))));
 			}
-
 
 			zoomInNetworkButton.setOnAction(e -> zoomInMenuItem.getOnAction().handle(e));
 			zoomInNetworkButton.disableProperty().bind(zoomInMenuItem.disableProperty());
@@ -1176,8 +1180,8 @@ public class MainWindowController {
 		return findReactionsTextToggleButton;
 	}
 
-	public AnchorPane getRootPane() {
-		return rootPane;
+	public AnchorPane getInnerAnchorPane() {
+		return innerAnchorPane;
 	}
 
 	public ToggleButton getSidebarButton() {
@@ -1206,5 +1210,13 @@ public class MainWindowController {
 
 	public void setProgressIndicator(ProgressIndicator progressIndicator) {
 		this.progressIndicator = progressIndicator;
+	}
+
+	public AnchorPane getRootPane() {
+		return rootPane;
+	}
+
+	public VBox getTopVBox() {
+		return topVBox;
 	}
 }

@@ -48,8 +48,6 @@ import javafx.collections.ListChangeListener;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
@@ -224,11 +222,8 @@ public class MainWindowPresenter {
 
         controller.getCopyMenuItem().setOnAction(e -> {
             if (controller.getNetworkTab().getTabPane().isFocused() && controller.getNetworkTab().isSelected()) {
-                final ClipboardContent content = new ClipboardContent();
-                if (!graphView.getNodeSelection().isEmpty())
-                    content.putString(StringUtils.toString(graphView.getSelectedLabels(), "\n"));
-                content.putImage(controller.getNetworkScrollPane().getContent().snapshot(null, null));
-                Clipboard.getSystemClipboard().setContent(content);
+                ClipboardUtils.put((!graphView.getNodeSelection().isEmpty() ? StringUtils.toString(graphView.getSelectedLabels(), "\n") : null),
+                        controller.getNetworkScrollPane().getContent().snapshot(null, null), null);
             }
         });
         controller.getCopyMenuItem().disableProperty().bind((controller.getInputTextArea().focusedProperty().or(controller.getInputFoodTextArea().focusedProperty())
@@ -716,7 +711,7 @@ public class MainWindowPresenter {
                 if (n) {
                     AnchorPane.setLeftAnchor(settings.getRoot(), 5.0);
                     AnchorPane.setTopAnchor(settings.getRoot(), 45.0);
-                    controller.getRootPane().getChildren().add(settings.getRoot());
+                    controller.getInnerAnchorPane().getChildren().add(settings.getRoot());
                     translate.setFromX(-450);
                     translate.setToX(translateX.get());
                     translate.setToY(translateY.get());
@@ -728,7 +723,7 @@ public class MainWindowPresenter {
                     translate.setFromX(translateX.get());
                     translate.setToX(-450);
                     translate.setToY(0);
-                    translate.setOnFinished(e -> controller.getRootPane().getChildren().remove(settings.getRoot()));
+                    translate.setOnFinished(e -> controller.getInnerAnchorPane().getChildren().remove(settings.getRoot()));
                 }
                 translate.play();
             });

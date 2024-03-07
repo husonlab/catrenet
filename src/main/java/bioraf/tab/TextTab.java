@@ -23,10 +23,9 @@ import bioraf.dialog.ExportTextFileDialog;
 import bioraf.window.MainWindow;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
 import jloda.fx.find.ISearcher;
 import jloda.fx.find.TextAreaSearcher;
+import jloda.fx.util.ClipboardUtils;
 import jloda.fx.util.RunAfterAWhile;
 import jloda.util.StringUtils;
 
@@ -66,9 +65,7 @@ public class TextTab extends Tab {
     }
 
     public void copyToClipboard() {
-        var content = new ClipboardContent();
-        content.putString(textArea.getSelectedText().isEmpty() ? textArea.getText() : textArea.getSelectedText());
-        Clipboard.getSystemClipboard().setContent(content);
+        ClipboardUtils.putString(textArea.getSelectedText().isEmpty() ? textArea.getText() : textArea.getSelectedText());
     }
 
     public void exportToFile() {

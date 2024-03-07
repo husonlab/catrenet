@@ -23,21 +23,23 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.input.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="bioraf.window.MainWindowController">
-    <center>
-        <AnchorPane fx:id="rootPane">
+<AnchorPane fx:id="rootPane" prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/18"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="bioraf.window.MainWindowController">
+    <BorderPane fx:id="outsideBorderPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <center>
+            <AnchorPane fx:id="innerAnchorPane">
             <children>
                 <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                             AnchorPane.topAnchor="0.0">
                     <top>
-                        <VBox BorderPane.alignment="CENTER">
+                        <VBox fx:id="topVBox" BorderPane.alignment="CENTER">
                             <children>
                                 <AnchorPane>
                                     <children>
-                                        <ToolBar fx:id="mainToolBar" AnchorPane.bottomAnchor="0.0"
-                                                 AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                                                 AnchorPane.topAnchor="0.0">
+                                        <ToolBar fx:id="mainToolBar" minHeight="-Infinity" prefHeight="32.0"
+                                                 AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                                 AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <items>
                                                 <MenuButton fx:id="fileMenuButton" maxHeight="-Infinity"
                                                             maxWidth="-Infinity" minHeight="-Infinity"
@@ -114,14 +116,12 @@
                         </AnchorPane>
                     </bottom>
                     <center>
-                        <SplitPane fx:id="mainSplitPane" dividerPositions="0.3" prefHeight="160.0" prefWidth="200.0"
-                                   BorderPane.alignment="CENTER">
+                        <SplitPane fx:id="mainSplitPane" dividerPositions="0.3" BorderPane.alignment="CENTER">
                             <items>
                                 <BorderPane>
                                     <center>
                                         <SplitPane fx:id="inputSplitPane" dividerPositions="0.28518971848225216"
-                                                   orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0"
-                                                   BorderPane.alignment="CENTER">
+                                                   orientation="VERTICAL" BorderPane.alignment="CENTER">
                                             <items>
                                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0"
                                                             prefWidth="160.0">
@@ -131,8 +131,7 @@
                                                             <children>
                                                                 <VBox fx:id="foodInputVBox">
                                                                     <children>
-                                                                        <ToolBar maxHeight="-Infinity"
-                                                                                 minHeight="-Infinity"
+                                                                        <ToolBar minHeight="-Infinity"
                                                                                  prefHeight="32.0">
                                                                             <VBox.margin>
                                                                                 <Insets/>
@@ -181,8 +180,7 @@
                                                             <children>
                                                                 <VBox fx:id="reactionsInputVBox">
                                                                     <children>
-                                                                        <ToolBar maxHeight="-Infinity"
-                                                                                 minHeight="-Infinity"
+                                                                        <ToolBar minHeight="-Infinity"
                                                                                  prefHeight="32.0">
                                                                             <items>
                                                                                 <ToggleButton
@@ -757,3 +755,4 @@
         </VBox>
     </top>
 </BorderPane>
+</AnchorPane>

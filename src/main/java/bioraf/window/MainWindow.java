@@ -145,7 +145,7 @@ public class MainWindow implements IMainWindow {
         final MemoryUsage memoryUsage = MemoryUsage.getInstance();
         controller.getMemoryUsageLabel().textProperty().bind(memoryUsage.memoryUsageStringProperty());
 
-        if (BioRAF.isDesktop())
+        // if (BioRAF.isDesktop()) // todo: if we don't briefly show the stage in App mode, the program hangs
             stage.show();
 
         controller.getInputFoodTextArea().textProperty().length().addListener((c, o, n) -> hasFoodInput.set(n.intValue() > 0));
