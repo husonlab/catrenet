@@ -112,7 +112,6 @@ public class SettingsController {
 
 	@FXML
 	private void initialize() {
-		titledPane.getStylesheets().add(getClass().getResource("floating-titled-pane.css").toExternalForm());
 		infoTextArea.setText(ProgramProperties.getProgramVersion() + "\nDaniel H. Huson and Mike A. Steel. License GPL3");
 	}
 

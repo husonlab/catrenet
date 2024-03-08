@@ -150,13 +150,15 @@ public class SelectionBindings {
                 })
         );
 
-        window.getStage().focusedProperty().addListener((c, o, n) -> {
-            if (!n) {
-                previousSelection.clear();
-                previousSelection.addAll(window.getReactionGraphView().getNodeSelection().getSelectedItems().stream().map(v -> window.getReactionGraphView().getLabel(v).getText())
-                        .filter(text -> !text.isEmpty() && !text.equals("&")).collect(Collectors.toSet()));
-            }
-        });
+        if (window.getStage() != null) {
+            window.getStage().focusedProperty().addListener((c, o, n) -> {
+                if (!n) {
+                    previousSelection.clear();
+                    previousSelection.addAll(window.getReactionGraphView().getNodeSelection().getSelectedItems().stream().map(v -> window.getReactionGraphView().getLabel(v).getText())
+                            .filter(text -> !text.isEmpty() && !text.equals("&")).collect(Collectors.toSet()));
+                }
+            });
+        }
 
         controller.getSelectFromPreviousWindowMenuItem().setOnAction(c -> {
             if (!previousSelection.isEmpty()) {

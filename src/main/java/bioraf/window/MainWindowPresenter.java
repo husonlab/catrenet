@@ -120,10 +120,12 @@ public class MainWindowPresenter {
         RecentFilesManager.getInstance().setFileOpener(FileOpenManager.getFileOpener());
         RecentFilesManager.getInstance().setupMenu(controller.getRecentFilesMenu());
 
-        mainWindow.getStage().setOnCloseRequest(e -> {
-            controller.getCloseMenuItem().getOnAction().handle(null);
-            e.consume();
-        });
+        if (mainWindow.getStage() != null) {
+            mainWindow.getStage().setOnCloseRequest(e -> {
+                controller.getCloseMenuItem().getOnAction().handle(null);
+                e.consume();
+            });
+        }
 
         controller.getParsedReactionsTextArea().focusedProperty().addListener(textAreaFocusChangeListener(controller, printableNode, controller.getParsedReactionsTextArea()));
         controller.getLogTextArea().focusedProperty().addListener(textAreaFocusChangeListener(controller, printableNode, controller.getLogTextArea()));
@@ -200,9 +202,7 @@ public class MainWindowPresenter {
 
         controller.getPrintMenuItem().setOnAction(e -> {
             javafx.scene.Node node = printableNode.get();
-
             Print.print(mainWindow.getStage(), node);
-
         });
         controller.getPrintMenuItem().disableProperty().bind(printableNode.isNull());
 
@@ -233,23 +233,24 @@ public class MainWindowPresenter {
         });
         controller.getPasteMenuItem().disableProperty().bind((controller.getInputTextArea().focusedProperty().or(controller.getInputFoodTextArea().focusedProperty())).not());
 
+        if (false) {
+            controller.getUndoMenuItem().setOnAction(e -> {
+            });
+            controller.getUndoMenuItem().disableProperty().bind(((controller.getInputTextArea().focusedProperty().and(controller.getInputTextArea().undoableProperty()))
+                    .or(controller.getInputFoodTextArea().undoableProperty())).not());
 
-        controller.getUndoMenuItem().setOnAction(e -> {
-        });
-        controller.getUndoMenuItem().disableProperty().bind(
-                ((controller.getInputTextArea().focusedProperty().and(controller.getInputTextArea().undoableProperty()))
-                        .or(controller.getInputFoodTextArea().undoableProperty())).not());
-
-        controller.getRedoMenuItem().setOnAction(e -> {
-            if (false) {
-                controller.getInputTextArea().requestFocus();
-                controller.getInputTextArea().redo();
-            }
-        });
-        controller.getRedoMenuItem().disableProperty().bind(
-                ((controller.getInputTextArea().focusedProperty().and(controller.getInputTextArea().redoableProperty()))
-                        .or(controller.getInputFoodTextArea().undoableProperty())).not());
-
+            controller.getRedoMenuItem().setOnAction(e -> {
+                if (false) {
+                    controller.getInputTextArea().requestFocus();
+                    controller.getInputTextArea().redo();
+                }
+            });
+            controller.getRedoMenuItem().disableProperty().bind(((controller.getInputTextArea().focusedProperty().and(controller.getInputTextArea().redoableProperty()))
+                    .or(controller.getInputFoodTextArea().undoableProperty())).not());
+        } else {
+            controller.getUndoMenuItem().disableProperty().bind(new SimpleBooleanProperty(true));
+            controller.getRedoMenuItem().disableProperty().bind(new SimpleBooleanProperty(true));
+        }
 
         controller.getComputeNetworkMenuItem().setOnAction(c -> {
             if (controller.getFullGraphRadioMenuItem().getToggleGroup().getSelectedToggle() == null) {
@@ -259,7 +260,6 @@ public class MainWindowPresenter {
                 ComputeGraph.apply(mainWindow, controller);
                 controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
             }
-
         });
         controller.getComputeNetworkMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()).or(controller.getInputFoodTextArea().textProperty().isEmpty()));
 
@@ -267,7 +267,6 @@ public class MainWindowPresenter {
             if (n)
                 graphView.getMoleculeFlowAnimation().setPlaying(false);
         });
-
 
         controller.getNetworkTab().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
         controller.getNetworkTab().selectedProperty().addListener((v, o, n) -> {
@@ -576,7 +575,8 @@ public class MainWindowPresenter {
         SelectionBindings.setup(mainWindow, controller);
 
         controller.getShowNodeLabels().setOnAction(e -> ShowHideNodeLabels.apply(graphView));
-        BasicFX.setupFullScreenMenuSupport(mainWindow.getStage(), controller.getFullScreenMenuItem());
+        if (mainWindow.getStage() != null)
+            BasicFX.setupFullScreenMenuSupport(mainWindow.getStage(), controller.getFullScreenMenuItem());
 
         final var noGraphTypeSet = new RadioMenuItem();
         final var graphTypeButtonGroup = new ToggleGroup();
@@ -707,7 +707,7 @@ public class MainWindowPresenter {
             var translateX = new SimpleDoubleProperty(0.0);
             var translateY = new SimpleDoubleProperty(0.0);
 
-            controller.getSidebarButton().selectedProperty().addListener((v, o, n) -> {
+            controller.getSettingsButton().selectedProperty().addListener((v, o, n) -> {
                 if (n) {
                     AnchorPane.setLeftAnchor(settings.getRoot(), 5.0);
                     AnchorPane.setTopAnchor(settings.getRoot(), 45.0);
@@ -727,11 +727,11 @@ public class MainWindowPresenter {
                 }
                 translate.play();
             });
-            controller.getSidebarButton().disableProperty().bind(translate.statusProperty().isEqualTo(Animation.Status.RUNNING));
+            controller.getSettingsButton().disableProperty().bind(translate.statusProperty().isEqualTo(Animation.Status.RUNNING));
 
             settings.getController().getTitledPane().setOnMouseClicked(e -> {
                 if (e.getClickCount() > 1) {
-                    controller.getSidebarButton().setSelected(false);
+                    controller.getSettingsButton().setSelected(false);
                     e.consume();
                 }
             });

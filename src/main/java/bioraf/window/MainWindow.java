@@ -53,10 +53,13 @@ import java.util.Objects;
  */
 public class MainWindow implements IMainWindow {
     private Stage stage;
+
+    private final Scene scene;
+
     private final MainWindowController controller;
 
     private MainWindowPresenter presenter;
-    private final Parent root;
+
     private final FlowPane statusPane;
 
     private final ReactionGraphView reactionGraphView;
@@ -81,6 +84,7 @@ public class MainWindow implements IMainWindow {
     public MainWindow() {
         Platform.setImplicitExit(false);
 
+        Parent root;
         {
             var fxmlLoader = new FXMLLoader();
             try (var ins = StatementFilter.applyMobileFXML(Objects.requireNonNull(MainWindowController.class.getResource("MainWindow.fxml")).openStream(), BioRAF.isDesktop())) {
@@ -90,11 +94,8 @@ public class MainWindow implements IMainWindow {
             }
             root = fxmlLoader.getRoot();
             controller = fxmlLoader.getController();
-
             logStream = new PrintStreamToTextArea(controller.getLogTextArea());
-
             statusPane = controller.getBottomFlowPane();
-
             reactionGraphView = new ReactionGraphView(getDocument(), controller, getLogStream());
         }
 
@@ -110,6 +111,9 @@ public class MainWindow implements IMainWindow {
         });
         document.fileNameProperty().addListener(listener);
         document.dirtyProperty().addListener(listener);
+
+        scene = new Scene(root);
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("MainWindow.css")).toExternalForm());
     }
 
     @Override
@@ -127,26 +131,22 @@ public class MainWindow implements IMainWindow {
         if (stage == null)
             stage = new Stage();
         this.stage = stage;
+
         stage.getIcons().addAll(ProgramProperties.getProgramIconsFX());
-
-        final var scene = new Scene(root);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("MainWindow.css")).toExternalForm());
-
         stage.setScene(scene);
         stage.setX(screenX);
         stage.setY(screenY);
         stage.setWidth(width);
         stage.setHeight(height);
 
-        getStage().titleProperty().addListener((e) -> MainWindowManager.getInstance().fireChanged());
+        stage.titleProperty().addListener((e) -> MainWindowManager.getInstance().fireChanged());
 
         presenter = new MainWindowPresenter(this);
 
         final MemoryUsage memoryUsage = MemoryUsage.getInstance();
         controller.getMemoryUsageLabel().textProperty().bind(memoryUsage.memoryUsageStringProperty());
 
-        // if (BioRAF.isDesktop()) // todo: if we don't briefly show the stage in App mode, the program hangs
-            stage.show();
+        stage.show();
 
         controller.getInputFoodTextArea().textProperty().length().addListener((c, o, n) -> hasFoodInput.set(n.intValue() > 0));
 

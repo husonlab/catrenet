@@ -410,7 +410,7 @@ public class MainWindowController {
 	private MenuItem showNodeLabels;
 
 	@FXML
-	private ToggleButton sidebarButton;
+	private ToggleButton settingsButton;
 
 	@FXML
 	private MenuItem spontaneousInRafMenuItem;
@@ -515,7 +515,7 @@ public class MainWindowController {
 			MaterialIcons.setIcon(inceaseFontButton, "text_increase");
 			MaterialIcons.setIcon(decreaseFontButton, "text_decrease");
 
-			MaterialIcons.setIcon(sidebarButton, "menu");
+			MaterialIcons.setIcon(settingsButton, "settings");
 			MaterialIcons.setIcon(findButton, "search");
 			MaterialIcons.setIcon(findFoodTextToggleButton, "search");
 			MaterialIcons.setIcon(findReactionsTextToggleButton, "search");
@@ -1184,8 +1184,8 @@ public class MainWindowController {
 		return innerAnchorPane;
 	}
 
-	public ToggleButton getSidebarButton() {
-		return sidebarButton;
+	public ToggleButton getSettingsButton() {
+		return settingsButton;
 	}
 
 	public Button getUndoFoodButton() {

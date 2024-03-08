@@ -25,7 +25,7 @@
 <?import javafx.scene.layout.*?>
 <AnchorPane fx:id="rootPane" prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/18"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="bioraf.window.MainWindowController">
-    <BorderPane fx:id="outsideBorderPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+    <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                 AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <center>
             <AnchorPane fx:id="innerAnchorPane">
@@ -41,6 +41,8 @@
                                                  AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                                                  AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <items>
+                                                <ToggleButton fx:id="settingsButton" mnemonicParsing="false"
+                                                              text="Sidebar"/>
                                                 <MenuButton fx:id="fileMenuButton" maxHeight="-Infinity"
                                                             maxWidth="-Infinity" minHeight="-Infinity"
                                                             minWidth="-Infinity" mnemonicParsing="false" text="Recent">
@@ -57,9 +59,6 @@
                                                         <SeparatorMenuItem mnemonicParsing="false"/>
                                                     </items>
                                                 </MenuButton>
-                                                <ToggleButton fx:id="sidebarButton" mnemonicParsing="false"
-                                                              text="Sidebar"/>
-                                                <Region prefWidth="4.0"/>
 
                                                 <MenuButton fx:id="runMenuButton" mnemonicParsing="false" text="Run">
                                                     <tooltip>
