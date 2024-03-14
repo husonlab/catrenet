@@ -2,9 +2,9 @@
 
 <img src="https://github.com/husonlab/catrenet/blob/master/src/main/resources/catrenet/resources/images/splash.png" alt="Splash" width="600"/>
 
-CatReNet (formerly CatlyNet) is a program for working with a catalytic reaction system (CRS) consisting of a set of
+CatReNet (formerly CatlyNet) is a program for working with catalytic reaction networks, based on a set of
 'catalyzed reactions' and a given 'food set' of molecules.
-It provides fast and exact algorithms for calculating the three main types of autocatalytic networks,
+It provides fast and exact algorithms for calculating three main types of autocatalytic networks,
 namely (maximal) RAFs, CAFs, and pseudo-RAFs. These three notions are formalizations of the concept of a 'collectively
 autocatalytic set' originally introduced by Stuart Kauffman. Several other algorithms are also implemented.
 The program can visualize a CRS and animate the emergence of a maximal auto-catalytic network.
