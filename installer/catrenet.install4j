@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="10.0.6" transformSequenceNumber="10">
-  <directoryPresets config="../src/main/resources" />
+<install4j version="10.0.7" transformSequenceNumber="10">
+  <directoryPresets config="../target/catrenet-1.0-SNAPSHOT.jar" />
   <application name="CatReNet" applicationId="3801-6361-6203-7564" mediaDir="../../../builds" shortName="CatReNet" publisher="Daniel Huson and Mike Steel" publisherWeb="http://www.husonlab.org/catrenet" version="0.0.0_beta" allPathsRelative="true" macVolumeId="b8c0a1154e563a9a" javaMinVersion="11">
     <variables>
       <variable name="renderingVMOption" />
@@ -13,7 +13,7 @@
         <entry>install4j*</entry>
       </macSearchedJars>
     </codeSigning>
-    <jreBundles jdkProviderId="Liberica" release="20/20.0.2+10">
+    <jreBundles jdkProviderId="Liberica" release="21/21.0.2+14">
       <modules />
     </jreBundles>
   </application>
@@ -32,7 +32,7 @@
           <entry location="install4j-runtime-10.0.5.jar" />
         </exclude>
       </dirEntry>
-      <fileEntry mountPoint="1691242167" file="../target/catrenet-1.0-SNAPSHOT.jar" />
+      <fileEntry mountPoint="1691242167" file="../target/catrenet-1.0.0-SNAPSHOT.jar" />
       <fileEntry mountPoint="1691243203" file="../target/dependency/install4j-runtime-10.0.5.jar" />
       <dirEntry mountPoint="1691242153" file="../examples" subDirectory="examples" />
       <fileEntry mountPoint="1691243204" file="../tools/catrenet-tool" fileMode="755" overrideFileMode="true" />
