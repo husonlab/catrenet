@@ -25,20 +25,17 @@ import bioraf.view.NodeView;
 import bioraf.window.MainWindow;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import jloda.fx.util.BasicFX;
 import jloda.fx.util.ProgramProperties;
-import jloda.fx.window.MainWindowManager;
 import jloda.util.NumberUtils;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class SettingsPresenter {
 	public SettingsPresenter(MainWindow mainWindow, SettingsController controller) {
 		{
-			final var nodeView = NodeView.createNullNodeView();
+			var nodeView = NodeView.createNullNodeView();
 
 			controller.getReactionNodeStyleCBox().getItems().addAll(NodeView.NodeStyle.values());
 			ProgramProperties.track("reactionNodeStyle", controller.getReactionNodeStyleCBox().valueProperty(), NodeView.NodeStyle::valueOf, nodeView.getReactionNodeShape());
@@ -51,7 +48,7 @@ public class SettingsPresenter {
 			ProgramProperties.track("foodNodeColor", controller.getFoodNodesColorCBox().valueProperty(), nodeView.getFoodNodeFillColor());
 			ProgramProperties.track("moleculeNodeColor", controller.getMoleculeNodesColorCBox().valueProperty(), nodeView.getMoleculeNodeFillColor());
 
-			final List<Integer> values = Arrays.asList(1, 2, 4, 6, 8, 10, 12, 16, 20);
+			var values = Arrays.asList(1, 2, 4, 6, 8, 10, 12, 16, 20);
 
 			controller.getReactionNodesSizeCBox().getItems().addAll(values);
 			ProgramProperties.track("reactionNodeSize", controller.getReactionNodesSizeCBox().valueProperty(), Integer::parseInt, nodeView.getReactionNodeSize());
@@ -64,7 +61,7 @@ public class SettingsPresenter {
 		}
 
 		{
-			final EdgeView edgeView = EdgeView.createNullEdgeView();
+			var edgeView = EdgeView.createNullEdgeView();
 
 			controller.getReactionEdgeStyleCBox().getItems().addAll(EdgeView.EdgeStyle.values());
 			ProgramProperties.track("reactionEdgeStyle", controller.getReactionEdgeStyleCBox().valueProperty(), EdgeView.EdgeStyle::valueOf, edgeView.getReactionEdgeStyle());
@@ -81,11 +78,10 @@ public class SettingsPresenter {
 			ProgramProperties.track("catalystEdgeColor", controller.getCatlystEdgesColorCBox().valueProperty(), edgeView.getCatalystColor());
 			ProgramProperties.track("inhibitorEdgeColor", controller.getInhibitorEdgesColorCBox().valueProperty(), edgeView.getInhibitionColor());
 
-			final List<Integer> values = Arrays.asList(1, 2, 4, 6, 8, 10, 12, 16, 20);
+			var values = Arrays.asList(1, 2, 4, 6, 8, 10, 12, 16, 20);
 
 			controller.getReactionEdgesLineWidthCBox().getItems().addAll(values);
 			ProgramProperties.track("reactionEdgeWidth", controller.getReactionEdgesLineWidthCBox().valueProperty(), Integer::parseInt, edgeView.getReactionEdgeWidth());
-
 
 			controller.getCatalystEdgesLineWidthCBox().getItems().addAll(values);
 			ProgramProperties.track("catalystEdgeWidth", controller.getCatalystEdgesLineWidthCBox().valueProperty(), Integer::parseInt, edgeView.getCatalystEdgeWidth());
@@ -95,12 +91,11 @@ public class SettingsPresenter {
 		}
 
 		{
-			final var formatToggleGroup = new ToggleGroup();
+			var formatToggleGroup = new ToggleGroup();
 			formatToggleGroup.getToggles().addAll(controller.getFullNotationRadioButton(), controller.getSparseNotationRadioButton(), controller.getTabbedFormatRadioButton());
 
-			final var arrowToggleGroup = new ToggleGroup();
+			var arrowToggleGroup = new ToggleGroup();
 			arrowToggleGroup.getToggles().addAll(controller.getDoubleArrowRadioButton(), controller.getSingleArrowRadioButton());
-
 
 			formatToggleGroup.selectedToggleProperty().addListener((c, o, n) -> {
 				if (n != null) {
@@ -109,7 +104,7 @@ public class SettingsPresenter {
 				}
 			});
 
-			for (Toggle toggle : formatToggleGroup.getToggles()) {
+			for (var toggle : formatToggleGroup.getToggles()) {
 				if (ProgramProperties.get("ReactionNotation", controller.getSparseNotationRadioButton().getText()).equals(((RadioButton) toggle).getText())) {
 					formatToggleGroup.selectToggle(toggle);
 					break;
@@ -123,16 +118,13 @@ public class SettingsPresenter {
 				}
 			});
 
-
-			for (Toggle toggle : arrowToggleGroup.getToggles()) {
+			for (var toggle : arrowToggleGroup.getToggles()) {
 				if (ProgramProperties.get("ArrowNotation", controller.getDoubleArrowRadioButton().getText()).equals(((RadioButton) toggle).getText())) {
 					arrowToggleGroup.selectToggle(toggle);
 					break;
 				}
 			}
 		}
-
-		controller.getDarkModeCheckBox().selectedProperty().bindBidirectional(MainWindowManager.useDarkThemeProperty());
 
 		controller.getWrapTextCheckBox().selectedProperty().addListener((v, o, n) -> {
 			for (var textArea : BasicFX.getAllRecursively(mainWindow.getStage().getScene().getRoot(), TextArea.class)) {
@@ -161,10 +153,9 @@ public class SettingsPresenter {
 			// rewrite input tab:
 			mainWindow.getController().getInputTextArea().setText(ModelIO.toString(mainWindow.getInputReactionSystem(), false,
 					mainWindow.getDocument().getReactionNotation(), mainWindow.getDocument().getArrowNotation()));
-			final String foodString = ModelIO.getFoodString(mainWindow.getInputReactionSystem(), mainWindow.getDocument().getReactionNotation());
+			var foodString = ModelIO.getFoodString(mainWindow.getInputReactionSystem(), mainWindow.getDocument().getReactionNotation());
 
 			mainWindow.getController().getInputFoodTextArea().setText(foodString);
-
 			mainWindow.getTabManager().clearAll();
 		}
 	}

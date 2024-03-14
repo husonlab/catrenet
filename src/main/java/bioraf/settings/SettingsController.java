@@ -33,9 +33,6 @@ public class SettingsController {
 	private TextField iterationsTextField;
 
 	@FXML
-	private CheckBox darkModeCheckBox;
-
-	@FXML
 	private ChoiceBox<EdgeView.EdgeStyle> reactionEdgeStyleCBox;
 
 	@FXML
@@ -117,10 +114,6 @@ public class SettingsController {
 
 	public TextField getIterationsTextField() {
 		return iterationsTextField;
-	}
-
-	public CheckBox getDarkModeCheckBox() {
-		return darkModeCheckBox;
 	}
 
 	public ChoiceBox<EdgeView.EdgeStyle> getReactionEdgeStyleCBox() {

@@ -84,13 +84,13 @@ public class FileOpener implements Consumer<String> {
 				reactionSystem.clear();
 				var leadingComments = ModelIO.read(window.getInputReactionSystem(), r, notation.getFirst());
 
-				window.getController().getInputTextArea().setText((leadingComments.length() > 0 ? leadingComments + "\n" : "") + ModelIO.toString(window.getInputReactionSystem(), false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
+				window.getController().getInputTextArea().setText((!leadingComments.isEmpty() ? leadingComments + "\n" : "") + ModelIO.toString(window.getInputReactionSystem(), false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
 				var food = ModelIO.getFoodString(window.getInputReactionSystem(), window.getDocument().getReactionNotation());
 
 				window.getController().getInputFoodTextArea().setText(food);
 
 				var infoString = "Read " + reactionSystem.size() + " reactions" + (reactionSystem.getNumberOfTwoWayReactions() > 0 ? "(" + reactionSystem.getNumberOfTwoWayReactions() + " two-way)" : "")
-								 + " and " + reactionSystem.getFoods().size() + " food items from file: " + fileName;
+								 + " and " + reactionSystem.getFoods().size() + " food items from file: " + FileUtils.getFileNameWithoutPath(fileName);
 
                 NotificationManager.showInformation(infoString);
 

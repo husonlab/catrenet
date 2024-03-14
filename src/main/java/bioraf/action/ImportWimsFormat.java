@@ -149,7 +149,7 @@ public class ImportWimsFormat {
             }
         }
         final var output = new ArrayList<String>();
-        output.add("# Imported from file: " + fileName);
+        output.add("# Imported from file: " + FileUtils.getFileNameWithoutPath(fileName));
         output.add("# Food: " + food.size());
         output.add("# Reactions: " + reactions.size());
         output.add("");
