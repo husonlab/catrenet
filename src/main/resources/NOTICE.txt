@@ -1,2 +1,2 @@
-BioRAF - Autocatalytic networks, RAFs and CAFs - https://github.com/husonlab/bioraf
+CatReNet - Autocatalytic networks, RAFs and CAFs - https://github.com/husonlab/catrenet
 Daniel Huson and Mike Steel, since 2020

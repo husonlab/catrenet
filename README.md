@@ -1,28 +1,28 @@
-# BioRAF
+# CatReNet
 
-<img src="https://github.com/husonlab/bioraf/blob/master/src/main/resources/bioraf/resources/images/splash.png" alt="Splash" width="600"/>
+<img src="https://github.com/husonlab/catrenet/blob/master/src/main/resources/catrenet/resources/images/splash.png" alt="Splash" width="600"/>
 
-BioRAF (formerly CatlyNet) is a program for working with a catalytic reaction system (CRS) consisting of a set of
+CatReNet (formerly CatlyNet) is a program for working with a catalytic reaction system (CRS) consisting of a set of
 'catalyzed reactions' and a given 'food set' of molecules.
 It provides fast and exact algorithms for calculating the three main types of autocatalytic networks,
 namely (maximal) RAFs, CAFs, and pseudo-RAFs. These three notions are formalizations of the concept of a 'collectively
 autocatalytic set' originally introduced by Stuart Kauffman. Several other algorithms are also implemented.
 The program can visualize a CRS and animate the emergence of a maximal auto-catalytic network.
-BioRAF was first 5 as CatlyNet in [[SXH20]](#25).
+CatReNet was first introduced as CatlyNet in [[SXH20]](#25).
 
-BioRAF is written in Java using JavaFX and
+CatReNet is written in Java using JavaFX and
 is loosely based on a web application written by Dietrich Radel: http://www.math.canterbury.ac.nz/bio/RAF/.
 
 ## Installers
 
 One-click installers for MacOS, Windows and Linux are
-available [here](https://software-ab.cs.uni-tuebingen.de/download/bioraf/welcome.html).
+available [here](https://software-ab.cs.uni-tuebingen.de/download/catrenet/welcome.html).
 
 Versions for iOS and Android are under development.
 
 ## Main features
 
-Input to BioRAF is a catalytic reaction system (CRS), which consists of a list of catalyzed reactions and a food set
+Input to CatReNet is a catalytic reaction system (CRS), which consists of a list of catalyzed reactions and a food set
 of molecules, specified like this example consisting of two food items and three (one-way) reactions:
 
 ```
@@ -128,7 +128,7 @@ There are several options:
 - Network Embbedder Iterations - set the number of iterations used by the algorithm that computes the layout of the
   network
 
-<img src="https://github.com/danielhuson/bioraf/blob/master/artwork/animation.gif" alt="Animation" width="600"/>
+<img src="https://github.com/danielhuson/catReNet/blob/master/artwork/animation.gif" alt="Animation" width="600"/>
 
 ### Export network
 
@@ -138,7 +138,7 @@ The network can be exported in several image formats, including PNG, GIF, SVG an
 
 The Linux and MacOS distributions have a tools directory that contains two commandline programs:
 
-- bioraf-tool - runs the implemented algorithms on one or more CRS input files
+- catrenet-tool - runs the implemented algorithms on one or more CRS input files
 - polymer-tool - generates a set of CRS input files using the binary polymer model
 
 ## Provided datasets
@@ -189,7 +189,7 @@ origin of metabolism. Proc. Roy. Soc. B. 287: 20192377
 Hordijk, W. (2023). A concise and formal definition of RAF sets and the RAF algorithm, arXiv:2303.01809.
 
 <a id="50">[HS24]</a>
-Huson, D. and Steel, M. (2024) BioRAF - Implemented Algorithms (unpublished).
+Huson, D. and Steel, M. (2024) CatReNet - Implemented Algorithms (unpublished).
 
 <a id="60">[HXRS23]</a>
 Huson, D., Xavier, J., Rodrigo, A. and Steel, M. (2023). Structural and algorithmic results for self-generating

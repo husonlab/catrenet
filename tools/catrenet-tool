@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# polymer-tool Copyright (C) 2024 Daniel H. Huson
+# catrenet-tool Copyright (C) 2024 Daniel H. Huson
 #
 # (Some files contain contributions from other authors, who are then mentioned separately.)
 #
@@ -42,4 +42,4 @@ modulepath="$jars_dir:$jars2_dir"
 
 java_flags="-server -Duser.language=en -Duser.region=US $vmOptions"
 
-$java $java_flags --module-path=$modulepath --add-modules=catrenet catrenet.tools.PolymerModelTool $options
+$java $java_flags --module-path=$modulepath --add-modules=catrenet catrenet.tools.CommandLineTool $options

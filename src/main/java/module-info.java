@@ -1,4 +1,4 @@
-module bioraf {
+module catrenet {
 	requires com.install4j.runtime;
 
 	requires transitive jloda_core;
@@ -8,26 +8,26 @@ module bioraf {
 	requires transitive javafx.web;
 	requires commons.math3;
 
-	exports bioraf.io;
-	exports bioraf.algorithm;
-	exports bioraf.main;
-	exports bioraf.tab;
-	exports bioraf.window;
-	exports bioraf.model;
-	exports bioraf.view;
-	exports bioraf.action;
-	exports bioraf.tools;
-	exports bioraf.settings;
+	exports catrenet.io;
+	exports catrenet.algorithm;
+	exports catrenet.main;
+	exports catrenet.tab;
+	exports catrenet.window;
+	exports catrenet.model;
+	exports catrenet.view;
+	exports catrenet.action;
+	exports catrenet.tools;
+	exports catrenet.settings;
 
-	opens bioraf.algorithm;
-	opens bioraf.tab;
-	opens bioraf.window;
-	opens bioraf.settings;
-	opens bioraf.dialog.exportlist;
-	opens bioraf.dialog.targets;
+	opens catrenet.algorithm;
+	opens catrenet.tab;
+	opens catrenet.window;
+	opens catrenet.settings;
+	opens catrenet.dialog.exportlist;
+	opens catrenet.dialog.targets;
 
-	opens bioraf.resources.images;
-	opens bioraf.resources.icons;
+	opens catrenet.resources.images;
+	opens catrenet.resources.icons;
 
-	exports bioraf.dialog;
+	exports catrenet.dialog;
 }

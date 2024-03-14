@@ -1,4 +1,4 @@
-BioRAF https://github.com/husonlab/bioraf
+CatReNet https://github.com/husonlab/catrenet
 
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
