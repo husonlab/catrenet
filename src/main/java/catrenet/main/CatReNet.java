@@ -22,6 +22,7 @@ package catrenet.main;
 import catrenet.window.MainWindow;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Point2D;
 import javafx.stage.Stage;
 import jloda.fx.util.*;
 import jloda.fx.window.MainWindowManager;
@@ -79,6 +80,7 @@ public class CatReNet extends Application {
                 """);
         SplashScreen.setVersionString(ProgramProperties.getProgramVersion());
         SplashScreen.setImageResourceName("splash.png");
+        SplashScreen.setLabelAnchor(new Point2D(20, 10));
 
         try {
             parseArguments(args);
