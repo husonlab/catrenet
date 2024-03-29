@@ -51,7 +51,7 @@ In more detail, the program provides the following calculations:
 - Max CAF Algorithm - computes the maximal CAF [[HMS15]](#10)
 - Max Pseudo RAF Algorithm - computes the maximal Pseudo RAF [[HMS15]](#10)
 - Strictly Autocatalytic Max RAF Algorithm - computes a Max RAF that has the additional property that any contained
-  reaction requires at least one molecule type for catalyzation that is not in the food set [[HXRS23]](#60)
+  reaction requires at least one molecule type for catalyzation that is not in the food set [[HXS24]](#60)
 - Min RAF-Generating Given Element Algorithm - Identifies a subset of the Max RAF that is (i) a RAF and (ii) generates a
   given element x
   (not in the food set) and (iii) which is minimal amongst all such sets satisfying (i) and (ii).
@@ -72,8 +72,8 @@ In more detail, the program provides the following calculations:
   beome catalyzed later
 - Greedily Grow MaxCAF to MaxRAF - greedily grow maxCAF to maxRAF by making reactions spontaneous
 - Compute Reaction Dependencies - computes the graph of dependencies between all food-set generated
-  reactions [[HXRS23]](#60)
-- Compute Molecule Dependencies - computes the graph of dependencies between all molecules [[HXRS23]](#60)
+  reactions [[HXS24]](#60)
+- Compute Molecule Dependencies - computes the graph of dependencies between all molecules [[HXS24]](#60)
 - Compute Importance - computes the percent difference between model size and model size without given food
   item [[HS23]](#50)
 
@@ -191,6 +191,6 @@ Hordijk, W. (2023). A concise and formal definition of RAF sets and the RAF algo
 <a id="50">[HS24]</a>
 Huson, D. and Steel, M. (2024) CatReNet - Implemented Algorithms (unpublished).
 
-<a id="60">[HXRS23]</a>
-Huson, D., Xavier, J., Rodrigo, A. and Steel, M. (2023). Structural and algorithmic results for self-generating
-autocatalytic networks. (In prep).
+<a id="60">[HXS24]</a>
+Huson, D.H., Xavier, J. C., and Steel, M.A. (2024). Self-generating autocatalytic networks: structural results, algorithms, and their relevance to early biochemistry, J. Royal Society Interface (In press)
+
