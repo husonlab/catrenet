@@ -62,7 +62,7 @@ In more detail, the program provides the following calculations:
 - Quotient RAF Algorithm - computes the Max RAF minus all the reactions from the Max CAF and adds all produces of the
   Max CAF to the food set [[SXH20]](#25)
 - Remove Trivial RAFs Algorithm - computes CRS that is obtained by removing all trivial RAFs
-- Min iRAF Heuristic - searches for a smallest irreducible RAF in a heuristic fashion [[HS24]](#50)
+- Min iRAF Heuristic - searches for a smallest irreducible RAF in a heuristic fashion [[HXS24b]](#50)
 - MU CAF Algorithm - computes one maximal uninhibited CAF
 - U RAF Algorithm - computes a max RAF, removes inhibited reactions, and then recomputes the max RAF
   (Section 6 of [[HMS16]](#20))
@@ -188,9 +188,8 @@ origin of metabolism. Proc. Roy. Soc. B. 287: 20192377
 <a id="40">[H23]</a>
 Hordijk, W. (2023). A concise and formal definition of RAF sets and the RAF algorithm, arXiv:2303.01809.
 
-<a id="50">[HS24]</a>
-Huson, D. and Steel, M. (2024) CatReNet - Implemented Algorithms (unpublished).
-
 <a id="60">[HXS24]</a>
 Huson, D.H., Xavier, J. C., and Steel, M.A. (2024). Self-generating autocatalytic networks: structural results, algorithms, and their relevance to early biochemistry, J. Royal Society Interface (In press)
 
+<a id="50">[HXS24b]</a>
+Huson, D.H., Xavier, J.C. and Steel, M.A. CatReNet for mathematical analysis of (auto)-catalytic reaction networks, manuscript in preparation. 
