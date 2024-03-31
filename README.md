@@ -162,7 +162,7 @@ The program comes with a number of example datasets (from [here](http://www.math
 
 ## References
 
-<a id="10">[HSM15]</a>
+<a id="10">[HSS15]</a>
 Hordijk, W., Smith, J.I. and Steel, M.A. (2015). [Algorithms for detecting and analysing autocatalytic sets](https://almob.biomedcentral.com/articles/10.1186/s13015-015-0042-8). Algorithms in
 Molecular Biology 10: 15.
 
