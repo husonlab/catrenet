@@ -3,7 +3,7 @@
 <img src="https://github.com/husonlab/catrenet/blob/master/src/main/resources/catrenet/resources/images/splash.png" alt="Splash" width="600"/>
 
 CatReNet (formerly CatlyNet) is a program for working with (auto-)catalytic reaction networks, based on a set of
-'catalyzed reactions' and a given 'food set' of molecules.
+'catalyzed reactions' and a given 'food set' of molecules  [[HXS24b]](#70).
 It provides fast and exact algorithms for calculating three main types of autocatalytic networks,
 namely (maximal) RAFs, CAFs, and pseudo-RAFs. These three notions are formalizations of the concept of a 'collectively
 autocatalytic set' originally introduced by Stuart Kauffman. Several other algorithms are also implemented.
@@ -163,32 +163,30 @@ The program comes with a number of example datasets (from [here](http://www.math
 ## References
 
 <a id="10">[HSM15]</a>
-Hordijk, W., Smith, J. I. and Steel, M. (2015). Algorithms for detecting and analysing autocatalytic sets. Algorithms in
+Hordijk, W., Smith, J.I. and Steel, M.A. (2015). [Algorithms for detecting and analysing autocatalytic sets](https://almob.biomedcentral.com/articles/10.1186/s13015-015-0042-8). Algorithms in
 Molecular Biology 10: 15.
 
 <a id="20">[HS16]</a>
-Hordijk, W. and Steel, M. (2016). Autocatalytic sets in polymer networks with variable catalysis distributions, J. Math.
+Hordijk, W. and Steel, M.A. (2016). [Autocatalytic sets in polymer networks with variable catalysis distributions](https://www.math.canterbury.ac.nz/~m.steel/Non_UC/files/research/catswim.pdf). J. Math.
 Chem., 54(10): 1997-2021.
 
 <a id="22">[GFHKU]</a>
 Gatti, R.C., Fath, B., Hordijk, W., Kauffman, S. and Ulanowicz, R. (2018).
-Niche emergence as an autocatalytic process in the evolution of ecosystems,
+[Niche emergence as an autocatalytic process in the evolution of ecosystems](https://pubmed.ncbi.nlm.nih.gov/29864429/),
 Journal of Theoretical Biology, 454: 110-117.
 
 <a id="25">[SXH20]</a>
-Steel, M., Xavier, J. C., and Huson, D. H. (
-2020). [The structure of autocatalytic networks, with application to early biochemistry.](https://royalsocietypublishing.org/doi/10.1098/rsif.2020.0488)
+Steel, M., Xavier, J. C., and Huson, D.H. (2020). [The structure of autocatalytic networks, with application to early biochemistry.](https://royalsocietypublishing.org/doi/10.1098/rsif.2020.0488)
 J. Royal Society Interface, 17: 20200488.
 
 <a id="35">[XHKSM20]</a>
-Xavier, J. C., Hordijk, W., Kauffman, S., Steel M. and Martin, W. F. (2020). Autocatalytic chemical networks at the
-origin of metabolism. Proc. Roy. Soc. B. 287: 20192377
+Xavier, J.C., Hordijk, W., Kauffman, S., Steel M. and Martin, W.F. (2020). [Autocatalytic chemical networks at the origin of metabolism](https://royalsocietypublishing.org/doi/10.1098/rspb.2019.2377). Proc. Roy. Soc. B. 287: 20192377
 
 <a id="40">[H23]</a>
-Hordijk, W. (2023). A concise and formal definition of RAF sets and the RAF algorithm, arXiv:2303.01809.
+Hordijk, W. (2023). [A concise and formal definition of RAF sets and the RAF algorithm](https://arxiv.org/abs/2303.01809), arXiv:2303.01809.
 
 <a id="60">[HXS24]</a>
-Huson, D.H., Xavier, J. C., and Steel, M.A. (2024). Self-generating autocatalytic networks: structural results, algorithms, and their relevance to early biochemistry, J. Royal Society Interface (In press)
+Huson, D.H., Xavier, J. C., and Steel, M.A. (2024). [Self-generating autocatalytic networks: structural results, algorithms, and their relevance to early biochemistry](https://www.biorxiv.org/content/10.1101/2023.09.01.556005v4.full). J. Royal Society Interface (In press)
 
-<a id="50">[HXS24b]</a>
-Huson, D.H., Xavier, J.C. and Steel, M.A. CatReNet for mathematical analysis of (auto)-catalytic reaction networks, manuscript in preparation. 
+<a id="70">[HXS24b]</a>
+Huson, D.H., Xavier, J.C. and Steel, M.A. (2024) CatReNet: interactive analysis of (auto-) catalytic reaction networks, manuscript in preparation. 
