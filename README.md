@@ -18,7 +18,7 @@ is loosely based on a web application written by Dietrich Radel: http://www.math
 One-click installers for MacOS, Windows and Linux are
 available [here](https://software-ab.cs.uni-tuebingen.de/download/catrenet/welcome.html).
 
-Versions for iOS and Android are under development.
+Versions for Android and iOS are under development.
 
 ## Main features
 
@@ -77,9 +77,8 @@ In more detail, the program provides the following calculations:
 - Compute Importance - computes the percent difference between model size and model size without given food
   item [[HS23]](#50)
 
-In addition, the program provides an implementation
-of Kauffman's  'binary polymer model'. This features generates a system consisting of all polymers (over a finite
-alphabet)
+In addition, the program provides an implementation of Kauffman's  'binary polymer model'.
+This features generates a system consisting of all polymers (over a finite alphabet)
 of length at most n, with ligation-cleavage reactions, and with catalysis assigned randomly (each molecule catalysing on
 average m reactions).
 
@@ -132,7 +131,7 @@ There are several options:
 
 ### Export network
 
-The network can be exported in several image formats, including PNG, GIF, SVG and PDF.
+The network can be exported as an image in these formats: PNG, SVG and PDF.
 
 ## Commandline tools
 
