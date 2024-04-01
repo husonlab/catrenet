@@ -59,17 +59,14 @@ public class RunAlgorithm {
         service.setCallable(() -> {
             final ReactionSystem outputReactions = algorithm.apply(inputReactions, service.getProgressListener());
 
-            final String infoLine1;
-            final String infoLine2;
-            if (algorithm instanceof MuCAFAlgorithm || !window.getController().getComputeImportanceCheckMenuItem().isSelected()) {
-                infoLine1 = null;
-                infoLine2 = null;
-            } else {
-                infoLine1 = Importance.toStringFoodImportance(Importance.computeFoodImportance(inputReactions, outputReactions, algorithm, service.getProgressListener()));
-                infoLine2 = Importance.toStringReactionImportance(Importance.computeReactionImportance(inputReactions, outputReactions, algorithm, service.getProgressListener()));
-            }
+            if (controller.getComputeImportanceCheckMenuItem().isSelected() && !(algorithm instanceof MuCAFAlgorithm)) {
+                var infoLine1 = Importance.toStringFoodImportance(Importance.computeFoodImportance(inputReactions, outputReactions, algorithm, service.getProgressListener()));
+                var infoLine2 = Importance.toStringReactionImportance(Importance.computeReactionImportance(inputReactions, outputReactions, algorithm, service.getProgressListener()));
+                return new Triplet<>(outputReactions, infoLine1, infoLine2);
 
-            return new Triplet<>(outputReactions, infoLine1, infoLine2);
+            } else {
+                return new Triplet<>(outputReactions, null, null);
+            }
         });
 
         service.runningProperty().addListener(runningListener);

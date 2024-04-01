@@ -78,6 +78,8 @@ public class MainWindow implements IMainWindow {
 
     private final StringProperty name = new SimpleStringProperty(this, "name", "Untitled");
 
+    private final StringProperty lastWarningMessage = new SimpleStringProperty(this, "warningMessage", "");
+
     /**
      * constructor
      */
@@ -215,5 +217,9 @@ public class MainWindow implements IMainWindow {
 
     public void setName(String name) {
         this.name.set(name);
+    }
+
+    public StringProperty lastWarningMessageProperty() {
+        return lastWarningMessage;
     }
 }

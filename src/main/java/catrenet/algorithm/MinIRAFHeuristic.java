@@ -83,34 +83,41 @@ public class MinIRAFHeuristic extends AlgorithmBase {
 
         final var best = new ArrayList<ReactionSystem>();
         final var bestSize = new Single<>(maxRAF.size());
-        for (var seed : seeds) {
-            var ordering = CollectionUtils.randomize(reactions, seed);
-            var work = maxRAF.shallowCopy();
-			work.setName(Name);
-            for (var r : ordering) {
-                work.getReactions().remove(r);
-                try {
-                    progress.checkForCancel();
-                    var next = new MaxRAFAlgorithm().apply(work, new ProgressSilent());
-					next.setName(Name);
-                    if (next.size() > 0 && next.size() <= work.size()) {
-                        work = next;
-                        if (next.size() < bestSize.get()) {
-                            best.clear();
-                            bestSize.set(next.size());
-                            progress.setSubtask("" + bestSize.get());
-                        }
-                        if (next.size() == bestSize.get() && best.stream().noneMatch(a -> CollectionUtils.equalsAsSets(next.getReactions(), a.getReactions()))) {
-                            best.add(next);
-                        }
-                        if (bestSize.get() == 1)
-                            break;
-                    } else
-                        work.getReactions().add(r); // put back
-                } catch (CanceledException ignored) {
-                }
-            }
-        }
+		progress.setMaximum(seeds.size());
+		progress.setProgress(0);
+		try {
+			for (var seed : seeds) {
+				var ordering = CollectionUtils.randomize(reactions, seed);
+				var work = maxRAF.shallowCopy();
+				work.setName(Name);
+				for (var r : ordering) {
+					work.getReactions().remove(r);
+					try {
+						progress.checkForCancel();
+						var next = new MaxRAFAlgorithm().apply(work, new ProgressSilent());
+						next.setName(Name);
+						if (next.size() > 0 && next.size() <= work.size()) {
+							work = next;
+							if (next.size() < bestSize.get()) {
+								best.clear();
+								bestSize.set(next.size());
+								progress.setSubtask("" + bestSize.get());
+							}
+							if (next.size() == bestSize.get() && best.stream().noneMatch(a -> CollectionUtils.equalsAsSets(next.getReactions(), a.getReactions()))) {
+								best.add(next);
+							}
+							if (bestSize.get() == 1)
+								break;
+						} else
+							work.getReactions().add(r); // put back
+					} catch (CanceledException ignored) {
+					}
+				}
+				progress.incrementProgress();
+			}
+			progress.reportTaskCompleted();
+		} catch (CanceledException ignored) {
+		}
 		if (best.isEmpty()) {
 			var result = maxRAF.shallowCopy();
 			result.setName(Name);

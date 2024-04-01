@@ -50,22 +50,26 @@ public class Importance implements IDescribed {
 
         progress.setTasks(StringUtils.fromCamelCase(Basic.getShortName(algorithm.getClass())), "importance");
         progress.setMaximum(inputSystem.getFoods().size());
-        progress.setMaximum(10000000);
-        progress.setProgress(0);
-        final var increment = 5000000 / inputSystem.getFoods().size();
+        try {
+            progress.setMaximum(10000000);
+            progress.setProgress(0);
+            final var increment = 5000000 / inputSystem.getFoods().size();
 
-        for (var food : inputSystem.getFoods()) {
-            final var replicateInput = inputSystem.shallowCopy();
-            replicateInput.setName("Food importance");
-            replicateInput.getFoods().remove(food);
-            final var replicateOutput = algorithm.apply(replicateInput, new ProgressSilent());
+            for (var food : inputSystem.getFoods()) {
+                final var replicateInput = inputSystem.shallowCopy();
+                replicateInput.setName("Food importance");
+                replicateInput.getFoods().remove(food);
+                final var replicateOutput = algorithm.apply(replicateInput, new ProgressSilent());
 
-            final var importance = 100f * (originalResult.size() - replicateOutput.size()) / (float) originalResult.size();
-            if (importance > 0)
-                result.add(new Pair<>(food, importance));
-            progress.setProgress(progress.getProgress() + increment);
+                final var importance = 100f * (originalResult.size() - replicateOutput.size()) / (float) originalResult.size();
+                if (importance > 0)
+                    result.add(new Pair<>(food, importance));
+                progress.setProgress(progress.getProgress() + increment);
+            }
+            result.sort((a, b) -> -Float.compare(a.getSecond(), b.getSecond()));
+        } catch (CanceledException ignored) {
+            result.clear();
         }
-        result.sort((a, b) -> -Float.compare(a.getSecond(), b.getSecond()));
         return result;
     }
 
@@ -80,26 +84,30 @@ public class Importance implements IDescribed {
         if (originalResult.size() == 1) {
             result.add(new Pair<>(originalResult.getReactions().get(0), 100f));
         } else if (originalResult.size() > 1) {
-            progress.setTasks(StringUtils.fromCamelCase(Basic.getShortName(algorithm.getClass())), "importance");
-            progress.setMaximum(inputSystem.getFoods().size());
-            progress.setMaximum(10000000);
-            progress.setProgress(5000000);
-            final var increment = 5000000 / inputSystem.getReactions().size();
+            try {
+                progress.setTasks(StringUtils.fromCamelCase(Basic.getShortName(algorithm.getClass())), "importance");
+                progress.setMaximum(inputSystem.getFoods().size());
+                progress.setMaximum(10000000);
+                progress.setProgress(5000000);
+                final var increment = 5000000 / inputSystem.getReactions().size();
 
-            final var sizeToCompareAgainst = originalResult.size() - 1;
+                final var sizeToCompareAgainst = originalResult.size() - 1;
 
-            for (var reaction : inputSystem.getReactions()) {
-                final var replicateInput = inputSystem.shallowCopy();
-                replicateInput.setName("Reaction importance");
-                replicateInput.getReactions().remove(reaction);
-                final var replicateOutput = algorithm.apply(replicateInput, new ProgressSilent());
-                if (replicateOutput.size() < sizeToCompareAgainst) {
-                    final var importance = 100f * (sizeToCompareAgainst - replicateOutput.size()) / sizeToCompareAgainst;
-                    if (importance > 0)
-                        result.add(new Pair<>(reaction, importance));
+                for (var reaction : inputSystem.getReactions()) {
+                    final var replicateInput = inputSystem.shallowCopy();
+                    replicateInput.setName("Reaction importance");
+                    replicateInput.getReactions().remove(reaction);
+                    final var replicateOutput = algorithm.apply(replicateInput, new ProgressSilent());
+                    if (replicateOutput.size() < sizeToCompareAgainst) {
+                        final var importance = 100f * (sizeToCompareAgainst - replicateOutput.size()) / sizeToCompareAgainst;
+                        if (importance > 0)
+                            result.add(new Pair<>(reaction, importance));
+                    }
+                    result.sort((a, b) -> -Float.compare(a.getSecond(), b.getSecond()));
+                    progress.setProgress(progress.getProgress() + increment);
                 }
-                result.sort((a, b) -> -Float.compare(a.getSecond(), b.getSecond()));
-                progress.setProgress(progress.getProgress() + increment);
+            } catch (CanceledException ignored) {
+                result.clear();
             }
         }
         return result;

@@ -80,7 +80,7 @@ public class MaxRAFAlgorithm extends AlgorithmBase {
             }
             while (reactions.get(i + 1).size() < reactions.get(i).size());
 
-            if (reactions.get(i).size() > 0) {
+            if (!reactions.get(i).isEmpty()) {
                 result.getReactions().setAll(reactions.get(i));
                 result.getFoods().setAll(result.computeMentionedFoods(input.getFoods()));
             }

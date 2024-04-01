@@ -36,7 +36,7 @@ public class TargetsDialogPresenter {
 	private static final List<String> previousListMembers = new ArrayList<>(List.of(ProgramProperties.get("TargetPreviousListMembers", new String[0])));
 
 	private final Collection<String> results = new ArrayList<>();
-	private int randomOrders = ProgramProperties.get("TargetRandomOrders", 100);
+	private int randomOrders = ProgramProperties.get("TargetRandomOrders", 10);
 
 
 	public TargetsDialogPresenter(Stage stage, Collection<String> possibleTargets, TargetsDialogController controller) {

@@ -31,6 +31,7 @@ import jloda.util.StringUtils;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -97,19 +98,30 @@ public class ModelIO {
 			if (!line.startsWith("#")) {
 				inLeadingComments = false;
 				line = line.trim();
-				if (line.length() > 0)
+				if (!line.isEmpty())
 					try {
 						if (line.startsWith("Food:") || (line.startsWith("F:") && !line.contains("->") && !line.contains("=>") && !line.contains("<-") && !line.contains("<="))) {
 							reactionSystem.getFoods().addAll(parseFood(line));
 						} else {
-							var reaction = Reaction.parse(line, auxReactions, reactionNotation.equals(ReactionNotation.Tabbed));
-							if (reactionNames.contains(reaction.getName()))
-								throw new IOException("Multiple reactions have the same name: " + reaction.getName());
-							reactionSystem.getReactions().add(reaction);
-							reactionNames.add(reaction.getName());
-							if (reaction.getCatalysts().contains(FORMAL_FOOD.getName())) {
-								if (!reactionSystem.getFoods().contains(FORMAL_FOOD))
-									reactionSystem.getFoods().add(FORMAL_FOOD);
+							List<String> list;
+							if (line.contains(";") && StringUtils.countOccurrences(line, ':') > 1) {
+								list = new ArrayList<>();
+								for (var token : line.split(";")) {
+									if (!token.isBlank())
+										list.add(token.trim());
+								}
+							} else
+								list = List.of(line);
+							for (var reactionLine : list) {
+								var reaction = Reaction.parse(reactionLine, auxReactions, reactionNotation.equals(ReactionNotation.Tabbed));
+								if (reactionNames.contains(reaction.getName()))
+									throw new IOException("Multiple reactions have the same name: " + reaction.getName());
+								reactionSystem.getReactions().add(reaction);
+								reactionNames.add(reaction.getName());
+								if (reaction.getCatalysts().contains(FORMAL_FOOD.getName())) {
+									if (!reactionSystem.getFoods().contains(FORMAL_FOOD))
+										reactionSystem.getFoods().add(FORMAL_FOOD);
+								}
 							}
 						}
 					} catch (Exception ex) {

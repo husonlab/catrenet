@@ -187,6 +187,9 @@ public class MainWindowController {
 	private MenuItem listCatalystsMenuItem;
 
 	@FXML
+	private MenuItem clearLogMenuItem;
+
+	@FXML
 	private MenuItem listFoodMenuItem;
 
 	@FXML
@@ -493,12 +496,16 @@ public class MainWindowController {
 	@FXML
 	private VBox topVBox;
 
+	@FXML
+	private Button importButton;
+
 	private ZoomableScrollPane zoomableScrollPane;
 
 	@FXML
 	void initialize() {
 		{
 			MaterialIcons.setIcon(fileMenuButton, "file_open");
+			MaterialIcons.setIcon(importButton, "download");
 			MaterialIcons.setIcon(runMenuButton, "play_circle_filled");
 
 			MaterialIcons.setIcon(computeNetworkMenuButton, "tune");
@@ -1116,6 +1123,10 @@ public class MainWindowController {
 		return useDarkThemeCheckMenuItem;
 	}
 
+	public MenuItem getClearLogMenuItem() {
+		return clearLogMenuItem;
+	}
+
 	public MenuItem getListCatalystsMenuItem() {
 		return listCatalystsMenuItem;
 	}
@@ -1218,5 +1229,9 @@ public class MainWindowController {
 
 	public VBox getTopVBox() {
 		return topVBox;
+	}
+
+	public Button getImportButton() {
+		return importButton;
 	}
 }

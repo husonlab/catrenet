@@ -58,7 +58,6 @@ public class ReactionSystemTab extends TextTab {
 		//final String text="# " + headLine + ":\n# " + infoLine1 + "\n# " + infoLine2 + "\n\n" + ModelIO.toString(result, false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation());
 		var text = "# " + reactionSystem.getHeaderLine() + ":\n\n" + StringUtils.toString(reactionSystem.getReactionNames(), "\n");
 		getTextArea().setText(text);
-		mainWindow.getLogStream().println("\n\n" + reactionSystem.getHeaderLine());
 	}
 
 	public ReactionSystem getReactionSystem() {

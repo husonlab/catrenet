@@ -25,8 +25,8 @@
 <?import javafx.scene.layout.*?>
 <AnchorPane fx:id="rootPane" prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/18"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="catrenet.window.MainWindowController">
-    <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                AnchorPane.topAnchor="0.0">
         <center>
             <AnchorPane fx:id="innerAnchorPane">
             <children>
@@ -59,6 +59,7 @@
                                                         <SeparatorMenuItem mnemonicParsing="false"/>
                                                     </items>
                                                 </MenuButton>
+                                                <Button fx:id="importButton" mnemonicParsing="false" text="Import"/>
 
                                                 <MenuButton fx:id="runMenuButton" mnemonicParsing="false" text="Run">
                                                     <tooltip>
@@ -589,17 +590,20 @@
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <Menu fx:id="listMenu" mnemonicParsing="false" text="List">
                                     <items>
-                                        <MenuItem fx:id="listFoodMenuItem" mnemonicParsing="false" text="Food"/>
+                                        <MenuItem fx:id="clearLogMenuItem" mnemonicParsing="false" text="Clear"/>
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <MenuItem fx:id="listFoodMenuItem" mnemonicParsing="false" text="List Food"/>
                                         <MenuItem fx:id="listReactionsMenuItem" mnemonicParsing="false"
-                                                  text="Reactions"/>
+                                                  text="List Reactions"/>
                                         <SeparatorMenuItem mnemonicParsing="false"/>
                                         <MenuItem fx:id="listReactantsMenuItem" mnemonicParsing="false"
-                                                  text="Reactants"/>
-                                        <MenuItem fx:id="listProductsMenuItem" mnemonicParsing="false" text="Products"/>
+                                                  text="List Reactants"/>
+                                        <MenuItem fx:id="listProductsMenuItem" mnemonicParsing="false"
+                                                  text="List Products"/>
                                         <MenuItem fx:id="listCatalystsMenuItem" mnemonicParsing="false"
-                                                  text="Catalysts"/>
+                                                  text="List Catalysts"/>
                                         <MenuItem fx:id="listInhibitorsMenuItem" mnemonicParsing="false"
-                                                  text="Inhibitors"/>
+                                                  text="List Inhibitors"/>
                                     </items>
                                 </Menu>
                                 <SeparatorMenuItem mnemonicParsing="false"/>

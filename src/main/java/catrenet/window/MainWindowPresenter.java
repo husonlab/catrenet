@@ -66,6 +66,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.TreeSet;
 import java.util.function.Consumer;
@@ -674,6 +675,9 @@ public class MainWindowPresenter {
 
         selectLogTab(controller);
 
+		controller.getClearLogMenuItem().setOnAction(e -> controller.getLogTextArea().clear());
+		controller.getClearLogMenuItem().disableProperty().bind(controller.getLogTextArea().lengthProperty().isEqualTo(0));
+
         controller.getListFoodMenuItem().setOnAction(e -> reportList(mainWindow.getInputReactionSystem(), "Food", controller));
         controller.getListFoodMenuItem().disableProperty().bind(disableRunProperty);
 
@@ -736,6 +740,8 @@ public class MainWindowPresenter {
                 }
             });
         }
+
+		setupImportButton(controller.getImportButton());
 
         if (additionalCommonMenuSetup != null)
             additionalCommonMenuSetup.accept(mainWindow);
@@ -846,6 +852,23 @@ public class MainWindowPresenter {
         Platform.runLater(() -> textArea.setScrollTop(Double.MAX_VALUE));
 
     }
+
+	public static void setupImportButton(Button importButton) {
+		importButton.disableProperty().bind(ClipboardUtils.hasStringProperty().not().and(ClipboardUtils.hasFilesProperty().not()));
+
+		importButton.setOnAction(e -> openString(ClipboardUtils.getTextFilesContentOrString()));
+	}
+
+	public static void openString(String string) {
+		if (string != null && !string.isBlank()) {
+			try {
+				var file = FileUtils.getUniqueFileName(ProgramProperties.get("SaveFileDir", System.getProperty("user.dir")), "Untitled", ".crs");
+				FileUtils.writeLinesToFile(List.of(string), file.getPath(), false);
+				FileOpenManager.getFileOpener().accept(file.getPath());
+			} catch (IOException ignored) {
+			}
+		}
+	}
 
     private Consumer<MainWindow> additionalCommonMenuSetup = null;
 
