@@ -74,7 +74,7 @@ public class CatReNet extends Application {
         ProgramProperties.setProgramName(Version.NAME);
         ProgramProperties.setProgramVersion(Version.SHORT_DESCRIPTION);
         ProgramProperties.setProgramLicence("""
-                Copyright (C) 2024. his program comes with ABSOLUTELY NO WARRANTY.
+                Copyright (C) 2024. This program comes with ABSOLUTELY NO WARRANTY.
                 This is free software, licensed under the terms of the GNU General Public License, Version 3.
                 Sources available at: https://github.com/husonlab/catrenet
                 """);
@@ -98,7 +98,7 @@ public class CatReNet extends Application {
 
     protected static void parseArguments(String[] args) throws CanceledException, UsageException {
         var options = new ArgsOptions(args, CatReNet.class, Version.NAME + " - Auto catalytic networks");
-        options.setAuthors("Daniel H. Huson and Mike A. Steel");
+        options.setAuthors("Daniel H. Huson, Joana C. Xavier and Mike A. Steel");
         options.setLicense(ProgramProperties.getProgramLicence());
         options.setVersion(ProgramProperties.getProgramVersion());
 
