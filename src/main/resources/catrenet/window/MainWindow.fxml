@@ -59,16 +59,17 @@
                                                         <SeparatorMenuItem mnemonicParsing="false"/>
                                                     </items>
                                                 </MenuButton>
-                                                <Button fx:id="importButton" mnemonicParsing="false" text="Import"/>
-
+                                                <Button fx:id="importButton" mnemonicParsing="false" text="Import">
+                                                    <tooltip>
+                                                        <Tooltip
+                                                                text="Paste a catalytic reaction system into a new document"/>
+                                                    </tooltip>
+                                                </Button>
                                                 <MenuButton fx:id="runMenuButton" mnemonicParsing="false" text="Run">
                                                     <tooltip>
                                                         <Tooltip text="Run algorithms"/>
                                                     </tooltip>
                                                 </MenuButton>
-                                                <Region prefWidth="4.0"/>
-                                                <ProgressIndicator fx:id="progressIndicator" progress="0.0"
-                                                                   visible="false"/>
 
                                             </items>
                                         </ToolBar>
@@ -120,10 +121,10 @@
                             <items>
                                 <BorderPane>
                                     <center>
-                                        <SplitPane fx:id="inputSplitPane" dividerPositions="0.28518971848225216"
-                                                   orientation="VERTICAL" BorderPane.alignment="CENTER">
+                                        <SplitPane fx:id="inputSplitPane" dividerPositions="0.25" orientation="VERTICAL"
+                                                   BorderPane.alignment="CENTER">
                                             <items>
-                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0"
+                                                <AnchorPane minHeight="50.0" minWidth="0.0" prefHeight="100.0"
                                                             prefWidth="160.0">
                                                     <children>
                                                         <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
@@ -172,7 +173,7 @@
                                                         </VBox>
                                                     </children>
                                                 </AnchorPane>
-                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0"
+                                                <AnchorPane minHeight="50.0" minWidth="0.0" prefHeight="100.0"
                                                             prefWidth="160.0">
                                                     <children>
                                                         <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
@@ -288,7 +289,7 @@
                                                                                                 text="Stop">
                                                                                             <tooltip>
                                                                                                 <Tooltip
-                                                                                                        text="Stop an animation"/>
+                                                                                                        text="Cancel the animation"/>
                                                                                             </tooltip>
                                                                                         </Button>
                                                                                     </items>

@@ -198,7 +198,6 @@ public class MainWindowPresenter {
         });
         controller.getCloseMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0));
 
-
         controller.getPageSetupMenuItem().setOnAction(e -> Print.showPageLayout(mainWindow.getStage()));
 
         controller.getPrintMenuItem().setOnAction(e -> {
@@ -290,7 +289,6 @@ public class MainWindowPresenter {
             }
         });
         controller.getRunStrictlyAutocatalyticRAFMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
-
 
         controller.getRunMinRAFGeneratingElementMenuItem().setOnAction(e -> {
             if (VerifyInput.verify(mainWindow)) {
@@ -398,10 +396,8 @@ public class MainWindowPresenter {
         });
         controller.getRunURAFMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()).or(mainWindow.getInputReactionSystem().inhibitorsPresentProperty().not()));
 
-
         controller.getRunMuCAFMultipleTimesMenuItem().setOnAction(e -> RunMuCAFMultipleTimes.apply(mainWindow, controller, runningListener));
         controller.getRunMuCAFMultipleTimesMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()).or(mainWindow.getInputReactionSystem().inhibitorsPresentProperty().not()));
-
 
         controller.getSpontaneousInRafMenuItem().setOnAction(e -> ComputeNecessarilySpontaneousInRAF.apply(mainWindow, mainWindow.getInputReactionSystem(), controller, runningListener));
         controller.getSpontaneousInRafMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
@@ -415,7 +411,6 @@ public class MainWindowPresenter {
         controller.getMoleculeDependenciesMenuItem().setOnAction(e -> ComputeMoleculeDependencies.run(mainWindow));
         controller.getMoleculeDependenciesMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
 
-
         var disableRunProperty = new SimpleBooleanProperty(false);
         disableRunProperty.bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()));
 
@@ -427,7 +422,6 @@ public class MainWindowPresenter {
 
         MainWindowManager.getInstance().changedProperty().addListener((c, o, n) -> controller.getCheckForUpdatesMenuItem().disableProperty().set(MainWindowManager.getInstance().size() > 1
                                                                                                                                                  || (MainWindowManager.getInstance().size() == 1 && !MainWindowManager.getInstance().getMainWindow(0).isEmpty())));
-
         final DoubleProperty fontSize = new SimpleDoubleProperty(controller.getInputTextArea().getFont().getSize());
         setupFontSizeBindings(controller, tabManager, graphView, fontSize);
         controller.getIncreaseFontSizeMenuItem().setOnAction(e -> fontSize.set(fontSize.get() + 2));
@@ -551,17 +545,10 @@ public class MainWindowPresenter {
 
             controller.getStopAnimationButton().setVisible(false);
             controller.getStopAnimationButton().setOnAction(controller.getStopAnimationMenuItem().getOnAction());
-            graphView.getMoleculeFlowAnimation().playingProperty().addListener((c, o, n) -> controller.getStopAnimationButton().setVisible(n));
-            graphView.getMoleculeFlowAnimation().modelProperty().addListener((v, o, n) -> {
-                controller.getStopAnimationButton().setText(n == null ? "Stop" : StringUtils.fromCamelCase(n.name()) + " animation");
-            });
-            {
-                var model = graphView.getMoleculeFlowAnimation().getModel();
-                controller.getStopAnimationButton().setText(model == null ? "Stop" : StringUtils.fromCamelCase(model.name()) + " animation");
-            }
+            controller.getStopAnimationButton().disableProperty().bind(graphView.getMoleculeFlowAnimation().playingProperty().not());
+            controller.getStopAnimationButton().visibleProperty().bind(graphView.getMoleculeFlowAnimation().playingProperty());
 
             controller.getAnimateNetworkMenuButton().disableProperty().bind(graphView.getMoleculeFlowAnimation().playingProperty());
-
             graphView.getMoleculeFlowAnimation().animateInhibitionsProperty().bind(controller.getAnimateInhibitionsMenuItem().selectedProperty());
             controller.getAnimateInhibitionsMenuItem().disableProperty().bind(mainWindow.getInputReactionSystem().inhibitorsPresentProperty().not());
 
@@ -742,6 +729,10 @@ public class MainWindowPresenter {
         }
 
 		setupImportButton(controller.getImportButton());
+
+        SwipeUtils.setConsumeSwipes(controller.getRootPane());
+        SwipeUtils.setConsumeSwipes(controller.getLogTab().getContent());
+        SwipeUtils.setConsumeSwipes(controller.getNetworkTab().getContent());
 
         if (additionalCommonMenuSetup != null)
             additionalCommonMenuSetup.accept(mainWindow);

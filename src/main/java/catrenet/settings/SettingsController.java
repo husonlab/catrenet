@@ -69,6 +69,12 @@ public class SettingsController {
 	private ChoiceBox<Integer> moleculeNodesSizeCBox;
 
 	@FXML
+	private CheckBox useColorsInAnimationRadioButton;
+
+	@FXML
+	private CheckBox moveLabelsInAnimationCheckBox;
+
+	@FXML
 	private ColorPicker foodNodesColorCBox;
 
 	@FXML
@@ -109,7 +115,7 @@ public class SettingsController {
 
 	@FXML
 	private void initialize() {
-		infoTextArea.setText(ProgramProperties.getProgramVersion() + "\nDaniel H. Huson and Mike A. Steel. License GPL3");
+		infoTextArea.setText(ProgramProperties.getProgramVersion() + "\nDaniel H. Huson, Joana C. Xavier and  Mike A. Steel. License GPL3");
 	}
 
 	public TextField getIterationsTextField() {
@@ -214,5 +220,13 @@ public class SettingsController {
 
 	public TitledPane getTitledPane() {
 		return titledPane;
+	}
+
+	public CheckBox getUseColorsInAnimationRadioButton() {
+		return useColorsInAnimationRadioButton;
+	}
+
+	public CheckBox getMoveLabelsInAnimationCheckBox() {
+		return moveLabelsInAnimationCheckBox;
 	}
 }

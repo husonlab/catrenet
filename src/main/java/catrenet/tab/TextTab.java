@@ -27,6 +27,7 @@ import jloda.fx.find.ISearcher;
 import jloda.fx.find.TextAreaSearcher;
 import jloda.fx.util.ClipboardUtils;
 import jloda.fx.util.RunAfterAWhile;
+import jloda.fx.util.SwipeUtils;
 import jloda.util.StringUtils;
 
 /**
@@ -62,6 +63,8 @@ public class TextTab extends Tab {
         textArea.textProperty().addListener(e -> {
             RunAfterAWhile.applyInFXThread(textArea, () -> textArea.positionCaret(textArea.getText().length()));
         });
+
+		SwipeUtils.setConsumeSwipes(textArea);
     }
 
     public void copyToClipboard() {

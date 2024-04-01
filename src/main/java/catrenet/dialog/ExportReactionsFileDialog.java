@@ -36,7 +36,6 @@ import jloda.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
 
 /**
  * the export reactions file dialog
@@ -51,24 +50,24 @@ public class ExportReactionsFileDialog {
 	 */
 	public static void apply(MainWindow window, ReactionSystem reactions) {
 		var name = StringUtils.toCamelCase(reactions.getName()).replaceAll("'", "_");
-		final FileChooser fileChooser = new FileChooser();
+		var fileChooser = new FileChooser();
 		fileChooser.setTitle("Export File - " + ProgramProperties.getProgramVersion());
 
-		File currentFile = new File(FileUtils.replaceFileSuffix(window.getDocument().getFileName(), "-" + name + ".crs"));
+		var file = new File(FileUtils.replaceFileSuffix(window.getDocument().getFileName(), "-" + name + ".crs"));
 
 		fileChooser.getExtensionFilters().addAll(CRSFileFilter.getInstance(), TextFileFilter.getInstance());
 
-		if (!currentFile.isDirectory()) {
-			fileChooser.setInitialDirectory(currentFile.getParentFile());
-			fileChooser.setInitialFileName(currentFile.getName());
+		if (!file.isDirectory()) {
+			fileChooser.setInitialDirectory(file.getParentFile());
+			fileChooser.setInitialFileName(file.getName());
 		} else {
-			final File tmp = new File(ProgramProperties.get("ExportFileDir", ProgramProperties.get("SaveFileDir", "")));
+			var tmp = new File(ProgramProperties.get("ExportFileDir", ProgramProperties.get("SaveFileDir", "")));
 			if (tmp.isDirectory()) {
 				fileChooser.setInitialDirectory(tmp);
 			}
 		}
 
-		final File selectedFile = fileChooser.showSaveDialog(window.getStage());
+		var selectedFile = fileChooser.showSaveDialog(window.getStage());
 
 		if (selectedFile != null) {
 			try {
@@ -81,12 +80,12 @@ public class ExportReactionsFileDialog {
 					if (true) {
 						(new FileOpener()).accept(selectedFile.getPath());
 					} else {
-						final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+						var alert = new Alert(Alert.AlertType.CONFIRMATION);
 						alert.setTitle("Open saved file - " + ProgramProperties.getProgramName());
 						alert.setHeaderText("Successfully exported the '" + name + "' reaction system to file '" + selectedFile.getName() + "'.");
 						alert.setContentText("Do you want to open the file in a new window?");
 
-						final Optional<ButtonType> answer = alert.showAndWait();
+						var answer = alert.showAndWait();
 						if (answer.isPresent() && answer.get() == ButtonType.OK) {
 							(new FileOpener()).accept(selectedFile.getPath());
 						}

@@ -491,9 +491,6 @@ public class MainWindowController {
 	private Button redoReactionsButton;
 
 	@FXML
-	private ProgressIndicator progressIndicator;
-
-	@FXML
 	private VBox topVBox;
 
 	@FXML
@@ -510,7 +507,7 @@ public class MainWindowController {
 
 			MaterialIcons.setIcon(computeNetworkMenuButton, "tune");
 			MaterialIcons.setIcon(animateNetworkMenuButton, "play_circle");
-			MaterialIcons.setIcon(stopAnimationButton, "close", null, false);
+			MaterialIcons.setIcon(stopAnimationButton, "close");
 			MaterialIcons.setIcon(zoomInNetworkButton, "zoom_in");
 			MaterialIcons.setIcon(zoomOutNetworkButton, "zoom_out");
 
@@ -664,8 +661,6 @@ public class MainWindowController {
 			listMenuButton.disableProperty().bind(runRAFMenuItem.disableProperty());
 
 			runMenuButton.disableProperty().bind(runRAFMenuItem.disableProperty());
-
-			progressIndicator.visibleProperty().bind(Bindings.isEmpty(bottomFlowPane.getChildren()).not());
 		}
 
 		logTextArea.textProperty().addListener(e -> {
@@ -1213,14 +1208,6 @@ public class MainWindowController {
 
 	public Button getRedoReactionsButton() {
 		return redoReactionsButton;
-	}
-
-	public ProgressIndicator getProgressIndicator() {
-		return progressIndicator;
-	}
-
-	public void setProgressIndicator(ProgressIndicator progressIndicator) {
-		this.progressIndicator = progressIndicator;
 	}
 
 	public AnchorPane getRootPane() {

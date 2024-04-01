@@ -148,7 +148,7 @@ public class CommandLineTool {
 			reactionSystem.clear();
 			final String leadingComments = ModelIO.read(reactionSystem, r, notation.getFirst());
 
-			System.err.println("Read " + reactionSystem.size() + " reactions" + (reactionSystem.getNumberOfTwoWayReactions() > 0 ? "(" + reactionSystem.getNumberOfTwoWayReactions() + " two-way)" : "")
+			System.err.println("Read " + reactionSystem.size() + " reactions" + (reactionSystem.getNumberOfTwoWayReactions() > 0 ? " (" + reactionSystem.getNumberOfTwoWayReactions() + " two-way)" : "")
 							   + " and " + reactionSystem.getFoods().size() + " food items from file: " + FileUtils.getFileNameWithoutPath(fileName));
 
 			if (!leadingComments.isBlank())

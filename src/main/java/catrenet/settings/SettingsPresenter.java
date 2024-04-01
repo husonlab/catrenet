@@ -137,6 +137,9 @@ public class SettingsPresenter {
 			if (NumberUtils.isInteger(n))
 				mainWindow.getReactionGraphView().setEmbeddingIterations(NumberUtils.parseInt(n));
 		});
+
+		controller.getUseColorsInAnimationRadioButton().selectedProperty().bindBidirectional(mainWindow.getController().getUseColorsMenuItem().selectedProperty());
+		controller.getMoveLabelsInAnimationCheckBox().selectedProperty().bindBidirectional(mainWindow.getController().getMoveLabelsMenuItem().selectedProperty());
 	}
 
 	private void apply(MainWindow mainWindow, ToggleGroup formatToggleGroup, ToggleGroup arrowToggleGroup) {
