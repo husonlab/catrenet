@@ -2,8 +2,8 @@
 
 <img src="https://github.com/husonlab/catrenet/blob/master/src/main/resources/catrenet/resources/images/splash.png" alt="Splash" width="600"/>
 
-CatReNet (formerly CatlyNet) is a program for working with catalytic reaction networks, based on a set of
-'catalyzed reactions' and a given 'food set' of molecules.
+CatReNet (formerly CatlyNet) is a program for working with (auto-)catalytic reaction networks, based on a set of
+'catalyzed reactions' and a given 'food set' of molecules  [[HXS24b]](#70).
 It provides fast and exact algorithms for calculating three main types of autocatalytic networks,
 namely (maximal) RAFs, CAFs, and pseudo-RAFs. These three notions are formalizations of the concept of a 'collectively
 autocatalytic set' originally introduced by Stuart Kauffman. Several other algorithms are also implemented.
@@ -18,7 +18,7 @@ is loosely based on a web application written by Dietrich Radel: http://www.math
 One-click installers for MacOS, Windows and Linux are
 available [here](https://software-ab.cs.uni-tuebingen.de/download/catrenet/welcome.html).
 
-Versions for iOS and Android are under development.
+Versions for Android and iOS are under development.
 
 ## Main features
 
@@ -51,7 +51,7 @@ In more detail, the program provides the following calculations:
 - Max CAF Algorithm - computes the maximal CAF [[HMS15]](#10)
 - Max Pseudo RAF Algorithm - computes the maximal Pseudo RAF [[HMS15]](#10)
 - Strictly Autocatalytic Max RAF Algorithm - computes a Max RAF that has the additional property that any contained
-  reaction requires at least one molecule type for catalyzation that is not in the food set [[HXRS23]](#60)
+  reaction requires at least one molecule type for catalyzation that is not in the food set [[HXS24]](#60)
 - Min RAF-Generating Given Element Algorithm - Identifies a subset of the Max RAF that is (i) a RAF and (ii) generates a
   given element x
   (not in the food set) and (iii) which is minimal amongst all such sets satisfying (i) and (ii).
@@ -62,7 +62,7 @@ In more detail, the program provides the following calculations:
 - Quotient RAF Algorithm - computes the Max RAF minus all the reactions from the Max CAF and adds all produces of the
   Max CAF to the food set [[SXH20]](#25)
 - Remove Trivial RAFs Algorithm - computes CRS that is obtained by removing all trivial RAFs
-- Min iRAF Heuristic - searches for a smallest irreducible RAF in a heuristic fashion [[HS24]](#50)
+- Min iRAF Heuristic - searches for a smallest irreducible RAF in a heuristic fashion [[HXS24b]](#50)
 - MU CAF Algorithm - computes one maximal uninhibited CAF
 - U RAF Algorithm - computes a max RAF, removes inhibited reactions, and then recomputes the max RAF
   (Section 6 of [[HMS16]](#20))
@@ -72,14 +72,13 @@ In more detail, the program provides the following calculations:
   beome catalyzed later
 - Greedily Grow MaxCAF to MaxRAF - greedily grow maxCAF to maxRAF by making reactions spontaneous
 - Compute Reaction Dependencies - computes the graph of dependencies between all food-set generated
-  reactions [[HXRS23]](#60)
-- Compute Molecule Dependencies - computes the graph of dependencies between all molecules [[HXRS23]](#60)
+  reactions [[HXS24]](#60)
+- Compute Molecule Dependencies - computes the graph of dependencies between all molecules [[HXS24]](#60)
 - Compute Importance - computes the percent difference between model size and model size without given food
   item [[HS23]](#50)
 
-In addition, the program provides an implementation
-of Kauffman's  'binary polymer model'. This features generates a system consisting of all polymers (over a finite
-alphabet)
+In addition, the program provides an implementation of Kauffman's  'binary polymer model'.
+This features generates a system consisting of all polymers (over a finite alphabet)
 of length at most n, with ligation-cleavage reactions, and with catalysis assigned randomly (each molecule catalysing on
 average m reactions).
 
@@ -132,7 +131,7 @@ There are several options:
 
 ### Export network
 
-The network can be exported in several image formats, including PNG, GIF, SVG and PDF.
+The network can be exported as an image in these formats: PNG, SVG and PDF.
 
 ## Commandline tools
 
@@ -163,34 +162,31 @@ The program comes with a number of example datasets (from [here](http://www.math
 
 ## References
 
-<a id="10">[HSM15]</a>
-Hordijk, W., Smith, J. I. and Steel, M. (2015). Algorithms for detecting and analysing autocatalytic sets. Algorithms in
+<a id="10">[HSS15]</a>
+Hordijk, W., Smith, J.I. and Steel, M.A. (2015). [Algorithms for detecting and analysing autocatalytic sets](https://almob.biomedcentral.com/articles/10.1186/s13015-015-0042-8). Algorithms in
 Molecular Biology 10: 15.
 
 <a id="20">[HS16]</a>
-Hordijk, W. and Steel, M. (2016). Autocatalytic sets in polymer networks with variable catalysis distributions, J. Math.
+Hordijk, W. and Steel, M.A. (2016). [Autocatalytic sets in polymer networks with variable catalysis distributions](https://www.math.canterbury.ac.nz/~m.steel/Non_UC/files/research/catswim.pdf). J. Math.
 Chem., 54(10): 1997-2021.
 
 <a id="22">[GFHKU]</a>
 Gatti, R.C., Fath, B., Hordijk, W., Kauffman, S. and Ulanowicz, R. (2018).
-Niche emergence as an autocatalytic process in the evolution of ecosystems,
+[Niche emergence as an autocatalytic process in the evolution of ecosystems](https://pubmed.ncbi.nlm.nih.gov/29864429/),
 Journal of Theoretical Biology, 454: 110-117.
 
 <a id="25">[SXH20]</a>
-Steel, M., Xavier, J. C., and Huson, D. H. (
-2020). [The structure of autocatalytic networks, with application to early biochemistry.](https://royalsocietypublishing.org/doi/10.1098/rsif.2020.0488)
+Steel, M., Xavier, J. C., and Huson, D.H. (2020). [The structure of autocatalytic networks, with application to early biochemistry.](https://royalsocietypublishing.org/doi/10.1098/rsif.2020.0488)
 J. Royal Society Interface, 17: 20200488.
 
 <a id="35">[XHKSM20]</a>
-Xavier, J. C., Hordijk, W., Kauffman, S., Steel M. and Martin, W. F. (2020). Autocatalytic chemical networks at the
-origin of metabolism. Proc. Roy. Soc. B. 287: 20192377
+Xavier, J.C., Hordijk, W., Kauffman, S., Steel M. and Martin, W.F. (2020). [Autocatalytic chemical networks at the origin of metabolism](https://royalsocietypublishing.org/doi/10.1098/rspb.2019.2377). Proc. Roy. Soc. B. 287: 20192377
 
 <a id="40">[H23]</a>
-Hordijk, W. (2023). A concise and formal definition of RAF sets and the RAF algorithm, arXiv:2303.01809.
+Hordijk, W. (2023). [A concise and formal definition of RAF sets and the RAF algorithm](https://arxiv.org/abs/2303.01809), arXiv:2303.01809.
 
-<a id="50">[HS24]</a>
-Huson, D. and Steel, M. (2024) CatReNet - Implemented Algorithms (unpublished).
+<a id="60">[HXS24]</a>
+Huson, D.H., Xavier, J. C., and Steel, M.A. (2024). [Self-generating autocatalytic networks: structural results, algorithms, and their relevance to early biochemistry](https://www.biorxiv.org/content/10.1101/2023.09.01.556005v4.full). J. Royal Society Interface (In press)
 
-<a id="60">[HXRS23]</a>
-Huson, D., Xavier, J., Rodrigo, A. and Steel, M. (2023). Structural and algorithmic results for self-generating
-autocatalytic networks. (In prep).
+<a id="70">[HXS24b]</a>
+Huson, D.H., Xavier, J.C. and Steel, M.A. (2024) CatReNet: interactive analysis of (auto-) catalytic reaction networks, manuscript in preparation. 
