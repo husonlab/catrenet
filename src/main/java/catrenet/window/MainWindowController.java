@@ -507,7 +507,7 @@ public class MainWindowController {
 
 			MaterialIcons.setIcon(computeNetworkMenuButton, "tune");
 			MaterialIcons.setIcon(animateNetworkMenuButton, "play_circle");
-			MaterialIcons.setIcon(stopAnimationButton, "close");
+			MaterialIcons.setIcon(stopAnimationButton, "cancel");
 			MaterialIcons.setIcon(zoomInNetworkButton, "zoom_in");
 			MaterialIcons.setIcon(zoomOutNetworkButton, "zoom_out");
 

@@ -74,7 +74,8 @@
                              <Label text="Random orders:"/>
                              <TextField fx:id="ordersTextField" prefColumnCount="6">
                                  <tooltip>
-                                     <Tooltip text="Number of random orders to try when finding a irreducible RAF RAF"/>
+                                     <Tooltip
+                                             text="Number of random orders to use when searching for an irreducible RAF"/>
                                  </tooltip>
                              </TextField>
                          </children>
@@ -90,9 +91,9 @@
                                  </tooltip>
                              </Button>
                              <Button fx:id="applyButton" defaultButton="true" layoutX="340.0" layoutY="17.0"
-                                     mnemonicParsing="false" text="OK">
+                                     mnemonicParsing="false" text="Apply">
                                  <tooltip>
-                                     <Tooltip text="Run algorithm"/>
+                                     <Tooltip text="Run the algorithm"/>
                                  </tooltip>
                              </Button>
                          </buttons>

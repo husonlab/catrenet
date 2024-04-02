@@ -25,6 +25,7 @@ import catrenet.dialog.ExportReactionsForSelectedNodesDialog;
 import catrenet.dialog.PolymerModelDialog;
 import catrenet.dialog.exportlist.ExportList;
 import catrenet.dialog.targets.TargetsDialog;
+import catrenet.io.ModelIO;
 import catrenet.io.NetworkIO;
 import catrenet.io.Save;
 import catrenet.io.SaveBeforeClosingDialog;
@@ -64,6 +65,7 @@ import jloda.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -221,9 +223,26 @@ public class MainWindowPresenter {
         controller.getCutMenuItem().disableProperty().bind((controller.getInputTextArea().focusedProperty().or(controller.getInputFoodTextArea().focusedProperty())).not());
 
         controller.getCopyMenuItem().setOnAction(e -> {
-            if (controller.getNetworkTab().getTabPane().isFocused() && controller.getNetworkTab().isSelected()) {
+            var tab = controller.getOutputTabPane().getSelectionModel().getSelectedItem();
+            if (tab == controller.getNetworkTab()) {
                 ClipboardUtils.put((!graphView.getNodeSelection().isEmpty() ? StringUtils.toString(graphView.getSelectedLabels(), "\n") : null),
                         controller.getNetworkScrollPane().getContent().snapshot(null, null), null);
+            }
+            if (tab instanceof TextTab textTab) {
+                var text = textTab.getTextArea().getSelectedText();
+                if (text == null || text.isBlank()) {
+                    var system = mainWindow.getReactionSystem(textTab.getName());
+                    if (system != null) {
+                        var w = new StringWriter();
+                        try {
+                            ModelIO.write(system, w, true, mainWindow.getDocument().getReactionNotation(), mainWindow.getDocument().getArrowNotation());
+                            text = w.toString();
+                        } catch (IOException ignored) {
+                            text = textTab.getTextArea().getText();
+                        }
+                    }
+                }
+                ClipboardUtils.putString(text);
             }
         });
         controller.getCopyMenuItem().disableProperty().bind((controller.getInputTextArea().focusedProperty().or(controller.getInputFoodTextArea().focusedProperty())
