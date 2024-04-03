@@ -510,10 +510,8 @@ public class MainWindowPresenter {
             });
 
             networkPane.setOnMousePressed(e -> {
-                if (e.getClickCount() == 2) {
                     graphView.getNodeSelection().clearSelection();
                     graphView.getEdgeSelection().clearSelection();
-                }
             });
 
             controller.getAnimateCAFCheckMenuItem().selectedProperty().addListener((c, o, n) -> {

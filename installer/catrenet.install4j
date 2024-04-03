@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="10.0.7" transformSequenceNumber="10">
   <directoryPresets config="../target/catrenet-1.0-SNAPSHOT.jar" />
-  <application name="CatReNet" applicationId="3801-6361-6203-7564" mediaDir="../../../builds" shortName="CatReNet" publisher="Daniel Huson and Mike Steel" publisherWeb="http://www.husonlab.org/catrenet" version="0.0.0_beta" allPathsRelative="true" macVolumeId="b8c0a1154e563a9a" javaMinVersion="11">
+  <application name="CatReNet" applicationId="3801-6361-6203-7564" mediaDir="../../../builds" shortName="CatReNet" publisher="Daniel H. Huson, Joana C. Xavier and Mike A. Steel" publisherWeb="http://www.husonlab.org/catrenet" version="0.0.0_beta" allPathsRelative="true" macVolumeId="b8c0a1154e563a9a" javaMinVersion="11">
     <variables>
       <variable name="renderingVMOption" />
     </variables>

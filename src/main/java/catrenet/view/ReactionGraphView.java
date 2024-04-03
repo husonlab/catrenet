@@ -19,6 +19,7 @@
 
 package catrenet.view;
 
+import catrenet.main.CatReNet;
 import catrenet.model.MoleculeType;
 import catrenet.model.ReactionSystem;
 import catrenet.window.Document;
@@ -375,7 +376,6 @@ public class ReactionGraphView {
 					node2view.get(w).translate(mouseX - mouseDown[0], mouseY - mouseDown[1]);
 				}
 			} else {
-
 				if (nodeToMove.translateXProperty().isBound())
 					nodeToMove.setLayoutX(nodeToMove.getLayoutX() + (mouseX - mouseDown[0]));
 				else
@@ -396,17 +396,23 @@ public class ReactionGraphView {
 
 		mouseTarget.setOnMouseReleased(c -> {
 			if (!moved[0] && (v != null || e != null)) {
-				if (!c.isShiftDown()) {
+				if ((!CatReNet.isDesktop() || !c.isShiftDown()) && isUseMultiCopyFoodNodes() && v != null && foodNodes.contains(v)) {
+					var sameFood = foodNodes.stream().filter(f -> f.getInfo() == v.getInfo()).toList();
+					var onlySameFoodSelected = (edgeSelection.isEmpty() && CollectionUtils.equalsAsSets(sameFood, nodeSelection.getSelectedItems()));
+					nodeSelection.clearSelection();
+					edgeSelection.clearSelection();
+					if (onlySameFoodSelected) {
+						nodeSelection.select(v); // this deselects all other selected items
+					} else {
+						nodeSelection.selectItems(sameFood); // select all items
+					}
+					return;
+				}
+				if (CatReNet.isDesktop() && !c.isShiftDown()) {
 					nodeSelection.clearSelection();
 					edgeSelection.clearSelection();
 					if (v != null) {
 						nodeSelection.select(v);
-						if (isUseMultiCopyFoodNodes() && foodNodes.contains(v)) {
-							for (Node w : foodNodes) {
-								if (v.getInfo() == w.getInfo())
-									nodeSelection.select(w);
-							}
-						}
 					}
 					if (e != null)
 						edgeSelection.select(e);
@@ -427,26 +433,28 @@ public class ReactionGraphView {
 			}
 		});
 
-		mouseTarget.setOnMouseClicked(c -> {
-			if (c.getClickCount() == 2) {
-				if (v != null) {
-					nodeSelection.selectItems(IteratorUtils.asList(v.adjacentNodes()));
-					edgeSelection.selectItems(IteratorUtils.asList(v.adjacentEdges()));
-				}
-			} else if (c.getClickCount() == 3) {
-				final var nodes = new NodeSet(reactionGraph);
-				ConnectedComponents.collect(v, nodes);
-				nodeSelection.selectItems(nodes);
-				final var edges = new EdgeSet(reactionGraph);
-				for (var p : nodes) {
-					for (var f : p.adjacentEdges()) {
-						if (nodes.contains(f.getOpposite(p)))
-							edges.add(f);
+		if (CatReNet.isDesktop()) {
+			mouseTarget.setOnMouseClicked(c -> {
+				if (c.getClickCount() == 2) {
+					if (v != null) {
+						nodeSelection.selectItems(IteratorUtils.asList(v.adjacentNodes()));
+						edgeSelection.selectItems(IteratorUtils.asList(v.adjacentEdges()));
 					}
+				} else if (c.getClickCount() == 3) {
+					final var nodes = new NodeSet(reactionGraph);
+					ConnectedComponents.collect(v, nodes);
+					nodeSelection.selectItems(nodes);
+					final var edges = new EdgeSet(reactionGraph);
+					for (var p : nodes) {
+						for (var f : p.adjacentEdges()) {
+							if (nodes.contains(f.getOpposite(p)))
+								edges.add(f);
+						}
+					}
+					edgeSelection.selectItems(edges);
 				}
-				edgeSelection.selectItems(edges);
-			}
-		});
+			});
+		}
 	}
 
 	public MoleculeFlowAnimation getMoleculeFlowAnimation() {
