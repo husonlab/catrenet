@@ -30,6 +30,7 @@ import javafx.scene.shape.*;
 import jloda.fx.shapes.CircleShape;
 import jloda.fx.util.BasicFX;
 import jloda.fx.util.GeometryUtilsFX;
+import jloda.fx.util.Icebergs;
 import jloda.fx.util.ProgramProperties;
 import jloda.graph.Edge;
 
@@ -147,6 +148,10 @@ public class EdgeView extends Group {
         if (path.getStroke() instanceof Color color && color.equals(Color.BLACK)) {
             arrowHead.getStyleClass().add("graph-node"); // yes, graph-node
             path.getStyleClass().add("graph-edge");
+        }
+
+        if (Icebergs.enabled()) {
+            getChildren().add(Icebergs.create(path, true));
         }
 
         getChildren().addAll(path, arrowHead, circleShape);

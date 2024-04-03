@@ -37,6 +37,7 @@ import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import jloda.fx.control.ItemSelectionModel;
 import jloda.fx.util.AService;
+import jloda.fx.util.Icebergs;
 import jloda.fx.util.SelectionEffectBlue;
 import jloda.fx.window.NotificationManager;
 import jloda.graph.*;
@@ -333,6 +334,9 @@ public class ReactionGraphView {
 			nv.getLabel().setStyle(getNodeLabelStyle());
 			node2view.put(v, nv);
 			nodes.getChildren().add(nv.getShape());
+			if (Icebergs.enabled()) {
+				nodes.getChildren().add(Icebergs.create(nv.getShape(), true));
+			}
 			labels.getChildren().add(nv.getLabel());
 		});
 
