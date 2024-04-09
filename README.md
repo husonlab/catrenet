@@ -16,10 +16,31 @@ This software was developed by Daniel H. Huson, Joana C. Xavier and Mike A. Stee
 
 ## Installers
 
-One-click installers for MacOS, Windows and Linux are
-available [here](https://software-ab.cs.uni-tuebingen.de/download/catrenet/welcome.html).
+Interactive installers for MacOS, Windows and Linux are
+available [here](https://software-ab.cs.uni-tuebingen.de/download/catrenet/welcome.html or [here](https://unitc-my.sharepoint.com/:f:/g/personal/iijhu01_cloud_uni-tuebingen_de/EmvzMdVieMZMijtxKhVbI-oBqq9fGYHKhVnW4vqLlZ3_IA?e=U2YIwh).
 
 Versions for Android and iOS are under development.
+
+## Getting started
+
+Install the software using the interactive installer.
+
+The installation directory contains a directory of examples. Select the `File->Open` menu item, navigate to the examples directory and select an example file to open:
+
+<img width="962" alt="image" src="https://github.com/husonlab/catrenet/assets/6740594/428eac27-5a25-4a57-b406-67ae1c92663f">.
+
+Then select an algorithm to run:
+
+<img width="962" alt="image" src="https://github.com/husonlab/catrenet/assets/6740594/ba30d87a-8093-4a7a-83f2-5dad02285133">
+
+Or view the network:
+
+<img width="962" alt="image" src="https://github.com/husonlab/catrenet/assets/6740594/4b3d09c8-3880-4680-b371-9cb01b39ba3e">
+
+
+
+
+
 
 ## Main features
 
