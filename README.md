@@ -166,21 +166,22 @@ The Linux and MacOS distributions have a tools directory that contains two comma
 
 The program comes with a number of example datasets (from [here](http://www.math.canterbury.ac.nz/bio/RAF/)):
 
-- example-0.crs - 6 reactions, 3 food items, has a Max RAF of size 3 and no Max CAF
-- example-1.crs - 6 reactions and 12 food itens, is a Max RAF and has no Max CAF
-- example-2.crs - uses binary polymers, has 5 reactions and 6 food items, has a Max RAF of size 5 and a Max CAF of size
+- [example-0.crs](examples/example-0.crs) - 6 reactions, 3 food items, has a Max RAF of size 3 and no Max CAF
+- [example-1.crs](examples/example-1.crs) - 6 reactions and 12 food itens, is a Max RAF and has no Max CAF
+- [example-2.crs](examples/example-2.crs) - uses binary polymers, has 5 reactions and 6 food items, has a Max RAF of size 5 and a Max CAF of size
   3
-- example-3.crs - 14 reactions and 1 food item, is a Max RAF and has no Max CAF
-- example-4.crs - 9 reactions and 1 food item, is a Max RAF and has no Max CAF
-- example-5.crs - 15 reactions and 2 food items, is a Max RAF and has no Max CAF
-- example-6.crs - 7 reactions and 1 food item, is a Max RAF and has no Max CAF
-- example-7.crs - 3 reactions (1 of which is 2-way) and 4 food items, is a Max RAF and a Max CAF
-- example-8.crs - uses binary polymers, has 17 two-way reactions and 4 foot items, is a Max RAF and a Max CAF
-- example-9.crs - Has a maxRAF of size 4 (which is an iRAF), a pseudoRAF of size 7 (everything) and no CAF (Figure 2
+- [example-3.crs](examples/example-3.crs) - 14 reactions and 1 food item, is a Max RAF and has no Max CAF
+- [example-4.crs](examples/example-4.crs) - 9 reactions and 1 food item, is a Max RAF and has no Max CAF
+- [example-5.crs](examples/example-5.crs) - 15 reactions and 2 food items, is a Max RAF and has no Max CAF
+- [example-6.crs](examples/example-6.crs) - 7 reactions and 1 food item, is a Max RAF and has no Max CAF
+- [example-7.crs](examples/example-7.crs) - 3 reactions (1 of which is 2-way) and 4 food items, is a Max RAF and a Max CAF
+- [example-8.crs](examples/example-8.crs) - uses binary polymers, has 17 two-way reactions and 4 foot items, is a Max RAF and a Max CAF
+- [example-9.crs](examples/example-9.crs) - Has a maxRAF of size 4 (which is an iRAF), a pseudoRAF of size 7 (everything) and no CAF (Figure 2
   from [[XHKSM20]](#35))
-- example-10.crs - 3 reactions and 1 food item, is a Max RAF and a Max CAF (Fig. 3(c) in [[GFHKU]](#22))
-- inhibitions-1.crs - 2 reactions (1 of which has an inhibitor) and 6 food items, Max RAF and Max CAF both have 1
-  reaction
+- [example-10.crs](examples/example-10.crs) - 3 reactions and 1 food item, is a Max RAF and a Max CAF (Fig. 3(c) in [[GFHKU]](#22))
+- [inhibitions-1.crs](examples/inhibitions-1.crs) - 2 reactions (1 of which has an inhibitor) and 6 food items, Max RAF and Max CAF both have one reaction
+- [prokaryotic-network.crs](examples/prokaryotic-network.crs) - 6039 reactions and 68 food items. Prokaryotic catalytic reaction network from [[XHKSM20]](#35).
+
 
 ## References
 
