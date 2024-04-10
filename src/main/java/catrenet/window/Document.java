@@ -1,20 +1,20 @@
 /*
- * Document.java Copyright (C) 2024 Daniel H. Huson
+ *  Document.java Copyright (C) 2024 Daniel H. Huson
  *
- * (Some files contain contributions from other authors, who are then mentioned separately.)
+ *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package catrenet.window;
@@ -40,10 +40,15 @@ public class Document {
     private final ObjectProperty<ReactionNotation> reactionNotation = new SimpleObjectProperty<>(ReactionNotation.valueOfIgnoreCase(ProgramProperties.get("ReactionNotation", "Sparse")));
     private final ObjectProperty<ArrowNotation> arrowNotation = new SimpleObjectProperty<>(ArrowNotation.valueOfLabel(ProgramProperties.get("ArrowNotation", "=>")));
 
+	private final ObservableMap<String, String> displayLabelsMap = FXCollections.observableHashMap();
+
+	private final BooleanProperty useDisplayLabels = new SimpleBooleanProperty(this, "useDisplayLabels");
+
     /**
      * constructor
      */
     public Document() {
+		ProgramProperties.track(useDisplayLabels, true);
     }
 
     public ReactionSystem getInputReactionSystem() {
@@ -146,4 +151,24 @@ public class Document {
     public void setMoleculeDependencyNetwork(Graph moleculeDependencyNetwork) {
         this.moleculeDependencyNetwork.set(moleculeDependencyNetwork);
     }
+
+	public ObservableMap<String, String> getDisplayLabelsMap() {
+		return displayLabelsMap;
+	}
+
+	public String getDisplayLabel(String label) {
+		return isUseDisplayLabels() ? displayLabelsMap.getOrDefault(label, label) : label;
+	}
+
+	public boolean isUseDisplayLabels() {
+		return useDisplayLabels.get();
+	}
+
+	public BooleanProperty useDisplayLabelsProperty() {
+		return useDisplayLabels;
+	}
+
+	public void setUseDisplayLabels(boolean useDisplayLabels) {
+		this.useDisplayLabels.set(useDisplayLabels);
+	}
 }

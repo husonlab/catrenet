@@ -1,20 +1,20 @@
 /*
- * ReactionGraphView.java Copyright (C) 2024 Daniel H. Huson
+ *  ReactionGraphView.java Copyright (C) 2024 Daniel H. Huson
  *
- * (Some files contain contributions from other authors, who are then mentioned separately.)
+ *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package catrenet.view;
@@ -29,14 +29,15 @@ import javafx.collections.ListChangeListener;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
-import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import jloda.fx.control.ItemSelectionModel;
+import jloda.fx.control.RichTextLabel;
 import jloda.fx.util.AService;
+import jloda.fx.util.BasicFX;
 import jloda.fx.util.Icebergs;
 import jloda.fx.util.SelectionEffectBlue;
 import jloda.fx.window.NotificationManager;
@@ -170,7 +171,7 @@ public class ReactionGraphView {
 			}
 		});
 
-		moleculeFlowAnimation = new MoleculeFlowAnimation(reactionGraph, foodNodes, edge2view, world);
+		moleculeFlowAnimation = new MoleculeFlowAnimation(document, reactionGraph, foodNodes, edge2view, world);
 
 		moleculeFlowAnimation.animateInhibitionsProperty().addListener((c, o, n) -> inhibitionEdgeColor.set(n ? Color.BLACK : Color.LIGHTGREY));
 
@@ -506,7 +507,7 @@ public class ReactionGraphView {
 		return node2view.get(v).getShape();
 	}
 
-	public Label getLabel(Node v) {
+	public RichTextLabel getLabel(Node v) {
 		return node2view.get(v).getLabel();
 	}
 
@@ -583,7 +584,7 @@ public class ReactionGraphView {
 	}
 
 	public Collection<String> getSelectedLabels() {
-		return getNodeSelection().getSelectedItems().stream().map(v -> getLabel(v).getText()).filter(s -> s.length() > 0).collect(Collectors.toList());
+		return getNodeSelection().getSelectedItems().stream().map(v -> getLabel(v).getText()).filter(s -> !s.isEmpty()).collect(Collectors.toList());
 	}
 
 	public int getEmbeddingIterations() {
@@ -617,4 +618,15 @@ public class ReactionGraphView {
 	public EdgeArray<EdgeView> getEdge2view() {
 		return edge2view;
 	}
+
+	public Document getDocument() {
+		return document;
+	}
+
+	public void setFontSize(double size) {
+		for (var label : BasicFX.getAllRecursively(world, RichTextLabel.class)) {
+			label.setFontSize(size);
+		}
+	}
+
 }

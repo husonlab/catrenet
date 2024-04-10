@@ -1,31 +1,29 @@
 /*
- * NodeView.java Copyright (C) 2024 Daniel H. Huson
+ *  NodeView.java Copyright (C) 2024 Daniel H. Huson
  *
- * (Some files contain contributions from other authors, who are then mentioned separately.)
+ *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package catrenet.view;
 
 import catrenet.model.MoleculeType;
 import catrenet.model.Reaction;
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
-import javafx.scene.text.Font;
+import jloda.fx.control.RichTextLabel;
 import jloda.fx.shapes.CircleShape;
 import jloda.fx.shapes.SquareShape;
 import jloda.fx.util.ProgramProperties;
@@ -42,7 +40,7 @@ public class NodeView {
 
     private final Node v;
     private final Shape shape;
-    private final Label text;
+    private final RichTextLabel text;
 
     private final NodeStyle reactionNodeStyle = NodeStyle.valueOf(ProgramProperties.get("reactionNodeStyle", NodeStyle.Square.name()));
     private final NodeStyle moleculeNodeStyle = NodeStyle.valueOf(ProgramProperties.get("moleculeNodeStyle", NodeStyle.Circle.name()));
@@ -71,10 +69,11 @@ public class NodeView {
 	 */
     public NodeView(ReactionGraphView graphView, Collection<MoleculeType> food, Node v, double x, double y) {
         this.v = v;
+        var doc = graphView.getDocument();
 
         if (v.getInfo() instanceof Reaction) {
             shape = createShape(getReactionNodeShape(), getReactionNodeSize(), getReactionNodeFillColor());
-            text = new Label(((Reaction) v.getInfo()).getName());
+            text = new RichTextLabel(doc.getDisplayLabel(((Reaction) v.getInfo()).getName()));
             text.setLayoutX(getReactionNodeSize() + 2);
             text.setLayoutY(-ReactionGraphView.getFont().getSize() / 2);
             graphView.setupMouseInteraction(text, text, v, null);
@@ -84,7 +83,7 @@ public class NodeView {
                 shape = createShape(getFoodNodeShape(), getFoodNodeSize(), getFoodNodeFillColor());
             else
                 shape = createShape(getMoleculeNodeShape(), getMoleculeNodeSize(), getMoleculeNodeFillColor());
-            text = new Label(((MoleculeType) v.getInfo()).getName());
+            text = new RichTextLabel(doc.getDisplayLabel(((MoleculeType) v.getInfo()).getName()));
             text.setLayoutX(getFoodNodeSize() + 2);
             text.setLayoutY(-ReactionGraphView.getFont().getSize() / 2);
             graphView.setupMouseInteraction(text, text, v, null);
@@ -93,9 +92,9 @@ public class NodeView {
             shape = createShape(getAndNodeShape(), getAndNodeSize(), getAndNodeFillColor());
             shape.setStrokeWidth(1);
 
-            text = new Label("&");
-            text.setFont(Font.font("Courier New", 8));
-            text.setAlignment(Pos.CENTER);
+            text = new RichTextLabel("&");
+            text.setFontFamily("Courier New");
+            text.setFontSize(8);
             text.setLayoutX(-4);
             text.setLayoutY(-8);
             graphView.setupMouseInteraction(text, shape, v, null);
@@ -106,7 +105,7 @@ public class NodeView {
             shape.setFill(Color.RED);
             shape.setStrokeWidth(2);
 
-            text = new Label(((Reaction) v.getInfo()).getName());
+            text = new RichTextLabel(doc.getDisplayLabel(((Reaction) v.getInfo()).getName()));
             text.setLayoutX(10);
             graphView.setupMouseInteraction(text, text, v, null);
             // text.setBackground(labelBackground);
@@ -117,7 +116,8 @@ public class NodeView {
         graphView.setupMouseInteraction(shape, shape, v, null);
 
         // setupMouseInteraction(text, shape, v, null);
-        text.setFont(ReactionGraphView.getFont());
+        text.setFontFamily(ReactionGraphView.getFont().getFamily());
+        text.setFontSize(ReactionGraphView.getFont().getSize());
         text.getStyleClass().add("above-label");
         text.translateXProperty().bind(shape.translateXProperty());
         text.translateYProperty().bind(shape.translateYProperty());
@@ -131,7 +131,7 @@ public class NodeView {
         return shape;
     }
 
-    public Label getLabel() {
+    public RichTextLabel getLabel() {
         return this.text;
     }
 

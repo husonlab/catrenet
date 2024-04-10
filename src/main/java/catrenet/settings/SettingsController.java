@@ -1,29 +1,32 @@
 /*
- * SettingsController.java Copyright (C) 2024 Daniel H. Huson
+ *  SettingsController.java Copyright (C) 2024 Daniel H. Huson
  *
- * (Some files contain contributions from other authors, who are then mentioned separately.)
+ *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package catrenet.settings;
 
+import catrenet.settings.displaylabels.ListViewUtils;
 import catrenet.view.EdgeView;
 import catrenet.view.NodeView;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import jloda.fx.icons.MaterialIcons;
 import jloda.fx.util.ProgramProperties;
+import jloda.util.Pair;
 
 public class SettingsController {
 	@FXML
@@ -114,8 +117,28 @@ public class SettingsController {
 	private TextArea infoTextArea;
 
 	@FXML
+	private Button clearDisplayLabelsButton;
+
+	@FXML
+	private Button importDisplayLabelsButton;
+
+	@FXML
+	private ListView<Pair<String, String>> displayLabelListView;
+
+	@FXML
+	private CheckBox activeDisplayLabelsCheckBox;
+
+	@FXML
+	private Button addDisplayLabelButton;
+
+	@FXML
 	private void initialize() {
 		infoTextArea.setText(ProgramProperties.getProgramVersion() + "\nDaniel H. Huson, Joana C. Xavier and  Mike A. Steel. License GPL3");
+		MaterialIcons.setIcon(clearDisplayLabelsButton, MaterialIcons.delete);
+		MaterialIcons.setIcon(importDisplayLabelsButton, MaterialIcons.download);
+		MaterialIcons.setIcon(addDisplayLabelButton, MaterialIcons.add);
+
+		ListViewUtils.setupEditing(displayLabelListView, true);
 	}
 
 	public TextField getIterationsTextField() {
@@ -228,5 +251,25 @@ public class SettingsController {
 
 	public CheckBox getMoveLabelsInAnimationCheckBox() {
 		return moveLabelsInAnimationCheckBox;
+	}
+
+	public Button getClearDisplayLabelsButton() {
+		return clearDisplayLabelsButton;
+	}
+
+	public Button getImportDisplayLabelsButton() {
+		return importDisplayLabelsButton;
+	}
+
+	public ListView<Pair<String, String>> getDisplayLabelListView() {
+		return displayLabelListView;
+	}
+
+	public CheckBox getActiveDisplayLabelsCheckBox() {
+		return activeDisplayLabelsCheckBox;
+	}
+
+	public Button getAddDisplayLabelButton() {
+		return addDisplayLabelButton;
 	}
 }

@@ -1,26 +1,27 @@
 /*
- * MoleculeFlowAnimation.java Copyright (C) 2024 Daniel H. Huson
+ *  MoleculeFlowAnimation.java Copyright (C) 2024 Daniel H. Huson
  *
- * (Some files contain contributions from other authors, who are then mentioned separately.)
+ *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package catrenet.view;
 
 import catrenet.model.MoleculeType;
 import catrenet.model.Reaction;
+import catrenet.window.Document;
 import javafx.animation.PathTransition;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
@@ -36,6 +37,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import jloda.fx.control.RichTextLabel;
 import jloda.fx.util.ColorSchemeManager;
 import jloda.fx.util.SelectionEffect;
 import jloda.graph.*;
@@ -68,11 +70,13 @@ public class MoleculeFlowAnimation {
 
     private final ObservableList<Color> colorScheme = FXCollections.observableArrayList(ColorSchemeManager.getInstance().getColorScheme("Retro29"));
 
+    private final Document doc;
     /**
      * setup molecule flow simulation
      *
      */
-    public MoleculeFlowAnimation(Graph graph, NodeSet foodNodes, EdgeArray<EdgeView> edge2Group, Group world) {
+    public MoleculeFlowAnimation(Document doc, Graph graph, NodeSet foodNodes, EdgeArray<EdgeView> edge2Group, Group world) {
+        this.doc = doc;
         final EdgeIntArray edge2totalCount = new EdgeIntArray(graph);
         final EdgeIntArray edge2currentCount = new EdgeIntArray(graph);
 
@@ -90,12 +94,10 @@ public class MoleculeFlowAnimation {
                             for (var v : CollectionUtils.randomize(foodNodes, random)) {
                                 for (var e : IteratorUtils.randomize(v.adjacentEdges(), random)) {
                                     if (e.getInfo() == EdgeType.Reactant || e.getInfo() == EdgeType.ReactantReversible || e.getInfo() == EdgeType.Catalyst) {
-                                        final var label = ((MoleculeType) e.getSource().getInfo()).getName();
-                                        Platform.runLater(() -> animateEdge(e, false, label, edge2totalCount, edge2currentCount, edge2Group, world));
+                                        Platform.runLater(() -> animateEdge(e, false, ((MoleculeType) e.getSource().getInfo()).getName(), edge2totalCount, edge2currentCount, edge2Group, world));
                                         break;
                                     } else if (e.getInfo() == EdgeType.ProductReversible) {
-                                        final var label = ((MoleculeType) e.getTarget().getInfo()).getName();
-                                        Platform.runLater(() -> animateEdge(e, true, label, edge2totalCount, edge2currentCount, edge2Group, world));
+                                        Platform.runLater(() -> animateEdge(e, true, ((MoleculeType) e.getTarget().getInfo()).getName(), edge2totalCount, edge2currentCount, edge2Group, world));
                                         break;
                                     }
                                 }
@@ -109,12 +111,10 @@ public class MoleculeFlowAnimation {
                                     if (!foodNodes.contains(v) && v.getInfo() instanceof MoleculeType) {
                                         for (var e : IteratorUtils.randomize(v.adjacentEdges(), random)) {
                                             if (e.getInfo() == EdgeType.Reactant || e.getInfo() == EdgeType.ReactantReversible || e.getInfo() == EdgeType.Catalyst) {
-                                                final var label = ((MoleculeType) e.getSource().getInfo()).getName();
-                                                Platform.runLater(() -> animateEdge(e, false, label, edge2totalCount, edge2currentCount, edge2Group, world));
+                                                Platform.runLater(() -> animateEdge(e, false, ((MoleculeType) e.getSource().getInfo()).getName(), edge2totalCount, edge2currentCount, edge2Group, world));
                                                 break loop;
                                             } else if (e.getInfo() == EdgeType.ProductReversible) {
-                                                final var label = ((MoleculeType) e.getTarget().getInfo()).getName();
-                                                Platform.runLater(() -> animateEdge(e, true, label, edge2totalCount, edge2currentCount, edge2Group, world));
+                                                Platform.runLater(() -> animateEdge(e, true, ((MoleculeType) e.getTarget().getInfo()).getName(), edge2totalCount, edge2currentCount, edge2Group, world));
                                                 break loop;
                                             }
                                         }
@@ -156,15 +156,26 @@ public class MoleculeFlowAnimation {
         if (edge.getOwner() == null || edge2currentCount.getInt(edge) >= 10)
             return;
 
+        label = doc.getDisplayLabel(label);
+
         final Path path = ReactionGraphView.getPath(edge2view.get(edge));
 
         if (path != null) {
-            final Shape movingPart;
+            final javafx.scene.Node movingPart;
             if (isMoveLabels()) {
-                var text = new Text(label);
-                text.setFont(ReactionGraphView.getFont());
-                text.setFill(colorScheme.get(Math.abs(label.hashCode()) % colorScheme.size()));
-                movingPart = text;
+                if (doc.isUseDisplayLabels()) {
+                    var text = new RichTextLabel(label);
+                    text.setFontFamily(ReactionGraphView.getFont().getFamily());
+                    text.setFontSize(ReactionGraphView.getFont().getSize());
+                    text.setTextFill(colorScheme.get(Math.abs(label.hashCode()) % colorScheme.size()));
+                    movingPart = text;
+
+                } else {
+                    var text = new Text(label);
+                    text.setFont(ReactionGraphView.getFont());
+                    text.setFill(colorScheme.get(Math.abs(label.hashCode()) % colorScheme.size()));
+                    movingPart = text;
+                }
             } else {
                 var shape = new Rectangle(7, 5);
                 var color = colorScheme.get(Math.abs(label.hashCode()) % colorScheme.size());
@@ -187,9 +198,12 @@ public class MoleculeFlowAnimation {
                     edge2currentCount.decrement(edge);
                 }
                 if (edge.getOwner() != null && playing.get()) {
-                    path.setEffect(SelectionEffect.create(((Color) movingPart.getFill()).deriveColor(1, 1, 1, 0.2)));
+                    if (movingPart instanceof Shape shape)
+                        path.setEffect(SelectionEffect.create(((Color) shape.getFill()).deriveColor(1, 1, 1, 0.2)));
+                    else if (movingPart instanceof RichTextLabel richTextLabel)
+                        path.setEffect(SelectionEffect.create(((Color) richTextLabel.getTextFill()).deriveColor(1, 1, 1, 0.2)));
 
-                    for (Triplet<Edge, Boolean, String> triplet : computeEdgesReadyToFire(edge, reverse ? edge.getSource() : edge.getTarget(), edge2totalCount)) {
+                    for (var triplet : computeEdgesReadyToFire(edge, reverse ? edge.getSource() : edge.getTarget(), edge2totalCount)) {
                         animateEdge(triplet.getFirst(), triplet.getSecond(), triplet.getThird(), edge2totalCount, edge2currentCount, edge2view, world);
                     }
                 } else

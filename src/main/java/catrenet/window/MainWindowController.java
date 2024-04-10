@@ -1,20 +1,20 @@
 /*
- * MainWindowController.java Copyright (C) 2024 Daniel H. Huson
+ *  MainWindowController.java Copyright (C) 2024 Daniel H. Huson
  *
- * (Some files contain contributions from other authors, who are then mentioned separately.)
+ *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package catrenet.window;
@@ -501,34 +501,34 @@ public class MainWindowController {
 	@FXML
 	void initialize() {
 		{
-			MaterialIcons.setIcon(fileMenuButton, "file_open");
-			MaterialIcons.setIcon(importButton, "download");
-			MaterialIcons.setIcon(runMenuButton, "play_circle_filled");
+			MaterialIcons.setIcon(fileMenuButton, MaterialIcons.file_open);
+			MaterialIcons.setIcon(importButton, MaterialIcons.download);
+			MaterialIcons.setIcon(runMenuButton, MaterialIcons.play_circle_filled);
 
-			MaterialIcons.setIcon(computeNetworkMenuButton, "tune");
-			MaterialIcons.setIcon(animateNetworkMenuButton, "play_circle");
-			MaterialIcons.setIcon(stopAnimationButton, "cancel");
-			MaterialIcons.setIcon(zoomInNetworkButton, "zoom_in");
-			MaterialIcons.setIcon(zoomOutNetworkButton, "zoom_out");
+			MaterialIcons.setIcon(computeNetworkMenuButton, MaterialIcons.tune);
+			MaterialIcons.setIcon(animateNetworkMenuButton, MaterialIcons.play_circle);
+			MaterialIcons.setIcon(stopAnimationButton, MaterialIcons.cancel);
+			MaterialIcons.setIcon(zoomInNetworkButton, MaterialIcons.zoom_in);
+			MaterialIcons.setIcon(zoomOutNetworkButton, MaterialIcons.zoom_out);
 
-			MaterialIcons.setIcon(selectNetworkMenuButton, "checklist_rtl");
+			MaterialIcons.setIcon(selectNetworkMenuButton, MaterialIcons.checklist_rtl);
 
-			MaterialIcons.setIcon(listMenuButton, "list");
+			MaterialIcons.setIcon(listMenuButton, MaterialIcons.list);
 
-			MaterialIcons.setIcon(exportMenuButton, "ios_share");
-			MaterialIcons.setIcon(inceaseFontButton, "text_increase");
-			MaterialIcons.setIcon(decreaseFontButton, "text_decrease");
+			MaterialIcons.setIcon(exportMenuButton, MaterialIcons.ios_share);
+			MaterialIcons.setIcon(inceaseFontButton, MaterialIcons.text_increase);
+			MaterialIcons.setIcon(decreaseFontButton, MaterialIcons.text_decrease);
 
-			MaterialIcons.setIcon(settingsButton, "settings");
-			MaterialIcons.setIcon(findButton, "search");
-			MaterialIcons.setIcon(findFoodTextToggleButton, "search");
-			MaterialIcons.setIcon(findReactionsTextToggleButton, "search");
+			MaterialIcons.setIcon(settingsButton, MaterialIcons.settings);
+			MaterialIcons.setIcon(findButton, MaterialIcons.search);
+			MaterialIcons.setIcon(findFoodTextToggleButton, MaterialIcons.search);
+			MaterialIcons.setIcon(findReactionsTextToggleButton, MaterialIcons.search);
 
-			MaterialIcons.setIcon(undoFoodButton, "undo");
-			MaterialIcons.setIcon(redoFoodButton, "redo");
+			MaterialIcons.setIcon(undoFoodButton, MaterialIcons.undo);
+			MaterialIcons.setIcon(redoFoodButton, MaterialIcons.redo);
 
-			MaterialIcons.setIcon(undoReactionsButton, "undo");
-			MaterialIcons.setIcon(redoReactionsButton, "redo");
+			MaterialIcons.setIcon(undoReactionsButton, MaterialIcons.undo);
+			MaterialIcons.setIcon(redoReactionsButton, MaterialIcons.redo);
 
 		}
 

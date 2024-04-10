@@ -18,11 +18,14 @@ module catrenet {
 	exports catrenet.action;
 	exports catrenet.tools;
 	exports catrenet.settings;
+	exports catrenet.settings.displaylabels;
 
 	opens catrenet.algorithm;
 	opens catrenet.tab;
 	opens catrenet.window;
 	opens catrenet.settings;
+	opens catrenet.settings.displaylabels;
+
 	opens catrenet.dialog.exportlist;
 	opens catrenet.dialog.targets;
 

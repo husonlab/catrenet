@@ -1,20 +1,20 @@
 /*
- * SettingsPresenter.java Copyright (C) 2024 Daniel H. Huson
+ *  SettingsPresenter.java Copyright (C) 2024 Daniel H. Huson
  *
- * (Some files contain contributions from other authors, who are then mentioned separately.)
+ *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package catrenet.settings;
@@ -23,14 +23,23 @@ import catrenet.io.ModelIO;
 import catrenet.view.EdgeView;
 import catrenet.view.NodeView;
 import catrenet.window.MainWindow;
+import javafx.beans.InvalidationListener;
+import javafx.beans.binding.Bindings;
+import javafx.collections.ListChangeListener;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleGroup;
 import jloda.fx.util.BasicFX;
+import jloda.fx.util.ClipboardUtils;
 import jloda.fx.util.ProgramProperties;
+import jloda.fx.util.RunAfterAWhile;
 import jloda.util.NumberUtils;
+import jloda.util.Pair;
+import jloda.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 
 public class SettingsPresenter {
 	public SettingsPresenter(MainWindow mainWindow, SettingsController controller) {
@@ -140,6 +149,62 @@ public class SettingsPresenter {
 
 		controller.getUseColorsInAnimationRadioButton().selectedProperty().bindBidirectional(mainWindow.getController().getUseColorsMenuItem().selectedProperty());
 		controller.getMoveLabelsInAnimationCheckBox().selectedProperty().bindBidirectional(mainWindow.getController().getMoveLabelsMenuItem().selectedProperty());
+
+		{
+			controller.getActiveDisplayLabelsCheckBox().selectedProperty().bindBidirectional(mainWindow.getDocument().useDisplayLabelsProperty());
+			controller.getDisplayLabelListView().getItems().addListener((ListChangeListener<? super Pair<String, String>>) e -> {
+				while (e.next()) {
+					for (var item : e.getAddedSubList()) {
+						mainWindow.getDocument().getDisplayLabelsMap().put(item.getFirst(), item.getSecond());
+					}
+					for (var item : e.getRemoved()) {
+						mainWindow.getDocument().getDisplayLabelsMap().remove(item.getFirst());
+					}
+				}
+			});
+
+			controller.getDisplayLabelListView().getItems().addAll(ProgramProperties.get("DisplayLabels", new ArrayList<>()));
+			controller.getDisplayLabelListView().getItems().addListener((InvalidationListener) e ->
+					RunAfterAWhile.applyInFXThread(controller.getDisplayLabelListView(), () -> ProgramProperties.put("DisplayLabels", controller.getDisplayLabelListView().getItems())));
+
+
+			controller.getClearDisplayLabelsButton().setOnAction(e -> controller.getDisplayLabelListView().getItems().clear());
+			controller.getClearDisplayLabelsButton().disableProperty().bind(Bindings.isEmpty(controller.getDisplayLabelListView().getItems()));
+
+			controller.getImportDisplayLabelsButton().setOnAction(e -> {
+				var string = ClipboardUtils.getTextFilesContentOrString();
+				if (string != null && !string.isBlank()) {
+					var oldSize = controller.getDisplayLabelListView().getItems().size();
+					var newKeys = new HashSet<String>();
+					for (var line : StringUtils.toList(string)) {
+						var tokens = StringUtils.split(line, '\t');
+						if (tokens.length == 2) {
+							if (!newKeys.contains(tokens[0])) {
+								controller.getDisplayLabelListView().getItems().add(new Pair<>(tokens[0], tokens[1]));
+								newKeys.add(tokens[0]);
+							}
+						}
+					}
+					var toDelete = new ArrayList<Pair<String, String>>();
+					for (var i = 0; i < oldSize; i++) {
+						var item = controller.getDisplayLabelListView().getItems().get(i);
+						if (newKeys.contains(item.getFirst()))
+							toDelete.add(item);
+					}
+					controller.getDisplayLabelListView().getItems().removeAll(toDelete);
+				}
+			});
+
+			controller.getAddDisplayLabelButton().setOnAction(e -> {
+				var item = new Pair<>("Key", "Value");
+				controller.getDisplayLabelListView().getItems().add(item);
+				controller.getDisplayLabelListView().scrollTo(controller.getDisplayLabelListView().getItems().indexOf(item));
+				controller.getDisplayLabelListView().getSelectionModel().select(item);
+			});
+
+			controller.getImportDisplayLabelsButton().disableProperty().bind(ClipboardUtils.hasStringProperty().not().and(ClipboardUtils.hasFilesProperty().not()));
+
+		}
 	}
 
 	private void apply(MainWindow mainWindow, ToggleGroup formatToggleGroup, ToggleGroup arrowToggleGroup) {

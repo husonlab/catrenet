@@ -1,20 +1,20 @@
 /*
- * SetupFind.java Copyright (C) 2024 Daniel H. Huson
+ *  SetupFind.java Copyright (C) 2024 Daniel H. Huson
  *
- * (Some files contain contributions from other authors, who are then mentioned separately.)
+ *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package catrenet.window;
@@ -45,7 +45,7 @@ public class SetupFind {
 
 		var findToolBar = new FindToolBar(window.getStage(), emptySearcher);
 
-		findToolBar.getController().getAnchorPane().getStylesheets().add(MaterialIcons.getInstance().getStyleSheet());
+		findToolBar.getController().getAnchorPane().getStylesheets().add(MaterialIcons.getStyleSheet());
 
         var gv = window.getReactionGraphView();
         var graphSearcher = new GraphSearcher(gv.getReactionGraph(), gv.getNodeSelection(), (v) -> gv.getLabel(v).getText(), (v, t) -> gv.getLabel(v).setText(t));
@@ -83,13 +83,13 @@ public class SetupFind {
 		});
 
 		var inputFoodFindToolBar = new FindToolBar(window.getStage(), new TextAreaSearcher("Input food", controller.getInputFoodTextArea()));
-		inputFoodFindToolBar.getController().getAnchorPane().getStylesheets().add(MaterialIcons.getInstance().getStyleSheet());
+		inputFoodFindToolBar.getController().getAnchorPane().getStylesheets().add(MaterialIcons.getStyleSheet());
 
 		controller.getFoodInputVBox().getChildren().add(inputFoodFindToolBar);
 		controller.getFindFoodTextToggleButton().selectedProperty().bindBidirectional(inputFoodFindToolBar.showFindToolBarProperty());
 
 		var inputReactionsFindToolBar = new FindToolBar(window.getStage(), new TextAreaSearcher("Input reactions", controller.getInputTextArea()));
-		inputReactionsFindToolBar.getController().getAnchorPane().getStylesheets().add(MaterialIcons.getInstance().getStyleSheet());
+		inputReactionsFindToolBar.getController().getAnchorPane().getStylesheets().add(MaterialIcons.getStyleSheet());
 
 		controller.getReactionsInputVBox().getChildren().add(inputReactionsFindToolBar);
 		controller.getFindReactionsTextToggleButton().selectedProperty().bindBidirectional(inputReactionsFindToolBar.showFindToolBarProperty());
