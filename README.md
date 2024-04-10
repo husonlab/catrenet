@@ -38,10 +38,6 @@ Or view the network:
 <img width="962" alt="image" src="https://github.com/husonlab/catrenet/assets/6740594/4b3d09c8-3880-4680-b371-9cb01b39ba3e">
 
 
-
-
-
-
 ## Main features
 
 Input to CatReNet is a catalytic reaction system (CRS), which consists of a list of catalyzed reactions and a food set
@@ -149,7 +145,8 @@ There are several options:
 - Network Embbedder Iterations - set the number of iterations used by the algorithm that computes the layout of the
   network
 
-<img src="https://github.com/danielhuson/catReNet/blob/master/artwork/animation.gif" alt="Animation" width="600"/>
+![Animated GIF](https://github.com/husonlab/catrenet/raw/master/artwork/animation.gif)
+
 
 ### Export network
 
