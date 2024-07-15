@@ -42,6 +42,7 @@ import catrenet.view.SelectionBindings;
 import javafx.animation.Animation;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
@@ -94,6 +95,8 @@ public class MainWindowPresenter {
         disableFullGraphItems.bind(disableGraphItems.or(graphView.graphTypeProperty().isEqualTo(ReactionGraphView.Type.associationNetwork)
                         .or(graphView.graphTypeProperty().isEqualTo(ReactionGraphView.Type.reactantAssociationNetwork)))
                 .or(mainWindow.getReactionGraphView().getMoleculeFlowAnimation().playingProperty()));
+
+        mainWindow.getInputReactionSystem().getReactions().addListener((InvalidationListener) e -> disableGraphItems.set(mainWindow.getInputReactionSystem().size() > 250));
 
         final var algorithmsRunning = new SimpleIntegerProperty(0);
         final ChangeListener<Boolean> runningListener = (c, o, n) -> {
@@ -163,7 +166,7 @@ public class MainWindowPresenter {
         controller.getExportListOfReactionsMenuItem().disableProperty().bind(mainWindow.getInputReactionSystem().sizeProperty().isEqualTo(0));
 
         controller.getExportGraphGMLMenuItem().setOnAction(c -> {
-            final FileChooser fileChooser = new FileChooser();
+            final var fileChooser = new FileChooser();
             fileChooser.setTitle("Export GML - " + ProgramProperties.getProgramVersion());
             var dir = new File(ProgramProperties.get("GMLDir", ""));
             if (dir.isDirectory())
@@ -183,7 +186,6 @@ public class MainWindowPresenter {
 
         });
         controller.getExportGraphGMLMenuItem().disableProperty().bind(disableGraphItems);
-
 
         controller.getSaveMenuItem().setOnAction(e -> Save.showSaveDialog(mainWindow));
 
@@ -275,25 +277,28 @@ public class MainWindowPresenter {
             if (controller.getFullGraphRadioMenuItem().getToggleGroup().getSelectedToggle() == null) {
                 controller.getFullGraphRadioMenuItem().setSelected(true);
             } else {
-                disableGraphItems.set(false);
+                disableGraphItems.set(mainWindow.getInputReactionSystem().size() >= 250);
                 ComputeGraph.apply(mainWindow, controller);
                 controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
             }
         });
-        controller.getComputeNetworkMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()).or(controller.getInputFoodTextArea().textProperty().isEmpty()));
+        controller.getComputeNetworkMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0)
+                .or(controller.getInputTextArea().textProperty().isEmpty())
+                .or(controller.getInputFoodTextArea().textProperty().isEmpty())
+                .or(disableGraphItems));
 
         disableGraphItems.addListener((c, o, n) -> {
             if (n)
                 graphView.getMoleculeFlowAnimation().setPlaying(false);
         });
 
-        controller.getNetworkTab().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
+        controller.getNetworkTab().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty().or(disableGraphItems));
         controller.getNetworkTab().selectedProperty().addListener((v, o, n) -> {
             if (n && graphView.isEmpty() && !controller.getComputeNetworkMenuItem().isDisable())
                 controller.getComputeNetworkMenuItem().getOnAction().handle(null);
         });
 
-        graphView.emptyProperty().addListener((c, o, n) -> disableGraphItems.set(n));
+        graphView.emptyProperty().addListener((c, o, n) -> disableGraphItems.set(n && mainWindow.getInputReactionSystem().size() >= 250));
 
         controller.getRunRAFMenuItem().setOnAction(e -> {
             if (VerifyInput.verify(mainWindow)) {
@@ -580,6 +585,7 @@ public class MainWindowPresenter {
         SelectionBindings.setup(mainWindow, controller);
 
         controller.getShowNodeLabels().setOnAction(e -> ShowHideNodeLabels.apply(graphView));
+        controller.getShowNodeLabels().disableProperty().bind(disableGraphItems);
         if (mainWindow.getStage() != null)
             BasicFX.setupFullScreenMenuSupport(mainWindow.getStage(), controller.getFullScreenMenuItem());
 
@@ -597,44 +603,48 @@ public class MainWindowPresenter {
             controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
                 }
         );
-        controller.getFullGraphRadioMenuItem().disableProperty().bind(disableRunProperty.or(mainWindow.getReactionGraphView().getMoleculeFlowAnimation().playingProperty()));
+        controller.getFullGraphRadioMenuItem().disableProperty().bind(disableRunProperty
+                .or(mainWindow.getReactionGraphView().getMoleculeFlowAnimation().playingProperty()).or(disableGraphItems));
 
         controller.getReactionDependencyGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> {
             graphView.setGraphType(ReactionGraphView.Type.reactionDependencyNetwork);
             controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
         });
-        controller.getReactionDependencyGraphRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty().or(mainWindow.getDocument().reactionDependencyNetworkProperty().isNull()));
+        controller.getReactionDependencyGraphRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty()
+                .or(mainWindow.getDocument().reactionDependencyNetworkProperty().isNull()).or(disableGraphItems));
 
         controller.getMoleculeDependencyGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> {
             graphView.setGraphType(ReactionGraphView.Type.moleculeDependencyNetwork);
             controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
         });
-        controller.getMoleculeDependencyGraphRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty().or(mainWindow.getDocument().moleculeDependencyNetworkProperty().isNull()));
+        controller.getMoleculeDependencyGraphRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty()
+                .or(mainWindow.getDocument().moleculeDependencyNetworkProperty().isNull()).or(disableGraphItems));
 
 
         controller.getAssociationGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> {
             graphView.setGraphType(ReactionGraphView.Type.associationNetwork);
             controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
         });
-        controller.getAssociationGraphRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty());
+        controller.getAssociationGraphRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty().or(disableGraphItems));
 
         controller.getReactantAssociationRadioMenuItem().selectedProperty().addListener((c, o, n) -> {
             graphView.setGraphType(ReactionGraphView.Type.reactantAssociationNetwork);
             controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
         });
-        controller.getReactantAssociationRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty());
+        controller.getReactantAssociationRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty().or(disableGraphItems));
 
         controller.getSuppressCatalystEdgesMenuItem().selectedProperty().addListener((c, o, n) -> {
             graphView.setSuppressCatalystEdges(n);
             controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
         });
-        controller.getSuppressCatalystEdgesMenuItem().disableProperty().bind(disableFullGraphItems);
+        controller.getSuppressCatalystEdgesMenuItem().disableProperty().bind(disableFullGraphItems.or(disableGraphItems));
 
         controller.getSuppressFormalFoodMenuItem().selectedProperty().addListener((c, o, n) -> {
             graphView.setSuppressFormalFood(n);
             controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
         });
-        controller.getSuppressFormalFoodMenuItem().disableProperty().bind(controller.getSuppressCatalystEdgesMenuItem().selectedProperty().or(Bindings.createBooleanBinding(() -> !mainWindow.getInputReactionSystem().getFoods().contains(FORMAL_FOOD), mainWindow.getInputReactionSystem().getFoods())));
+        controller.getSuppressFormalFoodMenuItem().disableProperty().bind(controller.getSuppressCatalystEdgesMenuItem().selectedProperty()
+                .or(Bindings.createBooleanBinding(() -> !mainWindow.getInputReactionSystem().getFoods().contains(FORMAL_FOOD), mainWindow.getInputReactionSystem().getFoods())).or(disableGraphItems));
 
 
         controller.getUseMultiCopyFoodNodesMenuItem().selectedProperty().addListener((c, o, n) ->
@@ -642,7 +652,7 @@ public class MainWindowPresenter {
             graphView.setUseMultiCopyFoodNodes(n);
             controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
         });
-        controller.getUseMultiCopyFoodNodesMenuItem().disableProperty().bind(disableFullGraphItems);
+        controller.getUseMultiCopyFoodNodesMenuItem().disableProperty().bind(disableFullGraphItems.or(disableGraphItems));
 
         controller.getGraphEmbedderIterationsMenuItem().setOnAction(e -> {
             TextInputDialog dialog = new TextInputDialog("" + graphView.getEmbeddingIterations());
@@ -659,6 +669,7 @@ public class MainWindowPresenter {
                 graphView.setEmbeddingIterations(Math.max(10, NumberUtils.parseInt(result.get())));
             }
         });
+        controller.getGraphEmbedderIterationsMenuItem().disableProperty().bind(disableGraphItems);
 
         controller.getComputeImportanceCheckMenuItem().setSelected(computeImportance); // this is a program-run parameter
         controller.getComputeImportanceCheckMenuItem().selectedProperty().addListener((c, o, n) -> computeImportance = n);
