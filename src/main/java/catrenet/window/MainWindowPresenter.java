@@ -756,7 +756,8 @@ public class MainWindowPresenter {
             });
         }
 
-		setupImportButton(controller.getImportButton());
+        controller.getImportButton().setOnAction(e -> openString(ClipboardUtils.getTextFilesContentOrString()));
+        controller.getImportButton().disableProperty().bind(ClipboardUtils.hasStringProperty().not().and(ClipboardUtils.hasFilesProperty().not()));
 
         SwipeUtils.setConsumeSwipes(controller.getRootPane());
         SwipeUtils.setConsumeSwipes(controller.getLogTab().getContent());
@@ -872,12 +873,6 @@ public class MainWindowPresenter {
         Platform.runLater(() -> textArea.setScrollTop(Double.MAX_VALUE));
 
     }
-
-	public static void setupImportButton(Button importButton) {
-		importButton.disableProperty().bind(ClipboardUtils.hasStringProperty().not().and(ClipboardUtils.hasFilesProperty().not()));
-
-		importButton.setOnAction(e -> openString(ClipboardUtils.getTextFilesContentOrString()));
-	}
 
 	public static void openString(String string) {
 		if (string != null && !string.isBlank()) {
