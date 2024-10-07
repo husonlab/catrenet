@@ -19,6 +19,7 @@ module catrenet {
 	exports catrenet.tools;
 	exports catrenet.settings;
 	exports catrenet.settings.displaylabels;
+	exports catrenet.dialog;
 
 	opens catrenet.algorithm;
 	opens catrenet.tab;
@@ -31,6 +32,4 @@ module catrenet {
 
 	opens catrenet.resources.images;
 	opens catrenet.resources.icons;
-
-	exports catrenet.dialog;
 }

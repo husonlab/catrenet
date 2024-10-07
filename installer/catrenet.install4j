@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="10.0.7" transformSequenceNumber="10">
+<install4j version="10.0.9" transformSequenceNumber="10">
   <directoryPresets config="../target/catrenet-1.0-SNAPSHOT.jar" />
-  <application name="CatReNet" applicationId="3801-6361-6203-7564" mediaDir="../../../builds" shortName="CatReNet" publisher="Daniel H. Huson, Joana C. Xavier and Mike A. Steel" publisherWeb="http://www.husonlab.org/catrenet" version="0.0.0_beta" allPathsRelative="true" macVolumeId="b8c0a1154e563a9a" javaMinVersion="11">
+  <application name="CatReNet" applicationId="3801-6361-6203-7564" mediaDir="../../../builds" shortName="CatReNet" publisher="Daniel H. Huson, Joana C. Xavier and Mike A. Steel" publisherWeb="http://www.husonlab.org/catrenet" version="0.0.0" allPathsRelative="true" macVolumeId="b8c0a1154e563a9a" javaMinVersion="17">
     <variables>
       <variable name="renderingVMOption" />
     </variables>
@@ -13,7 +13,7 @@
         <entry>install4j*</entry>
       </macSearchedJars>
     </codeSigning>
-    <jreBundles jdkProviderId="Liberica" release="21/21.0.2+14">
+    <jreBundles jdkProviderId="Liberica" release="23/23+38">
       <modules />
     </jreBundles>
   </application>
@@ -71,8 +71,6 @@
       </executable>
       <java mainClass="catrenet/catrenet.main.CatReNet" mainMode="module" vmParameters="-server -Duser.language=en -Duser.region=US  ${compiler:renderingVMOption}">
         <modulePath>
-          <directory location="jars" failOnError="false" />
-          <directory location="openjfx/${compiler:sys.platform}/lib" failOnError="false" />
           <directory location="jars" failOnError="false" />
         </modulePath>
       </java>
