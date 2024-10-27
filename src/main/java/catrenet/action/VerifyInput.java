@@ -43,14 +43,29 @@ public class VerifyInput {
     public static boolean verify(MainWindow window) {
         final MainWindowController controller = window.getController();
 
-        try {
             final ReactionSystem reactionSystem = window.getDocument().getInputReactionSystem();
             reactionSystem.clear();
 
-            ModelIO.read(reactionSystem, new StringReader(controller.getInputTextArea().getText()), window.getDocument().getReactionNotation());
-
+        try {
             ModelIO.read(reactionSystem, new StringReader("Food: " + controller.getInputFoodTextArea().getText()), window.getDocument().getReactionNotation());
+        } catch (IOException ex) {
+            if (ex instanceof IOExceptionWithLineNumber) {
+                NotificationManager.showError(ex.getMessage());
+                BasicFX.gotoAndSelectLine(window.getController().getInputFoodTextArea(), ((IOExceptionWithLineNumber) ex).getLineNumber(), -1);
+            } else NotificationManager.showError(ex.getMessage());
+            return false;
+        }
 
+        try {
+            ModelIO.read(reactionSystem, new StringReader(controller.getInputTextArea().getText()), window.getDocument().getReactionNotation());
+        } catch (IOException ex) {
+            if (ex instanceof IOExceptionWithLineNumber) {
+                NotificationManager.showError(ex.getMessage());
+                BasicFX.gotoAndSelectLine(window.getController().getInputTextArea(), ((IOExceptionWithLineNumber) ex).getLineNumber(), -1);
+            } else
+                NotificationManager.showError(ex.getMessage());
+            return false;
+        }
             // final String foodString = ModelIO.getFoodString(reactionSystem, window.getDocument().getReactionNotation());
 
             //controller.getInputTextArea().setText(ModelIO.toString(model, false, window.getDocument().getReactionNotation(), window.getDocument().getArrowNotation()));
@@ -64,13 +79,5 @@ public class VerifyInput {
             }
 
             return true;
-        } catch (IOException ex) {
-            if (ex instanceof IOExceptionWithLineNumber) {
-                NotificationManager.showError("Error in line: " + ((IOExceptionWithLineNumber) ex).getLineNumber() + ": " + ex.getMessage());
-                BasicFX.gotoAndSelectLine(window.getController().getInputTextArea(), ((IOExceptionWithLineNumber) ex).getLineNumber(), -1);
-            } else
-                NotificationManager.showError("Error: " + ex.getMessage());
-        }
-        return false;
     }
 }

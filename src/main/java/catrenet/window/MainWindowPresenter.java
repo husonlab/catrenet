@@ -115,14 +115,6 @@ public class MainWindowPresenter {
                 mainWindow.getDocument().setDirty(true);
         });
 
-        controller.getInputFoodTextArea().textProperty().addListener((v, o, n) -> {
-            RunAfterAWhile.applyInFXThread(controller.getInputFoodTextArea(), () -> VerifyInput.verify(mainWindow));
-        });
-
-        controller.getInputTextArea().textProperty().addListener((v, o, n) -> {
-            RunAfterAWhile.applyInFXThread(controller.getInputTextArea(), () -> VerifyInput.verify(mainWindow));
-        });
-
         RecentFilesManager.getInstance().setFileOpener(FileOpenManager.getFileOpener());
         RecentFilesManager.getInstance().setupMenu(controller.getRecentFilesMenu());
 

@@ -133,8 +133,8 @@ public class Reaction implements Comparable<Reaction> {
      *
      * @return the reaction
 	 */
-    public static Reaction parse(String line, final Set<Reaction> auxReactions, boolean tabbedFormat) throws IOException {
-        line = line.replaceAll("->", "=>").replaceAll("<-", "<=");
+	public static Reaction parse(String line, final Set<Reaction> auxReactions, boolean tabbedFormat) throws IOException {
+		line = line.replaceAll("->", "=>").replaceAll("<-", "<=");
 
         if (tabbedFormat) { // name <tab>  a+b -> c <tab> catalysts
 			final String[] tokens = StringUtils.trimAll(StringUtils.split(line, '\t'));
