@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="10.0.9" transformSequenceNumber="10">
-  <directoryPresets config="../target/catrenet-1.0-SNAPSHOT.jar" />
+  <directoryPresets config="../iconset" />
   <application name="CatReNet" applicationId="3801-6361-6203-7564" mediaDir="../../../builds" shortName="CatReNet" publisher="Daniel H. Huson, Joana C. Xavier and Mike A. Steel" publisherWeb="http://www.husonlab.org/catrenet" version="0.0.0" allPathsRelative="true" macVolumeId="b8c0a1154e563a9a" javaMinVersion="17">
     <variables>
       <variable name="renderingVMOption" />
@@ -13,7 +13,7 @@
         <entry>install4j*</entry>
       </macSearchedJars>
     </codeSigning>
-    <jreBundles jdkProviderId="Liberica" release="23/23+38">
+    <jreBundles jdkProviderId="Liberica" release="17/17.0.15+10">
       <modules />
     </jreBundles>
   </application>
@@ -66,8 +66,8 @@
   </files>
   <launchers>
     <launcher name="CatReNet" id="1691242142" menuName="CatReNet">
-      <executable name="CatReNet" iconSet="true" redirectStdout="true" executableMode="gui" changeWorkingDirectory="false" singleInstance="true" checkConsoleParameter="true" dpiAware="false">
-        <versionInfo include="true" fileDescription="CatReNet catalytic network analysis program" legalCopyright="Copyright (C)  2024 ${compiler:sys.publisher}" internalName="CatReNet" />
+      <executable name="CatReNet" iconSet="true" redirectStdout="true" executableMode="gui" changeWorkingDirectory="false" singleInstance="true" checkConsoleParameter="true" dpiAware="true">
+        <versionInfo include="true" fileDescription="CatReNet catalytic network analysis program" legalCopyright="Copyright (C)  2025 ${compiler:sys.publisher}" internalName="CatReNet" />
       </executable>
       <java mainClass="catrenet/catrenet.main.CatReNet" mainMode="module" vmParameters="-server -Duser.language=en -Duser.region=US  ${compiler:renderingVMOption}">
         <modulePath>
@@ -75,7 +75,13 @@
         </modulePath>
       </java>
       <iconImageFiles>
-        <file path="../src/main/resources/catrenet/resources/icons/CatReNet-512.png" />
+        <file path="../iconset/icon_16x16.png" />
+        <file path="../iconset/icon_32x32.png" />
+        <file path="../iconset/icon_48x48.png" />
+        <file path="../iconset/icon_64x64.png" />
+        <file path="../iconset/icon_128x128.png" />
+        <file path="../iconset/icon_256x256.png" />
+        <file path="../iconset/icon_512x512.png" />
       </iconImageFiles>
     </launcher>
   </launchers>
@@ -1145,6 +1151,9 @@ return true;</property>
       <jreBundle includedJre="macosx-amd64-12.0.1" />
     </macosFolder>
     <windows name="Windows64bit" id="1691242288" installDir="CatReNet" overridePrincipalLanguage="true" architecture="64">
+      <excludedBeans>
+        <bean refId="1691243205" />
+      </excludedBeans>
       <overriddenPrincipalLanguage id="409" />
       <exclude>
         <entry location="tools" />
@@ -1158,7 +1167,7 @@ return true;</property>
     </windows>
   </mediaSets>
   <buildIds buildAll="false">
-    <mediaSet refId="1691242165" />
+    <mediaSet refId="1691242288" />
   </buildIds>
   <buildOptions disableSigning="true" disableNotarization="true" />
 </install4j>
