@@ -209,4 +209,4 @@ Hordijk, W. (2023). [A concise and formal definition of RAF sets and the RAF alg
 Huson, D. H., Xavier, J. C., & Steel, M. A. (2024). _Self‑generating autocatalytic networks: structural results, algorithms, and their relevance to early biochemistry_. *Journal of the Royal Society Interface*, **21**(214), Article 20230732. [📄 PDF](https://royalsocietypublishing.org/doi/pdf/10.1098/rsif.2023.0732) • [🔗 DOI](https://doi.org/10.1098/rsif.2023.0732)
 
 <a id="70">[HXS24b]</a>
-Huson, D. H., Xavier, J. C., & Steel, M. A. (2024). _CatReNet: interactive analysis of (auto-) catalytic reaction networks_. *Bioinformatics*, **40**(8), btae515. [📄 PDF](https://academic.oup.com/bioinformatics/article-pdf/40/8/btae515/xyz.pdf) • [🔗 DOI](https://doi.org/10.1093/bioinformatics/btae515)
+Huson, D. H., Xavier, J. C., & Steel, M. A. (2024). _CatReNet: interactive analysis of (auto‑) catalytic reaction networks_. *Bioinformatics*, **40**(8), btae515. [📄 PDF](https://academic.oup.com/bioinformatics/article-pdf/40/8/btae515/58967196/btae515.pdf) • [🔗 DOI](https://doi.org/10.1093/bioinformatics/btae515)
