@@ -12,7 +12,7 @@ CatReNet was first introduced as CatlyNet in [[SXH20]](#25).
 
 CatReNet is written in Java using JavaFX and
 is loosely based on a web application written by Dietrich Radel: http://www.math.canterbury.ac.nz/bio/RAF/.
-This software was developed by Daniel H. Huson, Joana C. Xavier and Mike A. Steel. A paper describing the software has been submitted.
+This software was developed by Daniel H. Huson, Joana C. Xavier and Mike A. Steel, see [[HXS24b]](#70).
 
 ## Installers
 
