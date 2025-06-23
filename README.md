@@ -125,6 +125,10 @@ There are a several options:
 - Use Multicopy Food Nodes - select this to show each food node multiple times, to produce a less tangled network
 - Show/Hide Node Labels - select to hide node labels
 
+### Other calculations
+
+- Reaction Precedence DAG – A directed acyclic graph (DAG) that captures the partial ordering of reactions based on their dependencies: if an admissible ordering of reactions exists (ignoring catalysts), this graph represents which reactions must occur before others.
+
 ### Animation
 
 The program can animate the emergence of three types of systems:
