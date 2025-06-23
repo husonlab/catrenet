@@ -206,7 +206,7 @@ Xavier, J.C., Hordijk, W., Kauffman, S., Steel M. and Martin, W.F. (2020). [Auto
 Hordijk, W. (2023). [A concise and formal definition of RAF sets and the RAF algorithm](https://arxiv.org/abs/2303.01809), arXiv:2303.01809.
 
 <a id="60">[HXS24]</a>
-Huson, D.H., Xavier, J. C., and Steel, M.A. (2024). [Self-generating autocatalytic networks: structural results, algorithms, and their relevance to early biochemistry](https://www.biorxiv.org/content/10.1101/2023.09.01.556005v4.full). J. Royal Society Interface (In press)
+Huson, D. H., Xavier, J. C., & Steel, M. A. (2024). _Self‑generating autocatalytic networks: structural results, algorithms, and their relevance to early biochemistry_. *Journal of the Royal Society Interface*, **21**(214), Article 20230732. [📄 PDF](https://royalsocietypublishing.org/doi/pdf/10.1098/rsif.2023.0732) • [🔗 DOI](https://doi.org/10.1098/rsif.2023.0732)
 
 <a id="70">[HXS24b]</a>
-Huson, D.H., Xavier, J.C. and Steel, M.A. (2024) CatReNet: interactive analysis of (auto-) catalytic reaction networks, manuscript in preparation. 
+Huson, D. H., Xavier, J. C., & Steel, M. A. (2024). _CatReNet: interactive analysis of (auto-) catalytic reaction networks_. *Bioinformatics*, **40**(8), btae515. [📄 PDF](https://academic.oup.com/bioinformatics/article-pdf/40/8/btae515/xyz.pdf) • [🔗 DOI](https://doi.org/10.1093/bioinformatics/btae515)
