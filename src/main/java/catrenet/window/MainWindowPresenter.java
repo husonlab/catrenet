@@ -35,10 +35,7 @@ import catrenet.model.ReactionSystem;
 import catrenet.settings.SettingsView;
 import catrenet.tab.TabManager;
 import catrenet.tab.TextTab;
-import catrenet.view.MoleculeFlowAnimation;
-import catrenet.view.NodeView;
-import catrenet.view.ReactionGraphView;
-import catrenet.view.SelectionBindings;
+import catrenet.view.*;
 import javafx.animation.Animation;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
@@ -66,6 +63,7 @@ import jloda.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -75,6 +73,7 @@ import java.util.TreeSet;
 import java.util.function.Consumer;
 
 import static catrenet.io.ModelIO.FORMAL_FOOD;
+import static catrenet.io.ModelIO.parseFood;
 
 /**
  * setup all control bindings
@@ -110,9 +109,24 @@ public class MainWindowPresenter {
             if (n)
                 mainWindow.getDocument().setDirty(true);
         });
+        controller.getInputTextArea().focusedProperty().addListener((v, o, n) -> {
+            if (!n && controller.getInputFoodTextArea().isUndoable()) {
+                try {
+                    ModelIO.read(mainWindow.getDocument().getInputReactionSystem(), new StringReader(controller.getInputTextArea().getText()), mainWindow.getDocument().getReactionNotation());
+                } catch (IOException e) {
+                    NotificationManager.showWarning("Failed to read reaction notation");
+                }
+            }
+        });
+
         controller.getInputFoodTextArea().undoableProperty().addListener((c, o, n) -> {
             if (n)
                 mainWindow.getDocument().setDirty(true);
+        });
+        controller.getInputFoodTextArea().focusedProperty().addListener((v, o, n) -> {
+            if (!n && controller.getInputFoodTextArea().isUndoable()) {
+                mainWindow.getInputReactionSystem().getFoods().setAll(parseFood(controller.getInputFoodTextArea().getText()));
+            }
         });
 
         RecentFilesManager.getInstance().setFileOpener(FileOpenManager.getFileOpener());
@@ -582,7 +596,7 @@ public class MainWindowPresenter {
 
         final var noGraphTypeSet = new RadioMenuItem();
         final var graphTypeButtonGroup = new ToggleGroup();
-        graphTypeButtonGroup.getToggles().addAll(controller.getFullGraphRadioMenuItem(), controller.getReactantAssociationRadioMenuItem(), controller.getAssociationGraphRadioMenuItem(), controller.getReactantAssociationRadioMenuItem(), noGraphTypeSet);
+        graphTypeButtonGroup.getToggles().addAll(controller.getFullGraphRadioMenuItem(), controller.getReactantAssociationRadioMenuItem(), controller.getAssociationGraphRadioMenuItem(), controller.getReactantAssociationRadioMenuItem(), controller.getPrecedenceReactionDagMenuItem(), noGraphTypeSet);
 
         graphTypeButtonGroup.selectToggle(new RadioMenuItem());
 
@@ -590,39 +604,56 @@ public class MainWindowPresenter {
         graphView.graphTypeProperty().addListener((c, o, n) -> controller.getGraphTypeLabel().setText(StringUtils.capitalizeFirstLetter(StringUtils.fromCamelCase(n.name()))));
 
         controller.getFullGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> {
-            graphView.setGraphType(ReactionGraphView.Type.fullNetwork);
-            controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
+            if (n) {
+                graphView.setGraphType(ReactionGraphView.Type.fullNetwork);
+                controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
+            }
                 }
         );
         controller.getFullGraphRadioMenuItem().disableProperty().bind(disableRunProperty
                 .or(mainWindow.getReactionGraphView().getMoleculeFlowAnimation().playingProperty()).or(disableGraphItems));
 
         controller.getReactionDependencyGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> {
-            graphView.setGraphType(ReactionGraphView.Type.reactionDependencyNetwork);
-            controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
+            if (n) {
+                graphView.setGraphType(ReactionGraphView.Type.reactionDependencyNetwork);
+                controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
+            }
         });
         controller.getReactionDependencyGraphRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty()
                 .or(mainWindow.getDocument().reactionDependencyNetworkProperty().isNull()).or(disableGraphItems));
 
         controller.getMoleculeDependencyGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> {
-            graphView.setGraphType(ReactionGraphView.Type.moleculeDependencyNetwork);
-            controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
+            if (n) {
+                graphView.setGraphType(ReactionGraphView.Type.moleculeDependencyNetwork);
+                controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
+            }
         });
         controller.getMoleculeDependencyGraphRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty()
                 .or(mainWindow.getDocument().moleculeDependencyNetworkProperty().isNull()).or(disableGraphItems));
 
-
         controller.getAssociationGraphRadioMenuItem().selectedProperty().addListener((c, o, n) -> {
-            graphView.setGraphType(ReactionGraphView.Type.associationNetwork);
-            controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
+            if (n) {
+                graphView.setGraphType(ReactionGraphView.Type.associationNetwork);
+                controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
+            }
         });
         controller.getAssociationGraphRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty().or(disableGraphItems));
 
         controller.getReactantAssociationRadioMenuItem().selectedProperty().addListener((c, o, n) -> {
-            graphView.setGraphType(ReactionGraphView.Type.reactantAssociationNetwork);
-            controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
+            if (n) {
+                graphView.setGraphType(ReactionGraphView.Type.reactantAssociationNetwork);
+                controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
+            }
         });
         controller.getReactantAssociationRadioMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty().or(disableGraphItems));
+
+        controller.getPrecedenceReactionDagMenuItem().selectedProperty().addListener((c, o, n) -> {
+            if (n) {
+                graphView.setGraphType(ReactionGraphView.Type.precedenceReactionNetwork);
+                controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
+            }
+        });
+        controller.getPrecedenceReactionDagMenuItem().disableProperty().bind(controller.getFullGraphRadioMenuItem().disableProperty().or(disableGraphItems));
 
         controller.getSuppressCatalystEdgesMenuItem().selectedProperty().addListener((c, o, n) -> {
             graphView.setSuppressCatalystEdges(n);
@@ -697,6 +728,13 @@ public class MainWindowPresenter {
         controller.getListCatalystsMenuItem().disableProperty().bind(disableRunProperty);
         controller.getListInhibitorsMenuItem().setOnAction(e -> reportList(mainWindow.getInputReactionSystem(), "Inhibitors", controller));
         controller.getListInhibitorsMenuItem().disableProperty().bind(disableRunProperty);
+
+        controller.getStratifyReactionsAndMoleculesMenuItem().setOnAction(e -> {
+            var text = Stratification.report(mainWindow.getInputReactionSystem());
+            controller.getLogTextArea().setText(controller.getLogTextArea().getText() + "\n" + text);
+            selectLogTab(controller);
+            Platform.runLater(() -> controller.getLogTextArea().setScrollTop(Double.MAX_VALUE));
+        });
 
         controller.getUndoFoodButton().disableProperty().bind(controller.getInputFoodTextArea().undoableProperty().not());
         controller.getRedoFoodButton().disableProperty().bind(controller.getInputFoodTextArea().redoableProperty().not());

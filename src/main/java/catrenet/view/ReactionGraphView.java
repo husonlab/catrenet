@@ -65,7 +65,7 @@ import static catrenet.io.ModelIO.FORMAL_FOOD;
 public class ReactionGraphView {
 	private final static ObjectProperty<Font> font = new SimpleObjectProperty<>(Font.font("Helvetica", 12));
 
-	public enum Type {fullNetwork, associationNetwork, reactantAssociationNetwork, reactionDependencyNetwork, moleculeDependencyNetwork}
+	public enum Type {fullNetwork, associationNetwork, reactantAssociationNetwork, reactionDependencyNetwork, moleculeDependencyNetwork, precedenceReactionNetwork}
 
 	private final ObjectProperty<Type> graphType = new SimpleObjectProperty<>();
 
@@ -206,6 +206,7 @@ public class ReactionGraphView {
 				}
 
 				case fullNetwork -> {
+					reactionGraph.clear();
 					SetupFullGraph.apply(reactionGraph, reactionSystem, foodNodes, molecule2node, isSuppressCatalystEdges(), isUseMultiCopyFoodNodes());
 					if (isSuppressFormalFood()) {
 						for (var v : reactionGraph.nodes()) {
@@ -216,6 +217,7 @@ public class ReactionGraphView {
 						}
 					}
 				}
+				case precedenceReactionNetwork -> SetupPrecedenceReactionNetwork.apply(reactionGraph, reactionSystem);
 			}
 		}
 

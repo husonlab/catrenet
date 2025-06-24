@@ -496,6 +496,12 @@ public class MainWindowController {
 	@FXML
 	private Button importButton;
 
+	@FXML
+	private MenuItem stratifyReactionsAndMoleculesMenuItem;
+
+	@FXML
+	private RadioMenuItem precedenceReactionNetworkRadioMenuItem;
+
 	private ZoomableScrollPane zoomableScrollPane;
 
 	@FXML
@@ -986,6 +992,11 @@ public class MainWindowController {
 		return reactantAssociationRadioMenuItem;
 	}
 
+
+	public RadioMenuItem getPrecedenceReactionDagMenuItem() {
+		return precedenceReactionNetworkRadioMenuItem;
+	}
+
 	public CheckMenuItem getSuppressCatalystEdgesMenuItem() {
 		return suppressCatalystEdgesMenuItem;
 	}
@@ -1220,5 +1231,9 @@ public class MainWindowController {
 
 	public Button getImportButton() {
 		return importButton;
+	}
+
+	public MenuItem getStratifyReactionsAndMoleculesMenuItem() {
+		return stratifyReactionsAndMoleculesMenuItem;
 	}
 }

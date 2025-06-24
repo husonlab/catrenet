@@ -92,6 +92,7 @@ In more detail, the program provides the following calculations:
 - Compute Reaction Dependencies - computes the graph of dependencies between all food-set generated
   reactions [[HXS24]](#60)
 - Compute Molecule Dependencies - computes the graph of dependencies between all molecules [[HXS24]](#60)
+- Stratify reactions and molecules - list reactions and molecules ranked by order in which they first appear
 - Compute Importance - computes the percent difference between model size and model size without given food
   item [[HS23]](#50)
 
@@ -127,7 +128,10 @@ There are a several options:
 
 ### Other calculations
 
-- Reaction Precedence DAG – A directed acyclic graph (DAG) that captures the partial ordering of reactions based on their dependencies: if an admissible ordering of reactions exists (ignoring catalysts), this graph represents which reactions must occur before others.
+- Reaction Precedence Network – A directed network that aims at capturing the partial ordering of reactions based on
+  their dependencies:
+  if an admissible ordering of reactions exists (ignoring catalysts), then this graph is a DAG that represents which
+  reactions must occur before others.
 
 ### Animation
 

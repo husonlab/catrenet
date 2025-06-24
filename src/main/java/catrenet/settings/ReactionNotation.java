@@ -66,7 +66,7 @@ public enum ReactionNotation {
                     return new Pair<>(Full, arrowsUseEquals ? ArrowNotation.UsesEquals : ArrowNotation.UsesMinus);
                 else
                     return new Pair<>(Sparse, arrowsUseEquals ? ArrowNotation.UsesEquals : ArrowNotation.UsesMinus);
-            } else if (containsTabs)
+            } else // if (containsTabs)
                 return new Pair<>(Tabbed, arrowsUseEquals ? ArrowNotation.UsesEquals : ArrowNotation.UsesMinus);
         }
         return null;

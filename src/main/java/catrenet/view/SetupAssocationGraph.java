@@ -66,7 +66,7 @@ public class SetupAssocationGraph {
                             continue;
                     }
 
-                    if (nonFoodProducts.size() > 0) {
+					if (!nonFoodProducts.isEmpty()) {
 						final var catalysts = new HashSet<MoleculeType>();
 						r2.getCatalystConjunctions().forEach(c -> catalysts.addAll(MoleculeType.valuesOf(StringUtils.split(c.getName(), '&'))));
 
