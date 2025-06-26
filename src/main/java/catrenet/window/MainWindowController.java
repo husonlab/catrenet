@@ -376,6 +376,9 @@ public class MainWindowController {
 	private MenuItem selectConnectedComponentMenuItem;
 
 	@FXML
+	private MenuItem selectForwardNodesMenuItem;
+
+	@FXML
 	private MenuItem selectEdgesMenuItem;
 
 	@FXML
@@ -826,6 +829,10 @@ public class MainWindowController {
 
 	public MenuItem getSelectConnectedComponentMenuItem() {
 		return selectConnectedComponentMenuItem;
+	}
+
+	public MenuItem getSelectForwardNodesMenuItem() {
+		return selectForwardNodesMenuItem;
 	}
 
 	public MenuItem getSelectFromPreviousWindowMenuItem() {

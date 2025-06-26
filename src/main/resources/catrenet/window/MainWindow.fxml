@@ -553,6 +553,13 @@
                                     </accelerator>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
+                                <MenuItem fx:id="selectForwardNodesMenuItem" mnemonicParsing="false"
+                                          text="Select Forward Nodes">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="R" control="UP" meta="UP" shift="DOWN"
+                                                            shortcut="DOWN"/>
+                                    </accelerator>
+                                </MenuItem>
                                 <MenuItem fx:id="selectConnectedComponentMenuItem" mnemonicParsing="false"
                                           text="Select Connected Component">
                                     <accelerator>

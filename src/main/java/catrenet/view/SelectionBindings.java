@@ -118,6 +118,19 @@ public class SelectionBindings {
         });
         controller.getSelectConnectedComponentMenuItem().disableProperty().bind(visualizationHasFocus.not().or(view.getNodeSelection().emptyProperty()));
 
+        controller.getSelectForwardNodesMenuItem().setOnAction(a -> {
+            var queue = new ArrayList<>(view.getNodeSelection().getSelectedItems());
+            while (!queue.isEmpty()) {
+                var v = queue.remove(0);
+                for (var w : v.children()) {
+                    if (!view.getNodeSelection().isSelected(w)) {
+                        view.getNodeSelection().select(w);
+                        queue.add(w);
+                    }
+                }
+            }
+        });
+        controller.getSelectForwardNodesMenuItem().disableProperty().bind(visualizationHasFocus.not().or(view.getNodeSelection().emptyProperty()));
 
         window.getDocument().getReactionSystems().addListener((InvalidationListener) e ->
                 Platform.runLater(() -> {
