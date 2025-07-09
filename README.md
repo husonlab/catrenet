@@ -77,7 +77,7 @@ In more detail, the program provides the following calculations:
 - Trivial RAFs Algorithm - computes all reactions that can run using only the food set, where the catalyst need not be
   in the food set if the reaction produces it
 - Core RAF Algorithm - computes the unique irreducible RAF, if it exists (Section 4.1 of [[SXH20]](#25))
-- Quotient RAF Algorithm - computes the Max RAF minus all the reactions from the Max CAF and adds all produces of the
+- Quotient RAF Algorithm - computes the Max RAF minus all the reactions from the Max CAF and adds all products of the
   Max CAF to the food set [[SXH20]](#25)
 - Remove Trivial RAFs Algorithm - computes CRS that is obtained by removing all trivial RAFs
 - Min iRAF Heuristic - searches for a smallest irreducible RAF in a heuristic fashion [[HXS24b]](#50)
