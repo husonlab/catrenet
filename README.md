@@ -21,9 +21,16 @@ available [here](https://software-ab.cs.uni-tuebingen.de/download/catrenet/welco
 
 Versions for Android and iOS are under development.
 
+## 🎥 Video Introduction
+
+We’ve prepared a short video on how to get started using CatReNet:
+
+👉 [Watch on YouTube](https://youtu.be/8sBZtX101gU)
+
 ## Getting started
 
 Install the software using the interactive installer.
+
 
 The installation directory contains a directory of examples. Select the `File->Open` menu item, navigate to the examples directory and select an example file to open:
 
