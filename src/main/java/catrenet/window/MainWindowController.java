@@ -112,7 +112,7 @@ public class MainWindowController {
 	private MenuItem exportListOfReactionsMenuItem;
 
 	@FXML
-	private MenuItem exportGraphGMLMenuItem;
+	private MenuItem exportNetworkGMLMenuItem;
 
 	@FXML
 	private Menu exportMenu;
@@ -503,7 +503,16 @@ public class MainWindowController {
 	private MenuItem stratifyReactionsAndMoleculesMenuItem;
 
 	@FXML
-	private RadioMenuItem precedenceReactionNetworkRadioMenuItem;
+	private RadioMenuItem reactionPrecedenceNetworkRadioMenuItem;
+
+	@FXML
+	private RadioMenuItem reactionsStratificationNetworkRadioItem;
+
+	@FXML
+	private RadioMenuItem reactionsRequiredMoleculesStratificationNetworkMenuItem;
+
+	@FXML
+	private RadioMenuItem reactionsAllMoleculesStratificationNetworkRadioItem;
 
 	private ZoomableScrollPane zoomableScrollPane;
 
@@ -727,8 +736,8 @@ public class MainWindowController {
 		return exportListOfReactionsMenuItem;
 	}
 
-	public MenuItem getExportGraphGMLMenuItem() {
-		return exportGraphGMLMenuItem;
+	public MenuItem getExportNetworkGMLMenuItem() {
+		return exportNetworkGMLMenuItem;
 	}
 
 	public Menu getRecentFilesMenu() {
@@ -1000,8 +1009,20 @@ public class MainWindowController {
 	}
 
 
-	public RadioMenuItem getPrecedenceReactionDagMenuItem() {
-		return precedenceReactionNetworkRadioMenuItem;
+	public RadioMenuItem getReactionPrecedenceNetworkRadioMenuItem() {
+		return reactionPrecedenceNetworkRadioMenuItem;
+	}
+
+	public RadioMenuItem getReactionsStratificationNetworkRadioItem() {
+		return reactionsStratificationNetworkRadioItem;
+	}
+
+	public RadioMenuItem getReactionsRequiredMoleculesStratificationNetworkMenuItem() {
+		return reactionsRequiredMoleculesStratificationNetworkMenuItem;
+	}
+
+	public RadioMenuItem getReactionsAllMoleculesStratificationNetworkRadioItem() {
+		return reactionsAllMoleculesStratificationNetworkRadioItem;
 	}
 
 	public CheckMenuItem getSuppressCatalystEdgesMenuItem() {

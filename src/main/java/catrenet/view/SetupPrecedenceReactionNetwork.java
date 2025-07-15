@@ -22,6 +22,7 @@ package catrenet.view;
 
 import catrenet.model.Reaction;
 import catrenet.model.ReactionSystem;
+import jloda.graph.Edge;
 import jloda.graph.Graph;
 import jloda.graph.Node;
 import jloda.util.IteratorUtils;
@@ -37,16 +38,21 @@ public class SetupPrecedenceReactionNetwork {
 	 * apply
 	 */
 	public static void apply(Graph reactionGraph, ReactionSystem reactionSystem) {
+		System.err.println("Computing Precedence Reaction Network");
+
 		reactionGraph.clear();
 
-		final var reactionNodeMap = new HashMap<Reaction, Node>();
-		reactionSystem.getReactions().forEach(r -> reactionNodeMap.put(r, reactionGraph.newNode(r)));
 
-		var food = reactionSystem.getFoods();
 		var allReactions = reactionSystem.getReactions();
 
-		for (var r1 : reactionSystem.getReactions()) {
-			for (var r2 : reactionSystem.getReactions()) {
+		final var reactionNodeMap = new HashMap<Reaction, Node>();
+
+		allReactions.forEach(r -> reactionNodeMap.put(r, reactionGraph.newNode(r)));
+
+		var food = reactionSystem.getFoods();
+
+		for (var r1 : allReactions) {
+			for (var r2 : allReactions) {
 				var intersection = IteratorUtils.asList(SetUtils.intersection(r1.getProducts(), r2.getReactants()));
 				if (!intersection.isEmpty()) {
 					var reactions = new HashSet<>(allReactions);
@@ -63,5 +69,34 @@ public class SetupPrecedenceReactionNetwork {
 				}
 			}
 		}
+
+		System.err.printf("Nodes: %d, Edges: %d%n", reactionGraph.getNumberOfNodes(), reactionGraph.getNumberOfEdges());
+
+		if (false) {
+			System.err.print("Transitive reduction: " + reactionGraph.getNumberOfEdges() + " -> ");
+			System.err.flush();
+			applyTransitiveReduction(reactionGraph);
+			System.err.println(+reactionGraph.getNumberOfEdges());
+		}
 	}
+
+	public static void applyTransitiveReduction(Graph graph) {
+		final var toDelete = new HashSet<Edge>();
+		for (var e : graph.edges()) {
+			for (var f : e.getSource().outEdges()) {
+				if (f != e) {
+					for (var g : f.getTarget().outEdges()) {
+						if (g.getTarget() == e.getTarget()) {
+							toDelete.add(e);
+							break;
+						}
+					}
+				}
+			}
+		}
+		for (var e : toDelete) {
+			graph.deleteEdge(e);
+		}
+	}
+
 }

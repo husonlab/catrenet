@@ -23,7 +23,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.input.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane fx:id="rootPane" prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1"
+<AnchorPane fx:id="rootPane" prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/18.1"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="catrenet.window.MainWindowController">
     <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                 AnchorPane.topAnchor="0.0">
@@ -402,8 +402,8 @@
                                         <MenuItem fx:id="exportListOfReactionsMenuItem" mnemonicParsing="false"
                                                   text="List of Reactions..."/>
                                         <SeparatorMenuItem mnemonicParsing="false"/>
-                                        <MenuItem fx:id="exportGraphGMLMenuItem" mnemonicParsing="false"
-                                                  text="Graph in GML Format..."/>
+                                        <MenuItem fx:id="exportNetworkGMLMenuItem" mnemonicParsing="false"
+                                                  text="Network in GML Format..."/>
                                         <SeparatorMenuItem mnemonicParsing="false"/>
                                     </items>
                                 </Menu>
@@ -720,8 +720,17 @@
                                 <RadioMenuItem fx:id="moleculeDependencyGraphRadioMenuItem" mnemonicParsing="false"
                                                text="Molecule-Dependency Network"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <RadioMenuItem fx:id="precedenceReactionNetworkRadioMenuItem" mnemonicParsing="false"
-                                               text="Precedence Reaction Network"/>
+                                <RadioMenuItem fx:id="reactionsStratificationNetworkRadioItem" mnemonicParsing="false"
+                                               text="Stratification Network (Reactions Only)"/>
+                                <RadioMenuItem fx:id="reactionsRequiredMoleculesStratificationNetworkMenuItem"
+                                               mnemonicParsing="false"
+                                               text="Stratification Network  (Reactions and Required Molecules)"/>
+                                <RadioMenuItem fx:id="reactionsAllMoleculesStratificationNetworkRadioItem"
+                                               mnemonicParsing="false"
+                                               text="Stratification Network (Reactions and All Molecules)"/>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <RadioMenuItem fx:id="reactionPrecedenceNetworkRadioMenuItem" mnemonicParsing="false"
+                                               text="Reaction Precedence Network"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="showNodeLabels" mnemonicParsing="false" text="Show/Hide Node Labels">
                                     <accelerator>

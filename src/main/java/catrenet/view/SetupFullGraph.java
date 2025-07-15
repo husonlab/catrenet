@@ -22,7 +22,6 @@ package catrenet.view;
 import catrenet.model.MoleculeType;
 import catrenet.model.Reaction;
 import catrenet.model.ReactionSystem;
-import jloda.graph.Edge;
 import jloda.graph.Graph;
 import jloda.graph.Node;
 import jloda.graph.NodeSet;
@@ -30,7 +29,6 @@ import jloda.util.StringUtils;
 
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -45,7 +43,7 @@ public class SetupFullGraph {
      */
     public static void apply(Graph reactionGraph, ReactionSystem reactionSystem, NodeSet foodNodes, final Map<MoleculeType, Node> molecule2node, boolean suppressCatalystEdges, boolean useMultiCopyFoodNodes) {
         for (Reaction reaction : reactionSystem.getReactions()) {
-            final Node reactionNode = reactionGraph.newNode(reaction);
+			final var reactionNode = reactionGraph.newNode(reaction);
 
             final Set<MoleculeType> molecules = new HashSet<>();
             molecules.addAll(reaction.getReactants());
@@ -57,28 +55,28 @@ public class SetupFullGraph {
                 molecules.addAll(reaction.getInhibitions());
             }
 
-            for (MoleculeType molecule : molecules) {
+			for (var molecule : molecules) {
                 if (molecule2node.get(molecule) == null) { // must be a food molecule mentioned in a conjunction
-                    final Node v = reactionGraph.newNode(molecule.getName().contains("&") ? new ReactionGraphView.AndNode() : molecule);
+					final var v = reactionGraph.newNode(molecule.getName().contains("&") ? new ReactionGraphView.AndNode() : molecule);
                     molecule2node.put(molecule, v);
                     if (reactionSystem.getFoods().contains(molecule))
                         foodNodes.add(v);
                 }
             }
 
-            for (MoleculeType molecule : reaction.getReactants()) {
+			for (var molecule : reaction.getReactants()) {
                 addNewEdgeIfNotPresent(reactionGraph, getNode(reactionGraph, reactionSystem, molecule, molecule2node, useMultiCopyFoodNodes), reactionNode, reaction.getDirection() == Reaction.Direction.both ? EdgeType.ReactantReversible : EdgeType.Reactant);
             }
-            for (MoleculeType molecule : reaction.getProducts()) {
+			for (var molecule : reaction.getProducts()) {
                 addNewEdgeIfNotPresent(reactionGraph, reactionNode, getNode(reactionGraph, reactionSystem, molecule, molecule2node, useMultiCopyFoodNodes), reaction.getDirection() == Reaction.Direction.both ? EdgeType.ProductReversible : EdgeType.Product);
             }
             if (!suppressCatalystEdges) {
-                for (MoleculeType molecule : reaction.getCatalystConjunctions()) {
+				for (var molecule : reaction.getCatalystConjunctions()) {
                     if (molecule.getName().contains("&")) {
-						for (MoleculeType catalyst : MoleculeType.valuesOf(StringUtils.trimAll(StringUtils.split(molecule.getName(), '&')))) {
-							final Node andNode = getNode(reactionGraph, reactionSystem, molecule, molecule2node, useMultiCopyFoodNodes);
+						for (var catalyst : MoleculeType.valuesOf(StringUtils.trimAll(StringUtils.split(molecule.getName(), '&')))) {
+							final var andNode = getNode(reactionGraph, reactionSystem, molecule, molecule2node, useMultiCopyFoodNodes);
 							if (useMultiCopyFoodNodes) {
-								final Optional<Node> node = StreamSupport.stream(andNode.parents().spliterator(), true).filter(v -> v.getInfo().equals(catalyst)).findAny();
+								final var node = StreamSupport.stream(andNode.parents().spliterator(), true).filter(v -> v.getInfo().equals(catalyst)).findAny();
 								if (node.isPresent())
 									continue;
 							}
@@ -87,14 +85,14 @@ public class SetupFullGraph {
                     }
                     addNewEdgeIfNotPresent(reactionGraph, getNode(reactionGraph, reactionSystem, molecule, molecule2node, useMultiCopyFoodNodes), reactionNode, EdgeType.Catalyst);
                 }
-                for (MoleculeType molecule : reaction.getInhibitions()) {
+				for (var molecule : reaction.getInhibitions()) {
                     addNewEdgeIfNotPresent(reactionGraph, getNode(reactionGraph, reactionSystem, molecule, molecule2node, useMultiCopyFoodNodes), reactionNode, EdgeType.Inhibitor);
                 }
             }
         }
-        for (Node v : reactionGraph.nodes()) {
+		for (var v : reactionGraph.nodes()) {
             if (v.getInfo() instanceof ReactionGraphView.AndNode) {
-                for (Edge e : v.inEdges()) {
+				for (var e : v.inEdges()) {
                     if (e.getSource().getDegree() == 1)
                         foodNodes.add(e.getSource());
                 }

@@ -36,6 +36,9 @@ public class SettingsController {
 	private TextField iterationsTextField;
 
 	@FXML
+	private TextField maxSizeNetworkTextField;
+
+	@FXML
 	private ChoiceBox<EdgeView.EdgeStyle> reactionEdgeStyleCBox;
 
 	@FXML
@@ -123,6 +126,9 @@ public class SettingsController {
 	private Button importDisplayLabelsButton;
 
 	@FXML
+	private Button exportDisplayLabelsButton;
+
+	@FXML
 	private ListView<Pair<String, String>> displayLabelListView;
 
 	@FXML
@@ -135,7 +141,8 @@ public class SettingsController {
 	private void initialize() {
 		infoTextArea.setText(ProgramProperties.getProgramVersion() + "\nDaniel H. Huson, Joana C. Xavier and  Mike A. Steel. License GPL3");
 		MaterialIcons.setIcon(clearDisplayLabelsButton, MaterialIcons.delete);
-		MaterialIcons.setIcon(importDisplayLabelsButton, MaterialIcons.download);
+		MaterialIcons.setIcon(importDisplayLabelsButton, MaterialIcons.arrow_downward);
+		MaterialIcons.setIcon(exportDisplayLabelsButton, MaterialIcons.arrow_upward);
 		MaterialIcons.setIcon(addDisplayLabelButton, MaterialIcons.add);
 
 		ListViewUtils.setupEditing(displayLabelListView, true);
@@ -143,6 +150,10 @@ public class SettingsController {
 
 	public TextField getIterationsTextField() {
 		return iterationsTextField;
+	}
+
+	public TextField getMaxSizeNetworkTextField() {
+		return maxSizeNetworkTextField;
 	}
 
 	public ChoiceBox<EdgeView.EdgeStyle> getReactionEdgeStyleCBox() {
@@ -259,6 +270,10 @@ public class SettingsController {
 
 	public Button getImportDisplayLabelsButton() {
 		return importDisplayLabelsButton;
+	}
+
+	public Button getExportDisplayLabelsButton() {
+		return exportDisplayLabelsButton;
 	}
 
 	public ListView<Pair<String, String>> getDisplayLabelListView() {

@@ -23,7 +23,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<TitledPane fx:id="titledPane" animated="false" collapsible="false" prefHeight="380.0" prefWidth="500.0" text="Settings"
+<TitledPane fx:id="titledPane" animated="false" collapsible="false" prefHeight="400.0" prefWidth="500.0" text="Settings"
             xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="catrenet.settings.SettingsController">
     <content>
@@ -118,7 +118,7 @@
                                     </content>
                                 </TitledPane>
                                 <TitledPane animated="false"
-                                            text="Default visualization for nodes and edges in network">
+                                            text="Default styles for nodes and edges in network">
                                     <content>
                                         <AnchorPane minHeight="0.0" minWidth="0.0">
                                             <children>
@@ -248,7 +248,14 @@
                                                                         mnemonicParsing="false" text="Import">
                                                                     <tooltip>
                                                                         <Tooltip
-                                                                                text="Import key value pairs from tab-separated entries copied text of file"/>
+                                                                                text="Import (copy) tab-separated key-value pairs from the clipboard"/>
+                                                                    </tooltip>
+                                                                </Button>
+                                                                <Button fx:id="exportDisplayLabelsButton"
+                                                                        mnemonicParsing="false" text="Import">
+                                                                    <tooltip>
+                                                                        <Tooltip
+                                                                                text="Export (paste) tab-separated key-value pairs to the clipboard"/>
                                                                     </tooltip>
                                                                 </Button>
                                                                 <CheckBox fx:id="activeDisplayLabelsCheckBox"
@@ -275,7 +282,7 @@
                                         </AnchorPane>
                                     </content>
                                     <tooltip>
-                                        <Tooltip text="Setup labels to use in ntwork display"/>
+                                        <Tooltip text="Setup labels to use in network display"/>
                                     </tooltip>
                                 </TitledPane>
                                 <TitledPane animated="false" text="Animation">
@@ -319,6 +326,20 @@
                                                       AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                                                       AnchorPane.topAnchor="0.0">
                                                     <children>
+                                                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                                            <children>
+                                                                <Label text="Size Limit for Network Drawing">
+                                                                    <HBox.margin>
+                                                                        <Insets/>
+                                                                    </HBox.margin>
+                                                                </Label>
+                                                                <TextField fx:id="maxSizeNetworkTextField"
+                                                                           maxWidth="-Infinity" prefWidth="80.0"/>
+                                                            </children>
+                                                            <VBox.margin>
+                                                                <Insets/>
+                                                            </VBox.margin>
+                                                        </HBox>
                                                         <HBox alignment="CENTER_LEFT" spacing="10.0">
                                                             <children>
                                                                 <Label text="Network embedding iterations">

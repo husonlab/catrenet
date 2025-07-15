@@ -53,7 +53,7 @@ public class ExportReactionsFileDialog {
 		var fileChooser = new FileChooser();
 		fileChooser.setTitle("Export File - " + ProgramProperties.getProgramVersion());
 
-		var file = new File(FileUtils.replaceFileSuffix(window.getDocument().getFileName(), "-" + name + ".crs"));
+		var file = new File(FileUtils.replaceFileSuffix(window.getDocument().getFileName(), "-" + name));
 
 		fileChooser.getExtensionFilters().addAll(CRSFileFilter.getInstance(), TextFileFilter.getInstance());
 

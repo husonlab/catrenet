@@ -26,6 +26,7 @@ import jloda.fx.util.ProgramProperties;
 import jloda.fx.util.RecentFilesManager;
 import jloda.fx.util.TextFileFilter;
 import jloda.fx.window.NotificationManager;
+import jloda.util.FileUtils;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -62,7 +63,7 @@ public class Save {
 
         if (!currentFile.isDirectory()) {
             fileChooser.setInitialDirectory(currentFile.getParentFile());
-            fileChooser.setInitialFileName(currentFile.getName());
+			fileChooser.setInitialFileName(FileUtils.replaceFileSuffix(currentFile.getName(), ""));
         } else {
             final File tmp = new File(ProgramProperties.get("SaveFileDir", ""));
             if (tmp.isDirectory()) {

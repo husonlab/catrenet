@@ -143,8 +143,20 @@ public class SettingsPresenter {
 
 		controller.getIterationsTextField().setText(String.valueOf(mainWindow.getReactionGraphView().getEmbeddingIterations()));
 		controller.getIterationsTextField().textProperty().addListener((v, o, n) -> {
-			if (NumberUtils.isInteger(n))
-				mainWindow.getReactionGraphView().setEmbeddingIterations(NumberUtils.parseInt(n));
+			if (NumberUtils.isInteger(n)) {
+				var value = NumberUtils.parseInt(n);
+				if (value > 0)
+					mainWindow.getReactionGraphView().setEmbeddingIterations(value);
+			}
+		});
+
+		controller.getMaxSizeNetworkTextField().setText(String.valueOf(mainWindow.getMaxGraphDisplaySize()));
+		controller.getMaxSizeNetworkTextField().textProperty().addListener((v, o, n) -> {
+			if (NumberUtils.isInteger(n)) {
+				var value = NumberUtils.parseInt(n);
+				if (value > 0)
+					mainWindow.maxGraphDisplaySizeProperty().set(NumberUtils.parseInt(n));
+			}
 		});
 
 		controller.getUseColorsInAnimationRadioButton().selectedProperty().bindBidirectional(mainWindow.getController().getUseColorsMenuItem().selectedProperty());
@@ -194,6 +206,16 @@ public class SettingsPresenter {
 					controller.getDisplayLabelListView().getItems().removeAll(toDelete);
 				}
 			});
+
+			controller.getExportDisplayLabelsButton().setOnAction(e -> {
+				var buf = new StringBuilder();
+				for (var item : controller.getDisplayLabelListView().getItems()) {
+					buf.append("%s\t%s\n".formatted(item.getFirst(), item.getSecond()));
+				}
+				ClipboardUtils.putString(buf.toString());
+
+			});
+			controller.getExportDisplayLabelsButton().disableProperty().bind(Bindings.isEmpty(controller.getDisplayLabelListView().getItems()));
 
 			controller.getAddDisplayLabelButton().setOnAction(e -> {
 				var item = new Pair<>("Key", "Value");

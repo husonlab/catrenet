@@ -14,7 +14,7 @@ CatReNet is written in Java using JavaFX and
 is loosely based on a web application written by Dietrich Radel: http://www.math.canterbury.ac.nz/bio/RAF/.
 This software was developed by Daniel H. Huson, Joana C. Xavier and Mike A. Steel, see [[HXS24b]](#70).
 
-## Installers
+## 📦 Installers
 
 Interactive installers for MacOS, Windows and Linux are
 available [here](https://software-ab.cs.uni-tuebingen.de/download/catrenet/welcome.html or [here](https://unitc-my.sharepoint.com/:f:/g/personal/iijhu01_cloud_uni-tuebingen_de/EmvzMdVieMZMijtxKhVbI-oBqq9fGYHKhVnW4vqLlZ3_IA?e=U2YIwh).
@@ -27,10 +27,9 @@ We’ve prepared a short video on how to get started using CatReNet:
 
 👉 [Watch on YouTube](https://youtu.be/8sBZtX101gU)
 
-## Getting started
+## 🚀 Getting started
 
 Install the software using the interactive installer.
-
 
 The installation directory contains a directory of examples. Select the `File->Open` menu item, navigate to the examples directory and select an example file to open:
 
@@ -44,8 +43,7 @@ Or view the network:
 
 <img width="962" alt="image" src="https://github.com/husonlab/catrenet/assets/6740594/4b3d09c8-3880-4680-b371-9cb01b39ba3e">
 
-
-## Main features
+## ✨ Main features
 
 Input to CatReNet is a catalytic reaction system (CRS), which consists of a list of catalyzed reactions and a food set
 of molecules, specified like this example consisting of two food items and three (one-way) reactions:
@@ -68,7 +66,7 @@ The program can display a CRS as a network, in several ways. Moreover, it can an
 CAF
 or Max Pseudo RAF.
 
-## Algorithms and heuristics
+## 🧠 Algorithms and heuristics
 
 In more detail, the program provides the following calculations:
 
@@ -108,11 +106,20 @@ This features generates a system consisting of all polymers (over a finite alpha
 of length at most n, with ligation-cleavage reactions, and with catalysis assigned randomly (each molecule catalysing on
 average m reactions).
 
-### Export computed systems
+## 📤 Export computed systems
 
 Any of the computed subsystems can be exported to a new file.
 
-## Network visualization
+## 🌐 Network visualization
+
+The program provides a number or visualizations. Because the visualization of very large graphs can be challenging for
+the current
+implementation of CatReNet, visualization menu items are disabled for reaction systems containing more than 500
+reactions.
+You can change this threshold using the settings panel.
+
+Note that the currently implemented network layout algorithm is very basic. For nice layouts,
+export a computed network in GML format and then view it in Cytoscape  (see [Export network](#export-network)).
 
 The program can represent a CRS using several types of networks:
 
@@ -133,14 +140,32 @@ There are a several options:
 - Use Multicopy Food Nodes - select this to show each food node multiple times, to produce a less tangled network
 - Show/Hide Node Labels - select to hide node labels
 
-### Other calculations
+## 🧮 Other network calculations
+
+These graph calculations all ignore any catalysts that might be present and are untested on datasets using two-way
+reactions:
+
+- Stratification network (Reactions only) - A directed network that aims at capturing the partial ordering of reactions
+  based on
+  their dependencies: There is an edge from reaction r to reaction s, if reaction r occurs earlier than s in the
+  stratification of
+  reactions and r has a product that is a reactant for s (and r is the latest reaction to provide that reactant)
+
+- Stratification network (Reactions and Required Molecules) - The same graph as the previous one, except there are now
+  edges from r to m to s, where r and s are reactions as described in the previous point, and m is a node that
+  represents
+  the molecule that is produced by r and used by s. We also have edges m to r, where m is an item of the food set and r
+  requires m as a reactant.
+
+- Stratification network (Reactions and All Molecules) - The same graph as the previous one, plus additional nodes
+  that represent the other products of reactions.
 
 - Reaction Precedence Network – A directed network that aims at capturing the partial ordering of reactions based on
   their dependencies:
   if an admissible ordering of reactions exists (ignoring catalysts), then this graph is a DAG that represents which
   reactions must occur before others.
 
-### Animation
+## 🎞️ Animation
 
 The program can animate the emergence of three types of systems:
 
@@ -162,21 +187,40 @@ There are several options:
 
 ![Animated GIF](https://github.com/husonlab/catrenet/raw/master/artwork/animation.gif)
 
-
-### Export network
+## 📎 Export network
 
 The network can be exported as an image in these formats: PNG, SVG and PDF.
 
-## Commandline tools
+Using the `File -> Export -> Network in GML Format...` format menu item, any network can be exported to a file in GML
+format
+that can be imported into [Cytoscape](https://cytoscape.org) (using that program's `File -> Import -> Network From File`
+menu item).
+
+## ⚙️ Settings panel
+
+The settings panel provides a number of configuration panels:
+
+- Notation for reactions: select between full, sparse, and tabbed notation. Select between two different arrow types.
+- Default styles for nodes and edges in network: set line style, color and width for all types of edges, and shape,
+  color and size of nodes.
+- Display labels: Maintains a list of labels to use in network visualizations, for example, in KEGG-based networks,
+  `C00005` represents `Reduced nicotinamide adenine dinucleotide phosphate`.
+- Animation: decide use different colors for different molecules, decide whether labels are used in animation
+- Other settings: maximum number of reactions allowed in network drawing, number of network embedding iterations, and
+  whether to wrap text.
+
+## 🛠️ Commandline tools
 
 The Linux and MacOS distributions have a tools directory that contains two commandline programs:
 
 - catrenet-tool - runs the implemented algorithms on one or more CRS input files
 - polymer-tool - generates a set of CRS input files using the binary polymer model
 
-## Provided datasets
+## 🗂️ Provided datasets
 
-The program comes with a number of example datasets (from [here](http://www.math.canterbury.ac.nz/bio/RAF/)):
+The program comes with a number of example datasets (from [here](http://www.math.canterbury.ac.nz/bio/RAF/)). They are
+placed in a directory called `CatReNet-Examples`
+during installation of the program.
 
 - [example-0.crs](examples/example-0.crs) - 6 reactions, 3 food items, has a Max RAF of size 3 and no Max CAF
 - [example-1.crs](examples/example-1.crs) - 6 reactions and 12 food itens, is a Max RAF and has no Max CAF
@@ -194,8 +238,14 @@ The program comes with a number of example datasets (from [here](http://www.math
 - [inhibitions-1.crs](examples/inhibitions-1.crs) - 2 reactions (1 of which has an inhibitor) and 6 food items, Max RAF and Max CAF both have one reaction
 - [prokaryotic-network.crs](examples/prokaryotic-network.crs) - 6039 reactions and 68 food items. Prokaryotic catalytic reaction network from [[XHKSM20]](#35).
 
+Here are the two examples shown in our getting started video:
 
-## References
+- [how-to-build-a-house-maxCAF](examples/how-to-build-a-house-maxRAF.crs) - 6 reactions, 4 food items, has a Max CAF of
+  size 6
+- [how-to-build-a-house-maxRAF](examples/how-to-build-a-house-maxRAF.crs) - 7 reactions, 4 food items, has a Max RAF of
+  size 7 and no Max CAF
+
+## 📚 References
 
 <a id="10">[HSS15]</a>
 Hordijk, W., Smith, J.I. and Steel, M.A. (2015). [Algorithms for detecting and analysing autocatalytic sets](https://almob.biomedcentral.com/articles/10.1186/s13015-015-0042-8). Algorithms in

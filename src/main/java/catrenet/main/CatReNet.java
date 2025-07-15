@@ -74,7 +74,7 @@ public class CatReNet extends Application {
         ProgramProperties.setProgramName(Version.NAME);
         ProgramProperties.setProgramVersion(Version.SHORT_DESCRIPTION);
         ProgramProperties.setProgramLicence("""
-                Copyright (C) 2024. This program comes with ABSOLUTELY NO WARRANTY.
+                Copyright (C) 2025. This program comes with ABSOLUTELY NO WARRANTY.
                 This is free software, licensed under the terms of the GNU General Public License, Version 3.
                 Sources available at: https://github.com/husonlab/catrenet
                 """);
@@ -116,6 +116,13 @@ public class CatReNet extends Application {
         options.done();
 
         ProgramProperties.load(propertiesFile);
+
+        if (isDesktop()) {
+            var openDir = ProgramProperties.get("OpenFileDir", "");
+            if (openDir.isEmpty()) {
+                ProgramProperties.put("OpenFileDir", System.getProperty("user.home") + File.separator + "CatReNet-Examples");
+            }
+        }
 
         if (silentMode) {
             Basic.stopCollectingStdErr();

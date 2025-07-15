@@ -1,0 +1,9 @@
+Food: wood, metal, nails, stone
+
+R0 : stone [hammer] -> sharp_stone
+R1 : wood [sharp_stone] -> handle
+R2 : handle + metal [sharp_stone] -> hammer
+R3 : handle + metal [hammer] -> saw
+R4 : wood [saw] -> planks
+R5 : planks [hammer&saw] -> panel
+R6 : nails + panel [hammer] -> house

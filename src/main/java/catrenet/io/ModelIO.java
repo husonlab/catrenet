@@ -98,7 +98,7 @@ public class ModelIO {
 			if (!line.startsWith("#")) {
 				inLeadingComments = false;
 				line = line.trim();
-				if (!line.isEmpty())
+				if (!line.isEmpty() && !line.startsWith("Reactions:"))
 					try {
 						if (line.startsWith("Food:") || (line.startsWith("F:") && !line.contains("->") && !line.contains("=>") && !line.contains("<-") && !line.contains("<="))) {
 							reactionSystem.getFoods().addAll(parseFood(line));

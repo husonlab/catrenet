@@ -89,7 +89,7 @@ public class FileOpener implements Consumer<String> {
 
 				window.getController().getInputFoodTextArea().setText(food);
 
-				var infoString = "Read " + reactionSystem.size() + " reactions" + (reactionSystem.getNumberOfTwoWayReactions() > 0 ? " (" + reactionSystem.getNumberOfTwoWayReactions() + " two-way)" : "")
+				var infoString = "\nRead " + reactionSystem.size() + " reactions" + (reactionSystem.getNumberOfTwoWayReactions() > 0 ? " (" + reactionSystem.getNumberOfTwoWayReactions() + " two-way)" : "")
 								 + " and " + reactionSystem.getFoods().size() + " food items from file: " + FileUtils.getFileNameWithoutPath(fileName);
 
                 NotificationManager.showInformation(infoString);

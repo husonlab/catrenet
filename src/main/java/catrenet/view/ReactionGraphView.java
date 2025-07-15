@@ -19,6 +19,7 @@
 
 package catrenet.view;
 
+import catrenet.algorithm.Stratification;
 import catrenet.main.CatReNet;
 import catrenet.model.MoleculeType;
 import catrenet.model.ReactionSystem;
@@ -65,7 +66,7 @@ import static catrenet.io.ModelIO.FORMAL_FOOD;
 public class ReactionGraphView {
 	private final static ObjectProperty<Font> font = new SimpleObjectProperty<>(Font.font("Helvetica", 12));
 
-	public enum Type {fullNetwork, associationNetwork, reactantAssociationNetwork, reactionDependencyNetwork, moleculeDependencyNetwork, precedenceReactionNetwork}
+	public enum Type {fullNetwork, associationNetwork, reactantAssociationNetwork, reactionDependencyNetwork, moleculeDependencyNetwork, reactionStratificationNetwork, reactionRequiredMoleculesStratificationNetwork, reactionAllMoleculesStratificationNetwork, reactionPrecendenceNetwork}
 
 	private final ObjectProperty<Type> graphType = new SimpleObjectProperty<>();
 
@@ -92,7 +93,7 @@ public class ReactionGraphView {
 
 	private final StringProperty nodeLabelStyle = new SimpleStringProperty("");
 
-	static class AndNode {
+	public static class AndNode {
 	}
 
 	private final Document document;
@@ -217,7 +218,13 @@ public class ReactionGraphView {
 						}
 					}
 				}
-				case precedenceReactionNetwork -> SetupPrecedenceReactionNetwork.apply(reactionGraph, reactionSystem);
+				case reactionPrecendenceNetwork -> SetupPrecedenceReactionNetwork.apply(reactionGraph, reactionSystem);
+				case reactionStratificationNetwork ->
+						Stratification.setupStratificationGraph(reactionGraph, reactionSystem, Stratification.StratificationDetails.ReactionsOnly);
+				case reactionRequiredMoleculesStratificationNetwork ->
+						Stratification.setupStratificationGraph(reactionGraph, reactionSystem, Stratification.StratificationDetails.ReactionsRequiredMolecules);
+				case reactionAllMoleculesStratificationNetwork ->
+						Stratification.setupStratificationGraph(reactionGraph, reactionSystem, Stratification.StratificationDetails.ReactionsAllMolecules);
 			}
 		}
 
@@ -333,7 +340,8 @@ public class ReactionGraphView {
 		final Group labels = new Group();
 
 		graph.nodeStream().forEach(v -> {
-			final var nv = new NodeView(this, reactionSystem.getFoods(), v, coordinates.get(v).getX(), coordinates.get(v).getY());
+			var point = coordinates.getOrDefault(v, new APoint2D<>(0, 0));
+			final var nv = new NodeView(this, reactionSystem.getFoods(), v, point.getX(), point.getY());
 			nv.getLabel().setStyle(getNodeLabelStyle());
 			node2view.put(v, nv);
 			nodes.getChildren().add(nv.getShape());
@@ -586,7 +594,7 @@ public class ReactionGraphView {
 	}
 
 	public Collection<String> getSelectedLabels() {
-		return getNodeSelection().getSelectedItems().stream().map(v -> getLabel(v).getText()).filter(s -> !s.isEmpty()).collect(Collectors.toList());
+		return getNodeSelection().getSelectedItems().stream().map(v -> getLabel(v).getRawText()).filter(s -> !s.isEmpty()).collect(Collectors.toList());
 	}
 
 	public int getEmbeddingIterations() {

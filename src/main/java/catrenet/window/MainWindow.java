@@ -27,10 +27,7 @@ import catrenet.tab.TabManager;
 import catrenet.view.ReactionGraphView;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -80,6 +77,8 @@ public class MainWindow implements IMainWindow {
 
     private final StringProperty lastWarningMessage = new SimpleStringProperty(this, "warningMessage", "");
 
+	private final IntegerProperty maxGraphDisplaySize = new SimpleIntegerProperty(this, "maxGraphDisplaySize");
+
     /**
      * constructor
      */
@@ -88,6 +87,8 @@ public class MainWindow implements IMainWindow {
 
         Parent root;
         {
+			ProgramProperties.track(maxGraphDisplaySize, 500);
+
             var fxmlLoader = new FXMLLoader();
             try (var ins = StatementFilter.applyMobileFXML(Objects.requireNonNull(MainWindowController.class.getResource("MainWindow.fxml")).openStream(), CatReNet.isDesktop())) {
                 fxmlLoader.load(ins);
@@ -222,4 +223,12 @@ public class MainWindow implements IMainWindow {
     public StringProperty lastWarningMessageProperty() {
         return lastWarningMessage;
     }
+
+	public int getMaxGraphDisplaySize() {
+		return maxGraphDisplaySize.get();
+	}
+
+	public IntegerProperty maxGraphDisplaySizeProperty() {
+		return maxGraphDisplaySize;
+	}
 }

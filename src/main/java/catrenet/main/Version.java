@@ -21,5 +21,5 @@ package catrenet.main;
 
 public class Version {
 	static public final String NAME = "CatReNet";
-	static public final String SHORT_DESCRIPTION = "CatReNet (version 0.9.9, built 24 Jun 2025)";
+	static public final String SHORT_DESCRIPTION = "CatReNet (version 0.10.0, built 15 Jul 2025)";
 }

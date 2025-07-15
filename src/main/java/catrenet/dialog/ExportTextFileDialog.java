@@ -19,7 +19,6 @@
 
 package catrenet.dialog;
 
-import catrenet.io.CRSFileFilter;
 import catrenet.window.MainWindow;
 import javafx.stage.FileChooser;
 import jloda.fx.util.ProgramProperties;
@@ -40,9 +39,9 @@ public class ExportTextFileDialog {
 		final FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Export File - " + ProgramProperties.getProgramVersion());
 
-		File currentFile = new File(FileUtils.replaceFileSuffix(window.getDocument().getFileName(), "-" + name + ".txt"));
+		File currentFile = new File(FileUtils.replaceFileSuffix(window.getDocument().getFileName(), "-" + name));
 
-		fileChooser.getExtensionFilters().addAll(CRSFileFilter.getInstance(), TextFileFilter.getInstance());
+		fileChooser.getExtensionFilters().addAll(TextFileFilter.getInstance());
 
 		if (!currentFile.isDirectory()) {
 			fileChooser.setInitialDirectory(currentFile.getParentFile());

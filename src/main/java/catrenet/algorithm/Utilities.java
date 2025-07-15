@@ -21,7 +21,6 @@ package catrenet.algorithm;
 
 import catrenet.model.MoleculeType;
 import catrenet.model.Reaction;
-import javafx.util.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -63,22 +62,6 @@ public class Utilities {
         }
         while (allMolecules.size() > size);
         return allMolecules;
-    }
-
-    public static Pair<Set<Reaction>, Set<MoleculeType>> computeOneStep(Collection<MoleculeType> molecules, Collection<Reaction> reactions) {
-        var newReactions = new TreeSet<Reaction>();
-        var newMolecules = new TreeSet<MoleculeType>();
-        for (var reaction : reactions) {
-            if ((reaction.getDirection() == Reaction.Direction.forward || reaction.getDirection() == Reaction.Direction.both) && molecules.containsAll(reaction.getReactants())) {
-                newReactions.add(reaction);
-                newMolecules.addAll(reaction.getProducts());
-            }
-            if ((reaction.getDirection() == Reaction.Direction.reverse || reaction.getDirection() == Reaction.Direction.both) && molecules.containsAll(reaction.getProducts())) {
-                newReactions.add(reaction);
-                newMolecules.addAll(reaction.getReactants());
-            }
-        }
-        return new Pair<>(newReactions, newMolecules);
     }
 
     /**
