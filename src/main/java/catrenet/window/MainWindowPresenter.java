@@ -75,7 +75,6 @@ import java.util.TreeSet;
 import java.util.function.Consumer;
 
 import static catrenet.io.ModelIO.FORMAL_FOOD;
-import static catrenet.io.ModelIO.parseFood;
 
 /**
  * setup all control bindings
@@ -115,7 +114,7 @@ public class MainWindowPresenter {
         controller.getInputTextArea().focusedProperty().addListener((v, o, n) -> {
             if (!n && controller.getInputFoodTextArea().isUndoable()) {
                 try {
-                    ModelIO.read(mainWindow.getDocument().getInputReactionSystem(), new StringReader(controller.getInputTextArea().getText()), mainWindow.getDocument().getReactionNotation());
+                    ModelIO.read(mainWindow.getDocument().getInputReactionSystem(), new StringReader("Reactions:\n" + controller.getInputTextArea().getText()), mainWindow.getDocument().getReactionNotation());
                 } catch (IOException e) {
                     NotificationManager.showWarning("Failed to read reaction notation");
                 }
@@ -128,7 +127,12 @@ public class MainWindowPresenter {
         });
         controller.getInputFoodTextArea().focusedProperty().addListener((v, o, n) -> {
             if (!n && controller.getInputFoodTextArea().isUndoable()) {
-                mainWindow.getInputReactionSystem().getFoods().setAll(parseFood(controller.getInputFoodTextArea().getText()));
+                mainWindow.getInputReactionSystem().getFoods().clear();
+                try {
+                    ModelIO.read(mainWindow.getInputReactionSystem(), new StringReader("Food:\n" + controller.getInputFoodTextArea().getText()), mainWindow.getDocument().getReactionNotation());
+                } catch (IOException e) {
+                    Basic.caught(e);
+                }
             }
         });
 
@@ -270,10 +274,12 @@ public class MainWindowPresenter {
                 .or(disableGraphItems.not()).not()));
 
         controller.getPasteMenuItem().setOnAction(e -> {
-            if (controller.getInputFoodTextArea().isFocused())
-                controller.getInputFoodTextArea().paste();
-            else if (controller.getInputTextArea().isFocused())
-                controller.getInputTextArea().paste();
+            if (false) { // don't paste here because this will lead to double pasting
+                if (controller.getInputFoodTextArea().isFocused())
+                    controller.getInputFoodTextArea().paste();
+                else if (controller.getInputTextArea().isFocused())
+                    controller.getInputTextArea().paste();
+            }
         });
         controller.getPasteMenuItem().disableProperty().bind((controller.getInputTextArea().focusedProperty().or(controller.getInputFoodTextArea().focusedProperty())).not());
 

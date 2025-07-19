@@ -25,13 +25,13 @@ import catrenet.model.ReactionSystem;
 import catrenet.settings.ArrowNotation;
 import catrenet.settings.ReactionNotation;
 import jloda.util.Basic;
-import jloda.util.IOExceptionWithLineNumber;
 import jloda.util.StringUtils;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -42,96 +42,101 @@ public class ModelIO {
 	public static final MoleculeType FORMAL_FOOD = MoleculeType.valueOf("$");
 
 	/**
-	 * parse a one line description of food
-	 *
-	 * @return food
-	 */
-	public static ArrayList<MoleculeType> parseFood(String aLine) {
-		aLine = aLine.replaceAll(",", " ").replaceAll("\\s+", " ");
-		if (aLine.startsWith("Food:")) {
-			if (aLine.length() > "Food:".length())
-				aLine = aLine.substring("Food:".length() + 1).trim();
-			else
-				aLine = "";
-		} else if (aLine.startsWith("Food")) {
-			if (aLine.length() > "Food".length())
-				aLine = aLine.substring("Food".length() + 1).trim();
-			else
-				aLine = "";
-		} else if (aLine.startsWith("F:")) {
-			if (aLine.length() > "F:".length())
-				aLine = aLine.substring("F:".length() + 1).trim();
-			else
-				aLine = "";
-		}
-
-		final ArrayList<MoleculeType> array = new ArrayList<>();
-		for (String name : aLine.split("\\s+")) {
-			array.add(MoleculeType.valueOf(name));
-		}
-		return array;
-	}
-
-	/**
-	 * read reactions and foods
-	 *
-	 * @return leading comments
+	 * read a CRS
+	 * @param reactionSystem
+	 * @param r
+	 * @param reactionNotation
+	 * @param reactionsOnly
+	 * @return
+	 * @throws IOException
 	 */
 	public static String read(ReactionSystem reactionSystem, Reader r, ReactionNotation reactionNotation) throws IOException {
-		final var reactionNames = new HashSet<String>();
-		final var auxReactions = new HashSet<Reaction>();
-
-		final var buf = new StringBuilder();
-
-		var lineNumber = 0;
-		String line;
 		final BufferedReader br;
 		if (r instanceof BufferedReader)
 			br = (BufferedReader) r;
 		else
 			br = new BufferedReader(r);
 
-		var inLeadingComments = true;
+		var comments = new StringBuilder();
+		var foodItems = new ArrayList<String>();
+		var reactionLines = new ArrayList<String>();
 
+		var foodSectionPattern = Pattern.compile("(?i)^\\s*(Food set|Food|F):\\s*(.*)");
+		var reactionSectionPattern = Pattern.compile("(?i)^\\s*(Reactions|R):\\s*(.*)");
+
+		enum Section {HEADER, FOOD, REACTIONS}
+		var section = Section.HEADER;
+
+
+		String line;
 		while ((line = br.readLine()) != null) {
-			lineNumber++;
-			if (!line.startsWith("#")) {
-				inLeadingComments = false;
-				line = line.trim();
-				if (!line.isEmpty() && !line.startsWith("Reactions:"))
-					try {
-						if (line.startsWith("Food:") || (line.startsWith("F:") && !line.contains("->") && !line.contains("=>") && !line.contains("<-") && !line.contains("<="))) {
-							reactionSystem.getFoods().addAll(parseFood(line));
-						} else {
-							List<String> list;
-							if (line.contains(";") && StringUtils.countOccurrences(line, ':') > 1) {
-								list = new ArrayList<>();
-								for (var token : line.split(";")) {
-									if (!token.isBlank())
-										list.add(token.trim());
-								}
-							} else
-								list = List.of(line);
-							for (var reactionLine : list) {
-								var reaction = Reaction.parse(reactionLine, auxReactions, reactionNotation.equals(ReactionNotation.Tabbed));
-								if (reactionNames.contains(reaction.getName()))
-									throw new IOException("Multiple reactions have the same name: " + reaction.getName());
-								reactionSystem.getReactions().add(reaction);
-								reactionNames.add(reaction.getName());
-								if (reaction.getCatalysts().contains(FORMAL_FOOD.getName())) {
-									if (!reactionSystem.getFoods().contains(FORMAL_FOOD))
-										reactionSystem.getFoods().add(FORMAL_FOOD);
-								}
-							}
+			var trimmed = line.trim();
+			if (trimmed.isEmpty()) continue;
+
+			switch (section) {
+				case HEADER -> {
+					if (trimmed.startsWith("#")) {
+						comments.append(trimmed).append("\n");
+					} else if (foodSectionPattern.matcher(trimmed).matches()) {
+						var matcher = foodSectionPattern.matcher(trimmed);
+						if (matcher.find()) {
+							var words = matcher.group(2);
+							if (!words.isBlank())
+								foodItems.addAll(Arrays.asList(words.trim().split("[,\\s]+")));
 						}
-					} catch (Exception ex) {
-						throw new IOExceptionWithLineNumber(ex.getMessage(), lineNumber);
+						section = Section.FOOD;
+					} else if (reactionSectionPattern.matcher(trimmed).matches()) {
+						var matcher = reactionSectionPattern.matcher(trimmed);
+						if (matcher.find()) {
+							var reaction = matcher.group(2);
+							if (!reaction.isBlank())
+								reactionLines.add(reaction.trim());
+						}
+						section = Section.REACTIONS;
 					}
-			} else if (inLeadingComments) {
-				buf.append(line).append("\n");
+				}
+
+				case FOOD -> {
+					if (reactionSectionPattern.matcher(trimmed).matches()) {
+						var matcher = reactionSectionPattern.matcher(trimmed);
+						if (matcher.find()) {
+							var reaction = matcher.group(2);
+							if (!reaction.isBlank())
+								reactionLines.add(reaction.trim());
+						}
+						section = Section.REACTIONS;
+						} else {
+						foodItems.addAll(Arrays.asList(trimmed.split("[,\\s]+")));
+					}
+				}
+
+				case REACTIONS -> reactionLines.add(trimmed);
 			}
 		}
-		return buf.toString();
+
+		final var reactionNames = new HashSet<String>();
+		final var auxReactions = new HashSet<Reaction>();
+
+		if (!foodItems.isEmpty()) {
+			reactionSystem.getFoods().addAll(foodItems.stream().filter(f -> !f.isEmpty()).map(MoleculeType::valueOf).collect(Collectors.toSet()));
+		}
+
+		if (!reactionLines.isEmpty()) {
+			for (var reactionLine : reactionLines) {
+				if (!reactionLine.isBlank()) {
+					var reaction = Reaction.parse(reactionLine, auxReactions, reactionNotation.equals(ReactionNotation.Tabbed));
+					if (reactionNames.contains(reaction.getName()))
+						throw new IOException("Multiple reactions have the same name: " + reaction.getName());
+					reactionSystem.getReactions().add(reaction);
+					reactionNames.add(reaction.getName());
+					if (reaction.getCatalysts().contains(FORMAL_FOOD.getName())) {
+						if (!reactionSystem.getFoods().contains(FORMAL_FOOD))
+							reactionSystem.getFoods().add(FORMAL_FOOD);
+					}
+				}
+			}
+		}
+		return comments.toString();
 	}
 
 	/**

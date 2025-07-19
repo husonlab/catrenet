@@ -47,7 +47,7 @@ public class VerifyInput {
             reactionSystem.clear();
 
         try {
-            ModelIO.read(reactionSystem, new StringReader("Food: " + controller.getInputFoodTextArea().getText()), window.getDocument().getReactionNotation());
+            ModelIO.read(reactionSystem, new StringReader("Food:\n" + controller.getInputFoodTextArea().getText()), window.getDocument().getReactionNotation());
         } catch (IOException ex) {
             if (ex instanceof IOExceptionWithLineNumber) {
                 NotificationManager.showError(ex.getMessage());
@@ -57,7 +57,7 @@ public class VerifyInput {
         }
 
         try {
-            ModelIO.read(reactionSystem, new StringReader(controller.getInputTextArea().getText()), window.getDocument().getReactionNotation());
+            ModelIO.read(reactionSystem, new StringReader("Reactions:\n" + controller.getInputTextArea().getText()), window.getDocument().getReactionNotation());
         } catch (IOException ex) {
             if (ex instanceof IOExceptionWithLineNumber) {
                 NotificationManager.showError(ex.getMessage());
