@@ -26,13 +26,17 @@ import catrenet.settings.ArrowNotation;
 import catrenet.settings.ReactionNotation;
 import jloda.util.Basic;
 import jloda.util.StringUtils;
+import jloda.util.TriConsumer;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.regex.Pattern;
+import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
+
+import static catrenet.io.LineRec.FOOD_BLOCK_START_P;
 
 /**
  * input and output of model
@@ -46,7 +50,6 @@ public class ModelIO {
 	 * @param reactionSystem
 	 * @param r
 	 * @param reactionNotation
-	 * @param reactionsOnly
 	 * @return
 	 * @throws IOException
 	 */
@@ -57,61 +60,105 @@ public class ModelIO {
 		else
 			br = new BufferedReader(r);
 
+		// -------- Pass 1: read all lines --------
+		List<LineRec> lines = new ArrayList<>();
+		String line;
+		int idx = 0;
+		while ((line = br.readLine()) != null) {
+			lines.add(new LineRec(idx++, line));
+		}
+
+		// Identify first and last content lines
+		int firstContentIdx = -1, lastContentIdx = -1;
+		for (int i = 0; i < lines.size(); i++)
+			if (lines.get(i).isContent()) {
+				firstContentIdx = i;
+				break;
+			}
+		for (int i = lines.size() - 1; i >= 0; i--)
+			if (lines.get(i).isContent()) {
+				lastContentIdx = i;
+				break;
+			}
+
+		// Unique-end F: rule (exactly one end is F:)
+		boolean startIsF = firstContentIdx >= 0 && lines.get(firstContentIdx).startsWithF();
+		boolean endIsF = lastContentIdx >= 0 && lines.get(lastContentIdx).startsWithF();
+		boolean uniqueEndF = startIsF ^ endIsF;
+
+
 		var comments = new StringBuilder();
 		var foodItems = new ArrayList<String>();
 		var reactionLines = new ArrayList<String>();
 
-		var foodSectionPattern = Pattern.compile("(?i)^\\s*(Food set|Food|F):\\s*(.*)");
-		var reactionSectionPattern = Pattern.compile("(?i)^\\s*(Reactions|R):\\s*(.*)");
+		BiConsumer<String, Integer> commentConsumer = (trimmed, n) -> {
+			comments.append(trimmed);
+		};
 
-		enum Section {HEADER, FOOD, REACTIONS}
-		var section = Section.HEADER;
+		TriConsumer<String, Integer, Boolean> foodLineConsumer = (trimmed, n, fromBlock) -> {
+			var tokens = trimmed.split("[:,\\s]+");
+			foodItems.addAll(Arrays.asList(tokens).subList((fromBlock ? 0 : 1), tokens.length));
+		};
+
+		BiConsumer<String, Integer> reactionLineConsumer = (trimmed, n) -> {
+			reactionLines.add(trimmed);
+		};
 
 
-		String line;
-		while ((line = br.readLine()) != null) {
-			var trimmed = line.trim();
-			if (trimmed.isEmpty()) continue;
-
-			switch (section) {
-				case HEADER -> {
-					if (trimmed.startsWith("#")) {
-						comments.append(trimmed).append("\n");
-					} else if (foodSectionPattern.matcher(trimmed).matches()) {
-						var matcher = foodSectionPattern.matcher(trimmed);
-						if (matcher.find()) {
-							var words = matcher.group(2);
-							if (!words.isBlank())
-								foodItems.addAll(Arrays.asList(words.trim().split("[,\\s]+")));
-						}
-						section = Section.FOOD;
-					} else if (reactionSectionPattern.matcher(trimmed).matches()) {
-						var matcher = reactionSectionPattern.matcher(trimmed);
-						if (matcher.find()) {
-							var reaction = matcher.group(2);
-							if (!reaction.isBlank())
-								reactionLines.add(reaction.trim());
-						}
-						section = Section.REACTIONS;
-					}
-				}
-
-				case FOOD -> {
-					if (reactionSectionPattern.matcher(trimmed).matches()) {
-						var matcher = reactionSectionPattern.matcher(trimmed);
-						if (matcher.find()) {
-							var reaction = matcher.group(2);
-							if (!reaction.isBlank())
-								reactionLines.add(reaction.trim());
-						}
-						section = Section.REACTIONS;
-						} else {
-						foodItems.addAll(Arrays.asList(trimmed.split("[,\\s]+")));
-					}
-				}
-
-				case REACTIONS -> reactionLines.add(trimmed);
+		// -------- Pass 2: classify with Food: block handling --------
+		boolean inFoodBlock = false;
+		for (var rec : lines) {
+			if (rec.isBlank() || rec.trimmed().equalsIgnoreCase("reactions:")) {
+				continue;
 			}
+			if (rec.isComment()) {
+				commentConsumer.accept(rec.raw(), rec.lineNo());
+				continue;
+			}
+
+			if (inFoodBlock) {
+				// If current line contains a colon, the Food: block ends *before* this line.
+				if (rec.containsColon()) {
+					inFoodBlock = false;
+					// fall through to classify this line normally
+				} else {
+					// This line is part of the ongoing Food: block (no colon present)
+					foodLineConsumer.accept(rec.raw(), rec.lineNo(), true);
+					continue;
+				}
+			}
+
+			// Not inside a Food: block — classify the current line
+			var mBlk = FOOD_BLOCK_START_P.matcher(rec.raw());
+			if (mBlk.find()) {
+				// Start Food: block
+				String inline = mBlk.group(1); // items on same line after 'Food:'
+				if (!inline.isBlank()) {
+					foodLineConsumer.accept(inline, rec.lineNo(), true);
+				}
+				inFoodBlock = true;
+				continue;
+			}
+
+			if (rec.startsFoodSimple()) {
+				// Single-line "Food ..." or "FoodSet ..." (no colon)
+				foodLineConsumer.accept(rec.raw(), rec.lineNo(), false);
+				continue;
+			}
+
+			if (rec.startsWithF()) {
+				// Ambiguous "F:" line — FoodSet only if unique first-or-last content line
+				var isAtStart = (rec.idx() == firstContentIdx);
+				var isAtEnd = (rec.idx() == lastContentIdx);
+				if (uniqueEndF && (isAtStart || isAtEnd)) {
+					foodLineConsumer.accept(rec.raw(), rec.lineNo(), /*fromBlock*/false);
+				} else {
+					reactionLineConsumer.accept(rec.raw(), rec.lineNo());
+				}
+				continue;
+			}
+			// Default: reaction
+			reactionLineConsumer.accept(rec.raw(), rec.lineNo());
 		}
 
 		final var reactionNames = new HashSet<String>();
@@ -138,6 +185,7 @@ public class ModelIO {
 		}
 		return comments.toString();
 	}
+
 
 	/**
 	 * write model as string

@@ -253,7 +253,7 @@ public class ReactionGraphView {
 				options.setRepForcesStrength(50);
 
 				if (reactionGraph.isSimple())
-					FastMultiLayerMethodLayout.apply(options, reactionGraph, e -> 1d, (v, p) -> result.put(v, new APoint2D<>(p.getX(), p.getY(), v)));
+					FastMultiLayerMethodLayout.apply(options, reactionGraph, e -> 1d, null, (v, p) -> result.put(v, new APoint2D<>(p.getX(), p.getY(), v)));
 				else {
 					var simpleGraph = new Graph();
 					try (var src2tar = reactionGraph.extract(new HashSet<>(reactionGraph.getNodesAsList()), subsetSimpleEdges(reactionGraph), simpleGraph);
@@ -261,7 +261,7 @@ public class ReactionGraphView {
 						for (var v : src2tar.keys()) {
 							tar2src.put(src2tar.get(v), v);
 						}
-						FastMultiLayerMethodLayout.apply(options, simpleGraph, e -> 1d, (v, p) -> result.put(tar2src.get(v), new APoint2D<>(p.getX(), p.getY(), tar2src.get(v))));
+						FastMultiLayerMethodLayout.apply(options, simpleGraph, e -> 1d, null, (v, p) -> result.put(tar2src.get(v), new APoint2D<>(p.getX(), p.getY(), tar2src.get(v))));
 					}
 				}
 				return result;
