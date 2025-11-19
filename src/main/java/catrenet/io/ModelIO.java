@@ -252,11 +252,11 @@ public class ModelIO {
 			return String.format("%s\t%s %s %s\t%s%s",
 					reaction.getName(), StringUtils.toString(reaction.getReactants(), " + "),
 					arrow, StringUtils.toString(reaction.getProducts(), " + "), (catalystFree ? "" : reaction.getCatalysts()),
-					(reaction.getInhibitions().size() == 0 ? "" : "\t" + StringUtils.toString(reaction.getInhibitions(), " ")));
+					(reaction.getInhibitions().isEmpty() ? "" : "\t" + StringUtils.toString(reaction.getInhibitions(), " ")));
 		} else {
 			var reactantString = StringUtils.toString(reaction.getReactants(), " + ");
 			var catalystString = (catalystFree ? "" : "[%s]".formatted((reactionNotation == ReactionNotation.Full ? reaction.getCatalysts() : reaction.getCatalysts().replaceAll("\\s+,\\s+", " "))));
-			var inhibitorString = (reaction.getInhibitions().size() == 0 ? " " : " {" + StringUtils.toString(reaction.getInhibitions(), reactionNotation == ReactionNotation.Full ? "," : " ") + "} ");
+			var inhibitorString = (reaction.getInhibitions().isEmpty() ? " " : " {" + StringUtils.toString(reaction.getInhibitions(), reactionNotation == ReactionNotation.Full ? "," : " ") + "} ");
 			var productString = StringUtils.toString(reaction.getProducts(), " + ");
 			return String.format("%s : %s %s%s%s %s", reaction.getName(), reactantString, catalystString, inhibitorString, arrow, productString);
 		}
