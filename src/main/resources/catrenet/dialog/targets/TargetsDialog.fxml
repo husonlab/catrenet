@@ -37,12 +37,12 @@
                   </Label>
                   <HBox spacing="10.0">
                      <children>
-                         <ComboBox fx:id="selectComboBox" editable="true" maxWidth="1.7976931348623157E308"
-                                   promptText="Target to add" HBox.hgrow="ALWAYS">
+                         <MenuButton fx:id="selectMenuButton" maxWidth="1.7976931348623157E308"
+                                     HBox.hgrow="ALWAYS">
                              <tooltip>
                                  <Tooltip text="Find a target molecule. Start typing to auto-complete"/>
                              </tooltip>
-                         </ComboBox>
+                         </MenuButton>
                          <Button fx:id="addButton" mnemonicParsing="false" text="Add">
                              <tooltip>
                                  <Tooltip text="Add molecule to list of targerts"/>

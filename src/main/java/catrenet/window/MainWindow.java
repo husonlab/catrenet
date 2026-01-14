@@ -21,7 +21,6 @@ package catrenet.window;
 
 import catrenet.io.CRSFileFilter;
 import catrenet.io.FileOpener;
-import catrenet.main.CatReNet;
 import catrenet.model.ReactionSystem;
 import catrenet.tab.TabManager;
 import catrenet.view.ReactionGraphView;
@@ -90,7 +89,7 @@ public class MainWindow implements IMainWindow {
 			ProgramProperties.track(maxGraphDisplaySize, 500);
 
             var fxmlLoader = new FXMLLoader();
-            try (var ins = StatementFilter.applyMobileFXML(Objects.requireNonNull(MainWindowController.class.getResource("MainWindow.fxml")).openStream(), CatReNet.isDesktop())) {
+            try (var ins = StatementFilter.applyMobileFXML(Objects.requireNonNull(MainWindowController.class.getResource("MainWindow.fxml")).openStream(), ProgramProperties.isDesktop())) {
                 fxmlLoader.load(ins);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);

@@ -44,8 +44,6 @@ import java.time.Duration;
 public class CatReNet extends Application {
     private static String[] inputFilesAtStartup;
 
-    private static boolean desktop = true;
-
     @Override
     public void init() {
         Runtime.getRuntime().addShutdownHook(new Thread(ProgramProperties::store));
@@ -117,7 +115,7 @@ public class CatReNet extends Application {
 
         ProgramProperties.load(propertiesFile);
 
-        if (isDesktop()) {
+        if (ProgramProperties.isDesktop()) {
             var openDir = ProgramProperties.get("OpenFileDir", "");
             if (openDir.isEmpty()) {
                 ProgramProperties.put("OpenFileDir", System.getProperty("user.home") + File.separator + "CatReNet-Examples");
@@ -171,13 +169,5 @@ public class CatReNet extends Application {
             return System.getProperty("user.home") + "/Library/Preferences/CatReNet.def";
         else
             return System.getProperty("user.home") + File.separator + ".CatReNet.def";
-    }
-
-    public static boolean isDesktop() {
-        return desktop;
-    }
-
-    public static void setDesktop(boolean desktop) {
-        CatReNet.desktop = desktop;
     }
 }

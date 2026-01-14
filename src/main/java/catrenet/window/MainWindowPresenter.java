@@ -53,6 +53,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import jloda.fx.control.ZoomableScrollPane;
+import jloda.fx.print.Print;
 import jloda.fx.util.*;
 import jloda.fx.window.MainWindowManager;
 import jloda.fx.window.NotificationManager;
@@ -218,8 +219,10 @@ public class MainWindowPresenter {
         controller.getPageSetupMenuItem().setOnAction(e -> Print.showPageLayout(mainWindow.getStage()));
 
         controller.getPrintMenuItem().setOnAction(e -> {
-            javafx.scene.Node node = printableNode.get();
-            Print.print(mainWindow.getStage(), node);
+			if (printableNode.get() instanceof TextInputControl textInputControl)
+				Print.printText(mainWindow.getStage(), textInputControl.getText());
+			else
+				Print.print(mainWindow.getStage(), printableNode.get());
         });
         controller.getPrintMenuItem().disableProperty().bind(printableNode.isNull());
 

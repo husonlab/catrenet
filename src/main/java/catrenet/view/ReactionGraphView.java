@@ -20,7 +20,6 @@
 package catrenet.view;
 
 import catrenet.algorithm.Stratification;
-import catrenet.main.CatReNet;
 import catrenet.model.MoleculeType;
 import catrenet.model.ReactionSystem;
 import catrenet.window.Document;
@@ -37,10 +36,7 @@ import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import jloda.fx.control.ItemSelectionModel;
 import jloda.fx.control.RichTextLabel;
-import jloda.fx.util.AService;
-import jloda.fx.util.BasicFX;
-import jloda.fx.util.Icebergs;
-import jloda.fx.util.SelectionEffectBlue;
+import jloda.fx.util.*;
 import jloda.fx.window.NotificationManager;
 import jloda.graph.*;
 import jloda.graph.algorithms.ConnectedComponents;
@@ -411,7 +407,7 @@ public class ReactionGraphView {
 
 		mouseTarget.setOnMouseReleased(c -> {
 			if (!moved[0] && (v != null || e != null)) {
-				if ((!CatReNet.isDesktop() || !c.isShiftDown()) && isUseMultiCopyFoodNodes() && v != null && foodNodes.contains(v)) {
+				if ((!ProgramProperties.isDesktop() || !c.isShiftDown()) && isUseMultiCopyFoodNodes() && v != null && foodNodes.contains(v)) {
 					var sameFood = foodNodes.stream().filter(f -> f.getInfo() == v.getInfo()).toList();
 					var onlySameFoodSelected = (edgeSelection.isEmpty() && CollectionUtils.equalsAsSets(sameFood, nodeSelection.getSelectedItems()));
 					nodeSelection.clearSelection();
@@ -423,7 +419,7 @@ public class ReactionGraphView {
 					}
 					return;
 				}
-				if (CatReNet.isDesktop() && !c.isShiftDown()) {
+				if (ProgramProperties.isDesktop() && !c.isShiftDown()) {
 					nodeSelection.clearSelection();
 					edgeSelection.clearSelection();
 					if (v != null) {
@@ -448,7 +444,7 @@ public class ReactionGraphView {
 			}
 		});
 
-		if (CatReNet.isDesktop()) {
+		if (ProgramProperties.isDesktop()) {
 			mouseTarget.setOnMouseClicked(c -> {
 				if (c.getClickCount() == 2) {
 					if (v != null) {

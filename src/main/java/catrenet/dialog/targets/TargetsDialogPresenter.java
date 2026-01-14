@@ -22,7 +22,7 @@ package catrenet.dialog.targets;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.stage.Stage;
-import jloda.fx.util.AutoCompleteComboBox;
+import jloda.fx.control.EditableMenuButton;
 import jloda.fx.util.ProgramProperties;
 import jloda.util.IteratorUtils;
 import jloda.util.NumberUtils;
@@ -40,20 +40,20 @@ public class TargetsDialogPresenter {
 
 
 	public TargetsDialogPresenter(Stage stage, Collection<String> possibleTargets, TargetsDialogController controller) {
-		controller.getSelectComboBox().getItems().addAll(possibleTargets.stream().sorted().toList());
-		Platform.runLater(() -> AutoCompleteComboBox.install(controller.getSelectComboBox()));
+
+		var selected = EditableMenuButton.setup(controller.getSelectMenuButton(), possibleTargets.stream().sorted().toList(), true, null);
 
 		controller.getListView().getItems().addAll(IteratorUtils.asList(SetUtils.intersection(previousListMembers, possibleTargets)).stream().sorted().toList());
 
-		controller.getSelectComboBox().setDisable(possibleTargets.isEmpty());
+		controller.getSelectMenuButton().setDisable(possibleTargets.isEmpty());
 		controller.getAddButton().disableProperty().bind(
-				Bindings.createBooleanBinding(() -> !possibleTargets.contains(controller.getSelectComboBox().getValue())
-													|| controller.getListView().getItems().contains(controller.getSelectComboBox().getValue()), controller.getSelectComboBox().valueProperty()));
+				Bindings.createBooleanBinding(() -> !possibleTargets.contains(selected.get())
+													|| controller.getListView().getItems().contains(selected.get()), selected));
 		controller.getAddButton().setOnAction(e -> {
-			var target = controller.getSelectComboBox().getValue();
+			var target = selected.get();
 			if (possibleTargets.contains(target) && !controller.getListView().getItems().contains(target)) {
 				controller.getListView().getItems().add(target);
-				Platform.runLater(() -> controller.getSelectComboBox().setValue(""));
+				Platform.runLater(() -> selected.set(""));
 			}
 		});
 

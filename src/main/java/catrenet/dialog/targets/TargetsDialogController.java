@@ -42,7 +42,7 @@ public class TargetsDialogController {
 	private ListView<String> listView;
 
 	@FXML
-	private ComboBox<String> selectComboBox;
+	private MenuButton selectMenuButton;
 
 	@FXML
 	private TextField ordersTextField;
@@ -75,8 +75,8 @@ public class TargetsDialogController {
 		return listView;
 	}
 
-	public ComboBox<String> getSelectComboBox() {
-		return selectComboBox;
+	public MenuButton getSelectMenuButton() {
+		return selectMenuButton;
 	}
 
 	public TextField getOrdersTextField() {

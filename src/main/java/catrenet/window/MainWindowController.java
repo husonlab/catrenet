@@ -571,7 +571,7 @@ public class MainWindowController {
 		{
 			networkTabContextMenu = networkTab.getContextMenu();
 			networkTab.setContextMenu(null);
-			networkTabContextMenu.getItems().addAll(BasicFX.copyMenu(selectMenu.getItems()));
+			networkTabContextMenu.getItems().addAll(BasicFX.copyMenu(selectMenu.getItems(), false));
 		}
 
 		// replace tabbed pane by splittable one
@@ -647,20 +647,20 @@ public class MainWindowController {
 
 			recentFilesMenu.getItems().addListener((InvalidationListener) e -> {
 				fileMenuButton.getItems().setAll(newRecentFileMenuItem, newPolymerModelRecentFileMenuItem, openRecentFileMenuItem, new SeparatorMenuItem());
-				fileMenuButton.getItems().addAll(BasicFX.copyMenu(recentFilesMenu.getItems()));
+				fileMenuButton.getItems().addAll(BasicFX.copyMenu(recentFilesMenu.getItems(), false));
 			});
 		}
 
 		{
-			computeNetworkMenuButton.getItems().addAll(BasicFX.copyMenu(networkMenu.getItems()));
-			runMenuButton.getItems().addAll(BasicFX.copyMenu(algorithmMenu.getItems()));
-			animateNetworkMenuButton.getItems().addAll(BasicFX.copyMenu(animateMenu.getItems()));
+			computeNetworkMenuButton.getItems().addAll(BasicFX.copyMenu(networkMenu.getItems(), false));
+			runMenuButton.getItems().addAll(BasicFX.copyMenu(algorithmMenu.getItems(), false));
+			animateNetworkMenuButton.getItems().addAll(BasicFX.copyMenu(animateMenu.getItems(), false));
 
-			selectNetworkMenuButton.getItems().addAll(BasicFX.copyMenu(selectMenu.getItems()));
+			selectNetworkMenuButton.getItems().addAll(BasicFX.copyMenu(selectMenu.getItems(), false));
 
 			{
 				var subMenu = selectNetworkMenuButton.getItems().stream().filter(t -> t instanceof Menu).map(t -> (Menu) t).filter(t -> t.getText() != null && selectReactionSystemMenu.getText().equals(t.getText())).findAny();
-				subMenu.ifPresent(menu -> selectReactionSystemMenu.getItems().addListener((InvalidationListener) e -> menu.getItems().setAll(BasicFX.copyMenu(selectReactionSystemMenu.getItems()))));
+				subMenu.ifPresent(menu -> selectReactionSystemMenu.getItems().addListener((InvalidationListener) e -> menu.getItems().setAll(BasicFX.copyMenu(selectReactionSystemMenu.getItems(), false))));
 			}
 
 			zoomInNetworkButton.setOnAction(e -> zoomInMenuItem.getOnAction().handle(e));
@@ -675,7 +675,7 @@ public class MainWindowController {
 
 			selectReactionSystemMenu.disableProperty().bind(Bindings.isEmpty(selectReactionSystemMenu.getItems()));
 
-			listMenuButton.getItems().addAll(BasicFX.copyMenu(listMenu.getItems()));
+			listMenuButton.getItems().addAll(BasicFX.copyMenu(listMenu.getItems(), false));
 			listMenuButton.disableProperty().bind(runRAFMenuItem.disableProperty());
 
 			runMenuButton.disableProperty().bind(runRAFMenuItem.disableProperty());
