@@ -86,7 +86,7 @@ public class MainWindow implements IMainWindow {
 
         Parent root;
         {
-			ProgramProperties.track(maxGraphDisplaySize, 500);
+            ProgramProperties.track(maxGraphDisplaySize, 500);
 
             var fxmlLoader = new FXMLLoader();
             try (var ins = StatementFilter.applyMobileFXML(Objects.requireNonNull(MainWindowController.class.getResource("MainWindow.fxml")).openStream(), ProgramProperties.isDesktop())) {
@@ -115,7 +115,11 @@ public class MainWindow implements IMainWindow {
         document.dirtyProperty().addListener(listener);
 
         scene = new Scene(root);
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getClassLoader().getResource("jloda/fx/icons/button.css")).toExternalForm());
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("MainWindow.css")).toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getClassLoader().getResource("jloda/resources/css/white_pane.css")).toExternalForm());
+
+        controller.getRootPane().getStylesheets().add(Objects.requireNonNull(getClass().getResource("clean.css")).toExternalForm());
     }
 
     @Override
