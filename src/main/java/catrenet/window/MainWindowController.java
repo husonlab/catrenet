@@ -33,7 +33,6 @@ import jloda.fx.icons.MaterialIcons;
 import jloda.fx.util.BasicFX;
 import jloda.fx.util.ProgramProperties;
 import jloda.fx.util.RunAfterAWhile;
-import jloda.fx.window.MainWindowManager;
 import jloda.fx.window.NotificationManager;
 
 import java.util.ArrayList;
@@ -584,36 +583,6 @@ public class MainWindowController {
 		outputPane.getChildren().setAll(outputSplittableTabPane);
 		if (!outputSplittableTabPane.getTabs().isEmpty())
 			outputSplittableTabPane.getSelectionModel().select(0);
-
-		final var originalWindowMenuItems = new ArrayList<>(windowMenu.getItems());
-
-		final InvalidationListener invalidationListener = observable -> {
-			windowMenu.getItems().setAll(originalWindowMenuItems);
-			int count = 0;
-			for (var mainWindow : MainWindowManager.getInstance().getMainWindows()) {
-				if (mainWindow.getStage() != null) {
-					final String title = mainWindow.getStage().getTitle();
-					if (title != null) {
-						final MenuItem menuItem = new MenuItem(title.replaceAll("- " + ProgramProperties.getProgramName(), ""));
-						menuItem.setOnAction((e) -> mainWindow.getStage().toFront());
-						menuItem.setAccelerator(new KeyCharacterCombination("" + (++count), KeyCombination.SHORTCUT_DOWN));
-						windowMenu.getItems().add(menuItem);
-					}
-				}
-				if (MainWindowManager.getInstance().getAuxiliaryWindows(mainWindow) != null) {
-					for (var auxStage : MainWindowManager.getInstance().getAuxiliaryWindows(mainWindow)) {
-						final var title = auxStage.getTitle();
-						if (title != null) {
-							final MenuItem menuItem = new MenuItem(title.replaceAll("- " + ProgramProperties.getProgramName(), ""));
-							menuItem.setOnAction((e) -> auxStage.toFront());
-							windowMenu.getItems().add(menuItem);
-						}
-					}
-				}
-			}
-		};
-		MainWindowManager.getInstance().changedProperty().addListener(invalidationListener);
-		invalidationListener.invalidated(null);
 
 		inputSplitPane.heightProperty().addListener((v, o, n) -> {
 			if (o.doubleValue() > 0.0 && n.doubleValue() > 0.0) {

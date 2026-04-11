@@ -36,9 +36,9 @@ import jloda.fx.undo.UndoManager;
 import jloda.fx.util.*;
 import jloda.fx.window.IMainWindow;
 import jloda.fx.window.MainWindowManager;
+import jloda.fx.window.SetupWindowMenu;
 import jloda.util.FileUtils;
 
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Collections;
 import java.util.Objects;
@@ -91,7 +91,7 @@ public class MainWindow implements IMainWindow {
             var fxmlLoader = new FXMLLoader();
             try (var ins = StatementFilter.applyMobileFXML(Objects.requireNonNull(MainWindowController.class.getResource("MainWindow.fxml")).openStream(), ProgramProperties.isDesktop())) {
                 fxmlLoader.load(ins);
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
             root = fxmlLoader.getRoot();
@@ -158,6 +158,8 @@ public class MainWindow implements IMainWindow {
 
         controller.getInputTextArea().textProperty().length().addListener((c, o, n) -> hasReactionsInput.set(n.intValue() > 0));
         empty.bind(controller.getInputFoodTextArea().textProperty().isEmpty().and(controller.getInputTextArea().textProperty().isEmpty()));
+
+        SetupWindowMenu.apply(this, controller.getWindowMenu());
     }
 
     @Override
