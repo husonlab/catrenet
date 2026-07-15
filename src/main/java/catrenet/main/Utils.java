@@ -1,5 +1,5 @@
 /*
- *  CheckForUpdate.java Copyright (C) 2024 Daniel H. Huson
+ * Utils.java Copyright (C) 2026 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -15,27 +15,24 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 
 package catrenet.main;
 
-import catrenet.window.MainWindow;
-import jloda.fx.dialog.MessageInternalDialog;
+import javafx.scene.image.Image;
+import jloda.util.Basic;
 
-/**
- * check for update
- * Daniel Huson, 5.2018
- */
-public class CheckForUpdate {
-	/**
-	 * check for update, download and install, if present
-	 */
-	public static void apply(MainWindow mainWindow) {
-		var text = """
-				%s updates have moved to GitHub.
-				Download the latest release from: %s
-				""".formatted(Version.NAME, Version.HOME_URL);
-		var dialog = new MessageInternalDialog(mainWindow.getController().getRootPane(), "Updates have moved", text);
-		dialog.show();
+import java.io.IOException;
+
+public class Utils {
+	public static Image getImage(Class<?> clazz, String name) {
+		try (var ins = clazz.getResourceAsStream(name)) {
+			assert ins != null;
+			return new Image(ins);
+		} catch (IOException ex) {
+			Basic.caught(ex);
+			return null;
+		}
 	}
 }

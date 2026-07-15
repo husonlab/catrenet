@@ -1,6 +1,4 @@
 module catrenet {
-	requires com.install4j.runtime;
-
 	requires transitive jloda_core;
 	requires transitive jloda_fx;
 	requires transitive javafx.controls;
@@ -25,11 +23,9 @@ module catrenet {
 	opens catrenet.tab;
 	opens catrenet.window;
 	opens catrenet.settings;
+	opens catrenet.main;
 	opens catrenet.settings.displaylabels;
 
 	opens catrenet.dialog.exportlist;
 	opens catrenet.dialog.targets;
-
-	opens catrenet.resources.images;
-	opens catrenet.resources.icons;
 }

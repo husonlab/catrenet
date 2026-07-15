@@ -21,5 +21,17 @@ package catrenet.main;
 
 public class Version {
 	static public final String NAME = "CatReNet";
-	static public final String SHORT_DESCRIPTION = "CatReNet (version 1.0.0, built 22 Apr 2026)";
+	public static final String SUFFIX = ".crs";
+	static public String HOME_URL = "https://github.com/husonlab/catrenet";
+
+	public static final String VERSION = resolveVersion();
+	public static final String SHORT_DESCRIPTION = NAME + " (version " + VERSION + ") - License GPL v3";
+
+	static public final String WEBSITE_URL = "https://husonlab.github.io/catrenet/doc";
+
+	public static String resolveVersion() {
+		var pkg = Version.class.getPackage();
+		var v = (pkg != null) ? pkg.getImplementationVersion() : null;
+		return (v != null && !v.isBlank()) ? v : "dev";
+	}
 }

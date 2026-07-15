@@ -471,8 +471,7 @@ public class MainWindowPresenter {
 
         controller.getAboutMenuItem().setOnAction(e -> SplashScreen.showSplash(Duration.ofMinutes(2)));
 
-        controller.getCheckForUpdatesMenuItem().setOnAction(e -> CheckForUpdate.apply("https://software-ab.cs.uni-tuebingen.de/download/catrenet"));
-        CheckForUpdate.setupDisableProperty(controller.getCheckForUpdatesMenuItem().disableProperty());
+		controller.getCheckForUpdatesMenuItem().setOnAction(e -> CheckForUpdate.apply(mainWindow));
 
         final DoubleProperty fontSize = new SimpleDoubleProperty(controller.getInputTextArea().getFont().getSize());
         setupFontSizeBindings(controller, tabManager, graphView, fontSize);

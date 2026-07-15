@@ -68,7 +68,8 @@ public class CatReNet extends Application {
         Basic.startCollectionStdErr();
 
         ResourceManagerFX.addResourceRoot(CatReNet.class, "catrenet.resources");
-        ProgramProperties.getProgramIconsFX().addAll(ResourceManagerFX.getIcons("CatReNet-512.png"));
+        ProgramProperties.getProgramIconsFX().setAll(Utils.getImage(CatReNet.class, "CatReNet-512x512.png"));
+
         ProgramProperties.setProgramName(Version.NAME);
         ProgramProperties.setProgramVersion(Version.SHORT_DESCRIPTION);
         ProgramProperties.setProgramLicence("""
@@ -77,7 +78,8 @@ public class CatReNet extends Application {
                 Sources available at: https://github.com/husonlab/catrenet
                 """);
         SplashScreen.setVersionString(ProgramProperties.getProgramVersion());
-        SplashScreen.setImageResourceName("splash.png");
+        SplashScreen.setImage(Utils.getImage(CatReNet.class, "CatReNet-Splash.png"));
+
         SplashScreen.setLabelAnchor(new Point2D(20, 10));
 
         try {
