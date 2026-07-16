@@ -30,6 +30,7 @@ import catrenet.io.NetworkIO;
 import catrenet.io.Save;
 import catrenet.io.SaveBeforeClosingDialog;
 import catrenet.main.CheckForUpdate;
+import catrenet.main.Version;
 import catrenet.model.MoleculeType;
 import catrenet.model.ReactionSystem;
 import catrenet.settings.SettingsView;
@@ -481,6 +482,8 @@ public class MainWindowPresenter {
         controller.getDecreaseFontSizeMenuItem().disableProperty().bind(fontSize.lessThanOrEqualTo(4));
 
         controller.getLogTextArea().appendText(Basic.stopCollectingStdErr());
+
+        controller.getShowUserManualMenuItem().setOnAction(e -> ProgramProperties.getHostServices().showDocument(Version.WEBSITE_URL));
 
         {
             final ZoomableScrollPane scrollPane = controller.getNetworkScrollPane();

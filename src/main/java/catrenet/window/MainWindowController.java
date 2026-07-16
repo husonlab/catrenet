@@ -42,6 +42,9 @@ public class MainWindowController {
 	private MenuItem aboutMenuItem;
 
 	@FXML
+	private MenuItem showUserManualMenuItem;
+
+	@FXML
 	private Menu algorithmMenu;
 
 	@FXML
@@ -1232,5 +1235,9 @@ public class MainWindowController {
 
 	public MenuItem getStratifyReactionsAndMoleculesMenuItem() {
 		return stratifyReactionsAndMoleculesMenuItem;
+	}
+
+	public MenuItem getShowUserManualMenuItem() {
+		return showUserManualMenuItem;
 	}
 }
