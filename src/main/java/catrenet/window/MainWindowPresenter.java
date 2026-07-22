@@ -29,7 +29,6 @@ import catrenet.io.ModelIO;
 import catrenet.io.NetworkIO;
 import catrenet.io.Save;
 import catrenet.io.SaveBeforeClosingDialog;
-import catrenet.main.CheckForUpdate;
 import catrenet.main.Version;
 import catrenet.model.MoleculeType;
 import catrenet.model.ReactionSystem;
@@ -55,6 +54,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import jloda.fx.control.ZoomableScrollPane;
 import jloda.fx.print.Print;
+import jloda.fx.service.UpdateService;
 import jloda.fx.util.*;
 import jloda.fx.window.MainWindowManager;
 import jloda.fx.window.NotificationManager;
@@ -472,7 +472,10 @@ public class MainWindowPresenter {
 
         controller.getAboutMenuItem().setOnAction(e -> SplashScreen.showSplash(Duration.ofMinutes(2)));
 
-		controller.getCheckForUpdatesMenuItem().setOnAction(e -> CheckForUpdate.apply(mainWindow));
+		var updaterService = UpdateService.get();
+		controller.getCheckForUpdatesMenuItem().setOnAction(e -> updaterService.checkForUpdates(mainWindow.getStage(), Version.HOME_URL, Version.NAME, Version.VERSION));
+		controller.getCheckForUpdatesMenuItem().disableProperty().bind(updaterService.disabledProperty().or(MainWindowManager.getInstance().sizeProperty().greaterThan(1)).or(mainWindow.getDocument().dirtyProperty()));
+
 
         final DoubleProperty fontSize = new SimpleDoubleProperty(controller.getInputTextArea().getFont().getSize());
         setupFontSizeBindings(controller, tabManager, graphView, fontSize);

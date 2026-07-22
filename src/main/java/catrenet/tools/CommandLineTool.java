@@ -28,7 +28,6 @@ import catrenet.model.ReactionSystem;
 import catrenet.settings.ArrowNotation;
 import catrenet.settings.ReactionNotation;
 import jloda.fx.util.ArgsOptions;
-import jloda.fx.util.ResourceManagerFX;
 import jloda.util.*;
 import jloda.util.progress.ProgressPercentage;
 
@@ -45,7 +44,6 @@ public class CommandLineTool {
 	 */
 	public static void main(String[] args) {
 		try {
-			ResourceManagerFX.addResourceRoot(catrenet.resources.Resources.class, "catrenet.resources");
 			ProgramProperties.setProgramName(CommandLineTool.class.getSimpleName());
 			ProgramProperties.setProgramVersion(catrenet.main.Version.SHORT_DESCRIPTION);
 

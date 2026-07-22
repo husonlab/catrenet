@@ -25,9 +25,9 @@ public class Version {
 	static public String HOME_URL = "https://github.com/husonlab/catrenet";
 
 	public static final String VERSION = resolveVersion();
-	public static final String SHORT_DESCRIPTION = NAME + " (version " + VERSION + ") - License GPL v3";
+	public static final String SHORT_DESCRIPTION = NAME + " (version 1.0.1, built 22 Jul 2026) - License GPL v3";
 
-	static public final String WEBSITE_URL = "https://husonlab.github.io/catrenet/docs";
+	static public final String WEBSITE_URL = "https://husonlab.github.io/catrenet";
 
 	public static String resolveVersion() {
 		var pkg = Version.class.getPackage();

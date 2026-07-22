@@ -24,7 +24,6 @@ import catrenet.io.ModelIO;
 import catrenet.settings.ArrowNotation;
 import catrenet.settings.ReactionNotation;
 import jloda.fx.util.ArgsOptions;
-import jloda.fx.util.ResourceManagerFX;
 import jloda.util.*;
 import jloda.util.progress.ProgressPercentage;
 
@@ -38,7 +37,6 @@ public class PolymerModelTool {
 	 */
 	public static void main(String[] args) throws IOException {
 		try {
-			ResourceManagerFX.addResourceRoot(catrenet.resources.Resources.class, "catrenet.resources");
 			ProgramProperties.setProgramName(PolymerModelTool.class.getSimpleName());
 			ProgramProperties.setProgramVersion(catrenet.main.Version.SHORT_DESCRIPTION);
 

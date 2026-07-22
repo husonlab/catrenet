@@ -26,6 +26,7 @@ import jloda.fx.dialog.MessageInternalDialog;
  * check for update
  * Daniel Huson, 5.2018
  */
+@Deprecated
 public class CheckForUpdate {
 	/**
 	 * check for update, download and install, if present
