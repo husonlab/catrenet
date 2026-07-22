@@ -48,13 +48,17 @@ public class FileOpener implements Consumer<String> {
 
 	@Override
 	public void accept(String fileName) {
-		var window = (MainWindow) MainWindowManager.getInstance().getLastFocusedMainWindow();
-		if (window == null || !window.isEmpty())
-			window = NewWindow.apply();
-		accept(fileName, fileName, window);
+		accept(fileName, fileName, null);
 	}
 
 	public void accept(String fileName, String title, MainWindow window) {
+		if (window == null) {
+			window = (MainWindow) MainWindowManager.getInstance().getLastFocusedMainWindow();
+			if (window == null || !window.isEmpty()) {
+				window = NewWindow.apply();
+			}
+		}
+
 		var reactionSystem = window.getInputReactionSystem();
 
         try {
