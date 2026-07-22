@@ -28,4 +28,7 @@ module catrenet {
 
 	opens catrenet.dialog.exportlist;
 	opens catrenet.dialog.targets;
+
+	opens catrenet.examples;
+	exports catrenet.examples;
 }

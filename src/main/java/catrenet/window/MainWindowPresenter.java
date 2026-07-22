@@ -25,10 +25,8 @@ import catrenet.dialog.ExportReactionsForSelectedNodesDialog;
 import catrenet.dialog.PolymerModelDialog;
 import catrenet.dialog.exportlist.ExportList;
 import catrenet.dialog.targets.TargetsDialog;
-import catrenet.io.ModelIO;
-import catrenet.io.NetworkIO;
-import catrenet.io.Save;
-import catrenet.io.SaveBeforeClosingDialog;
+import catrenet.examples.ExamplesSupport;
+import catrenet.io.*;
 import catrenet.main.Version;
 import catrenet.model.MoleculeType;
 import catrenet.model.ReactionSystem;
@@ -167,6 +165,8 @@ public class MainWindowPresenter {
         controller.getNewPolymerModelMenuItem().setOnAction(e -> PolymerModelDialog.show(mainWindow));
 
         controller.getOpenMenuItem().setOnAction(FileOpenManager.createOpenFileEventHandler(mainWindow.getStage()));
+
+        ExamplesSupport.install(controller.getOpenExampleMenu(), (s, t) -> (new FileOpener()).accept(FileUtils.PREFIX_TO_INDICATE_TO_PARSE_FILENAME_STRING + t, s, mainWindow));
 
         controller.getImportMenuItem().setOnAction(c -> ImportWimsFormat.apply(mainWindow.getStage()));
 

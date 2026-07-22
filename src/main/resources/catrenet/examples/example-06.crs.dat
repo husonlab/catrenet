@@ -1,0 +1,12 @@
+# Example 6 on http://www.math.canterbury.ac.nz/bio/RAF/
+# maxCAF none, maxRAF all, max-pRAF all
+
+r1: f [x1] -> x1
+r2: f [x1] -> x2
+r3: f [x1] -> x3
+r4: f [x2,x5,x7] -> x4
+r5: f [x2,x5,x7] -> x5
+r6: f [x3,x4,x6] -> x6
+r7: f [x3,x4,x6] -> x7
+
+Food: f

@@ -1,0 +1,19 @@
+# Example 3 on http://www.math.canterbury.ac.nz/bio/RAF/
+# maxCAF none, maxRAF all, max-pRAF all
+
+r_x: f [theta] -> x
+r_theta: theta_1+theta_2+theta_3 [theta] -> theta
+r1:   x [x_1]  -> x_1
+r'1:  x [x'_1] -> x'_1
+r2:   x [x_2]  -> x_2
+r'2:  x [x'_2] -> x'_2
+r3:   x [x_3]  -> x_3
+r'3:  x [x'_3] -> x'_3
+r#1:  x_1  [theta_1] -> theta_1
+r#'1: x'_1 [theta_1] -> theta_1
+r#2:  x_2  [theta_2] -> theta_2
+r#'2: x'_2 [theta_2] -> theta_2
+r#3:  x_3  [theta_3] -> theta_3
+r#'3: x'_3 [theta_3] -> theta_3
+
+Food: f

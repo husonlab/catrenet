@@ -392,6 +392,7 @@
                                     </accelerator>
                                 </MenuItem>
                                 <Menu fx:id="recentFilesMenu" mnemonicParsing="false" text="Recent"/>
+                                <Menu fx:id="openExampleMenu" mnemonicParsing="false" text="Examples"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="importMenuItem" mnemonicParsing="false" text="Import...">
                                 </MenuItem>

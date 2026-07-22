@@ -1,0 +1,9 @@
+# Example 7 on http://www.math.canterbury.ac.nz/bio/RAF/
+# This requires "and" on catalysts
+# maxCAF all, maxRAF all, max-pRAF all
+
+r1: a+b [c,d,e*f] -> d
+r2: c+d [a] -> a
+r3: c+a [a] <-> b
+
+Food: a b c d

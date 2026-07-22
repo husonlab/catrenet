@@ -51,10 +51,10 @@ public class FileOpener implements Consumer<String> {
 		var window = (MainWindow) MainWindowManager.getInstance().getLastFocusedMainWindow();
 		if (window == null || !window.isEmpty())
 			window = NewWindow.apply();
-		accept(fileName, window);
+		accept(fileName, fileName, window);
 	}
 
-	public void accept(String fileName, MainWindow window) {
+	public void accept(String fileName, String title, MainWindow window) {
 		var reactionSystem = window.getInputReactionSystem();
 
         try {
@@ -69,10 +69,10 @@ public class FileOpener implements Consumer<String> {
 				window.getDocument().setDirty(true);
             } else {
 				inputLines = FileUtils.getLinesFromFile(fileName);
-				window.getDocument().setFileName(fileName);
+				window.getDocument().setFileName(title);
 				var lines = FileUtils.getFirstLinesFromFile(new File(fileName), 10);
                 if (lines == null)
-                    throw new IOException("Can't read file: " + fileName);
+					throw new IOException("Can't read file: " + title);
                 notation = ReactionNotation.detectNotation(Arrays.asList(lines));
             }
 
@@ -90,14 +90,15 @@ public class FileOpener implements Consumer<String> {
 				window.getController().getInputFoodTextArea().setText(food);
 
 				var infoString = "\nRead " + reactionSystem.size() + " reactions" + (reactionSystem.getNumberOfTwoWayReactions() > 0 ? " (" + reactionSystem.getNumberOfTwoWayReactions() + " two-way)" : "")
-								 + " and " + reactionSystem.getFoods().size() + " food items from file: " + FileUtils.getFileNameWithoutPath(fileName);
+								 + " and " + reactionSystem.getFoods().size() + " food items from file: " + FileUtils.getFileNameWithoutPath(title);
 
                 NotificationManager.showInformation(infoString);
 
                 window.getLogStream().println(infoString);
                 // window.getLogStream().println("Input format:   " + pair.getFirst());
                 // window.getLogStream().println("Display format: " + window.getDocument().getReactionNotation());
-                RecentFilesManager.getInstance().insertRecentFile(fileName);
+				if (fileName.equals(title))
+					RecentFilesManager.getInstance().insertRecentFile(fileName);
 
                 VerifyInput.verify(window);
             }

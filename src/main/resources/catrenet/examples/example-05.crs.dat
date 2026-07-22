@@ -1,0 +1,21 @@
+# Example 5 on http://www.math.canterbury.ac.nz/bio/RAF/
+# maxCAF none, maxRAF all, max-pRAF all
+
+r11: f1+f2 [UA,UC,UG,UU] -> AA
+r12: f1+f2 [GA,GC,GG,GU] -> AC
+r13: f1+f2 [CA,CC,CG,CU] -> AG
+r14: f1+f2 [AA,AC,AG,AU] -> AU
+r21: f1+f2 [UA,UC,UG,UU] -> CA
+r22: f1+f2 [GA,GC,GG,GU] -> CC
+r23: f1+f2 [CA,CC,CG,CU] -> CG
+r24: f1+f2 [AA,AC,AG,AU] -> CU
+r31: f1+f2 [UA,UC,UG,UU] -> GA
+r32: f1+f2 [GA,GC,GG,GU] -> GC
+r33: f1+f2 [CA,CC,CG,CU] -> GG
+r34: f1+f2 [AA,AC,AG,AU] -> GU
+r41: f1+f2 [UA,UC,UG,UU] -> UA
+r42: f1+f2 [GA,GC,GG,GU] -> UC
+r43: f1+f2 [CA,CC,CG,CU] -> UG
+r44: f1+f2 [AA,AC,AG,AU] -> UU
+
+Food: f1 f2

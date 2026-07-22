@@ -1,0 +1,4 @@
+Food: a, b, c, d, x, z
+
+r1 : a + b [x] => y
+r2 : c + d [z] {y} => x + z

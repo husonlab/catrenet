@@ -276,6 +276,9 @@ public class MainWindowController {
 	private MenuItem openMenuItem;
 
 	@FXML
+	private Menu openExampleMenu;
+
+	@FXML
 	private MenuItem openRecentFileMenuItem;
 
 	@FXML
@@ -690,6 +693,10 @@ public class MainWindowController {
 
 	public MenuItem getOpenMenuItem() {
 		return openMenuItem;
+	}
+
+	public Menu getOpenExampleMenu() {
+		return openExampleMenu;
 	}
 
 	public MenuItem getImportMenuItem() {

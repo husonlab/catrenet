@@ -1,0 +1,11 @@
+# From Figure 2 of Xavier, J. C., Hordijk, W., Kauffman, S., Steel M. and Martin, W. F. (2020). Autocatalytic chemical networks at the origin of metabolism. Proc. Roy. Soc. B. 287: 20192377
+# Has a maxRAF of size 4 (which is an iRAF),  a pseudoRAF of size 7 (everything) and no CAF.
+Food: f1 f2 f3 f4 f5 f6
+
+r1 : f1 + f2 [g] => a
+r2 : a + f3 [c] => b
+r3 : b + f4 [a] => c
+r4 : c + f5 [b] => a + g
+r5 : b + c [h] => d
+r6 : e + f6 [b] => h
+r7 : f5 + h [c] => e
