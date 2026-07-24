@@ -2,7 +2,7 @@
 
 <img src="src/main/resources/catrenet/main/CatReNet-Splash.png" alt="Splash" width="600"/>
 
-CatReNet (formerly CatlyNet) is a program for working with (auto-)catalytic reaction networks, based on a set of
+CatReNet is a program for working with (auto-)catalytic reaction networks, based on a set of
 'catalyzed reactions' and a given 'food set' of molecules  [[HXS24b]](#70).
 It provides fast and exact algorithms for calculating three main types of autocatalytic networks,
 namely (maximal) RAFs, CAFs, and pseudo-RAFs. These three notions are formalizations of the concept of a 'collectively
