@@ -1,6 +1,6 @@
 # CatReNet
 
-<img src="https://github.com/husonlab/catrenet/blob/master/src/main/resources/catrenet/main/CatReNet-Splash.png" alt="Splash" width="600"/>
+<img src="src/main/resources/catrenet/main/CatReNet-Splash.png" alt="Splash" width="600"/>
 
 CatReNet (formerly CatlyNet) is a program for working with (auto-)catalytic reaction networks, based on a set of
 'catalyzed reactions' and a given 'food set' of molecules  [[HXS24b]](#70).
@@ -17,7 +17,7 @@ This software was developed by Daniel H. Huson, Joana C. Xavier and Mike A. Stee
 ## 📦 Installers
 
 Interactive installers for MacOS, Windows and Linux are
-available [here](https://software-ab.cs.uni-tuebingen.de/download/catrenet/welcome.html or [here](https://unitc-my.sharepoint.com/:f:/g/personal/iijhu01_cloud_uni-tuebingen_de/EmvzMdVieMZMijtxKhVbI-oBqq9fGYHKhVnW4vqLlZ3_IA?e=U2YIwh).
+available [here](https://github.com/husonlab/catrenet/releases).
 
 Versions for Android and iOS are under development.
 
