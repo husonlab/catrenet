@@ -99,7 +99,6 @@
                     <mainClass>${main.class}</mainClass>
                 </configuration>
             </plugin>
-            <!-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -108,11 +107,13 @@
                     <archive>
                         <manifest>
                             <mainClass>${main.class}</mainClass>
+                            <!-- writes Implementation-Version into the manifest, which is what
+                                 catrenet.main.Version.resolveVersion() reports at runtime -->
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
                     </archive>
                 </configuration>
             </plugin>
-            <-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
