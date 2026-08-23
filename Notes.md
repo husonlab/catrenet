@@ -1,7 +1,6 @@
-## Preparation for building desktop installers using install4j
+## Building
 
-Before using install4j to build installers for Linux, MacOS and Windows, run the following command to build a jar and to
-copy all non-JavaFX jars into the directory target/dependency:
+The following command builds the jar and copies all non-JavaFX jars into the directory target/dependency:
 
     mvn clean package
 
