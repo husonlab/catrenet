@@ -117,8 +117,9 @@ public class ModelIO {
 			}
 
 			if (inFoodBlock) {
-				// If current line contains a colon, the Food: block ends *before* this line.
-				if (rec.containsColon()) {
+				// If current line contains a colon or an arrow, the Food: block ends *before* this line.
+				// (an unnamed reaction has no colon, but always has an arrow)
+				if (rec.containsColon() || rec.containsArrow()) {
 					inFoodBlock = false;
 					// fall through to classify this line normally
 				} else {
@@ -169,9 +170,29 @@ public class ModelIO {
 		}
 
 		if (!reactionLines.isEmpty()) {
+			final var tabbedFormat = reactionNotation.equals(ReactionNotation.Tabbed);
+
+			// collect the explicitly given names first, so that auto-generated names can't collide with them:
+			final var explicitNames = new HashSet<String>();
 			for (var reactionLine : reactionLines) {
 				if (!reactionLine.isBlank()) {
-					var reaction = Reaction.parse(reactionLine, auxReactions, reactionNotation.equals(ReactionNotation.Tabbed));
+					var name = explicitReactionName(reactionLine, tabbedFormat);
+					if (name != null && !name.isEmpty())
+						explicitNames.add(name);
+				}
+			}
+
+			var autoNameCount = 0;
+			for (var reactionLine : reactionLines) {
+				if (!reactionLine.isBlank()) {
+					if (isUnnamedReactionLine(reactionLine, tabbedFormat)) { // auto-name any reaction that the user didn't name
+						String autoName;
+						do {
+							autoName = "r" + (++autoNameCount);
+						} while (explicitNames.contains(autoName));
+						reactionLine = autoName + ": " + reactionLine.trim();
+					}
+					var reaction = Reaction.parse(reactionLine, auxReactions, tabbedFormat);
 					if (reactionNames.contains(reaction.getName()))
 						throw new IOException("Multiple reactions have the same name: " + reaction.getName());
 					reactionSystem.getReactions().add(reaction);
@@ -184,6 +205,56 @@ public class ModelIO {
 			}
 		}
 		return comments.toString();
+	}
+
+	/**
+	 * does the given reaction line lack a leading reaction name?
+	 * A line counts as unnamed if it has an arrow, but no colon in front of the arrow.
+	 * Lines without an arrow are left alone, so that Reaction.parse() can report the real problem
+	 *
+	 * @return true, if the line needs to be given a name
+	 */
+	private static boolean isUnnamedReactionLine(String line, boolean tabbedFormat) {
+		if (tabbedFormat)
+			return false; // in tabbed format the name is the first column
+		var arrowPos = arrowPosition(line);
+		if (arrowPos == -1)
+			return false;
+		var colonPos = line.indexOf(':');
+		return colonPos == -1 || colonPos > arrowPos;
+	}
+
+	/**
+	 * gets the name that the user explicitly gave a reaction line
+	 *
+	 * @return name, or null, if the line is unnamed
+	 */
+	private static String explicitReactionName(String line, boolean tabbedFormat) {
+		if (tabbedFormat) {
+			var tabPos = line.indexOf('\t');
+			return tabPos == -1 ? null : line.substring(0, tabPos).trim();
+		}
+		if (isUnnamedReactionLine(line, false))
+			return null;
+		var colonPos = line.indexOf(':');
+		return colonPos == -1 ? null : line.substring(0, colonPos).trim();
+	}
+
+	/**
+	 * gets the position of the first arrow in a reaction line
+	 *
+	 * @return position, or -1, if there is no arrow
+	 */
+	private static int arrowPosition(String line) {
+		var normalized = line.replaceAll("->", "=>").replaceAll("<-", "<="); // as in Reaction.parse(), lengths are preserved
+		var forward = normalized.indexOf("=>");
+		var reverse = normalized.indexOf("<=");
+		if (forward == -1)
+			return reverse;
+		else if (reverse == -1)
+			return forward;
+		else
+			return Math.min(forward, reverse);
 	}
 
 

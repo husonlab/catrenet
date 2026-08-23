@@ -73,6 +73,7 @@ public class ReactionSystem {
                         numberOfTwoWayReactions--;
                 }
             }
+            updateIsInhibitorsPresent();
         });
         updateIsInhibitorsPresent();
     }
