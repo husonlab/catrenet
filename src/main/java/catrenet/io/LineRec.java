@@ -35,6 +35,7 @@ public record LineRec(int idx, int lineNo, String raw, String trimmed) {
 	public static final Pattern FOOD_BLOCK_START_P = Pattern.compile("^\\s*(?:FoodSet|Food)\\s*:\\s*(.*)$", Pattern.CASE_INSENSITIVE);
 	public static final Pattern FOOD_SIMPLE_P = Pattern.compile("^\\s*(?:FoodSet|Food)\\b(?!\\s*:)", Pattern.CASE_INSENSITIVE);
 	public static final Pattern ANY_COLON_P = Pattern.compile(":"); // used to end a Food: block
+	public static final Pattern ANY_ARROW_P = Pattern.compile("<->|<=>|->|=>|<-|<="); // also used to end a Food: block
 
 
 	public boolean isBlank() {
@@ -63,5 +64,9 @@ public record LineRec(int idx, int lineNo, String raw, String trimmed) {
 
 	public boolean containsColon() {
 		return ANY_COLON_P.matcher(raw).find();
+	}
+
+	public boolean containsArrow() {
+		return ANY_ARROW_P.matcher(raw).find();
 	}
 }

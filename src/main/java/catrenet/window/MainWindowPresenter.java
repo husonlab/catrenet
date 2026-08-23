@@ -438,7 +438,7 @@ public class MainWindowPresenter {
             }
         });
 
-        controller.getRunMuCAFMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()).or(mainWindow.getInputReactionSystem().inhibitorsPresentProperty().not()));
+        controller.getRunMuCAFMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()));
 
         controller.getRunURAFMenuItem().setOnAction(e -> {
             if (VerifyInput.verify(mainWindow)) {
@@ -448,10 +448,17 @@ public class MainWindowPresenter {
                     NotificationManager.showWarning("Won't run U RAF algorithm, no inhibitions present");
             }
         });
-        controller.getRunURAFMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()).or(mainWindow.getInputReactionSystem().inhibitorsPresentProperty().not()));
+        controller.getRunURAFMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()));
 
-        controller.getRunMuCAFMultipleTimesMenuItem().setOnAction(e -> RunMuCAFMultipleTimes.apply(mainWindow, controller, runningListener));
-        controller.getRunMuCAFMultipleTimesMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()).or(mainWindow.getInputReactionSystem().inhibitorsPresentProperty().not()));
+        controller.getRunMuCAFMultipleTimesMenuItem().setOnAction(e -> {
+            if (VerifyInput.verify(mainWindow)) {
+                if (mainWindow.getInputReactionSystem().isInhibitorsPresent()) {
+                    RunMuCAFMultipleTimes.apply(mainWindow, controller, runningListener);
+                } else
+                    NotificationManager.showWarning("Won't run MU CAF algorithm, no inhibitions present");
+            }
+        });
+        controller.getRunMuCAFMultipleTimesMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()));
 
         controller.getSpontaneousInRafMenuItem().setOnAction(e -> ComputeNecessarilySpontaneousInRAF.apply(mainWindow, mainWindow.getInputReactionSystem(), controller, runningListener));
         controller.getSpontaneousInRafMenuItem().disableProperty().bind(controller.getRunRAFMenuItem().disableProperty());
