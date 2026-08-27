@@ -22,6 +22,7 @@ package catrenet.io;
 import catrenet.model.ReactionSystem;
 import catrenet.window.MainWindow;
 import javafx.stage.FileChooser;
+import jloda.fx.util.FileChooserManager;
 import jloda.fx.util.ProgramProperties;
 import jloda.fx.util.RecentFilesManager;
 import jloda.fx.util.TextFileFilter;
@@ -65,10 +66,7 @@ public class Save {
             fileChooser.setInitialDirectory(currentFile.getParentFile());
 			fileChooser.setInitialFileName(FileUtils.replaceFileSuffix(currentFile.getName(), ""));
         } else {
-            final File tmp = new File(ProgramProperties.get("SaveFileDir", ""));
-            if (tmp.isDirectory()) {
-                fileChooser.setInitialDirectory(tmp);
-            }
+            FileChooserManager.applyInitialDirectory(fileChooser, "SaveFileDir");
         }
 
         final File selectedFile = fileChooser.showSaveDialog(window.getStage());
@@ -77,7 +75,7 @@ public class Save {
             try {
                 apply(selectedFile, window, window.getInputReactionSystem());
                 window.getDocument().setFileName(selectedFile.getPath());
-                ProgramProperties.put("SaveFileDir", selectedFile.getParent());
+                FileChooserManager.rememberDirectory(selectedFile, "SaveFileDir");
                 NotificationManager.showInformation("Saved to file: " + selectedFile);
                 RecentFilesManager.getInstance().insertRecentFile(selectedFile.getPath());
 				window.getDocument().setDirty(false);
