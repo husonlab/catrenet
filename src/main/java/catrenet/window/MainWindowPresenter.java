@@ -253,8 +253,7 @@ public class MainWindowPresenter {
             else {
                 var tab = controller.getOutputTabPane().getSelectionModel().getSelectedItem();
                 if (tab == controller.getNetworkTab()) {
-                    ClipboardUtils.put((!graphView.getNodeSelection().isEmpty() ? StringUtils.toString(graphView.getSelectedLabels(), "\n") : null),
-                            controller.getNetworkScrollPane().getContent().snapshot(null, null), null);
+                    SetupExport.copyNetworkImage(graphView, controller.getNetworkScrollPane().getContent());
                 }
                 if (tab instanceof TextTab textTab) {
                     var text = textTab.getTextArea().getSelectedText();

@@ -21,14 +21,14 @@ package catrenet.window;
 
 import catrenet.dialog.ExportTextFileDialog;
 import catrenet.tab.TextTab;
+import catrenet.view.ReactionGraphView;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.geometry.Orientation;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.SnapshotParameters;
+import javafx.scene.Node;
 import jloda.fx.dialog.ExportImageDialog;
 import jloda.fx.find.ISearcher;
-import jloda.fx.util.BasicFX;
+import jloda.fx.print.ImageCropper;
+import jloda.fx.print.Print;
 import jloda.fx.util.ClipboardUtils;
 import jloda.util.StringUtils;
 
@@ -50,23 +50,9 @@ public class SetupExport {
 
         controller.getOutputTabPane().getSelectionModel().selectedItemProperty().addListener((v, o, n) -> {
             if (n == controller.getNetworkTab()) {
-                copyMenuItem.setOnAction(e -> {
-                    var graphView = mainWindow.getReactionGraphView();
+				copyMenuItem.setOnAction(e -> copyNetworkImage(mainWindow.getReactionGraphView(), controller.getNetworkScrollPane().getContent()));
 
-                    var string = (graphView.getNodeSelection().isEmpty() ? null : StringUtils.toString(graphView.getSelectedLabels(), "\n"));
-
-                    var parameters = new SnapshotParameters();
-                    var bounds = controller.getNetworkCopyPane().getBoundsInParent();
-                    var right = BasicFX.isScrollBarVisible(controller.getNetworkScrollPane(), Orientation.VERTICAL) ? 20 : 6;
-                    var bottom = BasicFX.isScrollBarVisible(controller.getNetworkScrollPane(), Orientation.HORIZONTAL) ? 20 : 6;
-
-                    parameters.setViewport(new Rectangle2D(bounds.getMinX() + 3, bounds.getMinY() + 3, bounds.getWidth() - right, bounds.getHeight() - bottom));
-                    var image = controller.getNetworkCopyPane().snapshot(parameters, null);
-
-                    ClipboardUtils.put(string, image, null);
-                });
-
-                exportMenuItem.setOnAction(e -> ExportImageDialog.show(mainWindow.getDocument().getFileName(), mainWindow.getStage(), controller.getNetworkScrollPane().getContent()));
+				exportMenuItem.setOnAction(e -> ExportImageDialog.show(mainWindow.getDocument().getFileName(), mainWindow.getStage(), controller.getNetworkScrollPane().getContent(), true));
                 copyMenuItem.disableProperty().bind(mainWindow.getReactionGraphView().emptyProperty());
                 exportMenuItem.disableProperty().bind(mainWindow.getReactionGraphView().emptyProperty());
 
@@ -107,6 +93,18 @@ public class SetupExport {
         });
 
     }
+
+	/**
+	 * copy the network image to the clipboard, clipped to a tight bounding box around the painted
+	 * content (as done in phyloparallelograms), together with the labels of any selected nodes as text.
+	 * The snapshot scale and crop parameters match jloda's ClipboardUtils.putImage().
+	 */
+	public static void copyNetworkImage(ReactionGraphView graphView, Node content) {
+		var string = (graphView.getNodeSelection().isEmpty() ? null : StringUtils.toString(graphView.getSelectedLabels(), "\n"));
+		var image = Print.createHighResSnapshot(content, 3.0);
+		var cropped = ImageCropper.cropMargins(image, 20, 0.02, 0.1);
+		ClipboardUtils.put(string, cropped, null);
+	}
 
     public static class EmptySearcher implements ISearcher {
         @Override
