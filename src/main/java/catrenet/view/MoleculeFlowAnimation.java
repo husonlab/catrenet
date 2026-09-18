@@ -132,9 +132,15 @@ public class MoleculeFlowAnimation {
                 System.err.println("Failed: " + service.getException()));
 
         playing.addListener((c, o, n) -> {
-            if (n)
+			if (n) {
+				// start each run with a clean slate: molecule counts left over from a previous
+				// animation (e.g. a Max RAF run) must not carry into this one. Otherwise a
+				// catalyst edge could still read as "present" and let a reaction fire that this
+				// model should suppress - e.g. a Max CAF run would then behave like a Max RAF.
+				edge2totalCount.clear();
+				edge2currentCount.clear();
                 service.restart();
-            else {
+			} else {
                 service.cancel();
                 edge2totalCount.clear();
             }
@@ -194,7 +200,10 @@ public class MoleculeFlowAnimation {
             pathTransition.setOnFinished(e -> {
                 world.getChildren().remove(movingPart);
                 if (edge.getOwner() != null) {
-                    edge2totalCount.increment(edge);
+					// only accumulate counts while playing: a molecule still in flight when the
+					// animation is stopped must not re-populate edge2totalCount after it was cleared
+					if (playing.get())
+						edge2totalCount.increment(edge);
                     edge2currentCount.decrement(edge);
                 }
                 if (edge.getOwner() != null && playing.get()) {

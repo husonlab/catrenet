@@ -54,11 +54,10 @@ public class FileOpener implements Consumer<String> {
 	public void accept(String fileName, String title, MainWindow window) {
 		if (window == null) {
 			window = (MainWindow) MainWindowManager.getInstance().getLastFocusedMainWindow();
-			if (window == null || !window.isEmpty()) {
-				window = NewWindow.apply();
-			}
 		}
-
+		if (window == null || !window.isEmpty()) {
+			window = NewWindow.apply();
+		}
 		var reactionSystem = window.getInputReactionSystem();
 
         try {

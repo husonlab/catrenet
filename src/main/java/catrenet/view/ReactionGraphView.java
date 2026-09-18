@@ -381,21 +381,31 @@ public class ReactionGraphView {
 		mouseTarget.setOnMouseDragged(c -> {
 			final var mouseX = c.getSceneX();
 			final var mouseY = c.getSceneY();
+			final var dx = mouseX - mouseDown[0];
+			final var dy = mouseY - mouseDown[1];
 
 			if (v != null && !nodeToMove.translateXProperty().isBound()) {
-				for (var w : nodeSelection.getSelectedItems()) {
-					node2view.get(w).translate(mouseX - mouseDown[0], mouseY - mouseDown[1]);
+				// dragging a node's body: move whole nodes, driven by the selection
+				if (nodeSelection.isSelected(v)) {
+					// this node is part of the selection: move all selected nodes
+					for (var w : nodeSelection.getSelectedItems())
+						node2view.get(w).translate(dx, dy);
+				} else if (nodeSelection.getSelectedItems().isEmpty()) {
+					// nothing is selected: move only the node that was grabbed
+					node2view.get(v).translate(dx, dy);
 				}
+				// otherwise other nodes are selected but not this one: grabbing it moves nothing
+			} else if (v != null) {
+				// dragging a node's label: move labels only if this label's node is selected,
+				// and then move the labels of all selected nodes together
+				if (nodeSelection.isSelected(v)) {
+					for (var w : nodeSelection.getSelectedItems())
+						moveViewNode(node2view.get(w).getLabel(), dx, dy);
+				}
+				// otherwise the label's node is not selected: grabbing it moves nothing
 			} else {
-				if (nodeToMove.translateXProperty().isBound())
-					nodeToMove.setLayoutX(nodeToMove.getLayoutX() + (mouseX - mouseDown[0]));
-				else
-					nodeToMove.setTranslateX(nodeToMove.getTranslateX() + (mouseX - mouseDown[0]));
-				if (nodeToMove.translateYProperty().isBound())
-					nodeToMove.setLayoutY(nodeToMove.getLayoutY() + (mouseY - mouseDown[1]));
-
-				else
-					nodeToMove.setTranslateY(nodeToMove.getTranslateY() + (mouseY - mouseDown[1]));
+				// an edge control point (no associated node): move just the grabbed item
+				moveViewNode(nodeToMove, dx, dy);
 			}
 
 			mouseDown[0] = c.getSceneX();
@@ -466,6 +476,21 @@ public class ReactionGraphView {
 				}
 			});
 		}
+	}
+
+	/**
+	 * shift a view node (a shape, label or edge control point) by the given delta,
+	 * using its layout coordinates when its translate is bound (as it is for labels)
+	 */
+	private static void moveViewNode(javafx.scene.Node node, double dx, double dy) {
+		if (node.translateXProperty().isBound())
+			node.setLayoutX(node.getLayoutX() + dx);
+		else
+			node.setTranslateX(node.getTranslateX() + dx);
+		if (node.translateYProperty().isBound())
+			node.setLayoutY(node.getLayoutY() + dy);
+		else
+			node.setTranslateY(node.getTranslateY() + dy);
 	}
 
 	public MoleculeFlowAnimation getMoleculeFlowAnimation() {
