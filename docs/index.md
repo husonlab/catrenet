@@ -189,7 +189,11 @@ Additional algorithms and heuristics include:
 - **Remove Trivial RAFs** — the CRS with all trivial RAFs removed.
 - **MU CAF** — one maximal uninhibited CAF; **Run MU CAF Multiple Times…** repeats this over different reaction
   orderings.
-- **U RAF** — computes a maxRAF, removes inhibited reactions, then recomputes the maxRAF.
+- **U RAF** — one uninhibited RAF (uRAF): computes a maxRAF, removes inhibited reactions, then recomputes the maxRAF.
+- **All Maximal U RAFs** — finds *every* maximal uRAF, not just one, by examining the maxRAF for each subset of the
+  inhibiting elements. Reactions inhibited by a food item are excluded (food is always present), and the maximal uRAFs
+  are listed in a text tab. This is feasible when the number of inhibiting elements is small, and a warning is shown
+  above 12.
 - **Determine Necessarily Spontaneous in RAF** — reactions that must first run uncatalyzed and become catalyzed later.
 - **Greedily Grow MaxCAF to MaxRAF** — grow the maxCAF into the maxRAF by making reactions spontaneous.
 - **Compute Reaction Dependencies / Molecule Dependencies** — dependency graphs among reactions or molecules.
@@ -293,6 +297,8 @@ The bundled `CatReNet-Examples` folder includes systems of increasing size and c
   and") catalysis.
 - **`example-9.crs`** — maxRAF of size 4 (an irreducible RAF), a pseudo‑RAF containing everything, and no CAF.
 - **`inhibitions-1.crs`** — 2 reactions (one inhibited), 6 food items.
+- **`uRAF-example.crs`** — a small inhibited system with two maximal uRAFs (of different sizes); a good test for the
+  **All Maximal U RAFs** algorithm.
 - **`how-to-build-a-house-maxRAF.crs`** — an intuitive 7‑reaction example with no maxCAF.
 - **`prokaryotic-network.crs`** — a real prokaryotic catalytic reaction network with **6039 reactions** and **68 food
   items**.

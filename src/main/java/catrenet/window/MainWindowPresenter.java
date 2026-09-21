@@ -449,6 +449,9 @@ public class MainWindowPresenter {
         });
         controller.getRunURAFMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()));
 
+        controller.getRunMaxURAFsMenuItem().setOnAction(e -> RunMaxURAFs.apply(mainWindow, runningListener));
+        controller.getRunMaxURAFsMenuItem().disableProperty().bind(algorithmsRunning.isNotEqualTo(0).or(controller.getInputTextArea().textProperty().isEmpty()));
+
         controller.getRunMuCAFMultipleTimesMenuItem().setOnAction(e -> {
             if (VerifyInput.verify(mainWindow)) {
                 if (mainWindow.getInputReactionSystem().isInhibitorsPresent()) {

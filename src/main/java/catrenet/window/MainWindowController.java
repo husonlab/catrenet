@@ -372,6 +372,9 @@ public class MainWindowController {
 	private MenuItem runURAFMenuItem;
 
 	@FXML
+	private MenuItem runMaxURAFsMenuItem;
+
+	@FXML
 	private MenuItem saveMenuItem;
 
 	@FXML
@@ -861,6 +864,10 @@ public class MainWindowController {
 
 	public MenuItem getRunURAFMenuItem() {
 		return runURAFMenuItem;
+	}
+
+	public MenuItem getRunMaxURAFsMenuItem() {
+		return runMaxURAFsMenuItem;
 	}
 
 	public MenuItem getRunMinIRAFMenuItem() {

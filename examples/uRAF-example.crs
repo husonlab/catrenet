@@ -1,0 +1,23 @@
+# Example for testing the "All Maximal U RAFs" algorithm.
+#
+# r0 is an uninhibited backbone reaction (food -> p), present in every uRAF.
+# Two mutually-exclusive modules build on p:
+#   Module A: rA1 (inhibited by b) produces a, then rA2 produces c
+#   Module B: rB1 (inhibited by a) produces b
+# a inhibits rB1 and b inhibits rA1, so a uRAF can use at most one module.
+# rX is inhibited by the food element g, so it is always inhibited and never appears in a uRAF.
+#
+# There are 2 inhibiting elements to enumerate (a and b), so k = 2.
+#
+# Expected: two maximal uRAFs
+#     {r0, rA1, rA2}   (module A, 3 reactions)
+#     {r0, rB1}        (module B, 2 reactions)
+# For comparison, the older single-shot "U RAF Algorithm" returns only {r0}.
+
+Food: f, g
+
+r0 : f [f] => p
+rA1 : p [f] {b} => a
+rA2 : a [f] => c
+rB1 : p [f] {a} => b
+rX : f [f] {g} => y
