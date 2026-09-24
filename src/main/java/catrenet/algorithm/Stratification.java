@@ -27,7 +27,6 @@ import catrenet.view.EdgeType;
 import javafx.util.Pair;
 import jloda.graph.Graph;
 import jloda.graph.Node;
-import jloda.util.SetUtils;
 import jloda.util.StringUtils;
 
 import java.util.*;
@@ -124,16 +123,33 @@ public class Stratification {
 
 	public enum StratificationDetails {ReactionsOnly, ReactionsRequiredMolecules, ReactionsAllMolecules}
 
+	/**
+	 * sets up the stratification graph. Reactions are added stratum by stratum, in the order in which they become
+	 * available from the food set (catalysts are ignored). A reaction is treated as running in the direction in which
+	 * it became available: forward, if all its reactants are available (this includes two-way reactions that are
+	 * available in both directions), otherwise in reverse, in which case its products are its inputs and its reactants
+	 * are its outputs.
+	 *
+	 * @param graph          the graph to set up
+	 * @param reactionSystem the reaction system
+	 * @param details        ReactionsOnly: reactions as nodes, with an edge r->s if r is the latest earlier reaction
+	 *                       that provides a non-food input of s;
+	 *                       ReactionsRequiredMolecules: edges r->m->s via molecule nodes, dropping output nodes that
+	 *                       are not used by any later reaction;
+	 *                       ReactionsAllMolecules: as before, but keeping all output nodes
+	 */
 	public static void setupStratificationGraph(Graph graph, ReactionSystem reactionSystem, StratificationDetails details) {
 		var molecules = new HashSet<>(reactionSystem.getFoods());
-		var reactions = new ArrayList<Reaction>();
+		var reactions = new ArrayList<Reaction>(); // reactions of earlier strata, in the order in which they were added
 		var reactionNodeMap = new HashMap<Reaction, Node>();
+		var reactionOutputs = new HashMap<Reaction, Set<MoleculeType>>(); // what each reaction provides, in the direction in which it runs
 
-		var moleculeNodes = new ArrayList<Node>();
+		var latestMoleculeNode = new HashMap<MoleculeType, Node>(); // the most recently created node for each molecule
 
-		for (var food : reactionSystem.getFoods()) {
-			var v = graph.newNode(food);
-			moleculeNodes.add(v);
+		if (details != StratificationDetails.ReactionsOnly) {
+			for (var food : reactionSystem.getFoods()) {
+				latestMoleculeNode.put(food, graph.newNode(food));
+			}
 		}
 		System.err.println("Computing Reaction Stratification Graph (" + details.name() + ")...");
 		while (true) {
@@ -148,39 +164,49 @@ public class Stratification {
 				var v = graph.newNode(reaction);
 				reactionNodeMap.put(reaction, v);
 
-				var remainingReactants = new HashSet<>(reaction.getReactants());
+				var runsForward = (reaction.getDirection() == Reaction.Direction.forward || reaction.getDirection() == Reaction.Direction.both)
+								  && molecules.containsAll(reaction.getReactants());
+				var inputs = (runsForward ? reaction.getReactants() : reaction.getProducts());
+				var outputs = (runsForward ? reaction.getProducts() : reaction.getReactants());
+				reactionOutputs.put(reaction, outputs);
+
+				var remainingInputs = new HashSet<>(inputs);
 				if (details == StratificationDetails.ReactionsOnly) {
-					remainingReactants.removeAll(reactionSystem.getFoods());
-					while (!remainingReactants.isEmpty()) {
-						for (var j = reactions.size() - 1; j >= 0; j--) {
-							var other = reactions.get(j);
-							if (SetUtils.intersect(other.getReactants(), remainingReactants)) {
-								remainingReactants.removeAll(other.getReactants());
-								var w = reactionNodeMap.get(other);
-								graph.newEdge(w, v, EdgeType.Association);
-							}
+					remainingInputs.removeAll(reactionSystem.getFoods());
+					// link to the latest earlier reaction that provides each input. A single pass suffices: every available
+					// non-food molecule is an output of some reaction of an earlier stratum
+					for (var j = reactions.size() - 1; j >= 0 && !remainingInputs.isEmpty(); j--) {
+						var other = reactions.get(j);
+						var provided = new HashSet<>(reactionOutputs.get(other));
+						provided.retainAll(remainingInputs);
+						if (!provided.isEmpty()) {
+							graph.newEdge(reactionNodeMap.get(other), v, EdgeType.Association);
+							remainingInputs.removeAll(provided);
 						}
 					}
 				} else {
-					while (!remainingReactants.isEmpty()) {
-						for (var j = moleculeNodes.size() - 1; j >= 0; j--) {
-							var w = moleculeNodes.get(j);
-							if (w.getInfo() instanceof MoleculeType molecule && remainingReactants.contains(molecule)) {
-								graph.newEdge(w, v, EdgeType.Association);
-								remainingReactants.remove(molecule);
-							}
+					// link from the latest node of each input molecule (a food node, or an output node of an earlier reaction)
+					for (var molecule : inputs) {
+						var w = latestMoleculeNode.get(molecule);
+						if (w != null) {
+							graph.newEdge(w, v, EdgeType.Association);
+							remainingInputs.remove(molecule);
 						}
 					}
 				}
+				if (!remainingInputs.isEmpty()) // should not happen, as all inputs of the reaction are available
+					System.err.printf("Stratification: no earlier reaction provides these inputs of reaction %s: %s%n", reaction.getName(), StringUtils.toString(remainingInputs, ", "));
 			}
 
-			for (var nr : nextReactions) {
-				var v = reactionNodeMap.get(nr);
-
-				for (var product : nr.getProducts()) {
-					var w = graph.newNode(product);
-					moleculeNodes.add(w);
-					graph.newEdge(v, w, EdgeType.Association);
+			if (details != StratificationDetails.ReactionsOnly) {
+				// output nodes are created only after all reactions of the stratum have been linked to their inputs
+				for (var reaction : nextReactions) {
+					var v = reactionNodeMap.get(reaction);
+					for (var molecule : reactionOutputs.get(reaction)) {
+						var w = graph.newNode(molecule);
+						latestMoleculeNode.put(molecule, w);
+						graph.newEdge(v, w, EdgeType.Association);
+					}
 				}
 			}
 			reactions.addAll(nextReactions);
