@@ -354,6 +354,20 @@
                                                                 <Insets/>
                                                             </VBox.margin>
                                                         </HBox>
+                                                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                                            <children>
+                                                                <Label text="Catalyst edge length factor (force-directed layout)"/>
+                                                                <TextField fx:id="catalystEdgeLengthTextField"
+                                                                           maxWidth="-Infinity" prefWidth="80.0"/>
+                                                            </children>
+                                                        </HBox>
+                                                        <HBox alignment="CENTER_LEFT" spacing="20.0">
+                                                            <children>
+                                                                <CheckBox fx:id="scaleEdgeLengthsByDegreeCheckBox"
+                                                                          mnemonicParsing="false" selected="true"
+                                                                          text="Longer edges at highly connected nodes (force-directed layout)"/>
+                                                            </children>
+                                                        </HBox>
                                                         <HBox alignment="CENTER_LEFT" spacing="20.0">
                                                             <children>
                                                                 <CheckBox fx:id="wrapTextCheckBox"

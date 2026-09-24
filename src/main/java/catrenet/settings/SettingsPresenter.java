@@ -150,6 +150,25 @@ public class SettingsPresenter {
 			}
 		});
 
+		{
+			var graphView = mainWindow.getReactionGraphView();
+			var textField = controller.getCatalystEdgeLengthTextField();
+			textField.setText(StringUtils.removeTrailingZerosAfterDot(String.valueOf(graphView.getCatalystEdgeLengthFactor())));
+			final Runnable applyCatalystEdgeLength = () -> { // applied on enter or focus loss, as each change redraws the network
+				if (NumberUtils.isDouble(textField.getText())) {
+					var value = NumberUtils.parseDouble(textField.getText());
+					if (value > 0 && value != graphView.getCatalystEdgeLengthFactor())
+						graphView.setCatalystEdgeLengthFactor(value);
+				}
+			};
+			textField.setOnAction(e -> applyCatalystEdgeLength.run());
+			textField.focusedProperty().addListener((v, o, n) -> {
+				if (!n)
+					applyCatalystEdgeLength.run();
+			});
+			controller.getScaleEdgeLengthsByDegreeCheckBox().selectedProperty().bindBidirectional(graphView.scaleEdgeLengthsByDegreeProperty());
+		}
+
 		controller.getMaxSizeNetworkTextField().setText(String.valueOf(mainWindow.getMaxGraphDisplaySize()));
 		controller.getMaxSizeNetworkTextField().textProperty().addListener((v, o, n) -> {
 			if (NumberUtils.isInteger(n)) {

@@ -44,7 +44,6 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
@@ -501,7 +500,8 @@ public class MainWindowPresenter {
             final ZoomableScrollPane scrollPane = controller.getNetworkScrollPane();
             scrollPane.setMouseScrollZoomFactor(1.05);
             scrollPane.setRequireShiftOrControlToZoom(true);
-            scrollPane.setLockAspectRatio(true);
+            // horizontal and vertical scaling are independent in the layered layout and locked together otherwise
+            scrollPane.lockAspectRatioProperty().bind(graphView.layoutTypeProperty().isNotEqualTo(ReactionGraphView.LayoutType.Layered));
             scrollPane.setPannable(false);
 
             scrollPane.setUpdateScaleMethod(() -> {
@@ -525,24 +525,20 @@ public class MainWindowPresenter {
             networkPane.minHeightProperty().bind(Bindings.createDoubleBinding(() ->
                     scrollPane.getViewportBounds().getHeight(), scrollPane.viewportBoundsProperty()).subtract(20));
 
-            controller.getZoomInMenuItem().setOnAction(c -> scrollPane.zoomBy(1.1, 1.1));
-            controller.getZoomInMenuItem().disableProperty().bind(controller.getOutputTabPane().getSelectionModel().selectedItemProperty().isNotEqualTo(controller.getNetworkTab()));
-            controller.getZoomOutMenuItem().setOnAction(c -> scrollPane.zoomBy(1 / 1.1, 1 / 1.1));
-            controller.getZoomOutMenuItem().disableProperty().bind(controller.getZoomInMenuItem().disableProperty());
+            final var networkTabNotShowing = controller.getOutputTabPane().getSelectionModel().selectedItemProperty().isNotEqualTo(controller.getNetworkTab());
 
-            controller.getZoomToFitMenuItem().setOnAction(c -> {
-                scrollPane.resetZoom();
+            // in the layered layout, the two directions are scaled independently, otherwise the scroll pane locks them together
+            controller.getZoomInHorizontallyMenuItem().setOnAction(c -> scrollPane.zoomBy(1.2, 1));
+            controller.getZoomInHorizontallyMenuItem().disableProperty().bind(networkTabNotShowing);
+            controller.getZoomOutHorizontallyMenuItem().setOnAction(c -> scrollPane.zoomBy(1 / 1.2, 1));
+            controller.getZoomOutHorizontallyMenuItem().disableProperty().bind(networkTabNotShowing);
+            controller.getZoomInVerticallyMenuItem().setOnAction(c -> scrollPane.zoomBy(1, 1.2));
+            controller.getZoomInVerticallyMenuItem().disableProperty().bind(networkTabNotShowing);
+            controller.getZoomOutVerticallyMenuItem().setOnAction(c -> scrollPane.zoomBy(1, 1 / 1.2));
+            controller.getZoomOutVerticallyMenuItem().disableProperty().bind(networkTabNotShowing);
 
-                Platform.runLater(() -> {
-                    final Rectangle2D bbox = graphView.getBBox();
-                    final double zoomX = Math.max(100.0, (controller.getNetworkBorderPane().getWidth())) / bbox.getWidth();
-                    final double zoomY = Math.max(100.0, (controller.getNetworkBorderPane().getHeight())) / bbox.getHeight();
-                    final double zoom = Math.min(zoomX, zoomY);
-
-                    scrollPane.zoomBy(zoom, zoom);
-                });
-            });
-            controller.getZoomToFitMenuItem().disableProperty().bind(controller.getZoomInMenuItem().disableProperty());
+            controller.getZoomToFitMenuItem().setOnAction(c -> zoomToFit(scrollPane, graphView));
+            controller.getZoomToFitMenuItem().disableProperty().bind(networkTabNotShowing);
 
             // controller.getStatusFlowPane().prefHeightProperty().addListener((c,o,n)->System.err.println("PH changed: "+o+" -> "+n));
             // controller.getStatusFlowPane().heightProperty().addListener((c,o,n)->System.err.println("H changed: "+o+" -> "+n));
@@ -742,6 +738,25 @@ public class MainWindowPresenter {
             controller.getNetworkTab().getTabPane().getSelectionModel().select(controller.getNetworkTab());
         });
         controller.getUseMultiCopyFoodNodesMenuItem().disableProperty().bind(disableFullGraphItems.or(disableGraphItems));
+
+        { // the two layout items form a toggle group (see FXML), keep them in sync with the view
+            final Runnable selectLayoutItem = () -> {
+                controller.getForceDirectedLayoutRadioMenuItem().setSelected(graphView.getLayoutType() == ReactionGraphView.LayoutType.ForceDirected);
+                controller.getLayeredLayoutRadioMenuItem().setSelected(graphView.getLayoutType() == ReactionGraphView.LayoutType.Layered);
+            };
+            selectLayoutItem.run();
+            graphView.layoutTypeProperty().addListener(c -> selectLayoutItem.run());
+            controller.getForceDirectedLayoutRadioMenuItem().selectedProperty().addListener((c, o, n) -> {
+                if (n)
+                    graphView.setLayoutType(ReactionGraphView.LayoutType.ForceDirected);
+            });
+            controller.getLayeredLayoutRadioMenuItem().selectedProperty().addListener((c, o, n) -> {
+                if (n)
+                    graphView.setLayoutType(ReactionGraphView.LayoutType.Layered);
+            });
+            controller.getForceDirectedLayoutRadioMenuItem().disableProperty().bind(disableGraphItems);
+            controller.getLayeredLayoutRadioMenuItem().disableProperty().bind(disableGraphItems);
+        }
 
         controller.getGraphEmbedderIterationsMenuItem().setOnAction(e -> {
             TextInputDialog dialog = new TextInputDialog("" + graphView.getEmbeddingIterations());
@@ -985,5 +1000,48 @@ public class MainWindowPresenter {
 
     public void setAdditionalCommonMenuSetup(Consumer<MainWindow> additionalCommonMenuSetup) {
         this.additionalCommonMenuSetup = additionalCommonMenuSetup;
+    }
+
+    /**
+     * scales the network so that the whole drawing, including labels, fits into the viewport. In the layered layout,
+     * the two directions are fitted independently, otherwise both are scaled by the same factor. Scaling moves the
+     * node centers but does not change the size of labels, so the space that labels and arrow heads take up beyond
+     * the node centers is subtracted from the viewport before computing the factor
+     */
+    private static void zoomToFit(ZoomableScrollPane scrollPane, ReactionGraphView graphView) {
+        final var margin = 20.0;
+        final var viewport = scrollPane.getViewportBounds();
+        final var bounds = graphView.getWorld().getBoundsInLocal(); // all of the drawing
+        final var centers = graphView.getBBox(); // node centers only, this is what scaling changes
+        if (viewport.getWidth() <= 2 * margin || viewport.getHeight() <= 2 * margin || bounds.isEmpty() || graphView.isEmpty())
+            return;
+        var factorX = fitFactor(viewport.getWidth() - 2 * margin, bounds.getWidth(), centers.getWidth());
+        var factorY = fitFactor(viewport.getHeight() - 2 * margin, bounds.getHeight(), centers.getHeight());
+        if (scrollPane.isLockAspectRatio()) {
+            final var factor = Math.min(factorX, factorY);
+            factorX = factor;
+            factorY = factor;
+        }
+        scrollPane.zoomBy(factorX, factorY);
+        scrollPane.setHvalue(0.5);
+        scrollPane.setVvalue(0.5);
+    }
+
+    /**
+     * the factor by which the node centers must be scaled so that the drawing fills the available length: the part of
+     * the drawing that lies beyond the node centers keeps its size. If that part alone takes up most of the available
+     * length, a quarter of the length is used for the centers, so that the network is not collapsed
+     *
+     * @param available the length available for the drawing
+     * @param drawing   the current length of the drawing
+     * @param centers   the current length of the bounding box of the node centers
+     * @return the factor to scale the node centers by
+     */
+    private static double fitFactor(double available, double drawing, double centers) {
+        if (centers < 1)
+            return 1; // all nodes on a line, nothing to scale
+        final var beyondCenters = Math.max(0, drawing - centers);
+        final var target = Math.max(0.25 * available, available - beyondCenters);
+        return target / centers;
     }
 }

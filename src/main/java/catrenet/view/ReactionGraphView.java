@@ -21,6 +21,7 @@ package catrenet.view;
 
 import catrenet.algorithm.Stratification;
 import catrenet.model.MoleculeType;
+import catrenet.model.Reaction;
 import catrenet.model.ReactionSystem;
 import catrenet.window.Document;
 import catrenet.window.MainWindowController;
@@ -51,6 +52,7 @@ import jloda.util.ProgramExecutorService;
 
 import java.io.PrintStream;
 import java.util.*;
+import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
 
 import static catrenet.io.ModelIO.FORMAL_FOOD;
@@ -64,7 +66,11 @@ public class ReactionGraphView {
 
 	public enum Type {fullNetwork, associationNetwork, reactantAssociationNetwork, reactionDependencyNetwork, moleculeDependencyNetwork, reactionStratificationNetwork, reactionRequiredMoleculesStratificationNetwork, reactionAllMoleculesStratificationNetwork, reactionPrecendenceNetwork}
 
+	public enum LayoutType {ForceDirected, Layered}
+
 	private final ObjectProperty<Type> graphType = new SimpleObjectProperty<>();
+
+	private final ObjectProperty<LayoutType> layoutType = new SimpleObjectProperty<>(this, "layoutType", LayoutType.ForceDirected);
 
 	private final Graph reactionGraph = new Graph();
 	private final NodeSet foodNodes = new NodeSet(reactionGraph);
@@ -82,6 +88,11 @@ public class ReactionGraphView {
 	private final BooleanProperty useMultiCopyFoodNodes = new SimpleBooleanProperty(this, "useMultiCopyFoodNodes", false);
 
 	private final IntegerProperty embeddingIterations = new SimpleIntegerProperty(this, "embeddingIterations", 1000);
+
+	private final DoubleProperty catalystEdgeLengthFactor = new SimpleDoubleProperty(this, "catalystEdgeLengthFactor", 2.0);
+	private final BooleanProperty scaleEdgeLengthsByDegree = new SimpleBooleanProperty(this, "scaleEdgeLengthsByDegree", true);
+
+	private NodeArray<Integer> nodeLevels; // levels of nodes in a layered layout, null otherwise
 
 	private final MainWindowController controller;
 
@@ -172,7 +183,13 @@ public class ReactionGraphView {
 
 		moleculeFlowAnimation.animateInhibitionsProperty().addListener((c, o, n) -> inhibitionEdgeColor.set(n ? Color.BLACK : Color.LIGHTGREY));
 
+		ProgramProperties.track(catalystEdgeLengthFactor, 2.0);
+		ProgramProperties.track(scaleEdgeLengthsByDegree, true);
+		layoutType.addListener(c -> update());
+
 		graphType.addListener(c -> update());
+		catalystEdgeLengthFactor.addListener(c -> update());
+		scaleEdgeLengthsByDegree.addListener(c -> update());
 		suppressFormalFood.addListener(c -> update());
 		suppressCatalystEdges.addListener(c -> update());
 		useMultiCopyFoodNodes.addListener(c -> update());
@@ -224,6 +241,9 @@ public class ReactionGraphView {
 			}
 		}
 
+		if (reactionGraph.getNumberOfNodes() == 0)
+			return; // nothing to lay out
+
 		final var numberOfConnectedComponts = ConnectedComponents.count(reactionGraph);
 		if (numberOfConnectedComponts > 1)
 			logStream.printf("Reaction network has %d connected components%n", numberOfConnectedComponts);
@@ -232,11 +252,42 @@ public class ReactionGraphView {
 
 		final var result = new NodeArray<APoint2D<?>>(reactionGraph);
 
-		if (true)
+		// desired edge lengths for the force-directed layout: catalyst and inhibitor edges are made longer, so that the
+		// layout is driven by the reactant and product edges, and edges at hubs are made longer, so that the many
+		// neighbors of a hub have room
+		final ToDoubleFunction<Edge> edgeLength = e -> {
+			var length = 1.0;
+			if (e.getInfo() == EdgeType.Catalyst || e.getInfo() == EdgeType.Inhibitor)
+				length *= getCatalystEdgeLengthFactor();
+			if (isScaleEdgeLengthsByDegree())
+				length *= Math.min(10.0, Math.max(1.0, (e.getSource().getDegree() + e.getTarget().getDegree()) / 12.0));
+			return length;
+		};
+
+		// horizontal space required by a node in the layered layout, including its label
+		final ToDoubleFunction<Node> nodeWidth = v -> {
+			final String label;
+			if (v.getInfo() instanceof Reaction reaction)
+				label = document.getDisplayLabel(reaction.getName());
+			else if (v.getInfo() instanceof MoleculeType molecule)
+				label = document.getDisplayLabel(molecule.getName());
+			else
+				label = "&";
+			return 12 + 0.6 * getFont().getSize() * label.length();
+		};
+
+		if (getLayoutType() == LayoutType.Layered)
+			service.setCallable(() -> {
+				var levels = new NodeArray<Integer>(reactionGraph);
+				LayeredLayout.apply(reactionGraph, reactionSystem, nodeWidth, 80, 100, 6000, levels, (v, p) -> result.put(v, new APoint2D<>(p.getX(), p.getY(), v)));
+				nodeLevels = levels;
+				return result;
+			});
+		else if (true)
 			service.setCallable(() -> {
 				var maxWidth = Math.max(600, controller.getNetworkScrollPane().getViewportBounds().getWidth() - 100);
 				if (true)
-					MultiComponents.apply(null, 0.9 * maxWidth, maxWidth, 80, 80, reactionGraph, e -> 1d, (v, p) -> result.put(v, new APoint2D<>(p.getX(), p.getY(), v)));
+					MultiComponents.apply(null, 0.9 * maxWidth, maxWidth, 80, 80, reactionGraph, edgeLength, (v, p) -> result.put(v, new APoint2D<>(p.getX(), p.getY(), v)));
 				else {
 					final var layout = new FruchtermanReingoldLayout(reactionGraph);
 					layout.apply(getEmbeddingIterations(), result, service.getProgressListener(), ProgramExecutorService.getNumberOfCoresToUse());
@@ -305,6 +356,7 @@ public class ReactionGraphView {
 		nodeSelection.clearSelection();
 		edgeSelection.clearSelection();
 		reactionGraph.clear();
+		nodeLevels = null;
 		world.getChildren().clear();
 	}
 
@@ -353,7 +405,8 @@ public class ReactionGraphView {
 			final var sourceShape = node2view.get(edge.getSource()).getShape();
 			final var targetShape = node2view.get(edge.getTarget()).getShape();
 
-			final var edgeView = new EdgeView(this, edge, sourceShape.translateXProperty(), sourceShape.translateYProperty(), targetShape.translateXProperty(), targetShape.translateYProperty(), edgeType);
+			final var curved = EdgeView.hasParallelEdge(edge) || isFeedbackEdge(edge);
+			final var edgeView = new EdgeView(this, edge, sourceShape.translateXProperty(), sourceShape.translateYProperty(), targetShape.translateXProperty(), targetShape.translateYProperty(), edgeType, curved);
 
 			edges.getChildren().add(edgeView);
 			edge2view.put(edge, edgeView);
@@ -493,8 +546,45 @@ public class ReactionGraphView {
 			node.setTranslateY(node.getTranslateY() + dy);
 	}
 
+	/**
+	 * in a layered layout, does this edge point back to the same or an earlier level?
+	 *
+	 * @return true, if layered layout and edge is a feedback edge
+	 */
+	public boolean isFeedbackEdge(Edge e) {
+		if (nodeLevels == null)
+			return false;
+		var sourceLevel = nodeLevels.get(e.getSource());
+		var targetLevel = nodeLevels.get(e.getTarget());
+		return sourceLevel != null && targetLevel != null && sourceLevel >= targetLevel;
+	}
+
 	public MoleculeFlowAnimation getMoleculeFlowAnimation() {
 		return moleculeFlowAnimation;
+	}
+
+	public double getCatalystEdgeLengthFactor() {
+		return catalystEdgeLengthFactor.get();
+	}
+
+	public DoubleProperty catalystEdgeLengthFactorProperty() {
+		return catalystEdgeLengthFactor;
+	}
+
+	public void setCatalystEdgeLengthFactor(double catalystEdgeLengthFactor) {
+		this.catalystEdgeLengthFactor.set(catalystEdgeLengthFactor);
+	}
+
+	public boolean isScaleEdgeLengthsByDegree() {
+		return scaleEdgeLengthsByDegree.get();
+	}
+
+	public BooleanProperty scaleEdgeLengthsByDegreeProperty() {
+		return scaleEdgeLengthsByDegree;
+	}
+
+	public void setScaleEdgeLengthsByDegree(boolean scaleEdgeLengthsByDegree) {
+		this.scaleEdgeLengthsByDegree.set(scaleEdgeLengthsByDegree);
 	}
 
 	public Color getInhibitionEdgeColor() {
@@ -557,14 +647,14 @@ public class ReactionGraphView {
 	public Rectangle2D getBBox() {
 		var minX = Double.MAX_VALUE;
 		var minY = Double.MAX_VALUE;
-		var maxX = Double.MIN_VALUE;
-		var maxY = Double.MIN_VALUE;
+		var maxX = -Double.MAX_VALUE;
+		var maxY = -Double.MAX_VALUE;
 
 		for (Node v : reactionGraph.nodes()) {
 			final var shape = node2view.get(v).getShape();
 			minX = Math.min(minX, shape.getTranslateX());
 			minY = Math.min(minY, shape.getTranslateY());
-			maxX = Math.max(maxX, shape.getTranslateY());
+			maxX = Math.max(maxX, shape.getTranslateX());
 			maxY = Math.max(maxY, shape.getTranslateY());
 		}
 		return new Rectangle2D(minX, minY, maxX - minX, maxY - minY);
@@ -628,6 +718,22 @@ public class ReactionGraphView {
 
 	public void setEmbeddingIterations(int embeddingIterations) {
 		this.embeddingIterations.set(embeddingIterations);
+	}
+
+	public LayoutType getLayoutType() {
+		return layoutType.get();
+	}
+
+	public ObjectProperty<LayoutType> layoutTypeProperty() {
+		return layoutType;
+	}
+
+	public void setLayoutType(LayoutType layoutType) {
+		this.layoutType.set(layoutType);
+	}
+
+	public NodeArray<Integer> getNodeLevels() {
+		return nodeLevels;
 	}
 
 	public Type getGraphType() {

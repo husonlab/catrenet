@@ -36,6 +36,12 @@ public class SettingsController {
 	private TextField iterationsTextField;
 
 	@FXML
+	private TextField catalystEdgeLengthTextField;
+
+	@FXML
+	private CheckBox scaleEdgeLengthsByDegreeCheckBox;
+
+	@FXML
 	private TextField maxSizeNetworkTextField;
 
 	@FXML
@@ -150,6 +156,14 @@ public class SettingsController {
 
 	public TextField getIterationsTextField() {
 		return iterationsTextField;
+	}
+
+	public TextField getCatalystEdgeLengthTextField() {
+		return catalystEdgeLengthTextField;
+	}
+
+	public CheckBox getScaleEdgeLengthsByDegreeCheckBox() {
+		return scaleEdgeLengthsByDegreeCheckBox;
 	}
 
 	public TextField getMaxSizeNetworkTextField() {

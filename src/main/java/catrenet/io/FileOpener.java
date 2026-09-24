@@ -21,6 +21,7 @@ package catrenet.io;
 
 import catrenet.action.ImportWimsFormat;
 import catrenet.action.NewWindow;
+import catrenet.view.ReactionGraphView;
 import catrenet.action.VerifyInput;
 import catrenet.settings.ArrowNotation;
 import catrenet.settings.ReactionNotation;
@@ -104,6 +105,8 @@ public class FileOpener implements Consumer<String> {
 					RecentFilesManager.getInstance().insertRecentFile(fileName);
 
                 VerifyInput.verify(window);
+
+                window.getReactionGraphView().setLayoutType(ReactionGraphView.LayoutType.ForceDirected); // a newly opened file is first drawn with the force-directed layout
             }
 
         } catch (Exception e) {

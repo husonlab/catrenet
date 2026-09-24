@@ -248,20 +248,36 @@
                                                                             <children>
                                                                                 <ToolBar>
                                                                                     <items>
-                                                                                        <Button fx:id="zoomInNetworkButton"
+                                                                                        <Button fx:id="zoomInVerticallyButton"
                                                                                                 mnemonicParsing="false"
-                                                                                                text="Zoom In">
+                                                                                                text="Expand V">
                                                                                             <tooltip>
                                                                                                 <Tooltip
-                                                                                                        text="Zoom in"/>
+                                                                                                        text="Expand vertically (in the force-directed layout, expands in both directions)"/>
                                                                                             </tooltip>
                                                                                         </Button>
-                                                                                        <Button fx:id="zoomOutNetworkButton"
+                                                                                        <Button fx:id="zoomOutVerticallyButton"
                                                                                                 mnemonicParsing="false"
-                                                                                                text="Zoom Out">
+                                                                                                text="Contract V">
                                                                                             <tooltip>
                                                                                                 <Tooltip
-                                                                                                        text="Zoom out"/>
+                                                                                                        text="Contract vertically (in the force-directed layout, contracts in both directions)"/>
+                                                                                            </tooltip>
+                                                                                        </Button>
+                                                                                        <Button fx:id="zoomInHorizontallyButton"
+                                                                                                mnemonicParsing="false"
+                                                                                                text="Expand H">
+                                                                                            <tooltip>
+                                                                                                <Tooltip
+                                                                                                        text="Expand horizontally (in the force-directed layout, expands in both directions)"/>
+                                                                                            </tooltip>
+                                                                                        </Button>
+                                                                                        <Button fx:id="zoomOutHorizontallyButton"
+                                                                                                mnemonicParsing="false"
+                                                                                                text="Contract H">
+                                                                                            <tooltip>
+                                                                                                <Tooltip
+                                                                                                        text="Contract horizontally (in the force-directed layout, contracts in both directions)"/>
                                                                                             </tooltip>
                                                                                         </Button>
                                                                                         <Separator
@@ -616,15 +632,27 @@
                                     </items>
                                 </Menu>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem fx:id="zoomInMenuItem" text="Zoom In">
+                                <MenuItem fx:id="zoomInVerticallyMenuItem" text="Zoom In Vertically">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="UP" control="UP" meta="UP" shift="UP"
                                                             shortcut="DOWN"/>
                                     </accelerator>
                                 </MenuItem>
-                                <MenuItem fx:id="zoomOutMenuItem" text="Zoom Out">
+                                <MenuItem fx:id="zoomOutVerticallyMenuItem" text="Zoom Out Vertically">
                                     <accelerator>
                                         <KeyCodeCombination alt="UP" code="DOWN" control="UP" meta="UP" shift="UP"
+                                                            shortcut="DOWN"/>
+                                    </accelerator>
+                                </MenuItem>
+                                <MenuItem fx:id="zoomInHorizontallyMenuItem" text="Zoom In Horizontally">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="UP" control="UP" meta="UP" shift="DOWN"
+                                                            shortcut="DOWN"/>
+                                    </accelerator>
+                                </MenuItem>
+                                <MenuItem fx:id="zoomOutHorizontallyMenuItem" text="Zoom Out Horizontally">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="DOWN" control="UP" meta="UP" shift="DOWN"
                                                             shortcut="DOWN"/>
                                     </accelerator>
                                 </MenuItem>
@@ -696,6 +724,9 @@
                             </items>
                         </Menu>
                         <Menu fx:id="networkMenu" mnemonicParsing="false" text="Network">
+                            <fx:define>
+                                <ToggleGroup fx:id="layoutToggleGroup"/>
+                            </fx:define>
                             <items>
                                 <MenuItem fx:id="computeNetworkMenuItem" mnemonicParsing="false" text="Recompute">
                                     <accelerator>
@@ -734,6 +765,12 @@
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <RadioMenuItem fx:id="reactionPrecedenceNetworkRadioMenuItem" mnemonicParsing="false"
                                                text="Reaction Precedence Network"/>
+                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                <RadioMenuItem fx:id="forceDirectedLayoutRadioMenuItem" mnemonicParsing="false"
+                                               selected="true" text="Force-Directed Layout"
+                                               toggleGroup="$layoutToggleGroup"/>
+                                <RadioMenuItem fx:id="layeredLayoutRadioMenuItem" mnemonicParsing="false"
+                                               text="Layered Layout" toggleGroup="$layoutToggleGroup"/>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
                                 <MenuItem fx:id="showNodeLabels" mnemonicParsing="false" text="Show/Hide Node Labels">
                                     <accelerator>

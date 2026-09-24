@@ -118,8 +118,27 @@ implementation of CatReNet, visualization menu items are disabled for reaction s
 reactions.
 You can change this threshold using the settings panel.
 
-Note that the currently implemented network layout algorithm is very basic. For nice layouts,
-export a computed network in GML format and then view it in Cytoscape  (see [Export network](#export-network)).
+A network can be drawn using one of two layouts, selected in the Network menu:
+
+- Force-Directed Layout - a general-purpose layout. Catalyst and inhibitor edges are given a longer desired length
+  than reactant and product edges, so that the layout is driven by the flow of molecules, and edges at highly connected
+  nodes are lengthened so that their many neighbors have room. Both can be adjusted in the settings panel.
+- Layered Layout - nodes are placed in layers according to the generation in which they first become available from
+  the food set, ignoring catalysts: the food set is at the top, below it the reactions that can run on food alone, then
+  the molecules that they produce, and so on. Reactant and product edges point downward. Edges that point upward or
+  sideways are feedback edges, most importantly the catalysis of a reaction by a molecule that is only produced later,
+  and these are drawn as curves, so that the closures of an autocatalytic set stand out. Reactions and molecules that
+  cannot be reached from the food set are placed below all reachable ones. Combined with the "Use Multicopy Food Nodes"
+  option, each copy of a food item is placed directly above the reaction that uses it.
+
+A newly opened file is first drawn with the force-directed layout. Edges are drawn as straight lines, except that
+edges between the same pair of nodes and feedback edges are curved. In the layered layout, nodes in a row are spaced
+100 pixels apart, or more when their labels need it, and the spacing is reduced when a row would become very wide.
+Use the "Zoom In/Out Vertically" and "Zoom In/Out Horizontally" items in the View menu, or the corresponding buttons
+above the network, to stretch or squeeze the layered layout in one direction; for the force-directed layout, both
+directions are scaled together. Holding shift while scrolling also zooms, and "Zoom To Fit" scales the network so
+that it fills the visible area. For other layouts, export a computed network in GML format and then view it in
+Cytoscape (see [Export network](#export-network)).
 
 The program can represent a CRS using several types of networks:
 
@@ -206,8 +225,9 @@ The settings panel provides a number of configuration panels:
 - Display labels: Maintains a list of labels to use in network visualizations, for example, in KEGG-based networks,
   `C00005` represents `Reduced nicotinamide adenine dinucleotide phosphate`.
 - Animation: decide use different colors for different molecules, decide whether labels are used in animation
-- Other settings: maximum number of reactions allowed in network drawing, number of network embedding iterations, and
-  whether to wrap text.
+- Other settings: maximum number of reactions allowed in network drawing, number of network embedding iterations,
+  the length of catalyst edges and whether edges at highly connected nodes are lengthened in the force-directed layout,
+  and whether to wrap text.
 
 ## 🛠️ Commandline tools
 

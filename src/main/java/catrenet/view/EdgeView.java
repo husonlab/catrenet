@@ -57,6 +57,8 @@ public class EdgeView extends Group {
 
 	private EdgeType edgeType;
 
+	private final boolean curved; // if false, the edge is drawn as a straight line unless the user bends it
+
 	private final MoveTo moveToA = new MoveTo();
 	private final LineTo lineToB = new LineTo();
 	private final QuadCurveTo quadCurveToD = new QuadCurveTo();
@@ -65,10 +67,18 @@ public class EdgeView extends Group {
 	private final CircleShape circleShape = new CircleShape(3);
 
     private EdgeView() {
+        curved = false;
     }
 
-    public EdgeView(ReactionGraphView graphView, Edge e, ReadOnlyDoubleProperty aX, ReadOnlyDoubleProperty aY, ReadOnlyDoubleProperty bX, ReadOnlyDoubleProperty bY, EdgeType edgeType) {
+    /**
+     * constructor
+     *
+     * @param curved draw the edge as a curve that bends away from the straight line between its nodes; used to keep
+     *               parallel edges apart and to make feedback edges stand out. Otherwise, the edge is drawn straight
+     */
+    public EdgeView(ReactionGraphView graphView, Edge e, ReadOnlyDoubleProperty aX, ReadOnlyDoubleProperty aY, ReadOnlyDoubleProperty bX, ReadOnlyDoubleProperty bY, EdgeType edgeType, boolean curved) {
 		this.edgeType = edgeType;
+		this.curved = curved;
 
         var arrowHead = switch (edgeType) {
             case Association, Catalyst, Reactant, Product -> new Polygon(-6, -4, 6, 0, -6, 4);
@@ -78,7 +88,7 @@ public class EdgeView extends Group {
 
 
         final InvalidationListener invalidationListener = v -> {
-            var lineCenter = updatePath(aX.get(), aY.get(), bX.get(), bY.get(), null, moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(e));
+            var lineCenter = updatePath(aX.get(), aY.get(), bX.get(), bY.get(), null, moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(e), curved);
             if (lineCenter != null) {
                 circleShape.setTranslateX(lineCenter.getX());
                 circleShape.setTranslateY(lineCenter.getY());
@@ -91,14 +101,14 @@ public class EdgeView extends Group {
         bY.addListener(invalidationListener);
 
         {
-            var lineCenter = updatePath(aX.get(), aY.get(), bX.get(), bY.get(), null, moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(e));
+            var lineCenter = updatePath(aX.get(), aY.get(), bX.get(), bY.get(), null, moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(e), curved);
             if (lineCenter != null) {
                 circleShape.setTranslateX(lineCenter.getX());
                 circleShape.setTranslateY(lineCenter.getY());
                 circleShape.translateXProperty().addListener((c, o, n) ->
-                        updatePath(aX.get(), aY.get(), bX.get(), bY.get(), new Point2D(circleShape.getTranslateX(), circleShape.getTranslateY()), moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(e)));
+                        updatePath(aX.get(), aY.get(), bX.get(), bY.get(), new Point2D(circleShape.getTranslateX(), circleShape.getTranslateY()), moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(e), curved));
                 circleShape.translateYProperty().addListener((c, o, n) ->
-                        updatePath(aX.get(), aY.get(), bX.get(), bY.get(), new Point2D(circleShape.getTranslateX(), circleShape.getTranslateY()), moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(e)));
+                        updatePath(aX.get(), aY.get(), bX.get(), bY.get(), new Point2D(circleShape.getTranslateX(), circleShape.getTranslateY()), moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(e), curved));
                 // setupMouseInteraction(circleShape,circleShape);
                 circleShape.setFill(Color.TRANSPARENT);
                 circleShape.setStroke(Color.TRANSPARENT);
@@ -162,7 +172,7 @@ public class EdgeView extends Group {
      *
      * @return center point
      */
-    private static Point2D updatePath(double ax, double ay, double ex, double ey, Point2D center, MoveTo moveToA, LineTo lineToB, QuadCurveTo quadCurveToD, LineTo lineToE, EdgeType edgeType, Shape arrowHead, boolean clockwise) {
+    private static Point2D updatePath(double ax, double ay, double ex, double ey, Point2D center, MoveTo moveToA, LineTo lineToB, QuadCurveTo quadCurveToD, LineTo lineToE, EdgeType edgeType, Shape arrowHead, boolean clockwise, boolean curved) {
         var straightSegmentLength = 25.0;
         var liftFactor = 0.2;
 
@@ -189,7 +199,9 @@ public class EdgeView extends Group {
             var alpha = GeometryUtilsFX.computeAngle(new Point2D(ex - ax, ey - ay));
             var m = new Point2D(0.5 * (ax + ex), 0.5 * (ay + ey));
             if (center == null) {
-                if (!clockwise)
+                if (!curved)
+                    center = m; // control point on the line: straight edge
+                else if (!clockwise)
                     center = m.add(-Math.sin(GeometryUtilsFX.deg2rad(alpha)) * liftFactor * distance, Math.cos(GeometryUtilsFX.deg2rad(alpha)) * liftFactor * distance);
                 else
                     center = m.subtract(-Math.sin(GeometryUtilsFX.deg2rad(alpha)) * liftFactor * distance, Math.cos(GeometryUtilsFX.deg2rad(alpha)) * liftFactor * distance);
@@ -226,6 +238,23 @@ public class EdgeView extends Group {
 
 	public EdgeType getEdgeType() {
 		return edgeType;
+	}
+
+	public boolean isCurved() {
+		return curved;
+	}
+
+	/**
+	 * is there another edge between the same two nodes, in either direction?
+	 *
+	 * @return true, if a parallel or antiparallel edge exists
+	 */
+	public static boolean hasParallelEdge(Edge edge) {
+		for (var f : edge.getSource().adjacentEdges()) {
+			if (f != edge && f.getOpposite(edge.getSource()) == edge.getTarget())
+				return true;
+		}
+		return false;
 	}
 
 	public double getControlX() {

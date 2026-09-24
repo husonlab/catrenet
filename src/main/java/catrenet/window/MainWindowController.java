@@ -466,19 +466,31 @@ public class MainWindowController {
 	private CheckMenuItem wrapTextMenuItem;
 
 	@FXML
-	private MenuItem zoomInMenuItem;
-
-	@FXML
-	private Button zoomInNetworkButton;
-
-	@FXML
-	private MenuItem zoomOutMenuItem;
-
-	@FXML
-	private Button zoomOutNetworkButton;
-
-	@FXML
 	private MenuItem zoomToFitMenuItem;
+
+	@FXML
+	private MenuItem zoomInHorizontallyMenuItem;
+
+	@FXML
+	private MenuItem zoomOutHorizontallyMenuItem;
+
+	@FXML
+	private MenuItem zoomInVerticallyMenuItem;
+
+	@FXML
+	private MenuItem zoomOutVerticallyMenuItem;
+
+	@FXML
+	private Button zoomInHorizontallyButton;
+
+	@FXML
+	private Button zoomOutHorizontallyButton;
+
+	@FXML
+	private Button zoomInVerticallyButton;
+
+	@FXML
+	private Button zoomOutVerticallyButton;
 
 	@FXML
 	private CheckMenuItem showNotificationsCheckMenuItem;
@@ -522,6 +534,12 @@ public class MainWindowController {
 	@FXML
 	private RadioMenuItem reactionsAllMoleculesStratificationNetworkRadioItem;
 
+	@FXML
+	private RadioMenuItem forceDirectedLayoutRadioMenuItem;
+
+	@FXML
+	private RadioMenuItem layeredLayoutRadioMenuItem;
+
 	private ZoomableScrollPane zoomableScrollPane;
 
 	@FXML
@@ -534,8 +552,10 @@ public class MainWindowController {
 			MaterialIcons.setIcon(computeNetworkMenuButton, MaterialIcons.tune);
 			MaterialIcons.setIcon(animateNetworkMenuButton, MaterialIcons.play_circle);
 			MaterialIcons.setIcon(stopAnimationButton, MaterialIcons.cancel);
-			MaterialIcons.setIcon(zoomInNetworkButton, MaterialIcons.zoom_in);
-			MaterialIcons.setIcon(zoomOutNetworkButton, MaterialIcons.zoom_out);
+			MaterialIcons.setIcon(zoomInHorizontallyButton, MaterialIcons.unfold_more, "-fx-rotate: 90;", true);
+			MaterialIcons.setIcon(zoomOutHorizontallyButton, MaterialIcons.unfold_less, "-fx-rotate: 90;", true);
+			MaterialIcons.setIcon(zoomInVerticallyButton, MaterialIcons.unfold_more);
+			MaterialIcons.setIcon(zoomOutVerticallyButton, MaterialIcons.unfold_less);
 
 			MaterialIcons.setIcon(selectNetworkMenuButton, MaterialIcons.checklist_rtl);
 
@@ -641,10 +661,14 @@ public class MainWindowController {
 				subMenu.ifPresent(menu -> selectReactionSystemMenu.getItems().addListener((InvalidationListener) e -> menu.getItems().setAll(BasicFX.copyMenu(selectReactionSystemMenu.getItems(), false))));
 			}
 
-			zoomInNetworkButton.setOnAction(e -> zoomInMenuItem.getOnAction().handle(e));
-			zoomInNetworkButton.disableProperty().bind(zoomInMenuItem.disableProperty());
-			zoomOutNetworkButton.setOnAction(e -> zoomOutMenuItem.getOnAction().handle(e));
-			zoomOutNetworkButton.disableProperty().bind(zoomOutMenuItem.disableProperty());
+			zoomInHorizontallyButton.setOnAction(e -> zoomInHorizontallyMenuItem.getOnAction().handle(e));
+			zoomInHorizontallyButton.disableProperty().bind(zoomInHorizontallyMenuItem.disableProperty());
+			zoomOutHorizontallyButton.setOnAction(e -> zoomOutHorizontallyMenuItem.getOnAction().handle(e));
+			zoomOutHorizontallyButton.disableProperty().bind(zoomOutHorizontallyMenuItem.disableProperty());
+			zoomInVerticallyButton.setOnAction(e -> zoomInVerticallyMenuItem.getOnAction().handle(e));
+			zoomInVerticallyButton.disableProperty().bind(zoomInVerticallyMenuItem.disableProperty());
+			zoomOutVerticallyButton.setOnAction(e -> zoomOutVerticallyMenuItem.getOnAction().handle(e));
+			zoomOutVerticallyButton.disableProperty().bind(zoomOutVerticallyMenuItem.disableProperty());
 
 			inceaseFontButton.setOnAction(e -> increaseFontSizeMenuItem.getOnAction().handle(e));
 			inceaseFontButton.disableProperty().bindBidirectional(increaseFontSizeMenuItem.disableProperty());
@@ -950,16 +974,24 @@ public class MainWindowController {
 		return decreaseFontSizeMenuItem;
 	}
 
-	public MenuItem getZoomInMenuItem() {
-		return zoomInMenuItem;
-	}
-
-	public MenuItem getZoomOutMenuItem() {
-		return zoomOutMenuItem;
-	}
-
 	public MenuItem getZoomToFitMenuItem() {
 		return zoomToFitMenuItem;
+	}
+
+	public MenuItem getZoomInHorizontallyMenuItem() {
+		return zoomInHorizontallyMenuItem;
+	}
+
+	public MenuItem getZoomOutHorizontallyMenuItem() {
+		return zoomOutHorizontallyMenuItem;
+	}
+
+	public MenuItem getZoomInVerticallyMenuItem() {
+		return zoomInVerticallyMenuItem;
+	}
+
+	public MenuItem getZoomOutVerticallyMenuItem() {
+		return zoomOutVerticallyMenuItem;
 	}
 
 	public CheckMenuItem getWrapTextMenuItem() {
@@ -1009,6 +1041,14 @@ public class MainWindowController {
 
 	public RadioMenuItem getReactionsAllMoleculesStratificationNetworkRadioItem() {
 		return reactionsAllMoleculesStratificationNetworkRadioItem;
+	}
+
+	public RadioMenuItem getForceDirectedLayoutRadioMenuItem() {
+		return forceDirectedLayoutRadioMenuItem;
+	}
+
+	public RadioMenuItem getLayeredLayoutRadioMenuItem() {
+		return layeredLayoutRadioMenuItem;
 	}
 
 	public CheckMenuItem getSuppressCatalystEdgesMenuItem() {
