@@ -223,8 +223,39 @@ Available network types:
 Display options include: suppress the formal food item used for catalyst‑free reactions, suppress catalyst edges, use
 multi‑copy food nodes for a less tangled layout, and show or hide node labels.
 
-> **Tip:** the built‑in layout is intentionally basic. For publication‑quality figures, export the network in **GML**
-> format and open it in [Cytoscape](https://cytoscape.org).
+### Layouts
+
+A network can be drawn with one of two layouts, chosen in the **Network** menu:
+
+- **Force‑Directed Layout** — a general‑purpose layout, used whenever a file is opened. Catalyst and inhibitor edges are
+  given a longer desired length than reactant and product edges, so that the layout follows the flow of molecules, and
+  edges at highly connected nodes are lengthened to give their many neighbors room. Both can be adjusted in the
+  Settings panel.
+- **Layered Layout** — nodes are placed in layers by the generation in which they first become available from the
+  food set, ignoring catalysts: the food set at the top, below it the reactions that run on food alone, then the
+  molecules they produce, and so on. Reactant and product edges point downward. Edges that point upward — above all,
+  the catalysis of a reaction by a molecule that is only produced later — are drawn as curves, so that the closures of
+  an autocatalytic set stand out. Reactions and molecules that cannot be reached from the food set are placed below
+  all reachable ones. Combined with **Use Multicopy Food Nodes**, each copy of a food item sits directly above the
+  reaction that uses it.
+
+### Edges and labels
+
+Edges are drawn as straight lines; only edges between the same pair of nodes, feedback edges in the layered layout,
+and edges that you have bent by hand are curved. Drag an edge to reroute it; the new shape is kept when you later move
+one of its nodes. Node labels are placed automatically next to their nodes, away from edges and other labels where
+possible, and can be dragged as well.
+
+### Scaling and zooming
+
+- **Zoom In/Out Vertically** (Cmd/Ctrl + Up/Down) and **Zoom In/Out Horizontally** (Cmd/Ctrl + Shift + Up/Down), in
+  the **View** menu and as buttons above the network, stretch or squeeze the drawing in one direction in the layered
+  layout; in the force‑directed layout, both directions are scaled together.
+- **Zoom To Fit** (Cmd/Ctrl + .) scales the network so that the whole drawing fills the visible area.
+- Holding Shift while scrolling also zooms.
+
+> **Tip:** for other layouts and publication‑quality figures, export the network in **GML** format and open it in
+> [Cytoscape](https://cytoscape.org).
 
 ---
 
@@ -260,7 +291,8 @@ The Settings panel configures:
 - **Display labels** — a lookup table mapping identifiers to readable names (e.g. the KEGG code `C00005` → *reduced
   nicotinamide adenine dinucleotide phosphate*).
 - **Animation** — colors per molecule and whether labels are used.
-- **Other** — maximum reactions allowed for drawing, number of embedding iterations, and text wrapping.
+- **Other** — maximum reactions allowed for drawing, number of embedding iterations, the length of catalyst edges and
+  whether edges at highly connected nodes are lengthened in the force‑directed layout, and text wrapping.
 
 ---
 
