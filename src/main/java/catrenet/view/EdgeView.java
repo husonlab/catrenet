@@ -64,7 +64,10 @@ public class EdgeView extends Group {
 	private final QuadCurveTo quadCurveToD = new QuadCurveTo();
 	private final LineTo lineToE = new LineTo();
 
-	private final CircleShape circleShape = new CircleShape(3);
+	private final CircleShape circleShape = new CircleShape(3); // the control point of the curve, dragged along with the edge
+
+	private Point2D relativeControl; // the control point relative to the line between the nodes, if the user has rerouted the edge, otherwise null
+	private boolean movingControlPoint; // true while the control point is moved programmatically rather than by the user
 
     private EdgeView() {
         curved = false;
@@ -87,32 +90,33 @@ public class EdgeView extends Group {
         };
 
 
-        final InvalidationListener invalidationListener = v -> {
-            var lineCenter = updatePath(aX.get(), aY.get(), bX.get(), bY.get(), null, moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(e), curved);
-            if (lineCenter != null) {
-                circleShape.setTranslateX(lineCenter.getX());
-                circleShape.setTranslateY(lineCenter.getY());
-            }
+        // a node has moved: redraw the edge, keeping any rerouting by the user relative to the line between the nodes
+        final InvalidationListener nodeListener = v -> {
+            final var center = (relativeControl != null ? fromRelative(aX.get(), aY.get(), bX.get(), bY.get(), relativeControl) : null);
+            var lineCenter = updatePath(aX.get(), aY.get(), bX.get(), bY.get(), center, moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(e), curved);
+            moveControlPoint(lineCenter != null ? lineCenter : new Point2D(0.5 * (aX.get() + bX.get()), 0.5 * (aY.get() + bY.get())));
         };
 
-        aX.addListener(invalidationListener);
-        aY.addListener(invalidationListener);
-        bX.addListener(invalidationListener);
-        bY.addListener(invalidationListener);
+        aX.addListener(nodeListener);
+        aY.addListener(nodeListener);
+        bX.addListener(nodeListener);
+        bY.addListener(nodeListener);
 
         {
             var lineCenter = updatePath(aX.get(), aY.get(), bX.get(), bY.get(), null, moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(e), curved);
-            if (lineCenter != null) {
-                circleShape.setTranslateX(lineCenter.getX());
-                circleShape.setTranslateY(lineCenter.getY());
-                circleShape.translateXProperty().addListener((c, o, n) ->
-                        updatePath(aX.get(), aY.get(), bX.get(), bY.get(), new Point2D(circleShape.getTranslateX(), circleShape.getTranslateY()), moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(e), curved));
-                circleShape.translateYProperty().addListener((c, o, n) ->
-                        updatePath(aX.get(), aY.get(), bX.get(), bY.get(), new Point2D(circleShape.getTranslateX(), circleShape.getTranslateY()), moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(e), curved));
-                // setupMouseInteraction(circleShape,circleShape);
-                circleShape.setFill(Color.TRANSPARENT);
-                circleShape.setStroke(Color.TRANSPARENT);
-            }
+            moveControlPoint(lineCenter != null ? lineCenter : new Point2D(0.5 * (aX.get() + bX.get()), 0.5 * (aY.get() + bY.get())));
+
+            // the control point has moved: redraw the edge through it and, if the user dragged it, remember the rerouting
+            final InvalidationListener controlListener = c -> {
+                final var center = new Point2D(circleShape.getTranslateX(), circleShape.getTranslateY());
+                updatePath(aX.get(), aY.get(), bX.get(), bY.get(), center, moveToA, lineToB, quadCurveToD, lineToE, edgeType, arrowHead, isSecondOfTwoEdges(e), curved);
+                if (!movingControlPoint)
+                    relativeControl = toRelative(aX.get(), aY.get(), bX.get(), bY.get(), center);
+            };
+            circleShape.translateXProperty().addListener(controlListener);
+            circleShape.translateYProperty().addListener(controlListener);
+            circleShape.setFill(Color.TRANSPARENT);
+            circleShape.setStroke(Color.TRANSPARENT);
         }
 
 		path.getElements().addAll(moveToA, lineToB, quadCurveToD, lineToE);
@@ -234,6 +238,51 @@ public class EdgeView extends Group {
         arrowHead.setRotationAxis(new Point3D(0, 0, 1));
         arrowHead.setRotate(angle);
         return center;
+	}
+
+	/**
+	 * moves the control point programmatically, which does not count as a rerouting by the user
+	 */
+	private void moveControlPoint(Point2D center) {
+		movingControlPoint = true;
+		try {
+			circleShape.setTranslateX(center.getX());
+			circleShape.setTranslateY(center.getY());
+		} finally {
+			movingControlPoint = false;
+		}
+	}
+
+	/**
+	 * expresses a point in coordinates relative to the line from a to b: the position along the line and the offset
+	 * perpendicular to it, both as fractions of the length of the line, so that the point moves, turns and scales
+	 * with the line
+	 */
+	private static Point2D toRelative(double ax, double ay, double bx, double by, Point2D point) {
+		final var dx = bx - ax;
+		final var dy = by - ay;
+		final var lengthSquared = dx * dx + dy * dy;
+		if (lengthSquared < 1e-8)
+			return new Point2D(0.5, 0);
+		final var wx = point.getX() - ax;
+		final var wy = point.getY() - ay;
+		return new Point2D((wx * dx + wy * dy) / lengthSquared, (wy * dx - wx * dy) / lengthSquared);
+	}
+
+	/**
+	 * the point with the given coordinates relative to the line from a to b
+	 */
+	private static Point2D fromRelative(double ax, double ay, double bx, double by, Point2D relative) {
+		final var dx = bx - ax;
+		final var dy = by - ay;
+		return new Point2D(ax + relative.getX() * dx - relative.getY() * dy, ay + relative.getX() * dy + relative.getY() * dx);
+	}
+
+	/**
+	 * has the user rerouted this edge by dragging it?
+	 */
+	public boolean isRerouted() {
+		return relativeControl != null;
 	}
 
 	public EdgeType getEdgeType() {
