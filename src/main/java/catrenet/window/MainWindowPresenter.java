@@ -828,6 +828,51 @@ public class MainWindowPresenter {
         controller.getUndoReactionsButton().setOnAction(e -> controller.getInputTextArea().undo());
         controller.getRedoReactionsButton().setOnAction(e -> controller.getInputTextArea().redo());
 
+        { // show or hide the input sidebar, the left part of the main split pane, remembering its width
+            final var mainSplitPane = controller.getMainSplitPane();
+            final var sideBarWidth = new SimpleDoubleProperty(this, "sideBarWidth", 250.0);
+            ProgramProperties.track(sideBarWidth, 250.0);
+            final var changing = new SimpleBooleanProperty(false); // guards against the button and the divider updating each other in a loop
+            final var positioned = new SimpleBooleanProperty(false); // set once the remembered width has been applied, so that the initial layout does not overwrite it
+
+            controller.getShowSideBarButton().setSelected(true);
+            controller.getShowSideBarButton().selectedProperty().addListener((v, o, n) -> {
+                if (!changing.get() && mainSplitPane.getWidth() > 0) {
+                    changing.set(true);
+                    try {
+                        if (n) {
+                            mainSplitPane.setDividerPositions(Math.min(0.9, Math.max(150, sideBarWidth.get()) / mainSplitPane.getWidth()));
+                        } else {
+                            var width = mainSplitPane.getDividerPositions()[0] * mainSplitPane.getWidth();
+                            if (width > 0)
+                                sideBarWidth.set(width);
+                            mainSplitPane.setDividerPositions(0.0);
+                        }
+                    } finally {
+                        changing.set(false);
+                    }
+                }
+            });
+            mainSplitPane.getDividers().get(0).positionProperty().addListener((v, o, n) -> { // dragging the divider shut or open updates the button and the remembered width
+                if (!changing.get()) {
+                    changing.set(true);
+                    try {
+                        var open = (n.doubleValue() >= 0.05);
+                        if (open && positioned.get() && mainSplitPane.getWidth() > 0)
+                            sideBarWidth.set(n.doubleValue() * mainSplitPane.getWidth());
+                        controller.getShowSideBarButton().setSelected(open);
+                    } finally {
+                        changing.set(false);
+                    }
+                }
+            });
+            Platform.runLater(() -> {
+                if (mainSplitPane.getWidth() > 0)
+                    mainSplitPane.setDividerPositions(Math.min(0.9, Math.max(150, sideBarWidth.get()) / mainSplitPane.getWidth()));
+                positioned.set(true);
+            });
+        }
+
         {
             var settings = new SettingsView(mainWindow);
             var translate = new TranslateTransition(javafx.util.Duration.seconds(0.5), settings.getRoot());

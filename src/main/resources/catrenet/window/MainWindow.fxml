@@ -41,6 +41,12 @@
                                                  AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                                                  AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <items>
+                                                <ToggleButton fx:id="showSideBarButton" mnemonicParsing="false"
+                                                              text="Side Bar">
+                                                    <tooltip>
+                                                        <Tooltip text="Show/hide the input sidebar"/>
+                                                    </tooltip>
+                                                </ToggleButton>
                                                 <ToggleButton fx:id="settingsButton" mnemonicParsing="false"
                                                               text="Sidebar"/>
                                                 <MenuButton fx:id="fileMenuButton" maxHeight="-Infinity"
@@ -119,7 +125,7 @@
                     <center>
                         <SplitPane fx:id="mainSplitPane" dividerPositions="0.3" BorderPane.alignment="CENTER">
                             <items>
-                                <BorderPane>
+                                <BorderPane minWidth="0.0">
                                     <center>
                                         <SplitPane fx:id="inputSplitPane" dividerPositions="0.25" orientation="VERTICAL"
                                                    BorderPane.alignment="CENTER">

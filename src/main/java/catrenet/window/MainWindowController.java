@@ -19,7 +19,6 @@
 
 package catrenet.window;
 
-import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
@@ -427,6 +426,9 @@ public class MainWindowController {
 	private ToggleButton settingsButton;
 
 	@FXML
+	private ToggleButton showSideBarButton;
+
+	@FXML
 	private MenuItem spontaneousInRafMenuItem;
 
 	@FXML
@@ -566,6 +568,7 @@ public class MainWindowController {
 			MaterialIcons.setIcon(decreaseFontButton, MaterialIcons.text_decrease);
 
 			MaterialIcons.setIcon(settingsButton, MaterialIcons.settings);
+			MaterialIcons.setIcon(showSideBarButton, MaterialIcons.view_sidebar, "-fx-rotate: 180;", true);
 			MaterialIcons.setIcon(findButton, MaterialIcons.search);
 			MaterialIcons.setIcon(findFoodTextToggleButton, MaterialIcons.search);
 			MaterialIcons.setIcon(findReactionsTextToggleButton, MaterialIcons.search);
@@ -629,7 +632,6 @@ public class MainWindowController {
 			}
 		});
 
-		Platform.runLater(() -> mainSplitPane.setDividerPosition(0, 250.0 / mainSplitPane.getWidth()));
 
 		{
 			var stackPane = new StackPane();
@@ -1257,6 +1259,10 @@ public class MainWindowController {
 
 	public ToggleButton getSettingsButton() {
 		return settingsButton;
+	}
+
+	public ToggleButton getShowSideBarButton() {
+		return showSideBarButton;
 	}
 
 	public Button getUndoFoodButton() {

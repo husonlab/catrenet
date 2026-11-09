@@ -66,7 +66,8 @@ are useful for trying out the program immediately.
 5. Switch to the **Network** view to see the reaction system drawn as a graph, or animate the emergence of a
    maxRAF/maxCAF/max pseudo‑RAF.
 
-Each open dataset lives in its own window, so you can work with several systems at once.
+Each open dataset lives in its own window, so you can work with several systems at once. The leftmost toolbar button
+shows or hides the input side bar, to give the network more room.
 
 ---
 
