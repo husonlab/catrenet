@@ -21,12 +21,14 @@
     -fx-background-color: white;
 }
 
+/* white in the light theme; the dark theme redefines -fx-background for scroll panes */
 .scroll-pane {
-    -fx-background-color: white;
+    -fx-background: white;
+    -fx-background-color: -fx-background;
 }
 
 .scroll-pane > .viewport {
-    -fx-background-color: white;
+    -fx-background-color: -fx-background;
 }
 
 .chart-pie {

@@ -25,11 +25,13 @@ import catrenet.view.ReactionGraphView;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.Node;
+import javafx.stage.Stage;
 import jloda.fx.dialog.ExportImageDialog;
 import jloda.fx.find.ISearcher;
 import jloda.fx.print.ImageCropper;
 import jloda.fx.print.Print;
 import jloda.fx.util.ClipboardUtils;
+import jloda.fx.window.MainWindowManager;
 import jloda.util.StringUtils;
 
 /**
@@ -49,6 +51,8 @@ public class SetupExport {
 
 
         controller.getOutputTabPane().getSelectionModel().selectedItemProperty().addListener((v, o, n) -> {
+			// what gets copied depends on the tab: the network as an image, otherwise the text of the tab
+			copyMenuItem.setText(n == controller.getNetworkTab() ? "Copy Image" : "Copy");
             if (n == controller.getNetworkTab()) {
 				copyMenuItem.setOnAction(e -> copyNetworkImage(mainWindow.getReactionGraphView(), controller.getNetworkScrollPane().getContent()));
 
@@ -98,12 +102,22 @@ public class SetupExport {
 	 * copy the network image to the clipboard, clipped to a tight bounding box around the painted
 	 * content (as done in phyloparallelograms), together with the labels of any selected nodes as text.
 	 * The snapshot scale and crop parameters match jloda's ClipboardUtils.putImage().
+	 * The image is always dark on a white background: the dark theme is switched off while the snapshot is taken.
 	 */
 	public static void copyNetworkImage(ReactionGraphView graphView, Node content) {
 		var string = (graphView.getNodeSelection().isEmpty() ? null : StringUtils.toString(graphView.getSelectedLabels(), "\n"));
-		var image = Print.createHighResSnapshot(content, 3.0);
-		var cropped = ImageCropper.cropMargins(image, 20, 0.02, 0.1);
-		ClipboardUtils.put(string, cropped, null);
+		var stage = (content.getScene() != null && content.getScene().getWindow() instanceof Stage s ? s : null);
+		var dark = (stage != null && MainWindowManager.isUseDarkTheme());
+		if (dark)
+			MainWindowManager.ensureDarkTheme(stage, false);
+		try {
+			var image = Print.createHighResSnapshot(content, 3.0);
+			var cropped = ImageCropper.cropMargins(image, 20, 0.02, 0.1);
+			ClipboardUtils.put(string, cropped != null ? cropped : image, null);
+		} finally {
+			if (dark)
+				MainWindowManager.ensureDarkTheme(stage, true);
+		}
 	}
 
     public static class EmptySearcher implements ISearcher {

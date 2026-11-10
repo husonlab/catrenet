@@ -1233,6 +1233,10 @@ public class MainWindowController {
 		return findButton;
 	}
 
+	public MenuButton getExportMenuButton() {
+		return exportMenuButton;
+	}
+
 	public MenuItem getCopyExportMenuItem() {
 		return copyExportMenuItem;
 	}
