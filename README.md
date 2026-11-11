@@ -19,7 +19,8 @@ This software was developed by Daniel H. Huson, Joana C. Xavier and Mike A. Stee
 Interactive installers for MacOS, Windows and Linux are
 available [here](https://github.com/husonlab/catrenet/releases).
 
-Versions for Android and iOS are under development.
+CatReNet is also available as an app for iPhone and iPad: see the [CatReNet App page](https://husonlab.github.io/mobile-apps/catrenet.html)
+for a description of the app and how to get it. A version for Android is planned.
 
 ## 🎥 Video Introduction
 
